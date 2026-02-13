@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface HorizontalLoaderProps {
   className?: string;
@@ -38,7 +38,7 @@ const HorizontalLoader = ({
   width = 'w-full',
   barWidth = 'w-1/2',
   barColor = 'bg-primary',
-  backgroundColor = 'bg-muted-foreground',
+  backgroundColor = 'bg-accent',
 }: HorizontalLoaderProps) => (
   <div className={cn('relative overflow-hidden rounded-xl', height, width, backgroundColor, className)}>
     <motion.span

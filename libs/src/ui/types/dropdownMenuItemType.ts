@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconType } from 'react-icons';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 type DropdownMenuItemType = {
   label: string;
@@ -26,8 +26,9 @@ type DropdownMenuItemType = {
   isCheckbox?: boolean;
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
-  icon?: IconType;
+  icon?: IconDefinition;
   iconColor?: string;
+  preventClose?: boolean;
 };
 
 export default DropdownMenuItemType;

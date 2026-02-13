@@ -19,10 +19,10 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import { Button } from '@/components/shared/Button';
+import ItemList from '@/components/shared/ItemList';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface SharingFilesFailedDialogBodyProps {
   failedFilePath: string;
@@ -62,7 +62,7 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
           ? t('classmanagement.failDialog.affectedPersons')
           : t('classmanagement.failDialog.affectedPerson')}
       </p>
-      <ItemDialogList items={affectedUsers.map((user) => ({ name: user, id: user }))} />
+      <ItemList items={affectedUsers.map((user) => ({ name: user, id: user }))} />
 
       <p>
         {t('classmanagement.failDialog.filenameAdvice', {
@@ -70,28 +70,23 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
         })}
       </p>
 
-      <div className="flex justify-end">
-        <Button
-          variant="btn-small"
-          className="bg-primary"
-          onClick={async () => {
-            await shareFiles(
-              {
-                originFilePath: failedFilePath,
-                destinationFilePaths: failedPaths.map((path) => {
-                  const parts = path.split('/');
-                  parts.pop();
-                  const pathWithoutLast = parts.join('/');
-                  return `${pathWithoutLast}/${possibleNewFileName}`;
-                }),
-              },
-              selectedWebdavShare,
-            );
-          }}
-        >
-          {t('classmanagement.failDialog.retryButton')}
-        </Button>
-      </div>
+      <DialogFooterButtons
+        handleSubmit={async () => {
+          await shareFiles(
+            {
+              originFilePath: failedFilePath,
+              destinationFilePaths: failedPaths.map((path) => {
+                const parts = path.split('/');
+                parts.pop();
+                const pathWithoutLast = parts.join('/');
+                return `${pathWithoutLast}/${possibleNewFileName}`;
+              }),
+            },
+            selectedWebdavShare,
+          );
+        }}
+        submitButtonText={t('classmanagement.failDialog.retryButton')}
+      />
     </div>
   );
 };

@@ -20,7 +20,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import EmbeddedPage from '@/pages/EmbeddedPage/EmbeddedPage';
 
 const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) =>
@@ -29,7 +29,7 @@ const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) =>
     .map((item) => (
       <Route
         key={item.name}
-        path={item.name}
+        path={`${item.name}/*`}
         element={<EmbeddedPage />}
       />
     ));

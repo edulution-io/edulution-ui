@@ -18,17 +18,14 @@
  */
 
 import React from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { useTranslation } from 'react-i18next';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteBulletinsCategoriesDialogProps {
   trigger?: React.ReactNode;
 }
 
-const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesDialogProps) => {
+const DeleteBulletinCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesDialogProps) => {
   const {
     selectedCategory,
     setSelectedCategory,
@@ -41,8 +38,6 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
     error,
   } = useBulletinCategoryTableStore();
 
-  const { t } = useTranslation();
-
   if (!selectedCategory) return null;
 
   const handleClose = () => {
@@ -51,53 +46,28 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
     setIsDeleteDialogOpen(false);
   };
 
-  const onSubmit = async () => {
+  const handleConfirmDelete = async () => {
     if (!selectedCategory.id) return;
     await deleteCategory(selectedCategory.id);
     await fetchTableContent();
     handleClose();
   };
 
-  const getDialogBody = () => {
-    if (isDeleteDialogLoading) return <CircleLoader />;
-
-    return (
-      <div className="text-background">
-        {error ? (
-          <>
-            {t('bulletinboard.error')}: {error.message}
-          </>
-        ) : (
-          <>
-            <div>{t('bulletinboard.confirmSingleCategoryDelete')}</div>
-            <div className="m-2 font-bold">{selectedCategory.name}</div>
-            <div className="mt-3 rounded-lg border border-red-400 p-3">
-              {t('bulletinboard.confirmSingleCategoryDeleteWarning')}
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={onSubmit}
-      submitButtonText="common.delete"
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isDeleteDialogOpen}
+      onOpenChange={() => handleClose()}
+      items={[{ id: selectedCategory.id || '', name: selectedCategory.name }]}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isDeleteDialogLoading}
+      error={error}
+      titleTranslationKey="bulletinboard.deleteBulletinCategory"
+      messageTranslationKey="bulletinboard.confirmSingleCategoryDelete"
+      warningTranslationKey="bulletinboard.confirmSingleCategoryDeleteWarning"
       trigger={trigger}
-      handleOpenChange={handleClose}
-      title={t('bulletinboard.deleteBulletinCategory')}
-      body={getDialogBody()}
-      footer={getFooter()}
+      autoCloseOnSuccess={false}
     />
   );
 };
 
-export default DeleteBulletinsCategoriesDialog;
+export default DeleteBulletinCategoriesDialog;

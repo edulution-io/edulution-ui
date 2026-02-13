@@ -23,8 +23,23 @@ import migration002 from './migration002';
 import migration003 from './migration003';
 import migration004 from './migration004';
 import migration005 from './migration005';
+import migration006 from './migration006';
+import migration007 from './migration007';
+import migration008 from './migration008';
+import migration009 from './migration009';
 
 // Add new migrations here
-const appConfigMigrationsList = [migration000, migration001, migration002, migration003, migration004, migration005];
+const appConfigMigrationsList = [
+  migration000,
+  migration001,
+  migration002,
+  migration003,
+  migration004,
+  migration005,
+  migration006,
+  migration007,
+  migration008,
+  migration009,
+];
 
 export default appConfigMigrationsList;

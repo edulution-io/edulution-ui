@@ -17,34 +17,90 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import type TAppFieldType from '@libs/appconfig/types/tAppFieldType';
+import { getProxyPrefixFromUrl } from '@libs/common/utils';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
+import useFrameDeepLinkSync from '@/hooks/useFrameDeepLinkSync';
 
 type EmbeddedPageContentProps = {
+  appName: string;
   pageTitle: string;
   isSandboxMode?: TAppFieldType;
   htmlContentUrl?: string;
   htmlContent?: string;
+  urlSyncEnabled?: boolean;
+  preloadBasePage?: boolean;
+  onIframeLoad?: (iframe: HTMLIFrameElement) => void;
 };
 
 const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
+  appName,
   pageTitle,
   isSandboxMode,
   htmlContentUrl,
   htmlContent,
-}) =>
-  isSandboxMode ? (
-    <iframe
-      src={htmlContentUrl}
-      title={pageTitle}
-      className="h-full w-full border-0"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-    />
-  ) : (
-    <div
-      className="h-full w-full"
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: htmlContent || '' }}
-    />
+  urlSyncEnabled = false,
+  preloadBasePage = false,
+  onIframeLoad,
+}) => {
+  const { pathname, search, hash } = useLocation();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const proxyPrefix = getProxyPrefixFromUrl(htmlContentUrl || '');
+
+  const getDeepLinkUrl = useCallback(
+    (browserUrlSuffix: string) => {
+      if (proxyPrefix && browserUrlSuffix.startsWith(proxyPrefix)) {
+        return browserUrlSuffix;
+      }
+      return `${proxyPrefix}${browserUrlSuffix}`;
+    },
+    [proxyPrefix],
   );
+
+  const { deepLinkUrl } = useFrameDeepLinkSync({
+    appName,
+    iframeRef,
+    isFrameLoaded: !!isSandboxMode,
+    isActiveFrame: true,
+    urlSyncEnabled: urlSyncEnabled && !!isSandboxMode && !!proxyPrefix,
+    preloadBasePage,
+    pathname,
+    search,
+    hash,
+    getDeepLinkUrl,
+  });
+
+  if (isSandboxMode) {
+    return (
+      <iframe
+        ref={iframeRef}
+        src={deepLinkUrl || htmlContentUrl}
+        title={pageTitle}
+        className="h-full w-full border-0"
+        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+        allow={IFRAME_ALLOWED_CONFIG}
+        onLoad={() => {
+          if (iframeRef.current && onIframeLoad) {
+            onIframeLoad(iframeRef.current);
+          }
+        }}
+      />
+    );
+  }
+
+  if (htmlContent) {
+    return (
+      <div
+        className="h-full w-full"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+      />
+    );
+  }
+
+  return null;
+};
+
 export default EmbeddedPageContent;

@@ -19,50 +19,59 @@
 
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { LockClosedIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRightToBracket, faHourglassHalf, faLock, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
-import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
-import { toast } from 'sonner';
-import delay from '@libs/common/utils/delay';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
 import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTableColumns';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
+import useConferenceToggle from '@/pages/ConferencePage/useConferenceToggle';
 
-function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
+const getRowAction = (isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) => {
   if (isLoading) {
     return {
-      icon: <MdPending />,
+      icon: <FontAwesomeIcon icon={faHourglassHalf} />,
       text: i18n.t('common.loading'),
     };
   }
   if (isUserTheCreator) {
     if (isRunning) {
       return {
-        icon: <MdStop />,
+        icon: (
+          <FontAwesomeIcon
+            icon={faStop}
+            size="xs"
+          />
+        ),
         text: i18n.t('conferences.stop'),
       };
     }
     return {
-      icon: <MdPlayArrow />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faPlay}
+          size="xs"
+        />
+      ),
       text: i18n.t('conferences.start'),
     };
   }
   if (isRunning) {
     return {
-      icon: <MdLogin />,
+      icon: <FontAwesomeIcon icon={faArrowRightToBracket} />,
       text: i18n.t('conferences.join'),
     };
   }
   return { icon: undefined, text: '' };
-}
+};
 
 const hideOnMobileClassNameMinWidth = `${hideOnMobileClassName} min-w-24`;
 
@@ -93,9 +102,9 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           }
         : () => row.toggleSelected();
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={onClick}
-          icon={isRunning ? <MdLogin /> : undefined}
+          icon={isRunning ? <FontAwesomeIcon icon={faArrowRightToBracket} /> : undefined}
           text={name}
           textOnHover={isRunning ? t('common.join') : ''}
           row={user?.username === creator?.username ? row : undefined}
@@ -119,7 +128,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const isUserTheCreator = user?.username === username;
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={
             isUserTheCreator
               ? () => {
@@ -174,7 +183,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const { username } = row.original.creator;
       const isUserTheCreator = user?.username === username;
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={
             isUserTheCreator
               ? () => {
@@ -186,7 +195,8 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           textOnHover={isUserTheCreator ? t('common.details') : ''}
           icon={
             row.original.password ? (
-              <LockClosedIcon
+              <FontAwesomeIcon
+                icon={faLock}
                 width={iconSize}
                 height={iconSize}
               />
@@ -214,7 +224,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const groupsCount = row.original.invitedGroups?.length;
       const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={
             isUserTheCreator
               ? () => {
@@ -236,7 +246,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       translationId: 'conferences.joinedAttendees',
     },
     accessorFn: (row) => row.joinedAttendees.length,
-    cell: ({ row }) => <SelectableTextCell text={`${row.original.joinedAttendees.length || '-'}`} />,
+    cell: ({ row }) => <SelectableCell text={`${row.original.joinedAttendees.length || '-'}`} />,
   },
   {
     id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_ACTION_BUTTON,
@@ -248,10 +258,10 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
-      const { t } = useTranslation();
       const { user } = useUserStore();
-      const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
-      const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
+      const { joinConference } = useConferenceDetailsDialogStore();
+      const { loadingMeetingId } = useConferenceStore();
+      const { toggleAndHandleJoinConference } = useConferenceToggle();
       const isUserTheCreator = user?.username === creator?.username;
       const isRowLoading = row.original.meetingID === loadingMeetingId;
 
@@ -260,29 +270,14 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const onClick = isRowLoading
         ? undefined
         : async () => {
-            let wasConferenceStateToggled;
             if (isUserTheCreator) {
-              wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
-              if (!isRunning) {
-                await joinConference(meetingID);
-              } else if (joinConferenceUrl.includes(meetingID)) {
-                setJoinConferenceUrl('');
-              }
-
-              if (wasConferenceStateToggled) {
-                await delay(5000);
-                toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
-              } else {
-                setJoinConferenceUrl('');
-              }
+              await toggleAndHandleJoinConference(meetingID, isRunning);
             } else if (isRunning) {
               await joinConference(meetingID);
             }
-
-            await getConferences();
           };
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={isUserTheCreator || isRunning ? onClick : undefined}
           icon={icon}
           text={text}

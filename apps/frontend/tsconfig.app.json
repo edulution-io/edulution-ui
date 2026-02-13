@@ -1,15 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "Bundler",
     "composite": true,
     "declaration": true,
     "jsx": "preserve",
     "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "../../libs/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "../../libs/ui-kit/src/**/*"],
   "exclude": [
-    "vite.config.ts",
+    "vite.config.mts",
     "vitest.config.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",

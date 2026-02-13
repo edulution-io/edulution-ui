@@ -30,6 +30,9 @@ import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/uti
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -77,7 +80,11 @@ class SurveyAnswersService implements OnModuleInit {
     return answers.length !== 0;
   };
 
-  public getSelectableChoices = async (surveyId: string, questionName: string): Promise<ChoiceDto[]> => {
+  public getSelectableChoices = async (
+    surveyId: string,
+    questionName: string,
+    returnOriginal: boolean = false,
+  ): Promise<ChoiceDto[]> => {
     const survey = await this.surveyModel.findById(surveyId);
     if (!survey) {
       throw new CustomHttpException(
@@ -99,49 +106,94 @@ class SurveyAnswersService implements OnModuleInit {
     }
 
     const possibleChoices = limiter.choices;
+    if (returnOriginal) {
+      possibleChoices.sort((a, b) => a.title.localeCompare(b.title));
+      return possibleChoices;
+    }
 
     const filteredChoices: ChoiceDto[] = [];
-    const filteringPromises = possibleChoices.map(async (choice) => {
-      const counter = await this.countChoiceSelections(surveyId, questionName, choice.title);
-      if (choice.limit === 0 || !counter || counter < choice.limit) {
-        filteredChoices.push(choice);
-      }
-    });
-    await Promise.all(filteringPromises);
+    await Promise.all(
+      possibleChoices.map(async (choice) => {
+        const counter = await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
+        if (choice.limit === 0 || !counter || counter < choice.limit) {
+          filteredChoices.push(choice);
+        }
+      }),
+    );
 
     filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
 
     return filteredChoices;
   };
 
-  async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
+  static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceTitle: string): number => {
+    if (Array.isArray(questionAnswer)) {
+      let count = 0;
+      questionAnswer.forEach((answerValue) => {
+        if (typeof answerValue === 'string' && answerValue === choiceTitle) {
+          count += 1;
+        } else if (typeof answerValue === 'object' && answerValue !== null && answerValue.name === choiceTitle) {
+          count += 1;
+        }
+      });
+      return count;
+    }
+    if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
+      return 1;
+    }
+    if (typeof questionAnswer === 'object' && questionAnswer !== null && questionAnswer.name === choiceTitle) {
+      return 1;
+    }
+    return 0;
+  };
+
+  static countChoiceMatchesInAnswer = (answer: TSurveyAnswer, questionName: string, choiceTitle: string): number => {
+    let count = 0;
+    Object.keys(answer).forEach((key) => {
+      if (key === questionName) {
+        const nestedCount = SurveyAnswersService.countChoiceMatchesInValue(answer[key], choiceTitle);
+        count += nestedCount;
+      } else if (Array.isArray(answer[key])) {
+        answer[key].forEach((entry) => {
+          if (typeof entry === 'object' && entry !== null) {
+            const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
+              entry as TSurveyAnswer,
+              questionName,
+              choiceTitle,
+            );
+            count += nestedCount;
+          }
+        });
+      } else if (typeof answer[key] === 'object' && answer[key] !== null) {
+        const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
+          answer[key] as TSurveyAnswer,
+          questionName,
+          choiceTitle,
+        );
+        count += nestedCount;
+      }
+    });
+    return count;
+  };
+
+  async countTotalChoiceSelectionsInSurveyAnswers(
+    surveyId: string,
+    questionName: string,
+    choiceTitle: string,
+  ): Promise<number> {
     const documents = await this.surveyAnswerModel
       .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
       .exec();
-    const filteredAnswers: string[] = [];
+    let count = 0;
     documents.forEach((document) => {
-      try {
-        const updatedAnswer = structuredClone(document.answer) as unknown as { [key: string]: string | object };
-
-        if (Array.isArray(updatedAnswer[questionName])) {
-          const choices = updatedAnswer[questionName] as string[];
-          const choice = choices.find((c) => c === choiceId);
-          if (choice) {
-            filteredAnswers.push(choice);
-          }
-        } else if (updatedAnswer[questionName] === choiceId) {
-          filteredAnswers.push(choiceId);
-        }
-      } catch (error) {
-        throw new CustomHttpException(
-          SurveyAnswerErrorMessages.NotAbleToCountChoices,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          error,
-          SurveyAnswersService.name,
-        );
-      }
+      const answerCount = SurveyAnswersService.countChoiceMatchesInAnswer(
+        document.answer as unknown as TSurveyAnswer,
+        questionName,
+        choiceTitle,
+      );
+      count += answerCount;
     });
-    return filteredAnswers.length || 0;
+    return count;
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
@@ -268,7 +320,7 @@ class SurveyAnswersService implements OnModuleInit {
     }
   };
 
-  async addAnswer(surveyId: string, answer: JSON, attendee: Partial<Attendee>): Promise<SurveyAnswer | null> {
+  async addAnswer(surveyId: string, answer: TSurveyAnswer, attendee: Partial<Attendee>): Promise<SurveyAnswer | null> {
     const survey = await this.surveyModel.findById<SurveyDocument>(surveyId).exec();
     if (!survey) {
       throw new CustomHttpException(
@@ -298,30 +350,40 @@ class SurveyAnswersService implements OnModuleInit {
   selectStrategy = (
     survey: SurveyDocument,
     attendee: Partial<Attendee>,
-    answer: JSON,
+    answer: TSurveyAnswer,
     existingUsersAnswerId?: string,
   ): Promise<SurveyAnswer | null> => {
     if (survey.isAnonymous) return this.anonymousStrategy(survey, answer);
     if (!attendee.username && attendee.firstName) return this.publicFirstStrategy(survey, answer, attendee);
     if (!existingUsersAnswerId || existingUsersAnswerId === undefined || survey.canSubmitMultipleAnswers)
       return this.loggedOrPublicStrategy(survey, answer, attendee);
-    if (existingUsersAnswerId && survey.canUpdateFormerAnswer)
-      return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
+    if (existingUsersAnswerId) {
+      if (survey.canUpdateFormerAnswer) {
+        return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
+      }
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.AlreadyParticipated,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
     throw new CustomHttpException(
-      SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+      SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
       HttpStatus.INTERNAL_SERVER_ERROR,
       undefined,
       SurveyAnswersService.name,
     );
   };
 
-  async anonymousStrategy(survey: SurveyDocument, answer: JSON): Promise<SurveyAnswerDocument | null> {
+  async anonymousStrategy(survey: SurveyDocument, answer: TSurveyAnswer): Promise<SurveyAnswerDocument | null> {
     const username = `anonymous_${randomUUID()}`;
     const user: Attendee = { username };
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       username,
       String(survey.id),
       answer,
+      true,
     );
     const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
       user,
@@ -340,13 +402,13 @@ class SurveyAnswersService implements OnModuleInit {
 
   async publicFirstStrategy(
     survey: SurveyDocument,
-    answer: JSON,
+    answer: TSurveyAnswer,
     attendee: Partial<Attendee>,
   ): Promise<SurveyAnswerDocument | null> {
     const { firstName } = attendee;
     if (!firstName) {
       throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,
@@ -357,7 +419,7 @@ class SurveyAnswersService implements OnModuleInit {
     const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
     const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       firstName,
       String(survey.id),
       answer,
@@ -379,12 +441,12 @@ class SurveyAnswersService implements OnModuleInit {
 
   async loggedOrPublicStrategy(
     survey: SurveyDocument,
-    answer: JSON,
+    answer: TSurveyAnswer,
     attendee: Partial<Attendee>,
   ): Promise<SurveyAnswerDocument | null> {
     if (!attendee.username) {
       throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,
@@ -393,10 +455,11 @@ class SurveyAnswersService implements OnModuleInit {
 
     await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       attendee.username,
       String(survey.id),
       answer,
+      survey.canSubmitMultipleAnswers,
     );
     const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
       attendee as Attendee,
@@ -415,7 +478,7 @@ class SurveyAnswersService implements OnModuleInit {
 
   async updatingStrategy(
     survey: SurveyDocument,
-    answer: JSON,
+    answer: TSurveyAnswer,
     attendee: Partial<Attendee>,
     existingUsersAnswerId: string,
   ): Promise<SurveyAnswerDocument | null> {
@@ -430,7 +493,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       attendee.username,
       String(survey.id),
       answer,
@@ -486,7 +549,7 @@ class SurveyAnswersService implements OnModuleInit {
     return latestUserAnswer || undefined;
   }
 
-  async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {
+  async getPublicAnswers(surveyId: string): Promise<Record<string, unknown>[] | null> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });
     if (surveyAnswers.length === 0) {
       throw new CustomHttpException(
@@ -540,7 +603,7 @@ class SurveyAnswersService implements OnModuleInit {
     attendee: Attendee,
     surveyId: string,
     saveNo: number,
-    answer: JSON,
+    answer: TSurveyAnswer,
   ): Promise<SurveyAnswerDocument> {
     const newSurveyAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel.create({
       attendee,

@@ -18,20 +18,16 @@
  */
 
 import React from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteConferencesDialogProps {
   trigger?: React.ReactNode;
 }
 
 const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
-  const { selectedRows } = useConferenceStore();
   const {
+    selectedRows,
     isLoading,
     error,
     deleteConferences,
@@ -39,58 +35,25 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
     isDeleteConferencesDialogOpen,
     setIsDeleteConferencesDialogOpen,
   } = useConferenceStore();
-  const { t } = useTranslation();
 
   const selectedConferenceIds = Object.keys(selectedRows);
   const selectedConferences = conferences.filter((c) => selectedConferenceIds.includes(c.meetingID));
-  const isMultiDelete = selectedConferences.length > 1;
 
-  const onSubmit = async () => {
+  const handleConfirmDelete = async () => {
     await deleteConferences(selectedConferences);
-    setIsDeleteConferencesDialogOpen(false);
   };
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
-
-    return (
-      <div className="text-background">
-        {error ? (
-          <>
-            {t('conferences.error')}: {error.message}
-          </>
-        ) : (
-          <ItemDialogList
-            deleteWarningTranslationId={
-              isMultiDelete ? 'conferences.confirmMultiDelete' : 'conferences.confirmSingleDelete'
-            }
-            items={selectedConferences.map((c) => ({ name: c.name, id: c.meetingID }))}
-          />
-        )}
-      </div>
-    );
-  };
-
-  const handleClose = () => setIsDeleteConferencesDialogOpen(false);
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={onSubmit}
-      submitButtonText="common.delete"
-    />
-  );
 
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isDeleteConferencesDialogOpen}
+      onOpenChange={setIsDeleteConferencesDialogOpen}
+      items={selectedConferences.map((c) => ({ id: c.meetingID, name: c.name }))}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      error={error}
+      titleTranslationKey="conferences.deleteConferences"
+      messageTranslationKey="conferences.confirmDelete"
       trigger={trigger}
-      handleOpenChange={handleClose}
-      title={t(isMultiDelete ? 'conferences.deleteConferences' : 'conferences.deleteConference', {
-        count: selectedConferences.length,
-      })}
-      body={getDialogBody()}
-      footer={getFooter()}
     />
   );
 };

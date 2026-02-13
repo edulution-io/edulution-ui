@@ -23,10 +23,11 @@
 
 import * as React from 'react';
 import { type DialogProps } from '@radix-ui/react-dialog';
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Command as CommandPrimitive } from 'cmdk';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { Dialog, DialogContent } from '@/components/ui/Dialog';
 
 const CommandSH = React.forwardRef<
@@ -64,7 +65,10 @@ const CommandInput = React.forwardRef<
     className="flex items-center border-b px-3"
     cmdk-input-wrapper=""
   >
-    <MagnifyingGlassIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+    <FontAwesomeIcon
+      icon={faMagnifyingGlass}
+      className="mr-2 h-4 w-4 shrink-0 opacity-50"
+    />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(

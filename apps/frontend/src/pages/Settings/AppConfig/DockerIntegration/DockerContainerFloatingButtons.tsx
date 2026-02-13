@@ -17,9 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { AiOutlineStop } from 'react-icons/ai';
-import { MdOutlineRestartAlt, MdOutlineUpdate } from 'react-icons/md';
+import React, { useState } from 'react';
+import { faRotateRight, faBan, faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -35,10 +34,12 @@ import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedC
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
 import useDockerApplicationStore from './useDockerApplicationStore';
+import DeleteDockerContainersDialog from './DeleteDockerContainersDialog';
 
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
   const { setDialogOpen } = useSelectCreateDockerContainerDialogStore();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const {
     containers,
     selectedRows,
@@ -75,7 +76,11 @@ const DockerContainerFloatingButtons: React.FC = () => {
   };
 
   const handleDeleteClick = () => {
-    void deleteDockerContainer(containerNames);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await deleteDockerContainer(containerNames);
     setSelectedRows({});
   };
 
@@ -85,13 +90,13 @@ const DockerContainerFloatingButtons: React.FC = () => {
       StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible && !areSelectedContainersRunning),
       StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible && areSelectedContainersNotRunning),
       {
-        icon: MdOutlineRestartAlt,
+        icon: faRotateRight,
         text: t(`common.${DOCKER_COMMANDS.RESTART}`),
         onClick: () => handleActionClick(DOCKER_COMMANDS.RESTART),
         isVisible: isButtonVisible,
       },
       {
-        icon: AiOutlineStop,
+        icon: faBan,
         text: t(`common.${DOCKER_COMMANDS.KILL}`),
         onClick: () => handleActionClick(DOCKER_COMMANDS.KILL),
         isVisible: isButtonVisible && areSelectedContainersNotRunning,
@@ -101,7 +106,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
         void getContainers();
       }),
       {
-        icon: MdOutlineUpdate,
+        icon: faArrowUpFromBracket,
         text: t(`common.update`),
         onClick: () => handleUpdateClick(),
         isVisible: isButtonVisible,
@@ -110,7 +115,17 @@ const DockerContainerFloatingButtons: React.FC = () => {
     keyPrefix: 'docker-table-floating-button_',
   };
 
-  return <FloatingButtonsBar config={config} />;
+  return (
+    <>
+      <FloatingButtonsBar config={config} />
+      <DeleteDockerContainersDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        containerNames={containerNames}
+        onConfirmDelete={handleConfirmDelete}
+      />
+    </>
+  );
 };
 
 export default DockerContainerFloatingButtons;

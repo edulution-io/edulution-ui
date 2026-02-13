@@ -20,31 +20,37 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { useLocation } from 'react-router-dom';
-import { MdFileCopy } from 'react-icons/md';
 import i18n from '@/i18n';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { formatBytes, getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileTypeIcon from '@/pages/FileSharing/utilities/FileTypeIcon';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import copyToClipboard from '@/utils/copyToClipboard';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import { FcFolder } from 'react-icons/fc';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolder, faLink } from '@fortawesome/free-solid-svg-icons';
 
 const renderFileIcon = (item: FileInfoDto) => {
   if (item.type !== 'directory') {
     return (
-      <FileIconComponent
+      <FileTypeIcon
         filename={item.filename}
-        size={Number(TABLE_ICON_SIZE)}
+        size={TABLE_ICON_SIZE}
       />
     );
   }
-  return <FcFolder size={TABLE_ICON_SIZE} />;
+  return (
+    <FontAwesomeIcon
+      icon={faFolder}
+      className="text-yellow-500"
+      size="lg"
+    />
+  );
 };
 
 const FileTableColumns: ColumnDef<FileInfoDto>[] = [
@@ -55,7 +61,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
       translationId: 'common.select',
     },
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         row={row}
         className="max-w-0"
       />
@@ -71,7 +77,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
 
     accessorFn: (row) => row.filename,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         icon={renderFileIcon(row.original)}
         text={row.original.filename}
         onClick={() => row.toggleSelected()}
@@ -90,7 +96,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
         fileSize = row.original.size;
       }
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={formatBytes(fileSize)}
           onClick={() => row.toggleSelected()}
         />
@@ -107,7 +113,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
 
     accessorFn: (row) => row.type,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={row.original.type}
         onClick={() => row.toggleSelected()}
       />
@@ -125,7 +131,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
       const formattedDate = getElapsedTime(date);
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={formattedDate}
           onClick={() => row.toggleSelected()}
         />
@@ -151,8 +157,8 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
           <ActionTooltip
             tooltipText={i18n.t('common.copy.url')}
             trigger={
-              <SelectableTextCell
-                text={<MdFileCopy size={TABLE_ICON_SIZE} />}
+              <SelectableCell
+                text={<FontAwesomeIcon icon={faLink} />}
                 onClick={() => copyToClipboard(fileUrl, toasterTranslationIds)}
               />
             }

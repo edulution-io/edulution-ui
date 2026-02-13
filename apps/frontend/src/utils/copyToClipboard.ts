@@ -22,6 +22,11 @@ import ToasterTranslationIds from '@libs/ui/types/toasterTranslationIds';
 import i18n from '@/i18n';
 
 const copyToClipboard = (url: string, toasterTranslationIds?: ToasterTranslationIds) => {
+  if (!navigator?.clipboard?.writeText) {
+    toast.error(i18n.t(toasterTranslationIds?.error || 'common.copy.error'));
+    return;
+  }
+
   navigator.clipboard
     .writeText(url)
     .then(() => {

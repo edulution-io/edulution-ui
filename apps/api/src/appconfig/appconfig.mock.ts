@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 

@@ -19,6 +19,7 @@
 
 import { useTranslation } from 'react-i18next';
 import APPS from '@libs/appconfig/constants/apps';
+import APP_DISPLAY_LOCATIONS from '@libs/appconfig/constants/appDisplayLocations';
 import { SettingsIcon } from '@/assets/icons';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
@@ -26,6 +27,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import useNotificationStore from '@/store/useNotificationStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
 import { SidebarMenuItem } from '@libs/ui/types/sidebar';
@@ -39,6 +41,7 @@ const useSidebarItems = (): SidebarMenuItem[] => {
   const { mails } = useMailsStore();
   const { runningConferences } = useConferenceStore();
   const { bulletinBoardNotifications } = useBulletinBoardStore();
+  const { unreadCount } = useNotificationStore();
 
   const getNotificationCounter = (app: string): number | undefined => {
     switch (app) {
@@ -48,18 +51,22 @@ const useSidebarItems = (): SidebarMenuItem[] => {
         return runningConferences.length;
       case APPS.BULLETIN_BOARD:
         return bulletinBoardNotifications.length;
+      case APPS.NOTIFICATIONS_CENTER:
+        return unreadCount > 0 ? unreadCount : undefined;
       default:
         return undefined;
     }
   };
 
-  const sidebarItems: SidebarMenuItem[] = appConfigs.map((cfg) => ({
-    title: getDisplayName(cfg, language),
-    link: `/${cfg.name}`,
-    icon: cfg.icon,
-    color: 'bg-ciGreenToBlue',
-    notificationCounter: getNotificationCounter(cfg.name),
-  }));
+  const sidebarItems: SidebarMenuItem[] = appConfigs
+    .filter((cfg) => cfg.displayLocations?.includes(APP_DISPLAY_LOCATIONS.SIDEBAR))
+    .map((cfg) => ({
+      title: getDisplayName(cfg, language),
+      link: `/${cfg.name}`,
+      icon: cfg.icon,
+      color: 'bg-ciGreenToBlue',
+      notificationCounter: getNotificationCounter(cfg.name),
+    }));
 
   return [
     ...sidebarItems,

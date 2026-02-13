@@ -27,13 +27,15 @@ import useUserAccounts from '@/hooks/useUserAccounts';
 import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
+import useFooterColors from '@/hooks/useFooterColors';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
   children: React.ReactNode;
   isFullScreenAppWithoutFloatingButtons?: boolean;
   hasFullWidthMain?: boolean;
+  isAppIconEditable?: boolean;
 }
 
 const PageLayout = ({
@@ -41,11 +43,13 @@ const PageLayout = ({
   children,
   isFullScreenAppWithoutFloatingButtons,
   hasFullWidthMain,
+  isAppIconEditable,
 }: PageLayoutProps) => {
   const { pathname } = useLocation();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
   const barRef = useRef<HTMLDivElement | null>(null);
+  const footerColors = useFooterColors();
 
   useFloatingBarHeight(barRef);
   useUserAccounts(rootPathName);
@@ -55,19 +59,21 @@ const PageLayout = ({
   return (
     <div
       id="page"
-      className="relative flex h-full w-full flex-col pt-1 md:pt-1"
+      className="relative flex h-full w-full flex-col"
+      style={footerColors ? { backgroundColor: footerColors.backgroundColor } : undefined}
     >
       {nativeAppHeader && (
         <NativeAppHeader
           title={nativeAppHeader.title}
           description={nativeAppHeader.description}
           iconSrc={nativeAppHeader.iconSrc}
+          isAppIconEditable={isAppIconEditable}
         />
       )}
 
       <main
-       style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
-        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-4 pr-6 transition-[padding-bottom] duration-200 ease-in-outscrollbar-thin md:pl-6', {
+        style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
+        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-4 pr-6 md:pl-6', {
           'px-0 md:px-0': hasFullWidthMain,
         })}
       >
@@ -78,8 +84,8 @@ const PageLayout = ({
         id={FLOATING_BUTTONS_BAR_ID}
         ref={barRef}
         className={cn(
-          'pointer-events-none absolute left-1 right-0 overflow-visible text-background md:left-4',
-          isEdulutionApp ? 'bottom-1' : 'bottom-[52px] md:bottom-9',
+          'pointer-events-none absolute left-1 right-0 overflow-visible md:left-4',
+          isEdulutionApp ? 'bottom-1' : 'bottom-6',
         )}
       />
 

@@ -30,7 +30,12 @@
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": ["apps/frontend/tsconfig.json", "apps/api/tsconfig.json", "libs/tsconfig.json"]
+        "project": [
+          "apps/frontend/tsconfig.json",
+          "apps/api/tsconfig.json",
+          "libs/tsconfig.json",
+          "libs/ui-kit/tsconfig.json"
+        ]
       }
     }
   },
@@ -41,7 +46,9 @@
     "jest.config.ts",
     "dist/**",
     "scripts/**",
-    "lint-staged.config.js"
+    "lint-staged.config.js",
+    "data/**",
+    "libs/ui-kit/*.config.*"
   ],
   "rules": {
     // Allowed console logs for debug purpose
@@ -79,9 +86,15 @@
       "rules": { "import/prefer-default-export": "off" }
     },
     {
-      "files": ["libs/**/*.ts", "libs/**/*.tsx"],
+      "files": ["libs/src/**/*.ts", "libs/src/**/*.tsx"],
       "parserOptions": {
-        "project": ["libs/tsconfig.lib.json"]
+        "project": ["libs/tsconfig.json"]
+      }
+    },
+    {
+      "files": ["libs/ui-kit/**/*.ts", "libs/ui-kit/**/*.tsx"],
+      "parserOptions": {
+        "project": ["libs/ui-kit/tsconfig.json"]
       }
     }
   ]

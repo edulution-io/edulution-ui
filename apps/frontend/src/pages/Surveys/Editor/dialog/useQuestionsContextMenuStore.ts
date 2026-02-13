@@ -21,6 +21,10 @@ import { create } from 'zustand';
 import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 interface QuestionsContextMenuStore {
   reset: () => void;
@@ -42,22 +46,16 @@ interface QuestionsContextMenuStore {
   setQuestionDescription: (newDescription: string) => void;
 
   useBackendLimits: boolean;
-  toggleUseBackendLimits: () => void;
+  toggleUseBackendLimits: (isPublic: boolean) => void;
 
   currentBackendLimiters: { questionName: string; choices: ChoiceDto[] }[];
   setBackendLimiters: (backendLimiters: { questionName: string; choices: ChoiceDto[] }[]) => void;
   updateLimitersChoices: (choices: ChoiceDto[]) => { questionName: string; choices: ChoiceDto[] }[] | undefined;
 
-  isUpdatingBackendLimiters: boolean;
-  setIsUpdatingBackendLimiters: (state: boolean) => void;
-
   showOtherItem: boolean;
   toggleShowOtherItem: () => void;
-  shouldToggleShowOtherItem: boolean;
 
-  formerChoices: string[];
   currentChoices: ChoiceDto[];
-
   addChoice: (name: string, title?: string, limit?: number) => void;
   addNewChoice: () => void;
   removeChoice: (choicesName: string) => void;
@@ -78,7 +76,6 @@ const QuestionsContextMenuStoreInitialState = {
   useBackendLimits: false,
   isUpdatingBackendLimiters: false,
   showOtherItem: false,
-  shouldToggleShowOtherItem: false,
   currentBackendLimiters: [],
   formerChoices: [],
   currentChoices: [],
@@ -100,13 +97,13 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   setSelectedQuestion: (question: Question | undefined) => {
     const type = question?.getType();
     const width = Number(question?.imageWidth);
+    const { url } = (question?.choicesByUrl as ChoicesRestful) || {};
     set({
       selectedQuestion: question,
       questionType: type || '',
       questionTitle: question?.title || '',
       questionDescription: question?.description || '',
-      useBackendLimits: !!(question?.choicesByUrl as ChoicesRestful)?.url,
-      formerChoices: (question?.choices as string[]) || [],
+      useBackendLimits: !!url,
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
       imageWidth: Number.isNaN(width) ? 0 : width,
@@ -129,12 +126,22 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     selectedQuestion.description = newDescription;
   },
 
-  toggleUseBackendLimits: () => {
+  toggleUseBackendLimits: (isPublic = false) => {
     const { selectedQuestion, useBackendLimits } = get();
     if (!selectedQuestion) {
       return;
     }
-    set({ useBackendLimits: !useBackendLimits });
+    if (!useBackendLimits) {
+      const backendLimitAdress = `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`;
+      selectedQuestion.choicesByUrl = new ChoicesRestful();
+      (selectedQuestion.choicesByUrl as ChoicesRestful).url = backendLimitAdress;
+      (selectedQuestion.choicesByUrl as ChoicesRestful).valueName = 'title';
+      (selectedQuestion.choicesByUrl as ChoicesRestful).titleName = 'title';
+      set({ useBackendLimits: true });
+    } else {
+      (selectedQuestion.choicesByUrl as ChoicesRestful).url = '';
+      set({ useBackendLimits: false });
+    }
   },
 
   setBackendLimiters: (backendLimiters: { questionName: string; choices: ChoiceDto[] }[] = []) => {
@@ -145,8 +152,6 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     const choices = backendLimiters.find((limiter) => limiter.questionName === selectedQuestion.name)?.choices || [];
     set({ currentBackendLimiters: backendLimiters, currentChoices: choices });
   },
-
-  setIsUpdatingBackendLimiters: (state: boolean) => set({ isUpdatingBackendLimiters: state }),
 
   onRemoveQuestionName: (questionName: string) => {
     const { currentBackendLimiters } = get();
@@ -189,7 +194,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   addNewChoice: () => {
     const { currentChoices, addChoice } = get();
     const newChoiceTitle = `choice-${currentChoices.length}`;
-    const newChoiceName = `${newChoiceTitle}-${crypto.randomUUID()}`;
+    const newChoiceName = `${newChoiceTitle}-${getRandomUUID()}`;
     addChoice(newChoiceName, `${newChoiceTitle}`, 1);
   },
 
@@ -239,12 +244,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   },
 
   toggleShowOtherItem: () => {
-    const { isUpdatingBackendLimiters, selectedQuestion, showOtherItem, addChoice, removeChoice } = get();
-    if (isUpdatingBackendLimiters) {
-      set({ shouldToggleShowOtherItem: true });
-      return;
-    }
-    set({ shouldToggleShowOtherItem: false });
+    const { selectedQuestion, showOtherItem, addChoice, removeChoice } = get();
     if (!selectedQuestion) {
       return;
     }

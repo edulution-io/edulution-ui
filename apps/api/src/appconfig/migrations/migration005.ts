@@ -22,12 +22,11 @@ import { Logger } from '@nestjs/common';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import APPS from '@libs/appconfig/constants/apps';
 import { DashboardIcon } from '@libs/assets';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import getImageUrl from '@libs/assets/getImageUrl';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import { Migration } from '../../migration/migration.type';
 import { AppConfig } from '../appconfig.schema';
 import { GlobalSettings, GlobalSettingsSchema } from '../../global-settings/global-settings.schema';
-
-const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
 
 const migration005: Migration<AppConfig> = {
   name: '005-add-dashboard-app',

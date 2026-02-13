@@ -18,7 +18,7 @@
  */
 
 import React, { FC, ReactNode, useMemo } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +27,7 @@ interface WindowControlBaseButtonProps {
   children: ReactNode;
   className?: string;
   tooltipTranslationId: string;
+  disabled?: boolean;
 }
 
 const WindowControlBaseButton: FC<WindowControlBaseButtonProps> = ({
@@ -34,20 +35,32 @@ const WindowControlBaseButton: FC<WindowControlBaseButtonProps> = ({
   children,
   className,
   tooltipTranslationId,
+  disabled = false,
 }) => {
   const { t } = useTranslation();
+
+  const handleClick = () => {
+    if (!disabled) {
+      onClick();
+    }
+  };
 
   const trigger = useMemo(
     () => (
       <button
         type="button"
-        onClick={onClick}
-        className={cn('flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600', className)}
+        onClick={handleClick}
+        disabled={disabled}
+        className={cn(
+          'flex h-10 w-16 items-center justify-center p-5 text-sm',
+          disabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-600',
+          className,
+        )}
       >
         {children}
       </button>
     ),
-    [onClick, children, className],
+    [handleClick, children, className, disabled],
   );
 
   return (

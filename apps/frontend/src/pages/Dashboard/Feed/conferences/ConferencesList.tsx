@@ -19,10 +19,9 @@
 
 import React from 'react';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Button } from '@/components/shared/Button';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 
 interface ConferencesListProps {
@@ -47,6 +46,7 @@ const ConferencesList = (props: ConferencesListProps) => {
         <BadgeSH
           className="max-w-[100px] hover:bg-primary"
           key={`feed-conferences-${item.name}-badge-${name}`}
+          variant="secondary"
         >
           <p className="overflow-hidden text-ellipsis text-sm">{name}</p>
         </BadgeSH>,

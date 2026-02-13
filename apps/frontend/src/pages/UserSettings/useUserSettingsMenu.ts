@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { useMemo } from 'react';
 import {
   LanguageIcon,
   MailIcon,
@@ -24,64 +25,90 @@ import {
   SecurityIcon,
   UserDetailsSettingsIcon,
   SettingsIcon,
+  VPNIcon,
 } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
-  LANGUAGE_PATH,
+  USER_INTERFACE_PATH,
   MAILS_PATH,
   MOBILE_ACCESS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
-  USER_SETTINGS_LANGUAGE_PATH,
   USER_SETTINGS_MAILS_PATH,
   USER_SETTINGS_MOBILE_ACCESS_PATH,
   USER_SETTINGS_SECURITY_PATH,
   USER_SETTINGS_USER_DETAILS_PATH,
+  USER_SETTINGS_USER_INTERFACE_PATH,
+  WIREGUARD_ACCESS_PATH,
+  USER_SETTINGS_WIREGUARD_ACCESS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 
 const useUserSettingsMenu = () => {
   const navigate = useNavigate();
+  const appConfigs = useAppConfigsStore((state) => state.appConfigs);
 
-  const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = {
-    appName: APPS.USER_SETTINGS,
-    title: 'usersettings.title',
-    icon: SettingsIcon,
-    color: 'hover:bg-ciGreenToBlue',
-    menuItems: [
-      {
-        id: USER_DETAILS_PATH,
-        label: 'usersettings.details.title',
-        icon: UserDetailsSettingsIcon,
-        action: () => navigate(USER_SETTINGS_USER_DETAILS_PATH),
-      },
-      {
-        id: SECURITY_PATH,
-        label: 'usersettings.security.title',
-        icon: SecurityIcon,
-        action: () => navigate(USER_SETTINGS_SECURITY_PATH),
-      },
-      {
-        id: MAILS_PATH,
-        label: 'usersettings.mails.title',
-        icon: MailIcon,
-        action: () => navigate(USER_SETTINGS_MAILS_PATH),
-      },
-      {
-        id: LANGUAGE_PATH,
-        label: 'usersettings.language.title',
-        icon: LanguageIcon,
-        action: () => navigate(USER_SETTINGS_LANGUAGE_PATH),
-      },
-      {
-        id: MOBILE_ACCESS_PATH,
-        label: 'usersettings.mobileAccess.title',
-        icon: MobileDevicesIcon,
-        action: () => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH),
-      },
-    ],
-  };
+  const isMailConfigured = !!findAppConfigByName(appConfigs, APPS.MAIL);
+  const isWireguardConfigured = !!findAppConfigByName(appConfigs, APPS.WIREGUARD);
+
+  const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = useMemo(
+    () => ({
+      appName: APPS.USER_SETTINGS,
+      title: 'usersettings.title',
+      icon: SettingsIcon,
+      color: 'hover:bg-ciGreenToBlue',
+      menuItems: [
+        {
+          id: USER_DETAILS_PATH,
+          label: 'usersettings.details.title',
+          icon: UserDetailsSettingsIcon,
+          action: () => navigate(USER_SETTINGS_USER_DETAILS_PATH),
+        },
+        {
+          id: SECURITY_PATH,
+          label: 'usersettings.security.title',
+          icon: SecurityIcon,
+          action: () => navigate(USER_SETTINGS_SECURITY_PATH),
+        },
+        ...(isMailConfigured
+          ? [
+              {
+                id: MAILS_PATH,
+                label: 'usersettings.mails.title',
+                icon: MailIcon,
+                action: () => navigate(USER_SETTINGS_MAILS_PATH),
+              },
+            ]
+          : []),
+        {
+          id: USER_INTERFACE_PATH,
+          label: 'usersettings.userinterface.title',
+          icon: LanguageIcon,
+          action: () => navigate(USER_SETTINGS_USER_INTERFACE_PATH),
+        },
+        {
+          id: MOBILE_ACCESS_PATH,
+          label: 'usersettings.mobileAccess.title',
+          icon: MobileDevicesIcon,
+          action: () => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH),
+        },
+        ...(isWireguardConfigured
+          ? [
+              {
+                id: WIREGUARD_ACCESS_PATH,
+                label: 'usersettings.wireguard.title',
+                icon: VPNIcon,
+                action: () => navigate(USER_SETTINGS_WIREGUARD_ACCESS_PATH),
+              },
+            ]
+          : []),
+      ],
+    }),
+    [navigate, isMailConfigured, isWireguardConfigured],
+  );
 
   return USERSETTINGS_MENUBAR_CONFIG;
 };

@@ -21,27 +21,30 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
+import ThemedFile from '@libs/common/types/themedFile';
+import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightAssetField';
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
-import AppConfigSwitch from './booleanField/AppConfigSwitch';
-import EmbeddedPageEditor from './EmbeddedPageEditor';
-import AppConfigUpdateChecker from './updateChecker/AppConfigUpdateChecker';
+import EmbeddedPageEditor from '@/pages/Settings/AppConfig/components/EmbeddedPageEditor';
+import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
+import AppConfigUpdateChecker from '@/pages/Settings/AppConfig/components/updateChecker/AppConfigUpdateChecker';
+import ScriptEditorField from '@/pages/Settings/AppConfig/components/ScriptEditorField';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
-  extendedOptions: AppConfigExtendedOptionsBySections | undefined;
+  section: string;
+  options: AppConfigExtendedOption[];
   control: Control<T>;
   settingLocation: string;
   form: UseFormReturn<T>;
 };
 
 const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T extends FieldValues>({
-  extendedOptions,
+  section,
+  options,
   form,
   control,
   settingLocation,
@@ -52,6 +55,16 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
     const fieldPath = (settingLocation ? `${settingLocation}.extendedOptions.${option.name}` : option.name) as Path<T>;
 
     switch (option.type) {
+      case ExtendedOptionField.appLogo:
+        return (
+          <AppConfigFormDarkAndLightAssetField
+            key={fieldPath}
+            fieldPath={fieldPath}
+            settingLocation={settingLocation}
+            option={option}
+            form={form as unknown as UseFormReturn<ThemedFile>}
+          />
+        );
       case ExtendedOptionField.input:
         return (
           <AppConfigFormField
@@ -91,14 +104,19 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             option={option}
           />
         );
-      case ExtendedOptionField.switch:
+      case ExtendedOptionField.switch: {
+        const linkedToFieldPath = option.linkedTo
+          ? ((settingLocation ? `${settingLocation}.extendedOptions.${option.linkedTo}` : option.linkedTo) as Path<T>)
+          : undefined;
         return (
           <AppConfigSwitch
             fieldPath={fieldPath}
             control={control}
             option={option}
+            linkedToFieldPath={linkedToFieldPath}
           />
         );
+      }
       case ExtendedOptionField.textarea:
         return (
           // TODO: Rework this component to be a generic textarea for reusablity
@@ -124,42 +142,46 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             option={option}
           />
         );
+      case ExtendedOptionField.scriptEditor: {
+        const enabledFieldPath = option.linkedTo
+          ? ((settingLocation ? `${settingLocation}.extendedOptions.${option.linkedTo}` : option.linkedTo) as Path<T>)
+          : fieldPath;
+        return (
+          <ScriptEditorField
+            key={fieldPath}
+            fieldPath={fieldPath}
+            enabledFieldPath={enabledFieldPath}
+            control={control}
+          />
+        );
+      }
       default:
         return null;
     }
   };
 
+  const sectionText = t(`${settingLocation}.sidebar`);
   return (
-    extendedOptions &&
-    Object.entries(extendedOptions).map(([section, options]) => (
-      <AccordionSH
-        type="multiple"
-        key={section}
-        defaultValue={[section]}
-      >
-        <AccordionItem value={section}>
-          <AccordionTrigger className="flex text-xl font-bold">
-            <h3 className="text-background">{t(`settings.appconfig.sections.${section}.title`)}</h3>
-          </AccordionTrigger>
-          <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
-            <div className="text-base text-background">{t(`settings.appconfig.sections.${section}.description`)}</div>
-            {options?.map((option: AppConfigExtendedOption) => (
-              <div
-                key={`key_${section}_${option.name}`}
-                className={cn(
-                  { 'w-full': option.width === 'full' },
-                  { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
-                  { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
-                  { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
-                )}
-              >
-                {renderComponent(option)}
-              </div>
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-      </AccordionSH>
-    ))
+    <div className="space-y-4">
+      <p className="text-base text-muted-foreground">
+        {t(`settings.appconfig.sections.${section}.description`, { applicationName: sectionText })}
+      </p>
+      <div className="flex flex-wrap justify-between gap-4">
+        {options?.map((option: AppConfigExtendedOption) => (
+          <div
+            key={`key_${section}_${option.name}`}
+            className={cn(
+              { 'w-full': option.width === 'full' },
+              { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
+              { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
+              { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
+            )}
+          >
+            {renderComponent(option)}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

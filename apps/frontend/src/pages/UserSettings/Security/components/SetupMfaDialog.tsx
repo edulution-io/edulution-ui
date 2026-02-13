@@ -23,14 +23,14 @@ import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import OtpInput from '@/components/shared/OtpInput';
+import OtpInputFieldWithNumPad from '@/components/shared/OtpInputFieldWithNumPad';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
-import { MdFileCopy } from 'react-icons/md';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
 
 const SetupMfaDialog: React.FC = () => {
@@ -121,13 +121,13 @@ const SetupMfaDialog: React.FC = () => {
         }}
         actionIcons={[
           {
-            icon: MdFileCopy,
+            icon: faCopy,
             onClick: () => copyToClipboard(getTotpSecret()),
           },
         ]}
       />
       <p>{t('usersettings.addTotp.totpCodeInstructions')}</p>
-      <OtpInput
+      <OtpInputFieldWithNumPad
         totp={totp}
         variant="dialog"
         setTotp={setTotp}

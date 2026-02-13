@@ -24,6 +24,7 @@ import { filter, map } from 'rxjs/operators';
 import { ensureDirSync, writeFileSync } from 'fs-extra';
 import { join } from 'path';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
@@ -38,8 +39,10 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
 import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
+import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
+import AppConfigService from '../appconfig/appconfig.service';
 
 @Injectable()
 class DockerService implements OnModuleInit, OnModuleDestroy {
@@ -50,7 +53,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   private eventSubscription: Subscription;
 
-  constructor(private readonly sseService: SseService) {}
+  constructor(
+    private readonly sseService: SseService,
+    private readonly appConfigService: AppConfigService,
+  ) {}
 
   onModuleInit() {
     this.listenToDockerEvents();
@@ -206,12 +212,33 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  static replaceEnvVariables(createContainersDto: Docker.ContainerCreateOptions[]) {
-    let newCreateContainersDto: Docker.ContainerCreateOptions[] = [];
-    newCreateContainersDto = createContainersDto.map((service) => ({
+  async replaceEnvVariables(
+    createContainersDto: Docker.ContainerCreateOptions[],
+    applicationName: string,
+  ): Promise<Docker.ContainerCreateOptions[]> {
+    const appConfigValues: Record<string, string> = {};
+
+    switch (applicationName) {
+      case APPS.WIREGUARD: {
+        const wireguardConfig = await this.appConfigService.getAppConfigByName(APPS.WIREGUARD);
+        if (wireguardConfig?.options?.apiKey) {
+          appConfigValues.EDU_WG_API_KEY = wireguardConfig.options.apiKey;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+
+    const newCreateContainersDto: Docker.ContainerCreateOptions[] = createContainersDto.map((service) => ({
       ...service,
       Env: service.Env?.map((env) =>
-        env.replace(/\${([^}]+)}/g, (match, varName: string) => process.env[varName] || match),
+        env.replace(/\${([^}]+)}/g, (match, varName: string) => {
+          if (appConfigValues[varName]) {
+            return appConfigValues[varName];
+          }
+          return process.env[varName] || match;
+        }),
       ),
     }));
 
@@ -237,17 +264,14 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       Logger.log(`Docker compose file saved: ${filePath}`, DockerService.name);
     } catch (error) {
-      Logger.error(
-        `Failed to save docker-compose.yml: ${error instanceof Error ? error.message : String(error)}`,
-        DockerService.name,
-      );
+      Logger.error(`Failed to save docker-compose.yml: ${getErrorMessage(error)}`, DockerService.name);
     }
   }
 
   async createContainer(createContainerDto: CreateContainerDto) {
     const { applicationName, containers, originalComposeConfig } = createContainerDto;
 
-    const newContainers = DockerService.replaceEnvVariables(containers);
+    const newContainers = await this.replaceEnvVariables(containers, applicationName);
 
     try {
       await Promise.all(
@@ -461,10 +485,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       return inspections.find((name) => name !== null) || null;
     } catch (error) {
-      Logger.error(
-        `Failed to lookup container by IP: ${error instanceof Error ? error.message : String(error)}`,
-        DockerService.name,
-      );
+      Logger.error(`Failed to lookup container by IP: ${getErrorMessage(error)}`, DockerService.name);
       return null;
     }
   }

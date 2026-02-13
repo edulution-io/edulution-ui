@@ -20,8 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import type LicenseInfoDto from '@libs/license/types/license-info.dto';
 import LicenseField from './LicenseField';
 import RegisterLicenseDialog from './RegisterLicenseDialog';
@@ -55,41 +54,31 @@ const LicenseOverview: React.FC = () => {
 
   return (
     <>
-      <AccordionSH
-        type="multiple"
-        defaultValue={['license']}
-      >
-        <AccordionItem value="license">
-          <AccordionTrigger>
-            <h3>{t('settings.license.title')}</h3>
-          </AccordionTrigger>
-          <AccordionContent className="space-y-2 px-1">
-            {licenseInfo && licenseInfo.customerId ? (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {getFields(licenseInfo).map((field) => (
-                  <LicenseField
-                    key={field.label}
-                    label={field.label}
-                    value={field.value}
-                    valueClassName={field.valueClassName}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-muted-foreground">{t('settings.license.noLicenseRegistered')}</div>
-            )}
-            <div className="mt-4 flex justify-end gap-4 pr-3.5">
-              <Button
-                variant="btn-security"
-                size="lg"
-                onClick={handleOpenRegisterLicenseDialog}
-              >
-                {t('settings.license.register')}
-              </Button>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </AccordionSH>
+      <div className="space-y-4">
+        {licenseInfo && licenseInfo.customerId ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {getFields(licenseInfo).map((field) => (
+              <LicenseField
+                key={field.label}
+                label={field.label}
+                value={field.value}
+                valueClassName={field.valueClassName}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-muted-foreground">{t('settings.license.noLicenseRegistered')}</div>
+        )}
+        <div className="flex justify-end">
+          <Button
+            variant="btn-security"
+            size="lg"
+            onClick={handleOpenRegisterLicenseDialog}
+          >
+            {t('settings.license.register')}
+          </Button>
+        </div>
+      </div>
       <RegisterLicenseDialog />
     </>
   );

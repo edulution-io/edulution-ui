@@ -19,15 +19,21 @@
 
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
 
-const findDuplicateFiles = (incoming: UploadItem[], existing: { filename: string }[]): { name: string }[] => {
+export interface DuplicateItem {
+  name: string;
+  isFolder: boolean;
+}
+
+const findDuplicateFiles = (incoming: UploadItem[], existing: { filename: string }[]): DuplicateItem[] => {
   const existingFilenameSet = new Set(
     existing.map((existingFile) => decodeURIComponent(existingFile.filename).trim().toLowerCase()),
   );
 
   return incoming
     .filter((file) => existingFilenameSet.has(decodeURIComponent(file.name).trim().toLowerCase()))
-    .map((file) => ({ name: getUploadItemDisplayName(file) }));
+    .map((file) => ({ name: getUploadItemDisplayName(file), isFolder: isFolderUploadItem(file) }));
 };
 
 export default findDuplicateFiles;

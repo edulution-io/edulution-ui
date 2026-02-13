@@ -17,61 +17,78 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import { toast } from 'sonner';
-import { getFromPathName } from '@libs/common/utils';
-import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import { Button, cn } from '@edulution-io/ui-kit';
 import PageTitle from '@/components/PageTitle';
-import getDisplayName from '@/utils/getDisplayName';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLanguage from '@/hooks/useLanguage';
 import useUserAccounts from '@/hooks/useUserAccounts';
+import { getFromPathName } from '@libs/common/utils';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import getDisplayName from '@/utils/getDisplayName';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import getAppIconClassName from '@/utils/getAppIconClassName';
+import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import RoundArrowIcon from '@/assets/layout/Pfeil.svg?react';
 
-const ForwardingPage: React.FC = () => {
+const ForwardingPage = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const { language } = useLanguage();
-
-  const [isForwarding, setIsForwarding] = useState(false);
-  const [showIsForwarding, setShowIsForwarding] = useState(false);
-
   const { appConfigs } = useAppConfigsStore();
+
+  const hasAutoForwardedRef = useRef(false);
 
   const rootPathName = getFromPathName(pathname, 1);
   useUserAccounts(rootPathName);
 
-  useEffect(() => {
-    if (isForwarding) {
-      setIsForwarding(false);
-      const navigateToExternalPage = () => {
-        const externalLink = findAppConfigByName(appConfigs, rootPathName)?.options.url;
-        if (externalLink) {
-          setShowIsForwarding(true);
-          return window.open(externalLink, '_blank');
-        }
-        setShowIsForwarding(false);
-        console.error(t('forwardingpage.missing_link'));
-        return toast.error(t('forwardingpage.missing_link'));
-      };
-      navigateToExternalPage();
-    }
-    setIsForwarding(false);
-  }, [isForwarding, rootPathName, appConfigs]);
-
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
-  if (!currentAppConfig) return null;
+  const openExternalLink = () => {
+    if (!currentAppConfig?.options.url) {
+      console.error(t('forwardingpage.missing_link'));
+      toast.error(t('forwardingpage.missing_link'));
+      return;
+    }
+
+    window.open(currentAppConfig.options.url, '_blank');
+  };
+
+  useEffect(() => {
+    if (!currentAppConfig || hasAutoForwardedRef.current) return;
+
+    const shouldForwardDirectly = !!currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FORWARDING_FORWARD_DIRECTLY];
+
+    if (shouldForwardDirectly) {
+      hasAutoForwardedRef.current = true;
+      openExternalLink();
+    }
+  }, [currentAppConfig]);
+
+  if (!currentAppConfig)
+    return (
+      <Navigate
+        to={LANDING_PAGE_ROUTE}
+        replace
+      />
+    );
+
   const pageTitle = getDisplayName(currentAppConfig, language);
 
+  const targetUrl = currentAppConfig?.options?.url;
+
   return (
-    <div className="m-auto grid h-[80%] items-center justify-center">
+    <div
+      className="m-auto grid h-[80%] w-[80%] items-center justify-center"
+      data-forwarding-page="true"
+      data-target-url={targetUrl}
+    >
       <PageTitle translationId={pageTitle} />
-      <h1 className="text-center text-background">{t('forwardingpage.action')}</h1>
-      <div className="mt-20 flex justify-center">
+      <h3 className="text-center">{pageTitle}</h3>
+      <div className="my-10 flex justify-center">
         <RoundArrowIcon
           className="hidden md:flex"
           aria-label={t('forwardingpage.action')}
@@ -80,19 +97,22 @@ const ForwardingPage: React.FC = () => {
         <Button
           type="button"
           variant="btn-hexagon"
-          onClick={() => {
-            setIsForwarding((prevVal) => !prevVal);
-          }}
+          onClick={openExternalLink}
           hexagonIconAltText={t('common.forward')}
+          data-target-url={targetUrl}
         >
           <img
-            className="m-10 w-[200px] md:m-[20] md:w-[200px]"
+            className={cn('m-10 w-[200px] md:m-[20] md:w-[200px]', getAppIconClassName(currentAppConfig.icon))}
             src={currentAppConfig.icon}
             alt={currentAppConfig.name}
           />
         </Button>
       </div>
-      <h2>{showIsForwarding ? t('forwardingpage.description') : '\u00A0'}</h2>
+      <div className="text-center">
+        {t('forwardingpage.action')}
+        <br />
+        {t('forwardingpage.description')}
+      </div>
     </div>
   );
 };

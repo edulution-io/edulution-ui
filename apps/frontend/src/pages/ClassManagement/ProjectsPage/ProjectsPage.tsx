@@ -25,7 +25,8 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { FaUsersGear } from 'react-icons/fa6';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsersGear } from '@fortawesome/free-solid-svg-icons';
 import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
 import Input from '@/components/shared/Input';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
@@ -67,14 +68,19 @@ const ProjectsPage = () => {
       createFunction: createProject,
       updateFunction: updateProject,
       removeFunction: deleteProject,
-      icon: <FaUsersGear className="h-5 w-7" />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faUsersGear}
+          className="h-7 w-7"
+        />
+      ),
       groups: userProjects.filter(filterProjects),
     },
   ];
 
   return (
     <PageLayout>
-      <div className="mb-2 flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-4">
+      <div className="mb-2 flex w-full flex-col gap-2 pt-1 md:flex-row md:items-center md:gap-4">
         <div className="min-w-0 flex-1">
           <Input
             className="h-10 w-full"
@@ -87,14 +93,14 @@ const ProjectsPage = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
       </div>
 
-      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto text-background scrollbar-thin">
         <p className="mt-2 min-w-full">{t('classmanagement.projectsPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h3 className="text-background">{t(`classmanagement.${row.name}`)}</h3>
+            <h3>{t(`classmanagement.${row.name}`)}</h3>
             <GroupList row={row} />
           </div>
         ))}

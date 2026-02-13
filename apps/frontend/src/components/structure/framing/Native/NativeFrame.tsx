@@ -17,27 +17,77 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
-import type TApps from '@libs/appconfig/types/appsType';
+import { getExternalUrlForDeepLink } from '@libs/common/utils';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import useFrameDeepLinkSync from '@/hooks/useFrameDeepLinkSync';
 
 interface NativeFrameProps {
   scriptOnStartUp?: string;
   scriptOnStop?: string;
-  appName: TApps;
+  appName: string;
 }
 
-const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop, appName }) => {
+const NativeFrame: React.FC<NativeFrameProps> = ({
+  scriptOnStartUp: scriptOnStartUpProp,
+  scriptOnStop: scriptOnStopProp,
+  appName,
+}) => {
   const { t } = useTranslation();
+  const { pathname, search, hash } = useLocation();
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout, eduApiToken } = useUserStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
+
+  const currentAppConfig = findAppConfigByName(appConfigs, appName);
+  const onLoadEnabled = currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOAD_ENABLED];
+  const scriptOnStartUp =
+    scriptOnStartUpProp ||
+    (onLoadEnabled
+      ? (currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOAD_CONTENT] as string)
+      : undefined);
+
+  const onLogoutEnabled = currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOGOUT_ENABLED];
+  const scriptOnStop =
+    scriptOnStopProp ||
+    (onLogoutEnabled
+      ? (currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOGOUT_CONTENT] as string)
+      : undefined);
+
+  const isFrameLoaded = loadedEmbeddedFrames.includes(appName);
+  const isActiveFrame = activeEmbeddedFrame === appName;
+
+  const urlSyncEnabled = !!currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_ENABLED];
+  const preloadBasePage =
+    currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_PRELOAD_BASE_PAGE] !== false;
+  const externalBaseUrl = currentAppConfig?.options?.url || '';
+
+  const getDeepLinkUrl = useCallback(
+    (browserUrlSuffix: string) => getExternalUrlForDeepLink(externalBaseUrl, browserUrlSuffix),
+    [externalBaseUrl],
+  );
+
+  const { deepLinkRefs, deepLinkUrl } = useFrameDeepLinkSync({
+    appName,
+    iframeRef,
+    isFrameLoaded,
+    isActiveFrame,
+    urlSyncEnabled,
+    preloadBasePage,
+    pathname,
+    search,
+    hash,
+    getDeepLinkUrl,
+  });
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
     const attemptInject = () => {
@@ -54,44 +104,75 @@ const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop
       } catch (e) {
         console.error(e);
         if (e instanceof DOMException) {
-          toast.error(t('errors.automaticLoginFailed'));
+          toast.error(t('errors.scriptInjectionFailed'));
         }
       }
     };
     attemptInject();
   };
 
+  const [reloadKey, setReloadKey] = useState(0);
+  const prevScriptRef = useRef(scriptOnStartUp);
+
+  useEffect(() => {
+    if (isFrameLoaded && prevScriptRef.current !== scriptOnStartUp) {
+      setReloadKey((k) => k + 1);
+    }
+    prevScriptRef.current = scriptOnStartUp;
+  }, [scriptOnStartUp, isFrameLoaded]);
+
   useEffect(() => {
     const iframe = iframeRef.current;
-    if (iframe && scriptOnStartUp) {
+    if (iframe && scriptOnStartUp && isFrameLoaded) {
       iframe.onload = () => {
         injectScript(iframe, scriptOnStartUp);
       };
     }
-  }, [scriptOnStartUp, isAuthenticated]);
-
-  useEffect(() => {
-    if (isPreparingLogout && scriptOnStop && iframeRef.current) {
-      injectScript(iframeRef.current, scriptOnStop);
-    }
-  }, [isPreparingLogout, scriptOnStop]);
-
-  const currentAppConfig = findAppConfigByName(appConfigs, appName);
-  if (!currentAppConfig) return null;
+  }, [scriptOnStartUp, isAuthenticated, isFrameLoaded, reloadKey]);
 
   const initialUrlRef = useRef<string | undefined>(undefined);
-  if (!initialUrlRef.current && currentAppConfig.options.url) {
-    initialUrlRef.current = currentAppConfig.options.url.replace(/token=[^&]+/, `token=${eduApiToken}`);
+  const baseUrlRef = useRef<string | undefined>(undefined);
+
+  const currentBaseUrl = currentAppConfig?.options.url;
+  if (currentBaseUrl && currentBaseUrl !== baseUrlRef.current) {
+    baseUrlRef.current = currentBaseUrl;
+    initialUrlRef.current = currentBaseUrl.replace(/token=[^&]+/, `token=${eduApiToken}`);
   }
+
+  useEffect(() => {
+    if (isPreparingLogout && scriptOnStop && isFrameLoaded && iframeRef.current) {
+      injectScript(iframeRef.current, scriptOnStop);
+    }
+  }, [isPreparingLogout, scriptOnStop, isFrameLoaded]);
+
+  if (!currentAppConfig) return null;
+
+  const iframeSrc = (() => {
+    if (!isFrameLoaded) return undefined;
+
+    if (deepLinkUrl) {
+      deepLinkRefs.current.iframeSrc = deepLinkUrl;
+      return deepLinkUrl;
+    }
+
+    if (deepLinkRefs.current.iframeSrc) {
+      return deepLinkRefs.current.iframeSrc;
+    }
+
+    deepLinkRefs.current.iframeSrc = initialUrlRef.current;
+    return initialUrlRef.current;
+  })();
 
   return (
     <iframe
+      key={reloadKey}
       ref={iframeRef}
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 w-full"
       height="100%"
-      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
-      style={activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' }}
+      allow={IFRAME_ALLOWED_CONFIG}
+      src={iframeSrc}
+      style={isActiveFrame ? { display: 'block' } : { display: 'none' }}
     />
   );
 };

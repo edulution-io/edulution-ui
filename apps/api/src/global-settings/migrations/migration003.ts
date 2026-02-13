@@ -39,8 +39,10 @@ const migration003: Migration<GlobalSettingsDocument> = {
       Logger.debug('No global settings document found with previous schema version, skipping migration.');
       return;
     }
+
     if (globalSettings.general.defaultLandingPage.isCustomLandingPageEnabled) {
-      Logger.debug('Custom landing page already enabled, skipping migration.');
+      Logger.debug('Custom landing page already enabled, updating schema version only.', migration003.name);
+      await model.updateOne({ _id: globalSettings._id }, { $set: { schemaVersion: newSchemaVersion } });
       return;
     }
 

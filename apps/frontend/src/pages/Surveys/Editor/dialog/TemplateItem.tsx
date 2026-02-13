@@ -17,16 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
 import { AccordionTrigger, AccordionItem, AccordionContent } from '@/components/ui/AccordionSH';
 
@@ -40,7 +39,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { form, creator, template } = props;
   const {
     formula,
-    /* backendLimiter , */
+    backendLimiters,
     invitedAttendees,
     invitedGroups,
     isAnonymous,
@@ -48,14 +47,17 @@ const TemplateItem = (props: TemplateItemProps) => {
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
   } = template.template;
-  const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion, setIsTemplateActive } =
+    useTemplateMenuStore();
+
+  const [active, setActive] = useState<boolean>(template.isActive || false);
 
   const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
 
   const handleLoadTemplate = () => {
-    // form.setValue('backendLimiter', backendLimiter);
+    form.setValue('backendLimiters', backendLimiters);
     form.setValue('invitedAttendees', invitedAttendees || []);
     form.setValue('invitedGroups', invitedGroups || []);
     form.setValue('isAnonymous', isAnonymous);
@@ -72,6 +74,12 @@ const TemplateItem = (props: TemplateItemProps) => {
     setIsOpenTemplateMenu(false);
   };
 
+  const handleToggleIsActive = async () => {
+    if (!template.id) return;
+    await setIsTemplateActive(template.id, !active);
+    setActive(!active);
+  };
+
   const handleRemoveTemplate = () => {
     setTemplate(template);
     setIsOpenTemplateConfirmDeletion(true);
@@ -79,8 +87,8 @@ const TemplateItem = (props: TemplateItemProps) => {
 
   return (
     <AccordionItem
-      key={template.fileName}
-      value={template.fileName || ''}
+      key={template.name}
+      value={template.name || ''}
     >
       <AccordionTrigger className="px-4 pt-2">
         <h4>{formula?.title}</h4>
@@ -90,21 +98,36 @@ const TemplateItem = (props: TemplateItemProps) => {
           value={JSON.stringify(template.template, null, 2)}
           onChange={() => {}}
           className={cn(
-            'overflow-y-auto bg-accent text-secondary transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
+            'overflow-y-auto bg-accent text-background transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
             'max-h-80 overflow-visible opacity-100',
+            { 'bg-white dark:bg-accent': active },
+            { 'dark:bg-card-muted bg-muted-background': !active },
+            { 'border border-solid border-primary': template.isDefaultTemplate },
+            { 'border border-solid border-ring': !template.isDefaultTemplate },
           )}
           style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
           disabled
         />
         <div className="mt-2 flex flex-row justify-end space-x-2">
           {isSuperAdmin && (
-            <Button
-              onClick={handleRemoveTemplate}
-              variant="btn-attention"
-              size="sm"
-            >
-              {t('common.delete')}
-            </Button>
+            <>
+              {!template.isDefaultTemplate && (
+                <Button
+                  onClick={handleRemoveTemplate}
+                  variant="btn-attention"
+                  size="sm"
+                >
+                  {t('common.delete')}
+                </Button>
+              )}
+              <Button
+                onClick={handleToggleIsActive}
+                variant="btn-collaboration"
+                size="sm"
+              >
+                {t(active ? 'classmanagement.deactivate' : 'classmanagement.activate')}
+              </Button>
+            </>
           )}
           <Button
             onClick={handleLoadTemplate}

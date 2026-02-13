@@ -18,15 +18,17 @@
  */
 
 import React from 'react';
-import { IconType } from 'react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { type VariantProps } from 'class-variance-authority';
-import cn from '@libs/common/utils/className';
-import Input, { originInputVariants } from '@/components/shared/Input';
+import { cn } from '@edulution-io/ui-kit';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import Input from '@/components/shared/Input';
 
-type ActionIcon = { icon: IconType; onClick: () => void; className?: string };
+type ActionIcon = { icon: IconDefinition; onClick: () => void; className?: string };
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof originInputVariants> & { actionIcons?: ActionIcon[] };
+  VariantProps<typeof inputVariants> & { actionIcons?: ActionIcon[] };
 
 const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
   ({ actionIcons = [], className, variant, disabled, readOnly, style, ...props }, ref) => {
@@ -38,7 +40,8 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
         <Input
           {...props}
           ref={ref}
-          className={cn(originInputVariants({ variant }), 'overflow-hidden text-ellipsis whitespace-nowrap', {
+          variant={variant}
+          className={cn('overflow-hidden text-ellipsis whitespace-nowrap', {
             'cursor-pointer': props.onMouseDown,
           })}
           style={{ ...style, paddingRight }}
@@ -47,15 +50,18 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
         />
         {iconCount > 0 && (
           <div className="absolute inset-y-0 right-0 flex items-center space-x-2 pr-2">
-            {actionIcons.map(({ icon: ButtonIcon, onClick, className: btnClass }) => (
+            {actionIcons.map(({ icon, onClick, className: btnClass }) => (
               <button
-                key={ButtonIcon.toString()}
+                key={icon.iconName}
                 type="button"
                 onClick={onClick}
                 disabled={disabled}
                 className="flex items-center justify-center hover:opacity-60"
               >
-                <ButtonIcon className={cn('h-4 w-4 cursor-pointer', disabled && 'text-muted', btnClass)} />
+                <FontAwesomeIcon
+                  icon={icon}
+                  className={cn('h-4 w-4 cursor-pointer', disabled && 'text-muted', btnClass)}
+                />
               </button>
             ))}
           </div>

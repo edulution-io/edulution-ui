@@ -31,6 +31,7 @@ import { RowSelectionState } from '@tanstack/react-table';
 import axios from 'axios';
 import { PublicShareDialogNameType } from '@libs/filesharing/types/publicShareDialogNameType';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 interface PublicShareStoreState {
   shares: PublicShareDto[] | [];
@@ -126,7 +127,8 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
   async createShare(dto) {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, dto, { params: { share: dto.share } });
+      const shareDto = dto.etag ? dto : { ...dto, etag: getRandomUUID() };
+      await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, shareDto, { params: { share: shareDto.share } });
       toast.success(t('filesharing.publicFileSharing.success.PublicFileLinkCreated'));
       await get().fetchShares();
     } catch (err) {

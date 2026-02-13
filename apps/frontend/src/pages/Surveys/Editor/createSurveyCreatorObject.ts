@@ -26,6 +26,7 @@ import 'survey-core/i18n/french';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
+import TEditorLocale from '@libs/survey/types/editor/TEditorLocale';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
@@ -39,13 +40,23 @@ const createSurveyCreatorObject = (language = 'en') => {
   editorLocalization.defaultLocale = language;
   editorLocalization.currentLocale = language;
 
+  const locale = editorLocalization.getLocale(language) as TEditorLocale;
+
+  locale.ed.surveyPlaceHolder = t('survey.editor.customTranslations.surveyPlaceHolder');
+  locale.ed.surveyPlaceholderDescription = t('survey.editor.customTranslations.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceholderDescriptionMobile = t(
+    'survey.editor.customTranslations.surveyPlaceholderDescriptionMobile',
+  );
+  locale.ed.pagePlaceHolder = t('survey.editor.customTranslations.pagePlaceHolder');
+  locale.ed.panelPlaceHolder = t('survey.editor.customTranslations.panelPlaceHolder');
+  locale.tabs.preview = t('survey.editor.customTranslations.previewTabTitle');
+
   const creatorOptions = {
     generateValidJSON: true,
     isAutoSave: true,
-    maxNestedPanels: 0,
     showJSONEditorTab: true,
-    showPreviewTab: false,
-    showLogicTab: true,
+    showPreviewTab: true,
+    showLogicTab: false,
     questionTypes: [
       'radiogroup',
       'rating',
@@ -65,6 +76,11 @@ const createSurveyCreatorObject = (language = 'en') => {
       'image',
       'signaturepad',
     ],
+    forbiddenNestedElements: {
+      panel: ['panel', 'paneldynamic'],
+      paneldynamic: ['panel', 'paneldynamic', 'file'],
+    },
+    maxNestedPanels: 1,
   };
 
   const creator = new SurveyCreator(creatorOptions);
@@ -90,8 +106,7 @@ const createSurveyCreatorObject = (language = 'en') => {
   if (settingsActionFooter >= 0) creator.footerToolbar.actions.splice(settingsActionFooter, 1);
 
   creator.onElementAllowOperations.add((_, options) => {
-    // eslint-disable-next-line no-param-reassign
-    options.allowShowSettings = true;
+    Object.assign(options, { allowShowSettings: true });
   });
 
   return creator;

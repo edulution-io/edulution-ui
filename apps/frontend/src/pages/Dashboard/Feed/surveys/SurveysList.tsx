@@ -25,7 +25,7 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -66,10 +66,10 @@ const SurveysList = (props: SurveysListProps) => {
       <div className="flex flex-col gap-2 py-2 pt-0">
         {items.map((item) => (
           <NavLink
-            to={APPS.SURVEYS}
+            to={`/${APPS.SURVEYS}`}
             onClick={() => selectSurvey(item)}
             key={item.id}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-accent"
           >
             {getSurveyInfo(item)}
           </NavLink>

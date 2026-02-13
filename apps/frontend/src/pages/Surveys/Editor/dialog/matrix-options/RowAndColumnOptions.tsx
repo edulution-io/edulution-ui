@@ -19,12 +19,14 @@
 
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdAdd, MdRemove } from 'react-icons/md';
+import { AddIcon, DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Base, ItemValue, QuestionMatrixBaseModel } from 'survey-core';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Input from '@/components/shared/Input';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 type TRow = Partial<Array<ItemValue | Base>> & {
   name?: string;
@@ -57,10 +59,10 @@ const RowAndColumnOptions = () => {
   const getNewRow = () => {
     const newRow = rows[rows.length - 1].clone();
     if (newRow.value) {
-      newRow.value = crypto.randomUUID();
+      newRow.value = getRandomUUID();
       newRow.text = t('survey.editor.questionSettings.newRow');
     } else if (newRow.name) {
-      newRow.name = crypto.randomUUID();
+      newRow.name = getRandomUUID();
       newRow.title = t('survey.editor.questionSettings.newRow');
     }
     return newRow;
@@ -69,10 +71,10 @@ const RowAndColumnOptions = () => {
   const getNewColumn = () => {
     const newColumn = columns[columns.length - 1].clone();
     if (newColumn.name) {
-      newColumn.name = crypto.randomUUID();
+      newColumn.name = getRandomUUID();
       newColumn.title = t('survey.editor.questionSettings.newColumn');
     } else if (newColumn.value) {
-      newColumn.value = crypto.randomUUID();
+      newColumn.value = getRandomUUID();
       newColumn.text = t('survey.editor.questionSettings.newColumn');
     }
     return newColumn;
@@ -128,16 +130,16 @@ const RowAndColumnOptions = () => {
 
   return (
     <>
-      <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.rowsAndColumns')}</p>
+      <p className="text-m font-bold text-background">{t('survey.editor.questionSettings.rowsAndColumns')}</p>
       <p className="text-sm text-muted-foreground">{t('survey.editor.questionSettings.rows')}</p>
       <div className="inline-flex items-center gap-2">
         <Input
           type="number"
           min="1"
           value={question.rows.length || 1}
-          onChange={(e) => handleRowCountChange(Math.min(1, Number(e.currentTarget.value)))}
+          onChange={(e) => handleRowCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
-          className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
+          className="ml-2 max-w-[75px] flex-1 text-background"
         />
         <Button
           onClick={() => addRow()}
@@ -145,7 +147,10 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addRow')}
         >
-          <MdAdd className="h-4 w-4" />
+          <FontAwesomeIcon
+            icon={AddIcon}
+            className="h-4 w-4"
+          />
         </Button>
         <Button
           onClick={() => removeRow()}
@@ -153,7 +158,10 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.removeRow')}
         >
-          <MdRemove className="h-4 w-4" />
+          <FontAwesomeIcon
+            icon={DeleteIcon}
+            className="h-4 w-4"
+          />
         </Button>
       </div>
       <p className="text-sm text-muted-foreground">{t('survey.editor.questionSettings.columns')}</p>
@@ -162,9 +170,9 @@ const RowAndColumnOptions = () => {
           type="number"
           min="1"
           value={question.columns.length || 1}
-          onChange={(e) => handleColumnCountChange(Math.min(1, Number(e.currentTarget.value)))}
+          onChange={(e) => handleColumnCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
-          className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
+          className="ml-2 max-w-[75px] flex-1 text-background"
         />
         <Button
           onClick={() => addColumn()}
@@ -172,7 +180,10 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addColumn')}
         >
-          <MdAdd className="h-4 w-4" />
+          <FontAwesomeIcon
+            icon={AddIcon}
+            className="h-4 w-4"
+          />
         </Button>
         <Button
           onClick={() => removeColumn()}
@@ -180,7 +191,10 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.removeColumn')}
         >
-          <MdRemove className="h-4 w-4" />
+          <FontAwesomeIcon
+            icon={DeleteIcon}
+            className="h-4 w-4"
+          />
         </Button>
       </div>
     </>

@@ -20,7 +20,7 @@
 import { type RowSelectionState } from '@tanstack/react-table';
 import { type ContainerInfo } from 'dockerode';
 import { type YAMLMap } from 'yaml';
-import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import type AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
@@ -36,6 +36,7 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   traefikConfig: YAMLMap | null;
   dockerComposeFiles: Record<string, string>;
   getContainers: (applicationNames?: string[]) => Promise<ContainerInfo[]>;
+  getContainerStatus: (containerName: string) => Promise<string | null>;
   updateContainers: (containers: ContainerInfo[]) => void;
   createAndRunContainer: (createContainerDto: CreateContainerDto) => Promise<void>;
   runDockerCommand: (containerNames: string[], operation: TDockerCommands) => Promise<void>;

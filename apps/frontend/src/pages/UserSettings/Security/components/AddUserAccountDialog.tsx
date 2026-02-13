@@ -30,7 +30,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import { decryptPassword, deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import TotpInput from '@/pages/LoginPage/components/TotpInput';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import getUserAccountFormSchema from './getUserAccountSchema';
@@ -90,48 +90,56 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
   };
 
   const onSubmit = async (data: UserAccountFormValues) => {
-    if (!isFirstUserAccount) {
-      const isSafePinValid = await decryptPassword(
-        JSON.parse(decodeBase64(userAccounts[0].accountPassword)) as EncryptedPasswordObject,
-        data.safePin,
-      );
+    try {
+      if (!isFirstUserAccount) {
+        const isSafePinValid = await decryptPassword(
+          JSON.parse(decodeBase64(userAccounts[0].accountPassword)) as EncryptedPasswordObject,
+          data.safePin,
+        );
 
-      if (!isSafePinValid) {
-        form.setValue('safePin', '');
-        toast.error(t('usersettings.security.wrongSafePin'));
-        return;
+        if (!isSafePinValid) {
+          form.setValue('safePin', '');
+          toast.error(t('usersettings.security.wrongSafePin'));
+          return;
+        }
       }
-    }
 
-    const salt = window.crypto.getRandomValues(new Uint8Array(16));
-    const key = await deriveKey(data.safePin, salt);
-    const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const key = await deriveKey(data.safePin, salt);
+      const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
 
-    const newPassword = {
-      ciphertext: Array.from(new Uint8Array(ciphertext)),
-      iv: Array.from(iv),
-      salt: Array.from(salt),
-    };
-
-    const userAccountDto = {
-      appName: data.appName,
-      accountUser: data.accountUser,
-      accountPassword: encodeBase64(JSON.stringify(newPassword)),
-    };
-
-    if (idx !== undefined) {
-      const { accountId } = userAccounts[idx];
-
-      const updatedUserAccountDto = {
-        ...userAccountDto,
-        accountId,
+      const newPassword = {
+        ciphertext: Array.from(new Uint8Array(ciphertext)),
+        iv: Array.from(iv),
+        salt: Array.from(salt),
       };
 
-      await updateUserAccount(accountId, updatedUserAccountDto);
-    } else {
-      await addUserAccount(userAccountDto);
+      const userAccountDto = {
+        appName: data.appName,
+        accountUser: data.accountUser,
+        accountPassword: encodeBase64(JSON.stringify(newPassword)),
+      };
+
+      if (idx !== undefined) {
+        const { accountId } = userAccounts[idx];
+
+        const updatedUserAccountDto = {
+          ...userAccountDto,
+          accountId,
+        };
+
+        await updateUserAccount(accountId, updatedUserAccountDto);
+      } else {
+        await addUserAccount(userAccountDto);
+      }
+      handleClose();
+    } catch (error) {
+      if (error instanceof Error && error.message === 'CRYPTO_NOT_AVAILABLE') {
+        toast.error(t('usersettings.security.cryptoNotAvailable'));
+      } else {
+        toast.error(t('common.error'));
+      }
     }
-    handleClose();
   };
 
   const getDialogBody = () => (
@@ -180,6 +188,7 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
                       setTotp={field.onChange}
                       onComplete={isFirstUserAccount ? () => {} : form.handleSubmit(onSubmit)}
                       type={isFirstUserAccount ? 'default' : 'pin'}
+                      variant="dialog"
                     />
                   </FormControl>
                   <FormMessage className={cn('text-p')} />

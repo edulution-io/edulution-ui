@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { RouterProvider } from 'react-router-dom';
-import createRouter from '@/router/CreateRouter';
+import createRouter from '@/router/createRouter';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 
@@ -27,7 +27,14 @@ const AppRouter: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
 
-  return <RouterProvider router={createRouter(isAuthenticated, appConfigs)} />;
+  const routerKey = appConfigs.map((c) => c.name).join(',');
+
+  return (
+    <RouterProvider
+      key={routerKey}
+      router={createRouter(isAuthenticated, appConfigs)}
+    />
+  );
 };
 
 export default AppRouter;

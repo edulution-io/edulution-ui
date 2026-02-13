@@ -34,11 +34,14 @@ interface TSurveyElement {
     valueName?: string;
     titleName?: string;
     imageLink?: string;
+    allowEmptyResponse?: boolean;
   } | null;
   hideIfChoicesEmpty?: boolean;
   imageLink?: string;
-  showOtherItem?: boolean | null;
+  showOtherItem?: boolean;
   showNoneItem?: boolean;
+  elements?: TSurveyElement[];
+  templateElements?: TSurveyElement[];
 }
 
 export default TSurveyElement;

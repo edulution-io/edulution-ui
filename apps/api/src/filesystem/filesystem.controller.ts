@@ -26,15 +26,18 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
+  Req,
   Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import APPS from '@libs/appconfig/constants/apps';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
@@ -44,9 +47,11 @@ import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDt
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
+import DynamicAppAccessGuard from '../common/guards/dynamicAppAccess.guard';
 import FilesystemService from './filesystem.service';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
@@ -80,8 +85,14 @@ class FileSystemController {
   }
 
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
-  serveFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+  @UseGuards(DynamicAppAccessGuard)
+  serveFile(
+    @Param('appName') appName: string,
+    @Param('filename') filename: string | string[],
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), req, res);
   }
 
   @Public()
@@ -94,12 +105,43 @@ class FileSystemController {
   @Public()
   @UseGuards(IsPublicAppGuard)
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
-  servePublicFiles(
+  servePublicFile(
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
+    @Req() req: Request,
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), req, res);
+  }
+
+  @Public()
+  @Get(`public/assets/:appName/*filename`)
+  servePublicAssetWithFallback(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('appName') appName: string,
+    @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string,
+    @Query('fallback', new ValidatePathPipe(PUBLIC_ASSET_PATH)) fallbackFilename: string | undefined,
+  ) {
+    if (!appName || !(Object.values(APPS) as string[]).includes(appName)) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        FileSystemController.name,
+      );
+    }
+    const filePath = join(PUBLIC_ASSET_PATH, appName, filename);
+    const fallBackPath = fallbackFilename ? join(PUBLIC_ASSET_PATH, appName, fallbackFilename) : undefined;
+    return this.filesystemService.servePublicAssetWithFallback(req, res, filePath, fallBackPath);
+  }
+
+  @UseGuards(AdminGuard)
+  @Delete(`public/assets/:appName/*filename`)
+  async deletePublicFile(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
+    const fileName = FilesystemService.buildPathString(filename);
+    const filePath = join(PUBLIC_ASSET_PATH, appName);
+    return FilesystemService.deleteFile(filePath, fileName);
   }
 
   @Delete(':appName/*filename')

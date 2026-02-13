@@ -30,12 +30,14 @@ const getMobileAppUserDto = ({
   user = null,
   lmn = null,
   userShares = [],
+  totpCreatedAt = undefined,
 }: {
   usernameFallback: string;
   user?: UserDto | null;
   lmn?: LmnUserInfo | null;
   globalSettings?: GlobalSettingsDto | null;
   userShares: MobileUserFileShare[];
+  totpCreatedAt?: Date | undefined;
 }): MobileAppUserDto => ({
   username: user?.username || usernameFallback,
   firstName: user?.firstName || '',
@@ -55,6 +57,7 @@ const getMobileAppUserDto = ({
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
   organisationInfo: globalSettings?.organisationInfo || {},
   userShares,
+  totpCreatedAt,
 });
 
 export default getMobileAppUserDto;

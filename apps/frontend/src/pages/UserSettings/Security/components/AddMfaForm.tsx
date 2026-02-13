@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import useUserStore from '@/store/UserStore/useUserStore';
 import Switch from '@/components/ui/Switch';
 
@@ -55,43 +55,40 @@ const AddMfaForm: React.FC = () => {
   const switchId = 'mfa-switch';
 
   return (
-    <>
-      <h2 className="text-background">{t('usersettings.config.mfa')}</h2>
-      <div className="flex flex-col">
-        <div className="my-4 flex justify-start">
-          <div className="text-background">
-            {t('usersettings.config.mfaInfo')}{' '}
-            <span className="font-bold">{t(`usersettings.config.${checked ? 'enabled' : 'disabled'}`)}</span>.
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <label
-            htmlFor={switchId}
-            className="mr-2 cursor-pointer"
-          >
-            {t(`usersettings.config.${checked ? 'disable' : 'enable'}`)}
-          </label>
-          <Switch
-            id={switchId}
-            checked={checked}
-            defaultChecked={mfaEnabled}
-            onCheckedChange={(chk) => {
-              setChecked(chk);
-            }}
-          />
-        </div>
-        <div className="my-4 flex justify-end">
-          <Button
-            variant="btn-security"
-            size="lg"
-            onClick={() => handleRevertMfaSetup()}
-            className={mfaEnabled && checked !== mfaEnabled && !isSetTotpDialogOpen ? '' : 'invisible'}
-          >
-            {t('common.save')}
-          </Button>
+    <div className="flex flex-col">
+      <div className="my-4 flex justify-start">
+        <div className="text-background">
+          {t('usersettings.config.mfaInfo')}{' '}
+          <span className="font-bold">{t(`usersettings.config.${checked ? 'enabled' : 'disabled'}`)}</span>.
         </div>
       </div>
-    </>
+      <div className="flex justify-end">
+        <label
+          htmlFor={switchId}
+          className="mr-2 cursor-pointer"
+        >
+          {t(`usersettings.config.${checked ? 'disable' : 'enable'}`)}
+        </label>
+        <Switch
+          id={switchId}
+          checked={checked}
+          defaultChecked={mfaEnabled}
+          onCheckedChange={(chk) => {
+            setChecked(chk);
+          }}
+        />
+      </div>
+      <div className="my-4 flex justify-end">
+        <Button
+          variant="btn-security"
+          size="lg"
+          onClick={() => handleRevertMfaSetup()}
+          className={mfaEnabled && checked !== mfaEnabled && !isSetTotpDialogOpen ? '' : 'invisible'}
+        >
+          {t('common.save')}
+        </Button>
+      </div>
+    </div>
   );
 };
 

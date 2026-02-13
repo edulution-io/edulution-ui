@@ -17,14 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { useDropzone } from 'react-dropzone';
-import { MdOutlineCloudUpload } from 'react-icons/md';
-import { HiTrash } from 'react-icons/hi';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -32,15 +28,15 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import slugify from '@libs/common/utils/slugify';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import { Button } from '@/components/shared/Button';
+import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import type AppDisplayLocationType from '@libs/appconfig/types/appDisplayLocationType';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
-import SelectIconField from './components/SelectIconField';
+import AppConfigIconEditor from './components/AppConfigIconEditor';
 
 interface AddAppConfigDialogProps {
   selectedApp: AppConfigOption;
@@ -66,18 +62,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
 
   const onSubmit = async () => {
     const newAppIcon = form.getValues('customIcon');
-    const getAppType = () => {
-      switch (selectedApp.id) {
-        case APPS.FORWARDING:
-          return APP_INTEGRATION_VARIANT.FORWARDED;
-        case APPS.FRAME:
-          return APP_INTEGRATION_VARIANT.FRAMED;
-        case APPS.EMBEDDED:
-          return APP_INTEGRATION_VARIANT.EMBEDDED;
-        default:
-          return APP_INTEGRATION_VARIANT.FORWARDED;
-      }
-    };
 
     const getOptions = () => {
       if (selectedApp.id === APPS.EMBEDDED) {
@@ -92,10 +76,24 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     };
 
     const getExtendedOptions = () => {
-      if (selectedApp.id === APPS.EMBEDDED) {
-        return { EMBEDDED_PAGE_HTML_CONTENT: '', EMBEDDED_PAGE_HTML_MODE: false };
+      const defaults: Record<string, unknown> = {};
+
+      if (selectedApp.extendedOptions) {
+        Object.values(selectedApp.extendedOptions).forEach((sectionOptions) => {
+          sectionOptions.forEach((option) => {
+            if (option.value !== undefined) {
+              defaults[option.name] = option.value;
+            }
+          });
+        });
       }
-      return {};
+
+      if (selectedApp.id === APPS.EMBEDDED) {
+        defaults.EMBEDDED_PAGE_HTML_CONTENT = '';
+        defaults.EMBEDDED_PAGE_HTML_MODE = false;
+      }
+
+      return defaults;
     };
 
     const newConfig: AppConfigDto = {
@@ -106,11 +104,12 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
         fr: newAppName,
       },
       icon: newAppIcon,
-      appType: getAppType(),
+      appType: selectedApp.id as AppIntegrationType,
       options: getOptions(),
       accessGroups: [],
       extendedOptions: getExtendedOptions(),
       position: 0,
+      displayLocations: selectedApp.defaultDisplayLocations as AppDisplayLocationType[],
     };
 
     await createAppConfig(newConfig);
@@ -123,31 +122,14 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     }
   }, [isLoading, error]);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const svgDataUrl = reader.result as string;
-          form.setValue('customIcon', svgDataUrl, { shouldValidate: true });
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [form],
-  );
+  const handleClose = () => {
+    form.reset();
+    setIsAddAppConfigDialogOpen(false);
+  };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'image/svg+xml': ['.svg'],
-      'image/webp': ['.webp'],
-    },
-  });
-  const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-lg ${
-    isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
-  }`;
+  const handleIconChange = (icon: string) => {
+    form.setValue('customIcon', icon, { shouldValidate: true });
+  };
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
@@ -163,59 +145,21 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
             labelTranslationId={t('common.name')}
             variant="dialog"
           />
-          <SelectIconField form={form} />
-          <div>
-            <p className="mb-1 font-bold">{t('appstore.uploadIcon')}</p>
-            <div {...getRootProps({ className: dropzoneStyle })}>
-              <input {...getInputProps()} />
-              <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
-                <p className="text-wrap text-center font-semibold text-secondary">
-                  {isDragActive ? t('filesharingUpload.dropHere') : t('appstore.dropIconDescription')}
-                </p>
-                <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
-              </div>
-            </div>
-            {form.getValues('customIcon') && (
-              <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
-                <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                  <li className="group relative overflow-hidden rounded-xl border border-accent p-2 shadow-lg transition-all duration-200 hover:min-h-[80px] hover:overflow-visible">
-                    <img
-                      src={form.getValues('customIcon')}
-                      alt={t('filesharingUpload.previewAlt')}
-                      className="mb-2 aspect-square h-auto w-full object-cover"
-                      onLoad={() => {}}
-                    />
-                    <Button
-                      onClick={() => form.setValue('customIcon', '')}
-                      className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
-                    >
-                      <HiTrash className="text-text-ciRed h-4 w-4" />
-                    </Button>
-                  </li>
-                </ul>
-              </ScrollArea>
-            )}
-          </div>
+          <AppConfigIconEditor
+            currentIcon={form.watch('customIcon')}
+            onIconChange={handleIconChange}
+          />
+          <DialogFooterButtons
+            handleClose={handleClose}
+            handleSubmit={() => {}}
+            submitButtonText="common.add"
+            submitButtonType="submit"
+            disableSubmit={isLoading}
+          />
         </form>
       </Form>
     );
   };
-
-  const handleClose = () => {
-    form.reset();
-    setIsAddAppConfigDialogOpen(false);
-  };
-
-  const getFooter = () => (
-    <form>
-      <DialogFooterButtons
-        handleClose={handleClose}
-        handleSubmit={form.handleSubmit(onSubmit)}
-        submitButtonText="common.add"
-        disableSubmit={isLoading}
-      />
-    </form>
-  );
 
   return (
     <AdaptiveDialog
@@ -223,7 +167,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       handleOpenChange={handleClose}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
-      footer={getFooter()}
+      desktopContentClassName="max-w-2xl max-h-[95vh]"
     />
   );
 };

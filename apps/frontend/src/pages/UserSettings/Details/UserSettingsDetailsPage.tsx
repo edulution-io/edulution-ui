@@ -23,12 +23,11 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import { UserDetailsSettingsIcon } from '@/assets/icons';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
 import Quota from '@/pages/Dashboard/Quota';
-import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
-import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
@@ -54,7 +53,7 @@ const UserSettingsDetailsPage: React.FC = () => {
     [user, t],
   );
 
-  const schoolClasses = user?.schoolclasses.map((item) => removeSchoolPrefix(item, user.school)) || [];
+  const schoolClasses = user?.schoolclasses?.map((item) => removeSchoolPrefix(item, user.school)) || [];
 
   return (
     <PageLayout
@@ -64,12 +63,18 @@ const UserSettingsDetailsPage: React.FC = () => {
         iconSrc: UserDetailsSettingsIcon,
       }}
     >
-      <UserImageConfig />
-      <Separator className="my-4 bg-muted" />
+      <SectionAccordion defaultOpenAll>
+        <SectionAccordionItem
+          id="profileImage"
+          label={t('usersettings.details.userimageconfig')}
+        >
+          <UserImageConfig />
+        </SectionAccordionItem>
 
-      <div className="md:max-w-[75%]">
-        <h2 className="text-background">{t('usersettings.details.userInformation')}</h2>
-        <div className="py-4 text-background">
+        <SectionAccordionItem
+          id="userInformation"
+          label={t('usersettings.details.userInformation')}
+        >
           {userInfo.map((field) => (
             <Field
               key={`userInfoField-${field.name}`}
@@ -80,33 +85,27 @@ const UserSettingsDetailsPage: React.FC = () => {
             />
           ))}
 
-          <Label>
-            <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
-          </Label>
           <BadgeField
             value={schoolClasses}
             readOnly
-            className="mt-2"
+            labelTranslationId={t('usersettings.details.schoolSubjects')}
           />
-        </div>
-      </div>
-      <Separator className="my-4 bg-muted" />
+        </SectionAccordionItem>
 
-      <h2 className="text-background">{t('usersettings.details.title')}</h2>
-      <div className="mb-4 space-y-4 py-4">
-        <UserSettingsDetailsForm />
-      </div>
+        <SectionAccordionItem
+          id="accountSettings"
+          label={t('usersettings.details.title')}
+        >
+          <UserSettingsDetailsForm />
+        </SectionAccordionItem>
 
-      <Separator className="my-4 bg-muted" />
-
-      <div className="md:max-w-[75%]">
-        <h2 className="text-background">{t('usersettings.details.quotas')}</h2>
-        <div className="py-4 text-muted">
+        <SectionAccordionItem
+          id="quotas"
+          label={t('usersettings.details.quotas')}
+        >
           <Quota />
-        </div>
-
-        <div className="h-[50px]" />
-      </div>
+        </SectionAccordionItem>
+      </SectionAccordion>
     </PageLayout>
   );
 };

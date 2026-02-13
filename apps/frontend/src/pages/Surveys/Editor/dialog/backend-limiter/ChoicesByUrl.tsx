@@ -17,22 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { toast } from 'sonner';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import { SurveyCreatorModel } from 'survey-creator-core';
-import { IoAdd } from 'react-icons/io5';
-import cn from '@libs/common/utils/className';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import { cn } from '@edulution-io/ui-kit';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import useTableActions from '@/hooks/useTableActions';
 import APPS from '@libs/appconfig/constants/apps';
-import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
-import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsShowOtherItem';
@@ -42,29 +37,21 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
-  creator: SurveyCreatorModel;
 }
 
 const ChoicesByUrl = (props: ChoicesByUrlProps) => {
-  const { form, creator } = props;
+  const { form } = props;
 
   const { t } = useTranslation();
 
   const {
-    selectedQuestion,
     questionType,
     useBackendLimits,
     toggleUseBackendLimits,
-    isUpdatingBackendLimiters,
-    setIsUpdatingBackendLimiters,
-    setSelectedQuestion,
-    shouldToggleShowOtherItem,
-    toggleShowOtherItem,
     setBackendLimiters,
     currentChoices,
     addNewChoice,
     updateLimitersChoices,
-    formerChoices,
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
@@ -74,74 +61,31 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       setBackendLimiters(initialLimiters);
     }
   }, []);
+
   useEffect(() => {
     const updatedBackendLimits = updateLimitersChoices(currentChoices);
     if (!form) return;
     form.setValue('backendLimiters', updatedBackendLimits);
   }, [currentChoices]);
 
-  const handleToggleFormula = () => {
-    if (!selectedQuestion) return;
-    if (isUpdatingBackendLimiters) return;
+  const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
+    () => [
+      {
+        type: STANDARD_ACTION_TYPES.ADD,
+        onClick: () => addNewChoice(),
+      },
+    ],
+    [addNewChoice],
+  );
 
-    setIsUpdatingBackendLimiters(true);
-
-    try {
-      const surveyFormula = creator.JSON as SurveyFormula;
-      const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
-
-      let correspondingQuestion: SurveyElement | undefined;
-      if (selectedQuestion?.page.name) {
-        const correspondingPage = updatedFormula?.pages?.find((page) => page.name === selectedQuestion.page.name);
-        correspondingQuestion = correspondingPage?.elements?.find(
-          (question) => question.name === selectedQuestion.name,
-        );
-      } else {
-        correspondingQuestion = updatedFormula?.elements?.find((element) => element.name === selectedQuestion.name);
-      }
-
-      if (!correspondingQuestion) {
-        throw new Error('Corresponding Question was not found');
-      }
-
-      if (useBackendLimits) {
-        correspondingQuestion.choicesByUrl = null;
-        correspondingQuestion.choices = formerChoices || [];
-        correspondingQuestion.hideIfChoicesEmpty = false;
-      } else {
-        correspondingQuestion.choices = null;
-        correspondingQuestion.choicesByUrl = {
-          url: `${EDU_API_URL}/${SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
-          valueName: 'title',
-          titleName: 'title',
-        };
-        correspondingQuestion.hideIfChoicesEmpty = true;
-      }
-
-      form.setValue('formula', updatedFormula);
-      creator.JSON = updatedFormula;
-      toggleUseBackendLimits();
-
-      const questions: TSurveyQuestion[] = creator.survey.getAllQuestions() as TSurveyQuestion[];
-      const question: TSurveyQuestion | undefined = questions.find((q) => q.name === correspondingQuestion.name);
-      setSelectedQuestion(question);
-    } catch (error) {
-      console.error('Error toggling backend limits:', error);
-      toast.error(t('survey.errors.updateOrCreateError'));
-    } finally {
-      setIsUpdatingBackendLimiters(false);
-    }
-    if (shouldToggleShowOtherItem) {
-      toggleShowOtherItem();
-    }
-  };
+  const actions = useTableActions(actionsConfig, []);
 
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
 
   return (
     <>
-      <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
+      <p className="text-m font-bold">{t('survey.editor.questionSettings.backendLimiters')}</p>
       {useBackendLimits ? (
         <p className="b-0 text-sm font-bold text-muted-foreground">{t('survey.editor.questionSettings.nullLimit')}</p>
       ) : (
@@ -150,30 +94,21 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       <div className="ml-2 inline-flex">
         <Switch
           checked={!!useBackendLimits}
-          onCheckedChange={handleToggleFormula}
-          className={cn(
-            { 'text-muted-foreground': !useBackendLimits },
-            { 'text-primary-foreground': useBackendLimits },
-          )}
+          onCheckedChange={() => toggleUseBackendLimits(form.watch('isPublic') || false)}
+          className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-background': useBackendLimits })}
         />
         <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'enabled' : 'disabled'}`)}</p>
       </div>
       {useBackendLimits ? (
         <>
-          <div className="ml-4 items-center text-foreground">
+          <div className="ml-4 items-center">
             <ScrollableTable
               columns={ChoicesWithBackendLimitTableColumns}
               data={currentChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM)}
               filterKey="choice-title"
               filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
               applicationName={APPS.SURVEYS}
-              actions={[
-                {
-                  icon: IoAdd,
-                  translationId: 'common.add',
-                  onClick: () => addNewChoice(),
-                },
-              ]}
+              actions={actions}
               showSelectedCount={false}
               isDialog
               initialSorting={[{ id: 'choice-title', desc: false }]}

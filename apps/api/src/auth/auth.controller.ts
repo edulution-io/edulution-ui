@@ -39,7 +39,7 @@ import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import CustomHttpException from '../common/CustomHttpException';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';

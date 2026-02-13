@@ -18,7 +18,7 @@
  */
 
 import OnlyOfficeConfig from '@libs/filesharing/types/OnlyOfficeConfig';
-import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import type { IConfig } from '@onlyoffice/document-editor-react';
 
 interface OnlyOfficeConfigProps {
   fileType: string;
@@ -30,6 +30,7 @@ interface OnlyOfficeConfigProps {
   mode: 'view' | 'edit';
   username: string;
   lang: string;
+  uiTheme: 'theme-white' | 'theme-night';
 }
 
 const generateOnlyOfficeConfig = ({
@@ -41,17 +42,18 @@ const generateOnlyOfficeConfig = ({
   callbackUrl,
   mode,
   lang,
-}: OnlyOfficeConfigProps): OnlyOfficeEditorConfig => ({
+  uiTheme,
+}: OnlyOfficeConfigProps): IConfig => ({
   document: {
     fileType,
-    type,
     key,
     title: documentTitle,
     url: documentUrl,
-    height: '100%',
-    width: '100%',
   },
   documentType,
+  type,
+  height: '100%',
+  width: '100%',
   token: '',
   editorConfig: {
     lang,
@@ -75,11 +77,13 @@ const generateOnlyOfficeConfig = ({
       macros: true,
       macrosMode: 'Warn',
       mentionShare: false,
-      mobileForceView: true,
+      mobile: {
+        forceView: true,
+      },
       plugins: true,
       toolbarHideFileName: false,
       toolbarNoTabs: false,
-      uiTheme: 'theme-dark',
+      uiTheme,
       unit: 'cm',
       zoom: mode === 'view' ? 50 : 100,
     },

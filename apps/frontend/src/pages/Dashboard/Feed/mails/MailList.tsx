@@ -19,7 +19,7 @@
 
 import React, { ComponentProps } from 'react';
 import { NavLink } from 'react-router-dom';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import APPS from '@libs/appconfig/constants/apps';
 import MailDto from '@libs/mail/types/mail.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -67,7 +67,7 @@ const MailList = ({ items, className }: MailListProps) => {
       <div className="flex flex-col gap-2 py-2 pt-0">
         {items.map((item) => (
           <NavLink
-            to={APPS.MAIL}
+            to={`/${APPS.MAIL}`}
             key={item.id}
             className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-accent"
           >

@@ -21,6 +21,7 @@ const AppConfigSectionsKeys = {
   general: 'general',
   fileSharing: 'fileSharing',
   onlyOffice: 'onlyOffice',
+  drawio: 'drawio',
   imapMailFeed: 'imapMailFeed',
   bulletinBoard: 'bulletinBoard',
   veyon: 'veyon',
@@ -28,6 +29,10 @@ const AppConfigSectionsKeys = {
   files: 'files',
   editor: 'editor',
   webdavShare: 'webdavShare',
+  scripts: 'scripts',
+  urlHandling: 'urlHandling',
+  appLogo: 'appLogo',
+  wireguard: 'wireguard',
 } as const;
 
 export default AppConfigSectionsKeys;

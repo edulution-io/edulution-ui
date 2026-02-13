@@ -1,31 +1,46 @@
 {
+  "name": "frontend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/frontend/src",
   "projectType": "application",
-  "styles": ["./src/index.scss"],
+  "tags": [],
   "targets": {
-    "lint": { "executor": "@nx/eslint:lint", "cache": true, "options": { "fix": true } },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "cache": true,
+      "options": {
+        "fix": true
+      }
+    },
     "build": {
       "executor": "@nx/vite:build",
       "defaultConfiguration": "production",
       "cache": true,
-
       "options": {
         "outputPath": "./dist/apps/frontend",
-        "configFile": "./apps/frontend/vite.config.ts",
-        "postcssConfig": "./postcss.config.js"
+        "configFile": "./apps/frontend/vite.config.mts",
+        "postcssConfig": "./postcss.config.mjs"
       }
     },
     "serve": {
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
-      "options": { "buildTarget": "frontend:build", "hmr": true },
+      "options": {
+        "buildTarget": "frontend:build",
+        "hmr": true
+      },
       "configurations": {
-        "development": { "buildTarget": "frontend:build:development" },
-        "demo": { "buildTarget": "frontend:build:development" },
-        "production": { "buildTarget": "frontend:build:production", "hmr": false }
+        "development": {
+          "buildTarget": "frontend:build:development"
+        },
+        "demo": {
+          "buildTarget": "frontend:build:development"
+        },
+        "production": {
+          "buildTarget": "frontend:build:production",
+          "hmr": false
+        }
       }
     }
-  },
-  "neverConnectToCloud": true
+  }
 }

@@ -18,14 +18,10 @@
  */
 
 import React from 'react';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { useTranslation } from 'react-i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteSurveysDialogProps {
   surveys: SurveyDto[];
@@ -36,65 +32,34 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
   const { selectedRows, setSelectedRows, updateUsersSurveys } = useSurveyTablesPageStore();
   const { isLoading, error, reset, isDeleteSurveysDialogOpen, setIsDeleteSurveysDialogOpen, deleteSurveys } =
     useDeleteSurveyStore();
-  const { t } = useTranslation();
 
   const selectedSurveyIds = Object.keys(selectedRows);
   const selectedSurveys = surveys?.filter((survey) => selectedSurveyIds.includes(survey.id!));
 
-  const isMultiDelete = selectedSurveyIds.length > 1;
-
-  const onSubmit = async () => {
+  const handleConfirmDelete = async () => {
     await deleteSurveys(selectedSurveys);
     await updateUsersSurveys();
     setSelectedRows({});
-    setIsDeleteSurveysDialogOpen(false);
   };
 
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
-
-    return (
-      <div className="text-foreground">
-        <ItemDialogList
-          deleteWarningTranslationId={isMultiDelete ? 'surveys.confirmMultiDelete' : 'surveys.confirmSingleDelete'}
-          items={selectedSurveys.map((survey) => ({
-            name: `${survey.formula.title}`,
-            id: survey.id!,
-          }))}
-        />
-        {error ? (
-          <>
-            {t('common.error')}: {error.message}
-          </>
-        ) : null}
-      </div>
-    );
+  const handleClose = (open: boolean) => {
+    if (!open) {
+      reset();
+    }
+    setIsDeleteSurveysDialogOpen(open);
   };
-
-  const handleClose = () => {
-    setIsDeleteSurveysDialogOpen(false);
-    reset();
-  };
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={onSubmit}
-      disableSubmit={isLoading}
-      submitButtonText="common.delete"
-    />
-  );
 
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isDeleteSurveysDialogOpen}
+      onOpenChange={handleClose}
+      items={selectedSurveys.map((survey) => ({ id: survey.id!, name: survey.formula.title }))}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      error={error}
+      titleTranslationKey="surveys.deleteSurveys"
+      messageTranslationKey="surveys.confirmDelete"
       trigger={trigger}
-      handleOpenChange={handleClose}
-      title={t(isMultiDelete ? 'surveys.deleteSurveys' : 'surveys.deleteSurvey', {
-        count: selectedSurveys.length,
-      })}
-      body={getDialogBody()}
-      footer={getFooter()}
     />
   );
 };

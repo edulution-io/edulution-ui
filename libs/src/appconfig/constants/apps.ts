@@ -20,6 +20,7 @@
 const APPS = {
   DASHBOARD: 'dashboard',
   BULLETIN_BOARD: 'bulletinboard',
+  NOTIFICATIONS_CENTER: 'notificationscenter',
   TICKET_SYSTEM: 'ticketsystem',
   MAIL: 'mail',
   CHAT: 'chat',
@@ -52,6 +53,8 @@ const APPS = {
   FRAME: 'frame',
   EMBEDDED: 'embedded',
   APPSTORE: 'appstore',
+  GENERAL_SETTINGS: 'generalsettings',
+  WIREGUARD: 'wireguard',
 } as const;
 
 export default APPS;

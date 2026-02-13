@@ -75,7 +75,9 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     action,
     handleItemAction,
     selectedFileType,
+    customExtension,
     setSelectedFileType,
+    setCustomExtension,
     setMoveOrCopyItemToPath,
     isSubmitButtonDisabled,
     setSubmitButtonIsDisabled,
@@ -97,6 +99,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     desktopComponentClassName,
     mobileComponentClassName,
     hideSubmitButton = false,
+    isRenaming = false,
   } = getDialogBodyConfigurations(action);
 
   const form = useForm<FileSharingFormValues>({
@@ -109,6 +112,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSubmitButtonIsDisabled(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
+    setCustomExtension('');
     setSelectedItems([]);
     setSelectedRows({});
     closeDialog();
@@ -160,6 +164,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
+      customExtension,
       documentVendor,
     });
 
@@ -196,8 +201,14 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const title = action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
+  const isSubmitDisabled =
+    isLoading ||
+    isSubmitButtonDisabled ||
+    (requiresForm && !form.formState.isValid) ||
+    (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined);
+
   const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !isSubmitDisabled) {
       void handleFormSubmit();
     }
   };
@@ -211,36 +222,31 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       desktopContentClassName={desktopComponentClassName}
       mobileContentClassName={mobileComponentClassName}
       body={
-        <div
-          role="presentation"
-          onKeyDown={handleDialogKeyDown}
-        >
-          <Component
-            form={form}
-            isRenaming
-          />
-        </div>
+        isDialogOpen ? (
+          <div
+            role="presentation"
+            onKeyDown={handleDialogKeyDown}
+          >
+            <Component
+              form={form}
+              isRenaming={isRenaming}
+            />
+          </div>
+        ) : null
       }
       footer={
         error ? (
           <div className="rounded-xl bg-ciLightRed py-3 text-center text-background">{error.message}</div>
         ) : (
-          <div className="mt-4 flex justify-end">
-            <form onSubmit={handleFormSubmit}>
-              <DialogFooterButtons
-                handleClose={handelOpenChange}
-                handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
-                submitButtonText={submitKey}
-                submitButtonType="submit"
-                disableSubmit={
-                  isLoading ||
-                  isSubmitButtonDisabled ||
-                  (requiresForm && !form.formState.isValid) ||
-                  (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
-                }
-              />
-            </form>
-          </div>
+          <form onSubmit={handleFormSubmit}>
+            <DialogFooterButtons
+              handleClose={handelOpenChange}
+              handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
+              submitButtonText={submitKey}
+              submitButtonType="submit"
+              disableSubmit={isSubmitDisabled}
+            />
+          </form>
         )
       }
     />

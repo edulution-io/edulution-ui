@@ -43,9 +43,11 @@ import MailTheme from '@libs/mail/constants/mailTheme';
 import SOGO_THEME from '@libs/mail/constants/sogoTheme';
 import { extractTheme, extractVersion } from '@libs/mail/utils/sogoThemeMetadata';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
+import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import CustomHttpException from '../common/CustomHttpException';
 import DockerService from '../docker/docker.service';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -64,8 +66,6 @@ const connectionTimeout = EDUI_MAIL_IMAP_TIMEOUT ? parseInt(EDUI_MAIL_IMAP_TIMEO
 class MailsService implements OnModuleInit {
   private mailcowApi: AxiosInstance;
 
-  private imapClient: ImapFlow;
-
   private imapUrl: string;
 
   private imapPort: number;
@@ -78,7 +78,6 @@ class MailsService implements OnModuleInit {
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
     private readonly dockerService: DockerService,
-    private readonly filesystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly globalSettingsService: GlobalSettingsService,
@@ -176,7 +175,7 @@ class MailsService implements OnModuleInit {
         return;
       }
 
-      await this.filesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
+      await FilesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
       await FilesystemService.writeFile(targetPath, newCss);
       Logger.debug(`SOGo theme updated to '${theme}' at ${targetPath}`, MailsService.name);
 
@@ -193,7 +192,7 @@ class MailsService implements OnModuleInit {
       await this.notifyMailThemeChange(accessGroups, SSE_MESSAGE_TYPE.MAIL_THEME_UPDATED, theme);
       Logger.log(`Restarted Mailcow containers to apply SOGo theme.`, MailsService.name);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       await this.notifyMailThemeChange(
         [{ path: GroupRoles.SUPER_ADMIN }],
         SSE_MESSAGE_TYPE.MAIL_THEME_UPDATE_FAILED,
@@ -243,7 +242,7 @@ class MailsService implements OnModuleInit {
 
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to check SOGo theme version: ${errorMessage}`, MailsService.name);
       return result;
     }
@@ -296,12 +295,40 @@ class MailsService implements OnModuleInit {
     this.sseService.sendEventToUsers(usernames, data, message);
   }
 
+  private static async cleanupImapClient(client: ImapFlow): Promise<void> {
+    try {
+      if (client?.usable) {
+        await client.logout();
+      }
+    } catch (logoutError) {
+      Logger.warn(
+        `Failed to logout IMAP client: ${logoutError instanceof Error ? logoutError.message : String(logoutError)}`,
+        MailsService.name,
+      );
+    } finally {
+      try {
+        client.close();
+      } catch (closeError) {
+        Logger.warn(
+          `Failed to close IMAP client: ${closeError instanceof Error ? closeError.message : String(closeError)}`,
+          MailsService.name,
+        );
+      }
+    }
+  }
+
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {
     if (!this.imapUrl || !this.imapPort) {
+      Logger.debug('IMAP configuration missing, skipping mail fetch', MailsService.name);
       return [];
     }
 
-    this.imapClient = new ImapFlow({
+    if (!emailAddress || !password) {
+      Logger.debug('Email credentials missing, skipping mail fetch', MailsService.name);
+      return [];
+    }
+
+    const imapClient = new ImapFlow({
       host: this.imapUrl,
       port: this.imapPort,
       secure: this.imapSecure,
@@ -316,45 +343,59 @@ class MailsService implements OnModuleInit {
       connectionTimeout,
     });
 
-    this.imapClient.on('error', (err: Error): void => {
+    imapClient.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void this.imapClient.logout();
-      this.imapClient.close();
+      void MailsService.cleanupImapClient(imapClient);
     });
 
-    await this.imapClient.connect().catch((e) => {
+    try {
+      await imapClient.connect();
+    } catch (e) {
       Logger.error(`IMAP-Connection-Error: ${e instanceof Error && e.message}`, MailsService.name);
+      await MailsService.cleanupImapClient(imapClient);
       return [];
-    });
+    }
 
     let mailboxLock: MailboxLockObject | undefined;
     const mails: MailDto[] = [];
     try {
-      mailboxLock = await this.imapClient.getMailboxLock('INBOX');
+      mailboxLock = await imapClient.getMailboxLock('INBOX');
 
-      const fetchMail = this.imapClient.fetch({ recent: true }, { envelope: true, labels: true });
+      const unseenMailUids = await imapClient.search({ seen: false }, { uid: true });
+
+      if (!unseenMailUids || unseenMailUids.length === 0) {
+        return [];
+      }
+
+      const newestMailUids = [...unseenMailUids]
+        .sort((a: number, b: number) => b - a)
+        .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
+
+      const uidRange = newestMailUids.join(',');
+      const fetchedMail = imapClient.fetch({ uid: uidRange }, { envelope: true, flags: true, uid: true });
 
       // eslint-disable-next-line no-restricted-syntax
-      for await (const mail of fetchMail) {
+      for await (const mail of fetchedMail) {
         const mailDto: MailDto = {
           id: mail.uid,
           subject: mail.envelope?.subject,
-          labels: mail.labels,
+          flags: mail.flags,
         };
         mails.push(mailDto);
       }
+
+      mails.sort((a, b) => b.id - a.id);
     } catch (e) {
-      Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
+      Logger.error(`Get mails error: ${getErrorMessage(e)}`, MailsService.name);
       return [];
     } finally {
       if (mailboxLock) {
         mailboxLock.release();
       }
+      await MailsService.cleanupImapClient(imapClient);
     }
-    await this.imapClient.logout();
-    this.imapClient.close();
 
-    Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
+    Logger.verbose(`Feed: ${mails.length} unseen mails were fetched (imap)`, MailsService.name);
     return mails;
   }
 

@@ -19,8 +19,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
-import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/documentsEditorType';
+import type { IConfig } from '@onlyoffice/document-editor-react';
+import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/findDocumentsEditorType';
 import getCallbackBaseUrl from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/getCallbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/generateOnlyOfficeConfig';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -31,6 +31,8 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import useLanguage from '@/hooks/useLanguage';
 import { useParams } from 'react-router-dom';
+import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -42,21 +44,18 @@ interface UseOnlyOfficeProps {
 
 const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
   const { webdavShare } = useParams();
-  const [editorConfig, setEditorConfig] = useState<OnlyOfficeEditorConfig | null>(null);
+  const [editorConfig, setEditorConfig] = useState<IConfig | null>(null);
   const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
   const { language } = useLanguage();
+  const { theme, getResolvedTheme } = useThemeStore();
 
   const token = useMemo(() => eduApiToken, [filePath, fileName]);
 
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
-  const documentServerURL = getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
-  ) as string;
+  const documentServerURL = getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ONLY_OFFICE_URL);
 
   const callbackUrl = getCallbackBaseUrl({
     fileName,
@@ -64,6 +63,14 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
     token,
     share: webdavShare,
   });
+
+  const uiTheme = useMemo(() => {
+    localStorage.removeItem('ui-theme-id');
+    if (getResolvedTheme() === THEME.dark) {
+      return 'theme-night';
+    }
+    return 'theme-white';
+  }, [theme, getResolvedTheme]);
 
   useEffect(() => {
     const fetchFileUrlAndToken = async () => {
@@ -77,6 +84,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
         mode,
         username: user?.username || '',
         lang: language,
+        uiTheme,
       });
       onlyOfficeConfig.token = await getOnlyOfficeJwtToken(onlyOfficeConfig);
       setEditorConfig(onlyOfficeConfig);

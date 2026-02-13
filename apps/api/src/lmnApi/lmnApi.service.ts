@@ -51,6 +51,7 @@ import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
+import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
@@ -210,11 +211,16 @@ class LmnApiService {
     }
   }
 
-  public async getSchoolClass(lmnApiToken: string, schoolClassName: string): Promise<LmnApiSchoolClass> {
+  public async getSchoolClass(
+    lmnApiToken: string,
+    schoolClassName: string,
+    allMembers = false,
+  ): Promise<LmnApiSchoolClass> {
     try {
+      const queryParam = allMembers ? '?all_members=true' : '';
       const response = await this.request<LmnApiSchoolClass>(
         HttpMethods.GET,
-        `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClassName}`,
+        `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClassName}${queryParam}`,
         undefined,
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -397,9 +403,9 @@ class LmnApiService {
     }
   }
 
-  public async getUser(lmnApiToken: string, username: string, checkFirstPassword?: boolean): Promise<LmnUserInfo> {
+  public async getUser(lmnApiToken: string, username: string, checkFirstPassword = false): Promise<LmnUserInfo> {
     try {
-      const query = checkFirstPassword ? `?check_first_pw=${checkFirstPassword}` : '';
+      const query = `?check_first_pw=${checkFirstPassword}`;
       const response = await this.request<LmnUserInfo>(
         HttpMethods.GET,
         `${USERS_LMN_API_ENDPOINT}/${username}${query}`,
@@ -412,6 +418,25 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getUsers(lmnApiToken: string, usernames: string[]): Promise<LmnUserInfo[]> {
+    try {
+      return await Promise.all(
+        usernames.map((username) =>
+          this.request<LmnUserInfo>(HttpMethods.GET, `${USERS_LMN_API_ENDPOINT}/${username}`, undefined, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          }).then((response) => response.data),
+        ),
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUsersFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
         LmnApiService.name,
@@ -462,9 +487,9 @@ class LmnApiService {
     }
   }
 
-  public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<LmnUserInfo> {
+  public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<LmnApiRoom> {
     try {
-      const response = await this.request<LmnUserInfo>(
+      const response = await this.request<LmnApiRoom>(
         HttpMethods.GET,
         `${USER_ROOM_LMN_API_ENDPOINT}/${username}`,
         undefined,

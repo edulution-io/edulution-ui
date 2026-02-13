@@ -19,67 +19,91 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { HiExclamationTriangle } from 'react-icons/hi2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import WarningBox from '@/components/shared/WarningBox';
 
 interface ValidationWarningsProps {
   oversizedFiles: File[];
   duplicateFiles: string[];
+  duplicateFolders: string[];
   tooLargeFolders: string[];
 }
 
-const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles, duplicateFiles, tooLargeFolders }) => {
+const ValidationWarnings: React.FC<ValidationWarningsProps> = ({
+  oversizedFiles,
+  duplicateFiles,
+  duplicateFolders,
+  tooLargeFolders,
+}) => {
   const { t } = useTranslation();
-
-  const hasMultipleDuplicates = duplicateFiles.length > 1;
-  const hasMultipleOversizedFiles = oversizedFiles.length > 1;
 
   return (
     <>
       {duplicateFiles.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-ciYellow" />}
-          title={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningTitleFiles')
-              : t('filesharingUpload.overwriteWarningTitleFile')
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciYellow"
+            />
           }
-          description={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningDescriptionFiles')
-              : t('filesharingUpload.overwriteWarningDescriptionFile')
-          }
+          title={t('filesharingUpload.overwriteWarningTitle', { count: duplicateFiles.length })}
+          description={t('filesharingUpload.overwriteWarningDescription', { count: duplicateFiles.length })}
           filenames={duplicateFiles}
           borderColor="border-ciLightYellow"
-          backgroundColor="bg-background"
+          backgroundColor="bg-ciLightYellow/10"
+          textColor="text-ciLightYellow"
+        />
+      )}
+
+      {duplicateFolders.length > 0 && (
+        <WarningBox
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciYellow"
+            />
+          }
+          title={t('filesharingUpload.overwriteFolderWarningTitle', { count: duplicateFolders.length })}
+          description={t('filesharingUpload.overwriteFolderWarningDescription', { count: duplicateFolders.length })}
+          filenames={duplicateFolders}
+          borderColor="border-ciLightYellow"
+          backgroundColor="bg-ciLightYellow/10"
           textColor="text-ciLightYellow"
         />
       )}
 
       {oversizedFiles.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-ciRed" />}
-          title={
-            hasMultipleOversizedFiles
-              ? t('filesharingUpload.oversizedFilesDetected')
-              : t('filesharingUpload.oversizedFileDetected')
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciRed"
+            />
           }
+          title={t('filesharingUpload.oversizedFileDetected', { count: oversizedFiles.length })}
           description={t('filesharingUpload.cannotUploadOversized')}
           filenames={oversizedFiles.map((file) => file.name)}
           borderColor="border-ciLightRed"
-          backgroundColor="bg-background"
+          backgroundColor="bg-ciLightRed/10"
           textColor="text-ciLightRed"
         />
       )}
 
       {tooLargeFolders.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-ciRed" />}
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciRed"
+            />
+          }
           title={t('filesharingUpload.folderTooLargeTitle')}
           description={t('filesharingUpload.folderTooLargeDescription')}
           filenames={tooLargeFolders}
           borderColor="border-ciRed"
-          backgroundColor="bg-background"
+          backgroundColor="bg-ciRed/10"
           textColor="text-ciRed"
         />
       )}

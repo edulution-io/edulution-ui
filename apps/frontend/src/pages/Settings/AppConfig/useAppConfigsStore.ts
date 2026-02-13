@@ -22,7 +22,7 @@ import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
@@ -38,8 +38,10 @@ type UseAppConfigsStore = {
   error: Error | null;
   isAddAppConfigDialogOpen: boolean;
   isDeleteAppConfigDialogOpen: boolean;
+  isEditIconDialogOpen: boolean;
   setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen: boolean) => void;
   setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
+  setIsEditIconDialogOpen: (isEditIconDialogOpen: boolean) => void;
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<void>;
@@ -63,6 +65,7 @@ type PersistedAppConfigsStore = (
 const initialState = {
   isAddAppConfigDialogOpen: false,
   isDeleteAppConfigDialogOpen: false,
+  isEditIconDialogOpen: false,
   appConfigs: [
     {
       name: APPS.NONE,
@@ -98,6 +101,10 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
 
       setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen) => {
         set({ isDeleteAppConfigDialogOpen });
+      },
+
+      setIsEditIconDialogOpen: (isEditIconDialogOpen) => {
+        set({ isEditIconDialogOpen });
       },
 
       createAppConfig: async (appConfig) => {

@@ -84,17 +84,15 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-end">
-      <form onSubmit={handleFormSubmit}>
-        <DialogFooterButtons
-          handleClose={() => closeCreateConferenceDialog()}
-          handleSubmit={() => {}}
-          submitButtonText="common.save"
-          submitButtonType="submit"
-          disableSubmit={isLoading}
-        />
-      </form>
-    </div>
+    <form onSubmit={handleFormSubmit}>
+      <DialogFooterButtons
+        handleClose={() => closeCreateConferenceDialog()}
+        handleSubmit={() => {}}
+        submitButtonText="common.save"
+        submitButtonType="submit"
+        disableSubmit={isLoading}
+      />
+    </form>
   );
 
   return (

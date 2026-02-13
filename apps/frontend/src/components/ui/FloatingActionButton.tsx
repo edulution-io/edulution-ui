@@ -17,16 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
-import { Button } from '@/components/shared/Button';
-import { IconContext } from 'react-icons';
+import React from 'react';
+import { Button } from '@edulution-io/ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
+import useFontAwesomeHoverAnimation from '@/hooks/useFontAwesomeHoverAnimation';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
-  icon: Icon,
+  icon,
   text,
   onClick,
   type = 'button',
@@ -34,7 +35,15 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   dropdownItems = [],
 }) => {
   const { t } = useTranslation();
-  const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4 md:h-8 md:w-8 md:m-5' }), []);
+  const { animate, triggerAnimation } = useFontAwesomeHoverAnimation();
+
+  const renderIcon = () => (
+    <FontAwesomeIcon
+      icon={icon}
+      className="m-5 h-5 w-5"
+      bounce={animate}
+    />
+  );
 
   const renderContent = () => {
     if (variant === 'dropdown' && dropdownItems.length > 0) {
@@ -44,12 +53,10 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
             <Button
               type="button"
               variant="btn-hexagon"
-              className="bg-opacity-90 p-1"
               hexagonIconAltText={t('common.showOptions')}
+              onMouseEnter={triggerAnimation}
             >
-              <IconContext.Provider value={iconContextValue}>
-                <Icon />
-              </IconContext.Provider>
+              {renderIcon()}
             </Button>
           }
           items={dropdownItems}
@@ -61,13 +68,11 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
       <Button
         type={type}
         variant="btn-hexagon"
-        className="bg-opacity-90 p-1 md:p-4"
         onClick={onClick}
         hexagonIconAltText={text}
+        onMouseEnter={triggerAnimation}
       >
-        <IconContext.Provider value={iconContextValue}>
-          <Icon />
-        </IconContext.Provider>
+        {renderIcon()}
       </Button>
     );
   };

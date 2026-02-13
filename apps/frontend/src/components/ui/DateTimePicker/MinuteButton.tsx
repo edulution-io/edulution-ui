@@ -18,9 +18,8 @@
  */
 
 import React, { useCallback } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-import { Button } from '@/components/shared/Button';
 
 interface MinuteButtonProps {
   minute: number;
@@ -38,7 +37,7 @@ const MinuteButton = ({ minute, currentMinute, onChangeMinute, variant }: Minute
       variant={currentMinute === minute ? 'btn-outline' : 'btn-small'}
       className={cn('aspect-square max-h-[25px] max-w-[64px] shrink-0 sm:w-full', {
         'bg-background text-foreground': variant === 'default',
-        'bg-muted text-secondary': variant === 'dialog',
+        'bg-white text-background dark:bg-accent dark:text-secondary': variant === 'dialog',
       })}
       onClick={handleClick}
     >

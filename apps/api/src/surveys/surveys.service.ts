@@ -25,9 +25,13 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -72,21 +76,34 @@ class SurveysService implements OnModuleInit {
   }
 
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
-    const survey = await this.surveyModel
-      .findOne({
-        $and: [
-          {
-            $or: [
-              { isPublic: true },
-              { 'creator.username': user.preferred_username },
-              { 'invitedAttendees.username': user.preferred_username },
-              { 'invitedGroups.path': { $in: user.ldapGroups } },
-            ],
-          },
-          { _id: new Types.ObjectId(surveyId) },
-        ],
-      })
-      .exec();
+    try {
+      return await this.surveyModel
+        .findOne({
+          $and: [
+            {
+              $or: [
+                { isPublic: true },
+                { 'creator.username': user.preferred_username },
+                { 'invitedAttendees.username': user.preferred_username },
+                { 'invitedGroups.path': { $in: user.ldapGroups } },
+              ],
+            },
+            { _id: new Types.ObjectId(surveyId) },
+          ],
+        })
+        .exec();
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfSurveyIsNotAccessible(surveyId: string, user: JwtUser): Promise<void> {
+    const survey = await this.findSurvey(surveyId, user);
     if (!survey) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotFoundError,
@@ -95,7 +112,6 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
-    return survey;
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
@@ -111,10 +127,51 @@ class SurveysService implements OnModuleInit {
     }
   }
 
+  async throwErrorIfSurveyIsNotPublic(surveyId: string): Promise<void> {
+    const survey = await this.findPublicSurvey(surveyId);
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfUserIsNotCreator(surveyId: string, user: JwtUser): Promise<void> {
+    const survey = await this.surveyModel
+      .findOne({
+        $and: [{ _id: new Types.ObjectId(surveyId) }, { 'creator.username': user.preferred_username }],
+      })
+      .exec();
+
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
+  }
+
   async deleteSurveys(surveyIds: string[]): Promise<void> {
     try {
-      const surveyObjectIds = surveyIds.map((s) => new Types.ObjectId(s));
+      const surveyObjectIds = surveyIds.map((surveyId) => new Types.ObjectId(surveyId));
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
+
+      await Promise.all(
+        surveyIds.map((surveyId) =>
+          this.notificationService.cascadeDeleteBySourceId(surveyId).catch((error) => {
+            Logger.error(
+              `Failed to cascade delete notifications for survey ${surveyId}: ${error}`,
+              SurveysService.name,
+            );
+          }),
+        ),
+      );
+
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
       throw new CustomHttpException(
@@ -153,6 +210,7 @@ class SurveysService implements OnModuleInit {
       surveyId,
       surveyDto.formula,
       user.preferred_username,
+      surveyDto.isPublic,
     );
     if (processedFormula === null) {
       throw new CustomHttpException(
@@ -180,6 +238,7 @@ class SurveysService implements OnModuleInit {
     await this.notifySurveyChange(
       savedSurvey,
       isCreating ? SSE_MESSAGE_TYPE.SURVEY_CREATED : SSE_MESSAGE_TYPE.SURVEY_UPDATED,
+      user.preferred_username,
     );
 
     this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
@@ -187,7 +246,11 @@ class SurveysService implements OnModuleInit {
     return savedSurvey as SurveyDocument;
   }
 
-  notifySurveyChange = async (survey: SurveyDocument, eventType: SseMessageType): Promise<void> => {
+  notifySurveyChange = async (
+    survey: SurveyDocument,
+    eventType: SseMessageType,
+    triggeredBy: string,
+  ): Promise<void> => {
     if (survey.isPublic) {
       this.sseService.informAllUsers(survey, eventType);
     } else {
@@ -202,20 +265,35 @@ class SurveysService implements OnModuleInit {
           ? SSE_MESSAGE_TYPE.SURVEY_CREATED
           : SSE_MESSAGE_TYPE.SURVEY_UPDATED;
 
-      // TODO: #1152
-      const actionName = action === SSE_MESSAGE_TYPE.SURVEY_CREATED ? 'erstellt' : 'aktualisiert';
+      const template =
+        action === SSE_MESSAGE_TYPE.SURVEY_CREATED
+          ? NOTIFICATION_TEMPLATES.SURVEY.CREATED
+          : NOTIFICATION_TEMPLATES.SURVEY.UPDATED;
 
-      const title = `Umfrage ${survey.formula.title}: ${actionName}`;
-      const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
+      const title = template.title(survey.formula.title);
+      const pushNotification = template.body(survey.formula.title);
+      const surveyId = String(survey.id);
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        body,
-        data: {
-          surveyId: survey.id,
-          type: eventType,
+      await this.notificationService.upsertNotificationForSource(
+        invitedMembersList,
+        {
+          title,
+          body: pushNotification,
+          data: {
+            surveyId,
+            type: eventType,
+          },
         },
-      });
+        triggeredBy,
+        {
+          type: NOTIFICATION_TYPE.SYSTEM,
+          sourceType: NOTIFICATION_SOURCE_TYPE.SURVEY,
+          sourceId: surveyId,
+          title,
+          pushNotification,
+          createdBy: NOTIFICATION_CREATOR_SYSTEM,
+        },
+      );
     }
   };
 

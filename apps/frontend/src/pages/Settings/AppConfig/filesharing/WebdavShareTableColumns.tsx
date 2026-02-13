@@ -21,10 +21,10 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
-import { MdDelete, MdEdit } from 'react-icons/md';
+import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -40,7 +40,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
       translationId: 'common.select',
     },
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         row={row}
         className="max-w-0"
       />
@@ -55,7 +55,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     accessorFn: (row) => row.displayName,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={row.original.displayName}
         onClick={() => row.toggleSelected()}
       />
@@ -73,7 +73,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
       const { tableContentData } = useWebdavServerConfigTableStore();
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={
             tableContentData.find((server) => server.webdavShareId === row.original.rootServer)?.displayName ||
             row.original.rootServer
@@ -92,7 +92,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     accessorFn: (row) => row.pathname,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={row.original.pathname}
         onClick={() => row.toggleSelected()}
       />
@@ -116,7 +116,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
       if (!isLmn) return null;
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={
             row.original.pathVariables?.length > 0
               ? row.original.pathVariables.map((variable) => variable.value).join(', ')
@@ -136,7 +136,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     accessorFn: (row) => row.accessGroups,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={
           row.original.accessGroups?.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
         }
@@ -154,13 +154,13 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     cell: ({ row }) => {
       const { setDialogOpen } = useAppConfigTableDialogStore();
-      const { deleteTableEntry, fetchTableContent } = useWebdavShareConfigTableStore();
+      const { setItemToDelete } = useWebdavShareConfigTableStore();
 
       return (
         <TableActionCell
           actions={[
             {
-              icon: MdEdit,
+              icon: EditIcon,
               translationId: 'common.edit',
               onClick: () => {
                 if (!row.getIsSelected()) {
@@ -170,13 +170,10 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
               },
             },
             {
-              icon: MdDelete,
+              icon: DeleteIcon,
               translationId: 'common.delete',
-              onClick: async () => {
-                if (row.original.webdavShareId && deleteTableEntry) {
-                  await deleteTableEntry('', row.original.webdavShareId);
-                }
-                await fetchTableContent();
+              onClick: () => {
+                setItemToDelete(row.original);
               },
             },
           ]}

@@ -40,13 +40,16 @@ import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 import FileDropZone from '@/components/ui/FileDropZone';
 import usePublicShareQr from '@/pages/FileSharing/hooks/usePublicShareQr';
-import useFileUpload from '@/pages/FileSharing/hooks/useFileUpload';
+import ReplaceFilesDialog from '@/pages/FileSharing/Dialog/ReplaceFilesDialog';
 import useBreadcrumbNavigation from '@/pages/FileSharing/hooks/useBreadcrumbNavigation';
+import useFileUploadWithReplace from '@/pages/FileSharing/hooks/useFileUploadWithReplace';
+import useMedia from '@/hooks/useMedia';
 import useRefreshOnFileOperationComplete from './hooks/useRefreshOnFileOperationComplete';
 import Checkbox from '@/components/ui/Checkbox';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
+  const { isMobileView } = useMedia();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles, webdavShares, forceCleanupCache, setForceCleanupCache } =
@@ -65,16 +68,16 @@ const FileSharingPage = () => {
 
   const { dialog, url, handleClose } = usePublicShareQr();
 
-  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname;
-
-  const { handleBreadcrumbNavigate } = useBreadcrumbNavigation(
+  const { handleBreadcrumbNavigate, hiddenSegments } = useBreadcrumbNavigation(
     webdavShare,
     webdavShares,
     searchParams,
     setSearchParams,
   );
 
-  const { handleFileUpload } = useFileUpload();
+  const { handleFileUploadWithDuplicateCheck } = useFileUploadWithReplace();
+
+  const isFilePreviewDockingAreaVisible = isFilePreviewVisible && isFilePreviewDocked && !isMobileView;
 
   return (
     <PageLayout>
@@ -85,7 +88,7 @@ const FileSharingPage = () => {
           path={currentPath}
           onNavigate={handleBreadcrumbNavigate}
           style={{ color: 'white' }}
-          hiddenSegments={getHiddenSegments()}
+          hiddenSegments={hiddenSegments}
         />
         <div className="flex items-center space-x-4">
           <Checkbox
@@ -97,11 +100,11 @@ const FileSharingPage = () => {
         </div>
       </div>
 
-      <div className="flex h-full w-full flex-row overflow-hidden pb-6">
-        <div className={`flex flex-col ${isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
+      <div className="flex h-full w-full flex-row overflow-hidden">
+        <div className={`flex flex-col ${isFilePreviewDockingAreaVisible ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
           {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
-          <div className="flex-1 overflow-hidden">
-            <FileDropZone onFileDrop={(files) => handleFileUpload(files, webdavShare, currentPath)}>
+          <div className="flex-1 overflow-hidden pb-6">
+            <FileDropZone onFileDrop={(files) => handleFileUploadWithDuplicateCheck(files, webdavShare, currentPath)}>
               <FileSharingTable />
             </FileDropZone>
           </div>
@@ -110,7 +113,7 @@ const FileSharingPage = () => {
         {isFilePreviewVisible && (
           <div
             id={FILE_PREVIEW_ELEMENT_ID}
-            className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
+            className={isFilePreviewDockingAreaVisible ? 'h-full w-1/2 2xl:w-1/3' : ''}
           />
         )}
       </div>
@@ -127,6 +130,7 @@ const FileSharingPage = () => {
       <CreateOrEditPublicShareDialog />
       <DeletePublicShareDialog />
       <UploadFileDialog />
+      <ReplaceFilesDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

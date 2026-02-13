@@ -25,7 +25,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 
 import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
@@ -33,7 +33,6 @@ import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { ArrowDownToLine } from 'lucide-react';
 import FormField from '@/components/shared/FormField';
 import { Form } from '@/components/ui/Form';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -41,8 +40,8 @@ import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareS
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
-import { LiaFileDownloadSolid } from 'react-icons/lia';
-import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
 import PublicShareMetaDetails from '../publicPage/components/PublicShareMetaDetails';
 
 const schema = z.object({ password: z.string().optional() });
@@ -79,7 +78,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     void fetchShareById(publicShareId);
   }, [publicShareId]);
 
-  const titleIcon = <LiaFileDownloadSolid size={BUTTONS_ICON_WIDTH} />;
+  const titleIcon = <FontAwesomeIcon icon={faFileArrowDown} />;
 
   const onDownload = form.handleSubmit(async ({ password }) => {
     if (!publicShareDto) return;
@@ -185,7 +184,10 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl"
         disabled={isPreparingFileDownload}
       >
-        <ArrowDownToLine className="h-5 w-5" />
+        <FontAwesomeIcon
+          icon={faFileArrowDown}
+          className="h-5 w-5"
+        />
         {t('filesharing.publicFileSharing.downloadPublicFile')}
         {isPreparingFileDownload && (
           <CircleLoader

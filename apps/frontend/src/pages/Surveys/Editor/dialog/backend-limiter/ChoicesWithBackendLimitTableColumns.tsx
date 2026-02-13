@@ -19,7 +19,6 @@
 
 import React from 'react';
 import { t } from 'i18next';
-import { HiTrash } from 'react-icons/hi';
 import { ColumnDef } from '@tanstack/react-table';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -27,6 +26,7 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
   {
@@ -45,7 +45,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
           value={row.original.title}
           onChange={(e) => setChoiceTitle(row.original.name, e.target.value)}
           variant="dialog"
-          className="flex-1 p-2 text-primary-foreground"
+          className="flex-1 p-2 text-background"
         />
       );
     },
@@ -67,7 +67,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
           value={row.original.limit}
           onChange={(e) => setChoiceLimit(row.original.name, Number(e.target.value))}
           variant="dialog"
-          className="p-2 text-primary-foreground"
+          className="p-2 text-background"
         />
       );
     },
@@ -86,7 +86,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
         <TableActionCell
           actions={[
             {
-              icon: HiTrash,
+              icon: DeleteIcon,
               translationId: 'common.delete',
               onClick: () => (row ? removeChoice(row.original.name) : undefined),
             },

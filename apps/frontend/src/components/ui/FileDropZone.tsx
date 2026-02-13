@@ -18,12 +18,15 @@
  */
 
 import React from 'react';
-import { Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useDropzone } from 'react-dropzone';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 interface FileDropZoneProps {
-  onFileDrop: (files: File[]) => void;
+  onFileDrop: (files: (File | UploadItem)[]) => void;
   children: React.ReactNode;
   disabled?: boolean;
   accept?: Record<string, string[]>;
@@ -32,8 +35,10 @@ interface FileDropZoneProps {
 
 const FileDropZone: React.FC<FileDropZoneProps> = ({ onFileDrop, children, disabled = false, accept, maxFiles }) => {
   const { t } = useTranslation();
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onFileDrop,
+    getFilesFromEvent: extractFilesFromDropEvent,
     disabled,
     accept,
     maxFiles,
@@ -52,7 +57,10 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({ onFileDrop, children, disab
       {isDragActive && (
         <div className="bg-primary/5 absolute inset-0 z-50 flex items-center justify-center rounded-lg border-4 border-dashed border-primary backdrop-blur-sm">
           <div className="flex flex-col items-center gap-4 text-center">
-            <Upload className="size-16 text-primary" />
+            <FontAwesomeIcon
+              icon={faCloudArrowUp}
+              className="size-16 text-primary"
+            />
             <div>
               <p className="text-lg font-semibold text-primary">{t('filesharingUpload.dropHere')}</p>
             </div>

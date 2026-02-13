@@ -22,15 +22,37 @@
 /* eslint-disable react/no-unknown-property, react/no-unstable-nested-components, @typescript-eslint/no-shadow, react/button-has-type, @typescript-eslint/no-unused-expressions, react/jsx-no-useless-fragment */
 
 import * as React from 'react';
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import { Command as CommandPrimitive, useCommandState } from 'cmdk';
-import { X } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import * as PopoverPrimitive from '@radix-ui/react-popover';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useDebounceValue } from 'usehooks-ts';
+import { VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+
+const MULTIPLE_SELECTOR_BASE_CLASSES =
+  'w-full rounded-lg px-3 text-p transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 flex flex-wrap items-center gap-1';
+
+const variantClasses = {
+  default: VARIANT_COLORS.default,
+  dialog: VARIANT_COLORS.dialog,
+} as const;
+
+const optionVariantClasses = {
+  default: {
+    base: 'text-background hover:bg-muted',
+    disabled: 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-accent',
+  },
+  dialog: {
+    base: 'text-background hover:bg-muted-light',
+    disabled: 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-muted',
+  },
+} as const;
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];
@@ -148,7 +170,7 @@ const CommandEmpty = forwardRef<HTMLDivElement, React.ComponentProps<typeof Comm
     return (
       <div
         ref={forwardedRef}
-        className={cn('py-6 text-center text-sm', className)}
+        className={cn('py-6 text-center text-p', className)}
         cmdk-empty=""
         role="presentation"
         {...props}
@@ -178,7 +200,6 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
       disabled,
       groupBy,
       className,
-      badgeClassName,
       selectFirstItem = true,
       creatable = false,
       triggerSearchOnFocus = false,
@@ -188,7 +209,10 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>,
   ) => {
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const triggerRef = useRef<HTMLDivElement>(null);
+    const popoverContentRef = useRef<HTMLDivElement>(null);
+    const touchStartY = useRef<number>(0);
     const [open, setOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -340,8 +364,13 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
 
     const selectables = React.useMemo<GroupOption>(() => removePickedOption(options, selected), [options, selected]);
 
+    const totalItemCount = React.useMemo(
+      () => Object.values(selectables).reduce((total, items) => total + items.length, 0),
+      [selectables],
+    );
+
     /** Avoid Creatable Selector freezing or lagging when paste a long string. */
-    const commandFilter = React.useCallback(() => {
+    const commandFilter = useCallback(() => {
       if (commandProps?.filter) {
         return commandProps.filter;
       }
@@ -349,172 +378,204 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
       if (creatable) {
         return (value: string, search: string) => (value.toLowerCase().includes(search.toLowerCase()) ? 1 : -1);
       }
-      // Using default filter in `cmdk`. We don't have to provide it.
       return undefined;
     }, [creatable, commandProps?.filter]);
 
+    const handleOpenChange = useCallback(
+      (isOpen: boolean) => {
+        if (!isOpen) {
+          setOpen(false);
+        }
+      },
+      [setOpen],
+    );
+
+    const handlePopoverInteraction = useCallback((e: Event) => {
+      const target = e.target as HTMLElement;
+
+      if (popoverContentRef.current?.contains(target)) {
+        return;
+      }
+
+      e.preventDefault();
+    }, []);
+
     return (
-      <CommandSH
-        {...commandProps}
-        onKeyDown={(e) => {
-          handleKeyDown(e);
-          commandProps?.onKeyDown?.(e);
-        }}
-        className={cn(
-          'overflow-visible',
-          variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted text-secondary',
-          commandProps?.className,
-        )}
-        shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch} // When onSearch is provided, we don't want to filter the options. You can still override it.
-        filter={commandFilter()}
+      <PopoverPrimitive.Root
+        open={open}
+        onOpenChange={handleOpenChange}
       >
-        <div
-          className={cn(
-            'group rounded-md p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-            variant === 'default' ? 'bg-muted text-secondary' : '',
-            className,
-          )}
+        <CommandSH
+          {...commandProps}
+          onKeyDown={(e) => {
+            handleKeyDown(e);
+            commandProps?.onKeyDown?.(e);
+          }}
+          className={cn('overflow-visible rounded-lg border-0 bg-transparent', commandProps?.className)}
+          shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch}
+          filter={commandFilter()}
         >
-          <div className="flex flex-wrap gap-1">
-            {selected.map((option) => (
-              <BadgeSH
-                key={option.value}
-                className={cn(
-                  'data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground',
-                  'data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground',
-                  badgeClassName,
-                )}
-                data-fixed={option.fixed}
-                data-disabled={disabled ? true : undefined}
-              >
-                {option.label}
-                {showRemoveIconInBadge && (
-                  <button
-                    className={cn(
-                      'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                      (disabled || option.fixed) && 'hidden',
-                    )}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleUnselect(option);
-                      }
-                    }}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    onClick={() => handleUnselect(option)}
-                  >
-                    <X
-                      className={
-                        variant === 'default'
-                          ? 'h-3 w-3 text-secondary hover:bg-muted-foreground hover:text-secondary-foreground'
-                          : 'h-3 w-3 text-secondary '
-                      }
-                    />
-                  </button>
-                )}
-              </BadgeSH>
-            ))}
-            {/* Avoid having the "Search" Icon */}
-            <CommandPrimitive.Input
-              {...inputProps}
-              ref={inputRef}
-              value={inputValue}
-              disabled={disabled}
-              onValueChange={(value) => {
-                setInputValue(value);
-                inputProps?.onValueChange?.(value);
-              }}
-              onBlur={(event) => {
-                setOpen(false);
-                inputProps?.onBlur?.(event);
-              }}
-              onFocus={async (event) => {
-                setOpen(true);
-                triggerSearchOnFocus && (await onSearch?.(debouncedSearchTerm));
-                inputProps?.onFocus?.(event);
-              }}
-              placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
+          <PopoverPrimitive.Anchor asChild>
+            <div
+              ref={triggerRef}
               className={cn(
-                'ml-2 flex-1 outline-none placeholder:text-muted-foreground',
-                variant === 'default'
-                  ? 'bg-accent text-secondary placeholder:text-secondary'
-                  : 'bg-muted text-secondary placeholder:text-secondary',
-                inputProps?.className,
-              )}
-            />
-          </div>
-        </div>
-        <div className="relative">
-          {open && (
-            <CommandList
-              className={cn(
-                'absolute top-0 z-50 max-h-28 w-full overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
-                variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted',
+                MULTIPLE_SELECTOR_BASE_CLASSES,
+                variantClasses[variant],
+                selected.length === 0 ? 'h-10' : 'py-1',
+                className,
               )}
             >
-              {isLoading ? (
-                <>{loadingIndicator}</>
-              ) : (
-                <>
-                  {EmptyItem()}
-                  {CreatableItem()}
-                  {!selectFirstItem && (
-                    <CommandItem
-                      value="-"
-                      className="hidden"
-                    />
-                  )}
-                  {Object.entries(selectables).map(([key, dropdowns]) => (
-                    <CommandGroup
-                      key={key}
-                      heading={key}
-                      className={variant === 'default' ? 'h-full overflow-auto text-secondary' : 'h-full overflow-auto'}
+              {selected.map((option) => (
+                <BadgeSH
+                  key={option.value}
+                  variant="default"
+                  data-fixed={option.fixed}
+                  data-disabled={disabled ? true : undefined}
+                >
+                  {option.label}
+                  {showRemoveIconInBadge && (
+                    <button
+                      className={cn('ml-1 rounded-full outline-none', (disabled || option.fixed) && 'hidden')}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleUnselect(option);
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => handleUnselect(option)}
                     >
-                      <>
-                        {dropdowns.map((option) => (
-                          <CommandItem
-                            key={option.value}
-                            value={option.value}
-                            disabled={option.disable}
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                            onSelect={() => {
-                              if (selected.length >= maxSelected) {
-                                onMaxSelected?.(selected.length);
-                                return;
-                              }
-                              setInputValue('');
-                              const newOptions = [...selected, option];
-                              setSelected(newOptions);
-                              onChange?.(newOptions);
-                            }}
-                            className={cn(
-                              'cursor-pointer',
-                              variant === 'default'
-                                ? 'bg-accent text-secondary hover:bg-accent-light hover:text-secondary'
-                                : 'bg-muted text-secondary hover:bg-muted-light hover:text-secondary',
-                              option.disable &&
-                                (variant === 'default'
-                                  ? 'cursor-default text-muted-foreground hover:bg-accent hover:text-muted-foreground'
-                                  : 'cursor-default text-gray-500 hover:bg-muted hover:text-gray-500'),
-                            )}
-                          >
-                            {option.label}
-                          </CommandItem>
-                        ))}
-                      </>
-                    </CommandGroup>
-                  ))}
-                </>
+                      <FontAwesomeIcon
+                        icon={faClose}
+                        className="h-3 w-3"
+                      />
+                    </button>
+                  )}
+                </BadgeSH>
+              ))}
+              <CommandPrimitive.Input
+                {...inputProps}
+                ref={inputRef}
+                value={inputValue}
+                disabled={disabled}
+                onValueChange={(value) => {
+                  setInputValue(value);
+                  inputProps?.onValueChange?.(value);
+                }}
+                onBlur={(event) => {
+                  setTimeout(() => {
+                    const isClickingPopover = popoverContentRef.current?.contains(document.activeElement);
+                    if (!isClickingPopover) {
+                      setOpen(false);
+                    }
+                  }, 0);
+                  inputProps?.onBlur?.(event);
+                }}
+                onFocus={async (event) => {
+                  setOpen(true);
+                  triggerSearchOnFocus && (await onSearch?.(debouncedSearchTerm));
+                  inputProps?.onFocus?.(event);
+                }}
+                placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
+                className={cn(
+                  'flex-1 bg-transparent outline-none placeholder:text-muted-foreground',
+                  inputProps?.className,
+                )}
+              />
+            </div>
+          </PopoverPrimitive.Anchor>
+          <PopoverPrimitive.Portal>
+            <PopoverPrimitive.Content
+              ref={popoverContentRef}
+              align="start"
+              sideOffset={4}
+              onOpenAutoFocus={(e) => e.preventDefault()}
+              onInteractOutside={handlePopoverInteraction}
+              onPointerDownOutside={handlePopoverInteraction}
+              className="z-50 w-[var(--radix-popover-trigger-width)] outline-none"
+            >
+              {open && (
+                <CommandList
+                  onWheel={(e) => {
+                    e.currentTarget.scrollTop += e.deltaY;
+                    e.preventDefault();
+                  }}
+                  onTouchStart={(e) => {
+                    touchStartY.current = e.touches[0].clientY;
+                  }}
+                  onTouchMove={(e) => {
+                    const touchY = e.touches[0].clientY;
+                    const deltaY = touchStartY.current - touchY;
+                    e.currentTarget.scrollTop += deltaY;
+                    touchStartY.current = touchY;
+                  }}
+                  className={cn(
+                    'w-full overflow-y-auto rounded-lg text-p outline-none animate-in scrollbar-thin',
+                    variantClasses[variant],
+                    totalItemCount > 5 && 'pb-32',
+                  )}
+                >
+                  {isLoading ? (
+                    <>{loadingIndicator}</>
+                  ) : (
+                    <>
+                      {EmptyItem()}
+                      {CreatableItem()}
+                      {!selectFirstItem && (
+                        <CommandItem
+                          value="-"
+                          className="hidden"
+                        />
+                      )}
+                      {Object.entries(selectables).map(([key, dropdowns]) => (
+                        <CommandGroup
+                          key={key}
+                          heading={key}
+                          className="h-full overflow-auto"
+                        >
+                          <>
+                            {dropdowns.map((option) => (
+                              <CommandItem
+                                key={option.value}
+                                value={option.value}
+                                disabled={option.disable}
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
+                                onSelect={() => {
+                                  if (selected.length >= maxSelected) {
+                                    onMaxSelected?.(selected.length);
+                                    return;
+                                  }
+                                  setInputValue('');
+                                  const newOptions = [...selected, option];
+                                  setSelected(newOptions);
+                                  onChange?.(newOptions);
+                                }}
+                                className={cn(
+                                  'cursor-pointer',
+                                  option.disable
+                                    ? optionVariantClasses[variant].disabled
+                                    : optionVariantClasses[variant].base,
+                                )}
+                              >
+                                {option.label}
+                              </CommandItem>
+                            ))}
+                          </>
+                        </CommandGroup>
+                      ))}
+                    </>
+                  )}
+                </CommandList>
               )}
-            </CommandList>
-          )}
-        </div>
-      </CommandSH>
+            </PopoverPrimitive.Content>
+          </PopoverPrimitive.Portal>
+        </CommandSH>
+      </PopoverPrimitive.Root>
     );
   },
 );

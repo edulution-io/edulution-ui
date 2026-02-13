@@ -241,7 +241,10 @@ sketch
 # Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
+.idea/**/dataSources.xml
 .idea/**/dataSources.local.xml
+.idea/**/data_source_mapping.xml
+.idea/**/db-forest-config.xml
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
@@ -360,7 +363,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-.nx/cache
+.nx/**
+
+.playwright-mcp
 
 # Certificates
 *.crt
@@ -376,3 +381,9 @@ $RECYCLE.BIN/
 !/data/public/
 /data/public/*
 !/data/public/assets/
+/data/public/assets/surveys/surveys-custom-logo-light.webp
+/data/public/assets/surveys/surveys-custom-logo-dark.webp
+/data/public/assets/generalsettings/*
+!/data/public/assets/generalsettings/generalsettings-default-background-dark.webp
+!/data/public/assets/generalsettings/generalsettings-default-background-light.webp
+!/data/public/assets/generalsettings/generalsettings-default-logo.webp

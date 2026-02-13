@@ -24,7 +24,7 @@ import { useWindowSize } from 'usehooks-ts';
 import { useLocation } from 'react-router-dom';
 import SidebarArrowButton from '@/components/ui/Sidebar/SidebarMenuItems/SidebarArrowButton';
 import { SIDEBAR_ARROW_BUTTON_HEIGHT } from '@libs/ui/constants/sidebar';
-import { HomeButton, SidebarItem, UserMenuButton } from './SidebarMenuItems';
+import { HomeButton, NotificationBellButton, SidebarItem, UserMenuButton } from './SidebarMenuItems';
 
 const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const appsRef = useRef<HTMLDivElement>(null);
@@ -184,8 +184,8 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   }, [pathname, sidebarItems]);
 
   return (
-    <div className="relative h-dvh w-[var(--sidebar-width)]">
-      <div className="fixed right-0 z-[600] flex h-full flex-col bg-black md:bg-none">
+    <div className="relative h-dvh w-[var(--sidebar-width)] shadow-lg shadow-slate-400 dark:shadow-slate-800">
+      <div className="bg-glass fixed right-0 z-[600] flex h-full flex-col backdrop-blur-lg md:bg-none">
         <HomeButton />
 
         {isUpButtonVisible && (
@@ -222,6 +222,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
           />
         )}
 
+        <NotificationBellButton />
         <UserMenuButton />
       </div>
     </div>

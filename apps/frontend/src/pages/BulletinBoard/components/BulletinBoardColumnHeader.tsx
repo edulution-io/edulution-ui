@@ -18,8 +18,9 @@
  */
 
 import React, { useMemo } from 'react';
-import { Button } from '@/components/shared/Button';
-import { PiDotsThreeVerticalBold } from 'react-icons/pi';
+import { Button } from '@edulution-io/ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { useTranslation } from 'react-i18next';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
@@ -69,17 +70,20 @@ const BulletinBoardColumnHeader = ({
   return (
     <Card
       variant="security"
-      className="sticky mx-0 mb-4 flex h-[50px] min-h-[50px] items-center justify-between overflow-hidden rounded-lg py-1 pl-3 pr-2 opacity-90"
+      className="sticky mx-0 mb-4 flex h-[50px] min-h-[50px] items-center justify-between overflow-hidden py-1 pl-3 pr-2 opacity-90"
     >
       <h3 className="flex-1 truncate text-background">{category.name}</h3>
       <DropdownMenu
         trigger={
           <Button
             type="button"
-            className="text-white-500 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full p-0 hover:bg-blue-600 hover:text-white"
+            className="text-white-500 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full p-0 hover:bg-primary hover:text-white"
             title={t('common.options')}
           >
-            <PiDotsThreeVerticalBold className="h-6 w-6" />
+            <FontAwesomeIcon
+              icon={faEllipsisVertical}
+              className="h-6 w-6"
+            />
           </Button>
         }
         items={categoryDropdownItems}

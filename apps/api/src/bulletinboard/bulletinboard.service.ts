@@ -32,7 +32,11 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -63,7 +67,7 @@ class BulletinBoardService implements OnModuleInit {
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   async onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+    void FilesystemService.ensureDirectoryExists(this.attachmentsPath);
 
     await MigrationService.runMigrations<BulletinDocument>(this.bulletinModel, bulletinsMigrationList);
   }
@@ -95,7 +99,11 @@ class BulletinBoardService implements OnModuleInit {
     );
   }
 
-  async updateBulletinAttachments(content: string, attachedFileNames: string[]) {
+  async updateBulletinAttachments(
+    content: string,
+    attachedFileNames: string[],
+    previousAttachmentFileNames?: string[],
+  ) {
     const fileNames: string[] = [];
     (attachedFileNames || []).forEach((name) => {
       if (content.includes(`<img src="/edu-api/bulletinboard/attachments/${name}?token={{token}}">`)) {
@@ -103,14 +111,17 @@ class BulletinBoardService implements OnModuleInit {
       }
     });
 
-    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_ATTACHMENTS_PATH);
-    await Promise.all(
-      permanentFiles.map(async (fileName) => {
-        if (!fileNames.includes(fileName)) {
-          await FilesystemService.deleteFile(BULLETIN_ATTACHMENTS_PATH, fileName);
-        }
-      }),
-    );
+    if (previousAttachmentFileNames) {
+      await Promise.all(
+        previousAttachmentFileNames.map(async (fileName) => {
+          if (!fileNames.includes(fileName)) {
+            const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+            await FilesystemService.checkIfFileExistAndDelete(permanentFilePath);
+          }
+        }),
+      );
+    }
+
     const temporaryFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_TEMP_ATTACHMENTS_PATH);
     await Promise.all(
       temporaryFiles.map(async (fileName) => {
@@ -243,7 +254,7 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
     const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
-    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
+    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames, []);
 
     const createdBulletin = await this.bulletinModel.create({
       creator,
@@ -319,7 +330,11 @@ class BulletinBoardService implements OnModuleInit {
     };
 
     const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
-    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
+    const attachmentFileNames = await this.updateBulletinAttachments(
+      content,
+      dto.attachmentFileNames,
+      bulletin.attachmentFileNames,
+    );
 
     bulletin.title = dto.title;
     bulletin.isActive = dto.isActive;
@@ -355,16 +370,30 @@ class BulletinBoardService implements OnModuleInit {
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
 
-      // TODO: #1152
-      const title = `Aushang bereit: ${dto.title}`;
+      const title = NOTIFICATION_TEMPLATES.BULLETIN.CREATED.title(dto.title);
+      const pushNotification = NOTIFICATION_TEMPLATES.BULLETIN.CREATED.body(dto.category.name);
+      const bulletinId = String(resultingBulletin.id);
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        data: {
-          bulletinId: resultingBulletin.id,
-          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+      await this.notificationService.upsertNotificationForSource(
+        invitedMembersList,
+        {
+          title,
+          body: pushNotification,
+          data: {
+            bulletinId,
+            type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+          },
         },
-      });
+        currentUser?.preferred_username,
+        {
+          type: NOTIFICATION_TYPE.SYSTEM,
+          sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
+          sourceId: bulletinId,
+          title,
+          pushNotification,
+          createdBy: NOTIFICATION_CREATOR_SYSTEM,
+        },
+      );
     }
   }
 
@@ -413,6 +442,17 @@ class BulletinBoardService implements OnModuleInit {
       );
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+
+      await Promise.all(
+        ids.map((bulletinId) =>
+          this.notificationService.cascadeDeleteBySourceId(bulletinId).catch((error) => {
+            Logger.error(
+              `Failed to cascade delete notifications for bulletin ${bulletinId}: ${error}`,
+              BulletinBoardService.name,
+            );
+          }),
+        ),
+      );
 
       try {
         await this.userPreferencesService.unsetCollapsedForBulletins(ids);

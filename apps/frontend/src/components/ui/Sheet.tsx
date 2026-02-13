@@ -21,10 +21,10 @@
 
 import * as React from 'react';
 import * as SheetPrimitive from '@radix-ui/react-dialog';
-import { Cross2Icon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { cva, type VariantProps } from 'class-variance-authority';
-
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import i18n from '@/i18n';
 
 const Sheet = SheetPrimitive.Root;
@@ -61,9 +61,8 @@ const sheetVariants = cva(
           'inset-y-0 right-0 h-full w-3/4 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
       },
       variant: {
-        primary: 'bg-overlay',
+        primary: 'bg-glass backdrop-blur-sm',
         secondary: 'bg-ciGray',
-        tertiary: 'bg-black',
       },
     },
     defaultVariants: {
@@ -76,17 +75,21 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   showCloseButton?: boolean;
+  overlayClassName?: string;
 }
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
-  ({ side = 'right', variant = 'secondary', showCloseButton = true, className, children, ...props }, ref) => (
+  (
+    { side = 'right', variant = 'secondary', showCloseButton = true, overlayClassName, className, children, ...props },
+    ref,
+  ) => (
     <SheetPortal>
-      <SheetOverlay />
+      <SheetOverlay className={overlayClassName} />
       <SheetPrimitive.Content
         ref={ref}
         className={cn(
-          { 'bg-overlay text-background': variant === 'primary' },
-          { 'bg-overlay text-foreground': variant === 'secondary' || variant === 'tertiary' },
+          { 'bg-accent text-background': variant === 'primary' },
+          { 'bg-accent text-foreground': variant === 'secondary' },
           sheetVariants({ side, variant }),
           'max-h-[90vh] overflow-auto',
           className,
@@ -98,11 +101,14 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
           <SheetPrimitive.Close
             className={cn(
               { 'text-card-foreground': variant === 'primary' },
-              { 'text-background': variant === 'secondary' || variant === 'tertiary' },
+              { 'text-background': variant === 'secondary' },
               'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none',
             )}
           >
-            <Cross2Icon className="h-4 w-4" />
+            <FontAwesomeIcon
+              icon={faClose}
+              className="h-4 w-4"
+            />
             <span className="sr-only">{i18n.t('dialog.close')}</span>
           </SheetPrimitive.Close>
         )}
@@ -117,7 +123,7 @@ const SheetHeader = ({ className, variant, ...props }: SheetHeaderProps) => (
   <div
     className={cn(
       { 'color-black text-background': variant === 'primary' },
-      { 'color-white text-foreground': variant === 'secondary' || variant === 'tertiary' },
+      { 'color-white text-foreground': variant === 'secondary' },
       'flex flex-col space-y-2 text-center sm:text-left',
       className,
     )}
@@ -128,7 +134,7 @@ SheetHeader.displayName = 'SheetHeader';
 
 const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    className={cn('mt-8 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
     {...props}
   />
 );
@@ -152,7 +158,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-muted-foreground', className)}
+    className={cn('sr-only', className)}
     {...props}
   />
 ));

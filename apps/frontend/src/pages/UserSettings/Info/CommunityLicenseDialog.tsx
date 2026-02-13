@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import useCommunityLicenseStore from './useCommunityLicenseStore';
 
@@ -41,8 +41,8 @@ const CommunityLicenseDialog: React.FC = () => {
   }
 
   const getDialogBody = () => (
-    <div className="flex flex-col items-start space-y-3">
-      <p className="mb-5 text-left">
+    <div className="flex flex-col items-start space-y-4">
+      <p className="text-left">
         <Trans
           i18nKey="licensing.communityLicenseDialog.description"
           values={{ applicationName: APPLICATION_NAME }}
@@ -51,9 +51,8 @@ const CommunityLicenseDialog: React.FC = () => {
           }}
         />
       </p>
-      <div className="flex w-full justify-center shadow">
+      <div className="flex w-full justify-center">
         <Button
-          className="md:absolute md:bottom-4"
           variant="btn-collaboration"
           disabled={isLoading}
           size="lg"
@@ -68,7 +67,7 @@ const CommunityLicenseDialog: React.FC = () => {
 
   return (
     <AdaptiveDialog
-      desktopContentClassName="z-50 shadow-2xl border-[1px] border-muted"
+      desktopContentClassName="z-50"
       title={t('licensing.communityLicenseDialog.title')}
       isOpen={isOpen}
       handleOpenChange={() => close()}

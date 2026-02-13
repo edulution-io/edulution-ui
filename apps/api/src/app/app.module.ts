@@ -24,10 +24,11 @@ import { JwtModule } from '@nestjs/jwt';
 import KeyvRedis from '@keyv/redis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule } from '@nestjs/config';
+import { Response } from 'express';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
@@ -58,12 +59,15 @@ import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 import redisConnection from '../common/redis.connection';
 import NotificationsModule from '../notifications/notifications.module';
-import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
+import MobileAppModule from '../mobileAppModule/mobileApp.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
 import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
+import AccessGuard from '../auth/access.guard';
+import AuthGuard from '../auth/auth.guard';
+import WireguardModule from '../wireguard/wireguard.module';
 
 @Module({
   imports: [
@@ -72,16 +76,20 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
       isGlobal: true,
       load: [configuration],
     }),
-    ServeStaticModule.forRoot({
-      rootPath: PUBLIC_DOWNLOADS_PATH,
-      serveRoot: `/${EDU_API_ROOT}/downloads`,
+    JwtModule.register({
+      global: true,
     }),
-
-    ServeStaticModule.forRoot({
-      rootPath: PUBLIC_ASSET_PATH,
-      serveRoot: `/${EDU_API_ROOT}/public/assets`,
+    MongooseModule.forRoot(process.env.MONGODB_SERVER_URL as string, {
+      dbName: process.env.MONGODB_DATABASE_NAME,
+      auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
+      minPoolSize: 10,
     }),
-
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: () => ({
+        stores: [new KeyvRedis(`redis://${redisConnection.host}:${redisConnection.port}`)],
+      }),
+    }),
     BullModule.forRoot({
       connection: redisConnection,
       defaultJobOptions: {
@@ -89,54 +97,61 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
         removeOnFail: true,
       },
     }),
+    ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_DOWNLOADS_PATH,
+      serveRoot: `/${EDU_API_ROOT}/downloads`,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_ASSET_PATH,
+      serveRoot: `/${EDU_API_ROOT}/public/assets`,
+      serveStaticOptions: {
+        setHeaders: (res: Response) => {
+          res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
+        },
+      },
+    }),
+
     HealthModule,
+    MetricsModule,
     AuthModule,
     AppConfigModule,
-    FileSystemModule,
+    GlobalSettingsModule,
     UsersModule,
     GroupsModule,
+    UserPreferencesModule,
+    FileSystemModule,
+    WebDavModule,
+    WebdavSharesModule,
+    FilesharingModule,
     LmnApiModule,
+    LdapKeycloakSyncModule,
     ConferencesModule,
     MailsModule,
-    FilesharingModule,
     VdiModule,
+    DockerModule,
+    VeyonModule,
     LicenseModule,
     SurveysModule,
     BulletinCategoryModule,
     BulletinBoardModule,
-    DockerModule,
-    VeyonModule,
-    GlobalSettingsModule,
-    WebDavModule,
+    NotificationsModule,
+    MobileAppModule,
     SseModule,
     TLDrawSyncModule,
-    LdapKeycloakSyncModule,
-    NotificationsModule,
-    MobileAppModuleModule,
-    UserPreferencesModule,
-    JwtModule.register({
-      global: true,
-    }),
-    MongooseModule.forRoot(process.env.MONGODB_SERVER_URL as string, {
-      dbName: process.env.MONGODB_DATABASE_NAME,
-      auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
-    }),
-
-    ScheduleModule.forRoot(),
-
-    CacheModule.registerAsync({
-      isGlobal: true,
-      useFactory: () => ({
-        stores: [new KeyvRedis(`redis://${redisConnection.host}:${redisConnection.port}`)],
-      }),
-    }),
-
-    EventEmitterModule.forRoot(),
     ScriptsModule,
-    WebdavSharesModule,
-    MetricsModule,
+    WireguardModule,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AccessGuard,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,

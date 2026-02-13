@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
-import cn from '@libs/common/utils/className';
-import { BiWindow, BiWindows } from 'react-icons/bi';
-import { IconContext } from 'react-icons';
+import React from 'react';
+import { cn } from '@edulution-io/ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindowMaximize, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface ToggleMaximizeButtonProps {
@@ -30,22 +30,18 @@ interface ToggleMaximizeButtonProps {
 }
 
 const ToggleMaximizeButton = ({ handleMaximizeToggle, isMinimized, isMaximized }: ToggleMaximizeButtonProps) => {
-  const iconContextValue = useMemo(() => ({ className: 'h-4 w-4' }), []);
-
   const extraClasses = cn({
     'h-5 w-8 px-0': isMinimized,
   });
 
   return (
-    <IconContext.Provider value={iconContextValue}>
-      <WindowControlBaseButton
-        tooltipTranslationId={isMaximized ? 'common.restore' : 'common.maximize'}
-        onClick={handleMaximizeToggle}
-        className={extraClasses}
-      >
-        {isMaximized ? <BiWindows /> : <BiWindow />}
-      </WindowControlBaseButton>
-    </IconContext.Provider>
+    <WindowControlBaseButton
+      tooltipTranslationId={isMaximized ? 'common.restore' : 'common.maximize'}
+      onClick={handleMaximizeToggle}
+      className={extraClasses}
+    >
+      {isMaximized ? <FontAwesomeIcon icon={faWindowRestore} /> : <FontAwesomeIcon icon={faWindowMaximize} />}
+    </WindowControlBaseButton>
   );
 };
 

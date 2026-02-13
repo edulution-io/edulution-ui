@@ -54,6 +54,9 @@ export class User {
   @Prop({ type: String, default: '' })
   totpSecret?: string;
 
+  @Prop({ type: Date })
+  totpCreatedAt?: Date;
+
   @Prop({ type: String, default: UserLanguage.SYSTEM })
   language: UserLanguageType;
 

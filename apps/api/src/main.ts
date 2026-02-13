@@ -18,19 +18,22 @@
  */
 
 import { ConsoleLogger, Logger } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
-import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
 import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
-import AuthGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
+import PayloadTooLargeFilter from './filters/payload-too-large.filter';
+import ExpressHttpErrorFilter from './filters/express-http-error.filter';
+import NotFoundFilter from './filters/not-found.filter';
+import HttpExceptionFilter from './filters/http-exception.filter';
+import MulterExceptionFilter from './filters/multer-exception.filter';
 
 async function bootstrap() {
   const globalPrefix = EDU_API_ROOT;
@@ -56,10 +59,16 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  app.useWebSocketAdapter(new WsAdapter(app));
+  const httpAdapterHost = app.get(HttpAdapterHost);
+  app.useGlobalFilters(
+    new ExpressHttpErrorFilter(),
+    new HttpExceptionFilter(httpAdapterHost),
+    new PayloadTooLargeFilter(),
+    new NotFoundFilter(),
+    new MulterExceptionFilter(),
+  );
 
-  const reflector = new Reflector();
-  app.useGlobalGuards(new AuthGuard(new JwtService(), reflector));
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   folderPaths.forEach((path) => {
     if (!existsSync(path)) {

@@ -37,12 +37,12 @@ import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
-import { extname, join } from 'path';
+import { extname, join, dirname } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { lookup } from 'mime-types';
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import CustomFile from '@libs/filesharing/types/customFile';
@@ -268,7 +268,7 @@ class FilesystemService {
     return path;
   }
 
-  async ensureDirectoryExists(directory: string): Promise<void> {
+  static async ensureDirectoryExists(directory: string): Promise<void> {
     try {
       await ensureDir(directory);
     } catch (error) {
@@ -285,7 +285,7 @@ class FilesystemService {
   ): Promise<WebdavStatusResponse> {
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const url = `${webdavShare.url}${getPathWithoutWebdav(filePath, webdavShare.pathname)}`;
-    await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
+    await FilesystemService.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
       const user = await this.userService.findOne(username);
@@ -323,6 +323,26 @@ class FilesystemService {
     const filesNames = await readdir(directory);
     if (filesNames.length === 0) {
       await remove(directory);
+    }
+  }
+
+  async deleteFolderAndParentsUpToDepth(folderPath: string, deep: number): Promise<void> {
+    if (deep < 0) return;
+
+    const exists = await pathExists(folderPath);
+    if (!exists) return;
+
+    const files = await readdir(folderPath);
+
+    if (files.length === 0) {
+      await remove(folderPath);
+
+      if (deep > 0) {
+        const parentPath = dirname(folderPath);
+        if (parentPath !== folderPath) {
+          await this.deleteFolderAndParentsUpToDepth(parentPath, deep - 1);
+        }
+      }
     }
   }
 
@@ -367,18 +387,47 @@ class FilesystemService {
     }
   }
 
-  async serveTempFiles(name: string, filename: string, res: Response) {
+  async servePublicAssetWithFallback(
+    req: Request,
+    res: Response,
+    filePath: string,
+    fallBackPath?: string,
+  ): Promise<Response> {
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    if (fileExists) {
+      res.setHeader(HTTP_HEADERS.AssetSource, 'custom');
+      return this.serve(filePath, req, res);
+    }
+    if (fallBackPath) {
+      res.setHeader(HTTP_HEADERS.AssetSource, 'fallback');
+      return this.serve(fallBackPath, req, res);
+    }
+    return Promise.resolve(res.status(HttpStatus.NOT_FOUND).send());
+  }
+
+  async serveTempFile(name: string, filename: string, req: Request, res: Response) {
     const filePath = join(TEMP_FILES_PATH, name, filename);
-    return this.serve(filePath, res);
+    return this.serve(filePath, req, res);
   }
 
-  async serveFiles(name: string, filename: string, res: Response) {
+  async serveFile(name: string, filename: string, req: Request, res: Response) {
     const filePath = join(APPS_FILES_PATH, name, filename);
-    return this.serve(filePath, res);
+    return this.serve(filePath, req, res);
   }
 
-  async serve(filePath: string, res: Response) {
+  async serve(filePath: string, req: Request, res: Response): Promise<Response> {
     await FilesystemService.throwErrorIfFileNotExists(filePath);
+
+    const stat = await fsStat(filePath);
+    const etag = `"${stat.mtimeMs.toString(36)}-${stat.size.toString(36)}"`;
+
+    res.setHeader(HTTP_HEADERS.CacheControl, 'public, max-age=0, must-revalidate');
+    res.setHeader(HTTP_HEADERS.ETag, etag);
+
+    const clientEtag = req.headers['if-none-match'];
+    if (clientEtag === etag) {
+      return res.status(HttpStatus.NOT_MODIFIED).end();
+    }
 
     const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
     res.setHeader(HTTP_HEADERS.ContentType, contentType);
@@ -386,6 +435,14 @@ class FilesystemService {
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
+  }
+
+  static async moveFiles(fileNames: string[], oldDirectory: string, newDirectory: string): Promise<void> {
+    await Promise.all(
+      fileNames.map((fileName) =>
+        FilesystemService.moveFile(join(oldDirectory, fileName), join(newDirectory, fileName)),
+      ),
+    );
   }
 
   async removeOldTempFiles(path: string, currentTimeMs?: number): Promise<void> {

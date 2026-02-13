@@ -22,6 +22,7 @@ import ReactDOM from 'react-dom/client';
 import type SentryConfig from '@libs/common/types/sentryConfig';
 import App from './App';
 import useSentryStore from './store/useSentryStore';
+import useThemeStore from './store/useThemeStore';
 import './index.scss';
 
 import '@fontsource/lato/300.css';
@@ -34,6 +35,8 @@ if (sentryConfig) {
   const { state } = JSON.parse(sentryConfig) as { state: { config: SentryConfig } };
   void useSentryStore.getState().init(state.config);
 }
+
+useThemeStore.getState().initTheme();
 
 const root = document.getElementById('root');
 

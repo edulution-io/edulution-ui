@@ -20,7 +20,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import getCompressedImage from '@/utils/getCompressedImage';
 import Avatar from '@/components/shared/Avatar';
 import { toast } from 'sonner';
@@ -55,42 +55,39 @@ const UserImageConfig: React.FC = () => {
   };
 
   return (
-    <>
-      <h2>{t('usersettings.details.userimageconfig')}</h2>
-      <div className="space-y-4 py-4 text-ciGrey">
-        <Avatar
-          user={{ username: user?.name || '', firstName: user?.givenName, lastName: user?.sn }}
-          imageSrc={base64Image}
-          className="h-20 w-20"
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="mt-4"
-        />
+    <div className="space-y-4 py-4 text-ciGrey">
+      <Avatar
+        user={{ username: user?.name || '', firstName: user?.givenName, lastName: user?.sn }}
+        imageSrc={base64Image}
+        className="h-20 w-20"
+      />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="mt-4"
+      />
 
-        <div className="mt-4 flex justify-end gap-4">
-          {base64Image ? (
-            <Button
-              variant="btn-attention"
-              size="lg"
-              onClick={handleImageDelete}
-            >
-              {t('common.delete')}
-            </Button>
-          ) : null}
+      <div className="mt-4 flex justify-end gap-4">
+        {base64Image ? (
           <Button
-            variant="btn-security"
+            variant="btn-attention"
             size="lg"
-            onClick={handleSubmitImage}
-            disabled={!base64Image}
+            onClick={handleImageDelete}
           >
-            {t('common.save')}
+            {t('common.delete')}
           </Button>
-        </div>
+        ) : null}
+        <Button
+          variant="btn-security"
+          size="lg"
+          onClick={handleSubmitImage}
+          disabled={!base64Image}
+        >
+          {t('common.save')}
+        </Button>
       </div>
-    </>
+    </div>
   );
 };
 

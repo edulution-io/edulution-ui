@@ -20,8 +20,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { HiOutlineChevronDoubleDown, HiOutlineChevronDoubleUp } from 'react-icons/hi';
-import { IconContext } from 'react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { useDebounceCallback, useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsBarProps';
@@ -34,10 +34,11 @@ import {
   WIDTH_TOLERANCE_PX,
 } from '@libs/ui/constants/floatingButtonsConfig';
 import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import usePortalRoot from '@/hooks/usePortalRoot';
+import useFooterColors from '@/hooks/useFooterColors';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { Button } from '@/components/shared/Button';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const { t } = useTranslation();
@@ -45,6 +46,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const moreButtonRef = useRef<HTMLDivElement>(null);
   const dropupRef = useRef<HTMLDivElement>(null);
+  const footerColors = useFooterColors();
   const [containerWidth, setContainerWidth] = useState(0);
   const [buttonWidth, setButtonWidth] = useState(DEFAULT_BUTTON_WIDTH);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
@@ -136,8 +138,6 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
     };
   }, [visibleButtons, portalRoot, debouncedUpdate]);
 
-  const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4 md:h-8 md:w-8 md:m-5' }), []);
-
   const renderButton = (buttonConfig: FloatingButtonConfig, key: string) => (
     <div
       key={key}
@@ -156,11 +156,15 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const toggleDropup = () => setIsDropupOpen((prev) => !prev);
 
   if (!portalRoot) return null;
+  const textColorClass = footerColors?.textColor === TEXT_COLOR_VARIANT.LIGHT ? 'text-white' : 'text-black';
 
   const content = (
     <div
       ref={containerRef}
-      className="pointer-events-auto flex min-w-0 flex-grow-0 justify-start transition-all duration-200 ease-in-out"
+      className={cn(
+        'pointer-events-auto flex min-w-0 flex-grow-0 justify-start transition-all duration-200 ease-in-out',
+        footerColors ? textColorClass : 'text-background',
+      )}
     >
       {displayedButtons.map((buttonConfig) => renderButton(buttonConfig, `${keyPrefix}${buttonConfig.text}`))}
 
@@ -173,12 +177,12 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
             type="button"
             variant="btn-hexagon"
             onClick={toggleDropup}
-            className="bg-opacity-90 p-1 md:p-4"
             hexagonIconAltText={isDropupOpen ? t('common.close') : t('common.showMore')}
           >
-            <IconContext.Provider value={iconContextValue}>
-              {isDropupOpen ? <HiOutlineChevronDoubleDown /> : <HiOutlineChevronDoubleUp />}
-            </IconContext.Provider>
+            <FontAwesomeIcon
+              icon={isDropupOpen ? faChevronDown : faChevronUp}
+              className="m-5 h-5 w-5"
+            />
           </Button>
           <span className={FLOATING_BUTTON_CLASS_NAME}>{isDropupOpen ? t('common.less') : t('common.more')}</span>
 
@@ -186,7 +190,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
             <div
               ref={dropupRef}
               className={cn(
-                'absolute bottom-full left-1/2 mb-2 flex -translate-x-1/2 transform flex-col gap-2 rounded-xl bg-black bg-opacity-90 p-4 shadow-lg backdrop-blur',
+                'absolute bottom-full left-1/2 mb-2 flex -translate-x-1/2 transform flex-col gap-2 rounded-xl bg-accent bg-opacity-90 p-4 shadow-lg backdrop-blur',
                 'z-[9999]',
                 isDropupAnimatingOut
                   ? 'duration-200 animate-out fade-out slide-out-to-bottom-0'

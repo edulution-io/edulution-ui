@@ -17,12 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useOnClickOutside } from 'usehooks-ts';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-import styles from './dropdownselect.module.scss';
+import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+
+const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-background`;
 
 export type DropdownOptions = {
   id: string;
@@ -36,147 +38,242 @@ interface DropdownProps {
   openToTop?: boolean;
   classname?: string;
   variant?: DropdownVariant;
-  searchEnabled?: boolean;
   placeholder?: string;
   translate?: boolean;
 }
 
-const DropdownSelect: React.FC<DropdownProps> = ({
+const MENU_MAX_HEIGHT = 125;
+const MENU_MARGIN = 8;
+
+const DropdownSelect = ({
   options,
   selectedVal,
   handleChange,
-  openToTop = false,
+  openToTop: openToTopProp = false,
   classname,
   variant = 'default',
-  searchEnabled = true,
   placeholder = '',
   translate = true,
-}) => {
+}: DropdownProps) => {
   const { t } = useTranslation();
-  const [query, setQuery] = useState<string>('');
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
+  const searchEnabled = options.length > 3;
+  const [query, setQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [openToTop, setOpenToTop] = useState(openToTopProp);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const closeMenu = () => setIsOpen(false);
+
+  const calculatePosition = useCallback(() => {
+    if (!dropdownRef.current) return;
+
+    const rect = dropdownRef.current.getBoundingClientRect();
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const shouldOpenToTop = openToTopProp || (spaceBelow < MENU_MAX_HEIGHT + MENU_MARGIN && spaceAbove > spaceBelow);
+    const menuHeight = Math.min(menuRef.current?.scrollHeight ?? MENU_MAX_HEIGHT, MENU_MAX_HEIGHT);
+
+    const viewportOffsetTop = window.visualViewport?.offsetTop ?? 0;
+    const calculatedTop = shouldOpenToTop
+      ? rect.top - menuHeight - MENU_MARGIN + viewportOffsetTop
+      : rect.bottom + MENU_MARGIN + viewportOffsetTop;
+
+    setOpenToTop(shouldOpenToTop);
+    setMenuPosition({
+      top: calculatedTop,
+      left: rect.left,
+      width: rect.width,
+    });
+  }, [openToTopProp]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    let requestAnimationFrameId: number;
+
+    const updatePosition = () => {
+      calculatePosition();
+      requestAnimationFrameId = requestAnimationFrame(updatePosition);
+    };
+
+    updatePosition();
+
+    return () => {
+      cancelAnimationFrame(requestAnimationFrameId);
+    };
+  }, [isOpen, calculatePosition]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(target);
+      const isOutsideMenu = menuRef.current && !menuRef.current.contains(target);
+
+      if (isOutsideDropdown && isOutsideMenu) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
 
   const translateLabel = (label: string) => (translate ? t(label) : label);
 
-  const selectedOption = options.find((o) => o.id === selectedVal) || null;
+  const selectedOption = options.find((o) => o.id === selectedVal);
   const selectedLabel = selectedOption ? translateLabel(selectedOption.name) : '';
+
+  const filteredOptions = useMemo(() => {
+    if (!query) return options;
+    const q = query.toLowerCase();
+    return options.filter((option) => translateLabel(option.name).toLowerCase().includes(q));
+  }, [options, query, translate]);
 
   const openMenu = () => {
     setIsOpen(true);
     if (searchEnabled) setQuery('');
   };
 
-  useOnClickOutside(dropdownRef, () => setIsOpen(false));
-
   const selectOption = (option: DropdownOptions) => {
     setQuery('');
     handleChange(option.id);
-    setIsOpen(false);
+    closeMenu();
   };
 
-  const filteredOptions = (allOptions: DropdownOptions[]): DropdownOptions[] => {
-    if (!query) return allOptions;
-    const q = query.toLowerCase();
-    return allOptions.filter((option) => translateLabel(option.name).toLowerCase().includes(q));
+  const handleKeyDown = (e: React.KeyboardEvent, option: DropdownOptions) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      selectOption(option);
+    }
+  };
+
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    e.currentTarget.scrollTop += e.deltaY;
+  };
+
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const deltaY = touchStartY.current - e.touches[0].clientY;
+    e.currentTarget.scrollTop += deltaY;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
+
+  const variantClasses = {
+    default: VARIANT_COLORS.default,
+    dialog: VARIANT_COLORS.dialog,
+  };
+
+  const optionVariantClasses = {
+    default: {
+      base: 'hover:bg-muted',
+      selected: 'bg-muted',
+    },
+    dialog: {
+      base: 'hover:bg-muted-light',
+      selected: 'bg-muted-light',
+    },
   };
 
   return (
     <div
-      className={cn(styles.dropdown, classname, {
-        [styles.default]: variant === 'default',
-        [styles.dialog]: variant === 'dialog',
-      })}
+      className={cn('relative cursor-default', classname)}
       ref={dropdownRef}
       role="combobox"
       aria-expanded={isOpen}
       aria-haspopup="listbox"
       aria-controls="dropdown-listbox"
     >
-      <div className={styles['selected-value']}>
-        {searchEnabled ? (
-          <input
-            type="text"
-            name="searchTerm"
-            value={query}
-            placeholder={selectedLabel || t(placeholder)}
-            onChange={(e) => {
-              setQuery(e.target.value);
-            }}
-            onClick={openMenu}
-            onFocus={openMenu}
-            disabled={options.length === 0}
-            className={cn('text-start', {
-              'bg-background text-foreground': variant === 'default',
-              'bg-muted text-secondary': variant === 'dialog',
-            })}
-            aria-autocomplete="list"
-            aria-controls="dropdown-listbox"
-          />
-        ) : (
-          <input
-            type="button"
-            value={selectedLabel || t(placeholder)}
-            onClick={openMenu}
-            readOnly
-            disabled={options.length === 0}
-            className={cn('text-start', {
-              'bg-background text-foreground': variant === 'default',
-              'bg-muted text-secondary': variant === 'dialog',
-            })}
-          />
-        )}
-      </div>
-
-      <div className={cn(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
+      <input
+        type={searchEnabled ? 'text' : 'button'}
+        name={searchEnabled ? 'searchTerm' : undefined}
+        value={searchEnabled ? query : selectedLabel || t(placeholder)}
+        placeholder={searchEnabled ? selectedLabel || t(placeholder) : undefined}
+        onChange={searchEnabled ? (e) => setQuery(e.target.value) : undefined}
+        onClick={openMenu}
+        onFocus={searchEnabled ? openMenu : undefined}
+        readOnly={!searchEnabled}
+        disabled={options.length === 0}
+        className={cn(DROPDOWN_SELECT_CLASSES, variantClasses[variant], {
+          'cursor-text': searchEnabled,
+          'cursor-pointer': !searchEnabled,
+        })}
+        aria-autocomplete={searchEnabled ? 'list' : undefined}
+        aria-controls="dropdown-listbox"
+      />
 
       <div
-        className={cn('shadow-xl scrollbar-thin', styles.options, {
-          [styles.open]: isOpen,
-          [styles.up]: openToTop,
-          'bg-background text-foreground': variant === 'default',
-          'bg-muted text-secondary': variant === 'dialog',
+        className={cn('absolute right-2.5 top-3.5 mt-1.5 block h-0 w-0 border-solid border-border', {
+          'border-x-[5px] border-b-0 border-t-[5px] border-x-transparent': !arrowPointsDown,
+          'border-x-[5px] border-b-[5px] border-t-0 border-x-transparent': arrowPointsDown,
         })}
-        role="listbox"
-        id="dropdown-listbox"
-      >
-        {filteredOptions(options).map((option) => {
-          const label = translateLabel(option.name);
-          const selected = option.id === selectedVal;
-          return (
-            <div
-              key={option.id}
-              role="option"
-              aria-selected={selected}
-              tabIndex={0}
-              onClick={() => selectOption(option)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  selectOption(option);
-                }
-              }}
-              className={cn(styles.option, {
-                [styles.selected]: selected,
-                'hover:bg-accent-light': variant === 'default',
-                'bg-muted hover:bg-secondary': variant === 'dialog',
-              })}
-              title={label}
-            >
-              {label}
-            </div>
-          );
-        })}
-        {filteredOptions(options).length === 0 && (
+      />
+
+      {isOpen &&
+        createPortal(
           <div
-            className={styles.option}
-            aria-disabled="true"
+            ref={menuRef}
+            className={cn(
+              'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
+              variantClasses[variant],
+            )}
+            style={{
+              maxHeight: MENU_MAX_HEIGHT,
+              top: menuPosition.top,
+              left: menuPosition.left,
+              width: menuPosition.width,
+            }}
+            role="listbox"
+            id="dropdown-listbox"
+            onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
           >
-            {t('search.no-results')}
-          </div>
+            {filteredOptions.map((option) => {
+              const label = translateLabel(option.name);
+              const selected = option.id === selectedVal;
+              const classes = optionVariantClasses[variant];
+
+              return (
+                <div
+                  key={option.id}
+                  role="option"
+                  aria-selected={selected}
+                  tabIndex={0}
+                  onClick={() => selectOption(option)}
+                  onKeyDown={(e) => handleKeyDown(e, option)}
+                  className={cn(
+                    'box-border block cursor-pointer px-2.5 py-2',
+                    selected ? classes.selected : classes.base,
+                  )}
+                  title={label}
+                >
+                  {label}
+                </div>
+              );
+            })}
+            {filteredOptions.length === 0 && (
+              <div
+                className="box-border block cursor-default px-2.5 py-2"
+                aria-disabled="true"
+              >
+                {t('search.no-results')}
+              </div>
+            )}
+          </div>,
+          document.body,
         )}
-      </div>
     </div>
   );
 };

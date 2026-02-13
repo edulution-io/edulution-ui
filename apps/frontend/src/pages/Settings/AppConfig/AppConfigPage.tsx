@@ -24,6 +24,7 @@ import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import type { AppConfigOptionsType } from '@libs/appconfig/types/appConfigOptionsType';
@@ -34,20 +35,20 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
-import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
+import EditAppConfigIconDialog from './EditAppConfigIconDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
 import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
@@ -169,29 +170,51 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   };
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
-  const isSupportedAppType = (appType: AppIntegrationType): appType is 'native' | 'embedded' =>
-    ['native', 'embedded'].includes(appType);
+
+  const handleIconChange = async (newIcon: string) => {
+    if (!matchingConfig) return;
+
+    const newConfig = {
+      ...matchingConfig,
+      icon: newIcon,
+    };
+
+    await updateAppConfig(newConfig);
+  };
+
+  const extendedOptionsToRender = APP_CONFIG_OPTIONS.find((appConfigOption) => {
+    if (matchingConfig?.appType === APP_INTEGRATION_VARIANT.NATIVE) return appConfigOption.id === settingLocation;
+    return appConfigOption.id === matchingConfig?.appType;
+  })?.extendedOptions;
 
   const getSettingsForm = () => (
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="column max-w-screen-2xl space-y-6"
+        className="w-full space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2">
-            <div className="space-y-3 py-3">
+          <SectionAccordion defaultOpenAll>
+            <SectionAccordionItem
+              id="position"
+              label={t('settings.appconfig.position.title')}
+            >
               <AppConfigPositionSelect
                 form={form}
                 appConfig={matchingConfig}
               />
+            </SectionAccordionItem>
+
+            <SectionAccordionItem
+              id="accessGroups"
+              label={t('permission.groups')}
+            >
               <FormFieldSH
                 key={`${matchingConfig.name}.accessGroups`}
                 control={control}
                 name={`${matchingConfig.name}.accessGroups`}
                 render={() => (
                   <FormItem>
-                    <h3 className="text-background">{t(`permission.groups`)}</h3>
                     <FormControl>
                       <AsyncMultiSelect<MultipleSelectorGroup>
                         value={getValues(`${matchingConfig.name}.accessGroups`)}
@@ -205,46 +228,72 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   </FormItem>
                 )}
               />
-            </div>
+            </SectionAccordionItem>
+
             {Object.keys(matchingConfig.options)
               .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
               .map((filteredKey) => (
-                <FormFieldSH
+                <SectionAccordionItem
                   key={`${matchingConfig.name}.options.${filteredKey}`}
-                  control={control}
-                  name={`${matchingConfig.name}.options.${filteredKey}`}
-                  defaultValue={filteredKey}
-                  render={({ field }) => (
-                    <FormItem className="py-3">
-                      <h3 className="text-background">{t(`form.${filteredKey}`)}</h3>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage className="text-p" />
-                    </FormItem>
-                  )}
-                />
+                  id={filteredKey}
+                  label={t(`form.${filteredKey}`)}
+                >
+                  <FormFieldSH
+                    control={control}
+                    name={`${matchingConfig.name}.options.${filteredKey}`}
+                    defaultValue={filteredKey}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage className="text-p" />
+                      </FormItem>
+                    )}
+                  />
+                </SectionAccordionItem>
               ))}
-            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
-              <ExtendedOptionsForm
-                extendedOptions={
-                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
-                    ?.extendedOptions
-                }
-                control={control}
-                settingLocation={settingLocation}
-                form={form}
-              />
-            ) : null}
+
+            {matchingConfig.extendedOptions &&
+              extendedOptionsToRender &&
+              Object.entries(extendedOptionsToRender).map(([section, options]) => (
+                <SectionAccordionItem
+                  key={section}
+                  id={section}
+                  label={t(`settings.appconfig.sections.${section}.title`)}
+                >
+                  <ExtendedOptionsForm
+                    section={section}
+                    options={options}
+                    control={control}
+                    settingLocation={settingLocation}
+                    form={form}
+                  />
+                </SectionAccordionItem>
+              ))}
+
             {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
-              <ProxyConfigForm
-                key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
-                item={matchingConfig}
-                form={form as UseFormReturn<ProxyConfigFormType>}
-              />
+              <SectionAccordionItem
+                id="proxyConfig"
+                label={t('settings.appconfig.sections.proxyConfig.title')}
+              >
+                <ProxyConfigForm
+                  key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
+                  item={matchingConfig}
+                  form={form as UseFormReturn<ProxyConfigFormType>}
+                />
+              </SectionAccordionItem>
             )}
-            {settingLocation === APPS.MAIL && <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />}
-          </div>
+
+            {settingLocation === APPS.MAIL && (
+              <SectionAccordionItem
+                id="mailImporter"
+                label={t('mail.importer.title')}
+              >
+                <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
+              </SectionAccordionItem>
+            )}
+          </SectionAccordion>
         )}
       </form>
     </Form>
@@ -267,6 +316,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
 
   return (
     <PageLayout
+      isAppIconEditable
       nativeAppHeader={
         matchingConfig
           ? {
@@ -283,7 +333,17 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
         handleSaveSettingsItem={handleSubmit(onSubmit)}
       />
-      <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
+      <DeleteAppConfigDialog
+        appName={settingLocation}
+        appDisplayName={matchingConfig ? getDisplayName(matchingConfig, language) : settingLocation}
+        handleDeleteSettingsItem={handleDeleteSettingsItem}
+      />
+      {matchingConfig && (
+        <EditAppConfigIconDialog
+          currentIcon={matchingConfig.icon}
+          onIconChange={handleIconChange}
+        />
+      )}
       {matchingConfig?.name === APPS.FILE_SHARING && <DeleteWebdavServerWarningDialog />}
     </PageLayout>
   );

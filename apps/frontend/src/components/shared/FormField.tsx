@@ -20,7 +20,7 @@
 import { FieldValues, Path, PathValue, RegisterOptions, UseFormReturn } from 'react-hook-form';
 import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import Input from '@/components/shared/Input';
 import { FormControl, FormDescription, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
@@ -72,7 +72,7 @@ const FormField = <T extends FieldValues>({
         <FormItem>
           {labelTranslationId && (
             <FormLabel>
-              <p className="font-bold text-background">{t(labelTranslationId)}</p>
+              <p className="font-bold">{t(labelTranslationId)}</p>
             </FormLabel>
           )}
           <FormControl>

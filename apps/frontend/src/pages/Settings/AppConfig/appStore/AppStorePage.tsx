@@ -22,15 +22,16 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AppStoreIcon } from '@/assets/icons';
 import { Card } from '@/components/shared/Card';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import IconWrapper from '@/components/shared/IconWrapper';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
@@ -54,7 +55,7 @@ const AppStorePage: React.FC = () => {
 
   const handleCreateApp = () => {
     if (selectedApp.isNativeApp) {
-      const { options = [], extendedOptions = {} } = selectedApp;
+      const { options = [], extendedOptions = {}, defaultDisplayLocations = [] } = selectedApp;
       const newExtendedOptions = Object.values(extendedOptions).reduce<Record<string, string>>((acc, item) => {
         acc[item[0].name] = '';
         return acc;
@@ -72,6 +73,7 @@ const AppStorePage: React.FC = () => {
         accessGroups: [],
         extendedOptions: newExtendedOptions,
         position: 0,
+        displayLocations: defaultDisplayLocations,
       };
 
       void createAppConfig(newConfig);
@@ -91,7 +93,7 @@ const AppStorePage: React.FC = () => {
         iconSrc: AppStoreIcon,
       }}
     >
-      <div className="space-2 flex max-h-[27rem] w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin md:max-h-[36rem]">
+      <div className="space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin">
         {APP_CONFIG_OPTIONS.map((item) => (
           <button
             key={item.id}
@@ -102,17 +104,20 @@ const AppStorePage: React.FC = () => {
             <Card
               key={item.id}
               className={cn(
-                'm-1 flex h-32 w-32 flex-col items-center overflow-hidden ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
-                selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue' : '',
+                'm-1 flex h-32 w-32 flex-col items-center overflow-hidden ease-in-out md:w-48 2xl:transition-transform 2xl:duration-300 2xl:hover:scale-105',
+                selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue text-white' : '',
                 getDisabledState(item) ? 'opacity-50' : '',
               )}
               variant="text"
             >
               <div className="m-4 flex flex-col items-center">
-                <img
-                  src={item.icon}
+                <IconWrapper
+                  iconSrc={item.icon}
                   alt={item.id}
                   className="h-12 w-12 md:h-14 md:w-14"
+                  width={48}
+                  height={48}
+                  applyLegacyFilter={selectedApp.id !== item.id}
                 />
                 <p>{t(`${item.id}.sidebar`)}</p>
               </div>

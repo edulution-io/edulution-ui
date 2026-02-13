@@ -31,6 +31,13 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import isTextExtension from '@libs/filesharing/utils/isTextExtension';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
+import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { SaveIcon } from '@libs/common/constants/standardActionIcons';
+import { Button } from '@edulution-io/ui-kit';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
@@ -40,10 +47,15 @@ const FullScreenFileViewer = () => {
     useFileSharingDownloadStore();
 
   const { filesToOpenInNewTab, currentlyEditingFile, setCurrentlyEditingFile } = useFileEditorStore();
+  const { hasUnsavedChanges, hasDrawioUnsavedChanges, isSaving, saveFile } = useFileEditorContentStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
 
   const [isLoading, setIsLoading] = useState(true);
   const fileETag = searchParams.get('file');
+
+  const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
+  const isTextFile = isTextExtension(fileExtension);
+  const isDrawioFile = isDrawioExtension(fileExtension);
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -64,12 +76,18 @@ const FullScreenFileViewer = () => {
     void initializeFile();
   }, []);
 
+  const handleSaveFile = () => saveFile(webdavShare);
+
   useBeforeUnload(t('closeEditingWindow'));
 
   if (isLoading || isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl)
     return <LoadingIndicatorDialog isOpen />;
 
   if (!temporaryDownloadUrl) return null;
+
+  const hasTextChanges = isTextFile && hasUnsavedChanges();
+  const hasDrawioChanges = isDrawioFile && hasDrawioUnsavedChanges();
+  const showSaveButton = hasTextChanges || hasDrawioChanges;
 
   return (
     <PageLayout isFullScreenAppWithoutFloatingButtons>
@@ -81,7 +99,20 @@ const FullScreenFileViewer = () => {
         editMode
         isOpenedInNewTab
         isOnlyOfficeConfigured={isDocumentServerConfigured}
+        webdavShare={webdavShare}
       />
+      {showSaveButton && (
+        <Button
+          onClick={handleSaveFile}
+          disabled={isSaving}
+          size="md"
+          className="absolute bottom-4 right-4 z-50"
+          variant="btn-collaboration"
+        >
+          <FontAwesomeIcon icon={SaveIcon} />
+          {isSaving ? t('filesharing.textEditor.saving') : t('common.save')}
+        </Button>
+      )}
     </PageLayout>
   );
 };

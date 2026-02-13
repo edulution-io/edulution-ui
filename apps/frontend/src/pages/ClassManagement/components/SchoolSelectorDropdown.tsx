@@ -51,7 +51,6 @@ const SchoolSelectorDropdown: React.FC = () => {
       selectedVal={selectedSchool}
       handleChange={setSelectedSchool}
       translate={false}
-      searchEnabled
     />
   );
 };
