@@ -183,6 +183,7 @@ class NotificationsService {
     await this.userNotificationModel.updateMany(
       { notificationId: objectId, username: { $in: usernames } },
       { $set: { status } },
+      { timestamps: false },
     );
   }
 
@@ -337,7 +338,7 @@ class NotificationsService {
   ): PipelineStage[] {
     return [
       { $match: { username, ...additionalUserNotificationMatch } },
-      { $sort: { createdAt: -1 as const } },
+      { $sort: { updatedAt: -1 as const } },
       {
         $lookup: {
           from: this.notificationModel.collection.name,
@@ -394,6 +395,7 @@ class NotificationsService {
       content: userNotificationData.notification.content,
       data: userNotificationData.notification.data,
       createdAt: userNotificationData.notification.createdAt,
+      updatedAt: userNotificationData.notification.updatedAt,
       createdBy: userNotificationData.notification.createdBy,
       readAt: userNotificationData.readAt,
     }));
@@ -416,6 +418,7 @@ class NotificationsService {
     const result = await this.userNotificationModel.updateOne(
       { _id: objectId, username, readAt: null },
       { $set: { readAt: new Date() } },
+      { timestamps: false },
     );
 
     return { modifiedCount: result.modifiedCount };
@@ -425,6 +428,7 @@ class NotificationsService {
     const result = await this.userNotificationModel.updateMany(
       { username, readAt: null },
       { $set: { readAt: new Date() } },
+      { timestamps: false },
     );
 
     return { modifiedCount: result.modifiedCount };
