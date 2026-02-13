@@ -17,8 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import type UserType from '@libs/userManagement/types/userType';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+interface AdminSubTab {
+  id: string;
+  nameKey: string;
+  subUserType: UserType;
+}
 
-export default Section;
+export default AdminSubTab;

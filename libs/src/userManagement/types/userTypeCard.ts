@@ -17,8 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+interface UserTypeCard {
+  labelKey: string;
+  icon: IconDefinition;
+  path: string;
+  defaultTab: string;
+  lmnOnly: boolean;
+}
 
-export default Section;
+export default UserTypeCard;

@@ -17,8 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import type TabOption from '@libs/userManagement/types/tabOption';
+import USER_MANAGEMENT_TABS from './userManagementTabs';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+const ALL_TAB_OPTIONS: TabOption[] = [
+  { id: USER_MANAGEMENT_TABS.TABLE, nameKey: 'usermanagement.tabs.table' },
+  { id: USER_MANAGEMENT_TABS.LIST, nameKey: 'usermanagement.tabs.list' },
+];
 
-export default Section;
+export default ALL_TAB_OPTIONS;

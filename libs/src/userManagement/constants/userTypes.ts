@@ -17,8 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+const USER_TYPES = {
+  STUDENTS: 'students',
+  TEACHERS: 'teachers',
+  EXTRASTUDENTS: 'extrastudents',
+  PARENTS: 'parents',
+  STAFF: 'staff',
+  SCHOOLADMINS: 'schooladmins',
+  SCHOOLBINDUSERS: 'schoolbindusers',
+  GLOBALADMINS: 'globaladmins',
+  GLOBALBINDUSERS: 'globalbindusers',
+} as const;
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
-
-export default Section;
+export default USER_TYPES;
