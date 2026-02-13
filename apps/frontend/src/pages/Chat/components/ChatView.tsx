@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type ChatAdapter from '@/pages/Chat/types/chatAdapter';
+import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 
@@ -33,7 +33,7 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title }) => {
   const { messages, input, setInput, handleSubmit, isLoading, error } = adapter;
 
   return (
-    <div className="flex h-full flex-col pb-2 ">
+    <div className="bg-glass flex h-full flex-col">
       {title && (
         <div className="border-b border-muted px-4 py-3">
           <h3 className="font-semibold text-background">{title}</h3>
