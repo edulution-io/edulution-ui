@@ -52,7 +52,6 @@ import FilesystemService from './filesystem.service';
 import Public from '../common/decorators/public.decorator';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 import ValidatePathPipe from '../common/pipes/validatePath.pipe';
-import validatePath from '../common/pipes/validatePath';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
@@ -140,18 +139,21 @@ class FileSystemController {
 
   @UseGuards(AdminGuard)
   @Delete(`public/assets/:appName/*filename`)
-  async deletePublicFile(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
-    const fileName = FilesystemService.buildPathString(filename);
+  async deletePublicFile(
+    @Param('appName', new ValidatePathPipe(PUBLIC_ASSET_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string | string[],
+  ) {
     const filePath = join(PUBLIC_ASSET_PATH, appName);
-    validatePath(PUBLIC_ASSET_PATH, `${filePath}/${fileName}`);
-    return FilesystemService.deleteFile(filePath, fileName);
+    return FilesystemService.deleteFile(filePath, FilesystemService.buildPathString(filename));
   }
 
   @Delete(':appName/*filename')
   @UseGuards(AdminGuard)
-  deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
+  deleteFile(
+    @Param('appName', new ValidatePathPipe(APPS_FILES_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(APPS_FILES_PATH)) filename: string,
+  ) {
     const appsPath = join(APPS_FILES_PATH, appName);
-    validatePath(APPS_FILES_PATH, `${APPS_FILES_PATH}/${appName}/${filename}`);
     return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
   }
 

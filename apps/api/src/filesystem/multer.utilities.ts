@@ -41,18 +41,19 @@ export const createDiskStorage = (
   diskStorage({
     destination: (req, _file, callback) => {
       const folderPath = getDestinationPath(req);
-      if (!existsSync(folderPath)) {
-        mkdirSync(folderPath, { recursive: true });
+      const sanitizedFolderPath = validatePath(APPS_FILES_PATH, folderPath);
+      if (!existsSync(sanitizedFolderPath)) {
+        mkdirSync(sanitizedFolderPath, { recursive: true });
       }
-      callback(null, folderPath);
+      callback(null, sanitizedFolderPath);
     },
     filename: (req, file, callback) => {
       let fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
       if (fileNameGenerator) {
         fileName = fileNameGenerator(req, file);
       }
-      validatePath(APPS_FILES_PATH, `${APPS_FILES_PATH}/${req.params.name}/${fileName}`);
-      callback(null, fileName);
+      const sanitizedFileName = validatePath(`${APPS_FILES_PATH}/${req.params.name}`, fileName);
+      callback(null, sanitizedFileName);
     },
   });
 

@@ -359,8 +359,8 @@ class FilesystemService {
 
   async getFilesInfo(path: string): Promise<FileInfoDto[]> {
     try {
-      const folderPath = `${APPS_FILES_PATH}/${path}`;
-      validatePath(APPS_FILES_PATH, folderPath);
+      const sanitizedRelativePath = validatePath(APPS_FILES_PATH, path);
+      const folderPath = join(APPS_FILES_PATH, sanitizedRelativePath);
 
       const files = await readdir(folderPath);
 
@@ -397,30 +397,30 @@ class FilesystemService {
     filePath: string,
     fallBackPath?: string,
   ): Promise<Response> {
-    validatePath(PUBLIC_ASSET_PATH, filePath);
-    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    const sanitizedFilePath = validatePath(PUBLIC_ASSET_PATH, filePath);
+    const fileExists = await FilesystemService.checkIfFileExist(sanitizedFilePath);
     if (fileExists) {
       res.setHeader(HTTP_HEADERS.AssetSource, 'custom');
-      return this.serve(filePath, req, res);
+      return this.serve(sanitizedFilePath, req, res);
     }
     if (fallBackPath) {
-      validatePath(PUBLIC_ASSET_PATH, fallBackPath);
+      const sanitizedFallbackPath = validatePath(PUBLIC_ASSET_PATH, fallBackPath);
       res.setHeader(HTTP_HEADERS.AssetSource, 'fallback');
-      return this.serve(fallBackPath, req, res);
+      return this.serve(sanitizedFallbackPath, req, res);
     }
     return Promise.resolve(res.status(HttpStatus.NOT_FOUND).send());
   }
 
   async serveTempFile(name: string, filename: string, req: Request, res: Response) {
-    const filePath = join(TEMP_FILES_PATH, name, filename);
-    validatePath(TEMP_FILES_PATH, filePath);
-    return this.serve(filePath, req, res);
+    const unsafeRelativePath = join(name, filename);
+    const safeRelativePath = validatePath(TEMP_FILES_PATH, unsafeRelativePath);
+    return this.serve(safeRelativePath, req, res);
   }
 
   async serveFile(name: string, filename: string, req: Request, res: Response) {
-    const filePath = join(APPS_FILES_PATH, name, filename);
-    validatePath(APPS_FILES_PATH, filePath);
-    return this.serve(filePath, req, res);
+    const unsafeRelativePath = join(name, filename);
+    const safeRelativePath = validatePath(APPS_FILES_PATH, unsafeRelativePath);
+    return this.serve(safeRelativePath, req, res);
   }
 
   async serve(filePath: string, req: Request, res: Response): Promise<Response> {

@@ -48,6 +48,7 @@ import TLDrawSyncService from './tldraw-sync.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import CustomHttpException from '../common/CustomHttpException';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()
@@ -84,7 +85,7 @@ class TLDrawSyncController {
   }
 
   @Delete(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
-  deleteFile(@Param('filename') filename: string) {
+  deleteFile(@Param('filename', new ValidatePathPipe(`${APPS_FILES_PATH}/${APPS.WHITEBOARD}`)) filename: string) {
     return FilesystemService.deleteFile(
       `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
       FilesystemService.buildPathString(filename),

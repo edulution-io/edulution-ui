@@ -24,9 +24,9 @@ import sanitizeFileName from '@libs/filesystem/utils/sanitizeFileName';
 
 const MAX_PATH_LENGTH = 300;
 
-const validatePath = (base: string, value: string | string[] | undefined): string | undefined => {
-  if (value === undefined || value === null) {
-    return undefined;
+const validatePath = (base: string, value: string | string[]): string => {
+  if (value === null) {
+    throw new BadRequestException(PathValidationErrorMessages.NoString);
   }
 
   const raw = Array.isArray(value) ? join(...value) : value;
@@ -39,14 +39,14 @@ const validatePath = (base: string, value: string | string[] | undefined): strin
     throw new BadRequestException(PathValidationErrorMessages.PathTooLong);
   }
 
-  const sanitized = sanitizeFileName(trimmed);
-  const fullPath = path.resolve(base, sanitized);
   const baseResolved = path.resolve(base);
+  const fullPath = path.resolve(baseResolved, trimmed);
 
   if (!fullPath.startsWith(baseResolved + path.sep) && fullPath !== baseResolved) {
     throw new BadRequestException(PathValidationErrorMessages.OutsidePublicDirectory);
   }
 
+  const sanitized = sanitizeFileName(trimmed);
   return sanitized;
 };
 
