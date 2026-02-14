@@ -308,6 +308,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
                 pushNotification,
                 createdBy: NOTIFICATION_CREATOR_SYSTEM,
               },
+              true,
             );
           }),
       );

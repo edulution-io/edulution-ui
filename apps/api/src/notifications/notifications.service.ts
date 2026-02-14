@@ -79,6 +79,7 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     triggeredBy: string = NOTIFICATION_TYPE.USER,
     createNotificationDto?: CreateNotificationDto,
+    skipPush = false,
   ): Promise<void> {
     let notification: NotificationDocument | null = null;
 
@@ -98,12 +99,14 @@ class NotificationsService {
         this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
       }
 
-      const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
-      await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
+      if (!skipPush) {
+        const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
+        await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
 
-      if (notification) {
-        await this.updateLastPushSentAt(String(notification.id));
-        await this.updateUserNotificationStatus(String(notification.id), usernames, USER_NOTIFICATION_STATUS.SENT);
+        if (notification) {
+          await this.updateLastPushSentAt(String(notification.id));
+          await this.updateUserNotificationStatus(String(notification.id), usernames, USER_NOTIFICATION_STATUS.SENT);
+        }
       }
     } catch (error) {
       if (notification) {
@@ -212,12 +215,13 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     triggeredBy: string | undefined,
     createNotificationDto: CreateNotificationDto,
+    skipPush = false,
   ): Promise<void> {
     const effectiveTriggeredBy = triggeredBy ?? NOTIFICATION_TYPE.USER;
     const { sourceType, sourceId } = createNotificationDto;
 
     if (!sourceType || !sourceId) {
-      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto);
+      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto, skipPush);
       return;
     }
 
@@ -230,9 +234,10 @@ class NotificationsService {
         partialNotification,
         effectiveTriggeredBy,
         createNotificationDto,
+        skipPush,
       );
     } else {
-      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto);
+      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto, skipPush);
     }
   }
 
@@ -242,6 +247,7 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     triggeredBy: string,
     updateData: CreateNotificationDto,
+    skipPush = false,
   ): Promise<void> {
     const notificationId = String(existingNotification.id);
     const objectId = new Types.ObjectId(notificationId);
@@ -262,12 +268,12 @@ class NotificationsService {
 
     this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
 
-    if (NotificationsService.shouldSendPush(existingNotification)) {
+    if (!skipPush && NotificationsService.shouldSendPush(existingNotification)) {
       const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
       await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
       await this.updateLastPushSentAt(notificationId);
       await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.SENT);
-    } else {
+    } else if (!skipPush) {
       Logger.log(
         `Push debounced for notification ${notificationId} (last sent: ${existingNotification.lastPushSentAt?.toISOString()})`,
         NotificationsService.name,
