@@ -19,22 +19,33 @@
 
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserGear, faRobot } from '@fortawesome/free-solid-svg-icons';
 import { ContactIcon } from '@/assets/icons';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import {
+  CHAT_AICHAT_LOCATION,
+  CHAT_AICHAT_PATH,
   CHAT_CLASSES_LOCATION,
   CHAT_CLASSES_PATH,
   CHAT_PROJECTS_LOCATION,
   CHAT_PROJECTS_PATH,
 } from '@libs/chat/constants/chatPaths';
+import useAiChatStore from '@/store/useAiChatStore';
 
 const useChatMenu = (): MenuBarEntry => {
   const navigate = useNavigate();
+  const { createConversation } = useAiChatStore();
 
   const navigateToClasses = useCallback(() => navigate(`/${CHAT_CLASSES_PATH}`), [navigate]);
   const navigateToProjects = useCallback(() => navigate(`/${CHAT_PROJECTS_PATH}`), [navigate]);
+  const navigateToAiChat = useCallback(() => {
+    void createConversation().then((newId) => {
+      if (newId) {
+        navigate(`/${CHAT_AICHAT_PATH}/${newId}`);
+      }
+    });
+  }, [createConversation, navigate]);
 
   return useMemo(
     () => ({
@@ -55,9 +66,15 @@ const useChatMenu = (): MenuBarEntry => {
           icon: faUserGear,
           action: navigateToProjects,
         },
+        {
+          id: CHAT_AICHAT_LOCATION,
+          label: 'chat.aiChat',
+          icon: faRobot,
+          action: navigateToAiChat,
+        },
       ],
     }),
-    [navigateToClasses, navigateToProjects],
+    [navigateToClasses, navigateToProjects, navigateToAiChat],
   );
 };
 

@@ -54,7 +54,7 @@ const PageLayout = ({
   useFloatingBarHeight(barRef);
   useUserAccounts(rootPathName);
 
-  if (isFullScreenAppWithoutFloatingButtons) return <main className="flex-1">{children}</main>;
+  if (isFullScreenAppWithoutFloatingButtons) return <main className="min-w-0 flex-1 overflow-hidden">{children}</main>;
 
   return (
     <div

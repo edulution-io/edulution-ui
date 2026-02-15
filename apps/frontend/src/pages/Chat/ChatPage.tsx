@@ -27,8 +27,9 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useChatStore from '@/store/useChatStore';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
-import ChatContent from './components/ChatContent';
+import GroupChatContent from '@/pages/Chat/components/GroupChatContent';
 import useRegisterChatSections from './useRegisterChatSections';
+import AiChatContent from './components/AiChatContent';
 
 const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
   Object.values(CHAT_GROUP_TYPE_LOCATIONS).includes(value as GroupTypeLocation);
@@ -41,12 +42,17 @@ const ChatPage = () => {
 
   const renderContent = () => {
     if (chatId) {
-      return <ChatContent chatId={chatId} />;
+      return (
+        <AiChatContent
+          key={chatId}
+          chatId={chatId}
+        />
+      );
     }
 
     if (groupName && isValidGroupType(groupType)) {
       return (
-        <ChatContent
+        <GroupChatContent
           groupName={groupName}
           groupType={groupType}
         />
@@ -68,7 +74,7 @@ const ChatPage = () => {
   return (
     <PageLayout isFullScreenAppWithoutFloatingButtons>
       <LoadingIndicatorDialog isOpen={isLoadingGroups} />
-      <div className="flex h-full flex-col">{renderContent()}</div>
+      <div className="flex h-full flex-col overflow-hidden">{renderContent()}</div>
     </PageLayout>
   );
 };
