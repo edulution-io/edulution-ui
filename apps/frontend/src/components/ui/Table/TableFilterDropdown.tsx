@@ -24,40 +24,64 @@ import DropdownMenu from '@/components/shared/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
 import type FilterOption from '@libs/ui/types/filterOption';
 
 interface TableFilterDropdownProps {
   filterOptions: FilterOption[];
   isDialog?: boolean;
+  activeFilterCount?: number;
+  onResetFilters?: () => void;
 }
 
-const TableFilterDropdown = ({ filterOptions, isDialog }: TableFilterDropdownProps) => {
+const TableFilterDropdown = ({
+  filterOptions,
+  isDialog,
+  activeFilterCount = 0,
+  onResetFilters,
+}: TableFilterDropdownProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const dropdownItems = filterOptions.map((option) => ({
-    label: option.isSeparator ? option.key : t(option.translationKey),
-    isCheckbox: !option.isSeparator,
-    isSeparator: option.isSeparator,
-    checked: option.checked,
-    onCheckedChange: (checked: boolean) => option.onChange(checked),
-  }));
+  const dropdownItems = [
+    ...filterOptions.map((option) => ({
+      label: option.isSeparator ? option.key : t(option.translationKey),
+      isCheckbox: !option.isSeparator,
+      isSeparator: option.isSeparator,
+      checked: option.checked,
+      onCheckedChange: (checked: boolean) => option.onChange(checked),
+    })),
+    ...(activeFilterCount > 0 && onResetFilters
+      ? [
+          { label: 'reset-separator', isSeparator: true },
+          { label: t('common.reset'), onClick: onResetFilters, preventClose: true },
+        ]
+      : []),
+  ];
 
   return (
     <DropdownMenu
       open={isOpen}
       onOpenChange={setIsOpen}
       trigger={
-        <Button
-          variant="btn-table"
-          className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
-        >
-          {t('common.filter')}
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
+        <div className="relative">
+          <Button
+            variant="btn-table"
+            className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
+          >
+            {t('common.filter')}
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
+            />
+          </Button>
+          <NotificationCounter
+            count={activeFilterCount}
+            className="-right-2 -top-2"
+            variant={NOTIFICATION_COUNTER_VARIANTS.PRIMARY}
           />
-        </Button>
+        </div>
       }
       items={dropdownItems}
     />

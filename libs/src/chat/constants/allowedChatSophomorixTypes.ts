@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+const ALLOWED_CHAT_SOPHOMORIX_TYPES = [SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS, SOPHOMORIX_GROUP_TYPES.PROJECT] as const;
 
-export default Section;
+export default ALLOWED_CHAT_SOPHOMORIX_TYPES;

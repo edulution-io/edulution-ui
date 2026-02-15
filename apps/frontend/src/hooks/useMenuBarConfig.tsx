@@ -28,7 +28,7 @@ import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu'
 import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
-import useChatMenuConfig from '@/pages/Chat/useChatMenuConfig';
+import useChatMenu from '@/pages/Chat/useChatMenu';
 import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
@@ -47,7 +47,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
-  const CHAT_MENUBAR_CONFIG = useChatMenuConfig();
+  const CHAT_MENUBAR_CONFIG = useChatMenu();
   const { sections } = useSubMenuStore();
   const { scrollToSection } = useScrollToSection();
 
@@ -91,9 +91,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
         id: section.id,
         label: section.label,
         icon: '',
-        action: () => {
-          scrollToSection(section.id);
-        },
+        action: section.action ?? (() => scrollToSection(section.id)),
         disableTranslation: true,
       })),
     [sections, scrollToSection],
@@ -102,19 +100,24 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const configValues = menuBarConfigSwitch();
   const activeMenuItemId = getFromPathName(pathname, 2);
 
+  const getItemChildren = (itemId: string): MenuItem[] | undefined => {
+    if (sectionChildren.length === 0) return undefined;
+    if (itemId === activeMenuItemId) return sectionChildren;
+    if (sectionChildren.some((c) => c.id === activeMenuItemId)) return sectionChildren;
+    if (!activeMenuItemId) return sectionChildren;
+    return undefined;
+  };
+
   const menuItems: MenuItem[] = useMemo(
     () =>
-      configValues.menuItems.map((item) => {
-        const itemChildren = item.children ?? (item.id === activeMenuItemId ? sectionChildren : undefined);
-        return {
-          id: item.id,
-          label: item.disableTranslation ? item.label : t(item.label),
-          action: () => item.action?.(),
-          icon: item.icon,
-          disableTranslation: item.disableTranslation,
-          children: itemChildren,
-        };
-      }),
+      configValues.menuItems.map((item) => ({
+        id: item.id,
+        label: item.disableTranslation ? item.label : t(item.label),
+        action: () => item.action?.(),
+        icon: item.icon,
+        disableTranslation: item.disableTranslation,
+        children: getItemChildren(item.id),
+      })),
     [configValues.menuItems, t, activeMenuItemId, sectionChildren],
   );
 

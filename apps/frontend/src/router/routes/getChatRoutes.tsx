@@ -41,6 +41,10 @@ const getChatRoutes = () => [
       element={<ChatPage />}
     />
     <Route
+      path=":groupType"
+      element={<ChatPage />}
+    />
+    <Route
       path=":groupType/:groupName"
       element={<ChatPage />}
     />

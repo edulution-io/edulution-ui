@@ -25,9 +25,10 @@ import { Cache } from 'cache-manager';
 import CHAT_TYPES from '@libs/chat/constants/chatTypes';
 import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
-import GROUP_TYPES from '@libs/chat/constants/groupTypes';
-import GroupType from '@libs/chat/types/groupType';
+import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
+import type AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import PUSH_NOTIFICATION_CHANNEL_ID from '@libs/notification/constants/pushNotificationChannelId';
@@ -53,10 +54,10 @@ class ChatService {
 
   async getAuthorizedConversation(
     groupName: string,
-    groupType: GroupType,
+    sophomorixType: string,
     username: string,
   ): Promise<ConversationDocument> {
-    await this.verifyGroupAccess(groupName, groupType, username);
+    await this.verifyGroupAccess(groupName, sophomorixType, username);
 
     const conversation = await this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName });
 
@@ -64,7 +65,7 @@ class ChatService {
       throw new CustomHttpException(
         CHAT_ERROR_MESSAGES.CONVERSATION_NOT_FOUND,
         HttpStatus.NOT_FOUND,
-        { groupName, groupType },
+        { groupName, sophomorixType },
         ChatService.name,
       );
     }
@@ -74,10 +75,10 @@ class ChatService {
 
   async getOrCreateAuthorizedConversation(
     groupName: string,
-    groupType: GroupType,
+    sophomorixType: string,
     username: string,
   ): Promise<{ conversation: ConversationDocument; members: string[] }> {
-    const members = await this.verifyGroupAccess(groupName, groupType, username);
+    const members = await this.verifyGroupAccess(groupName, sophomorixType, username);
 
     const conversation = await this.conversationModel.findOneAndUpdate(
       { type: CHAT_TYPES.GROUP, groupName },
@@ -85,7 +86,7 @@ class ChatService {
         $setOnInsert: {
           type: CHAT_TYPES.GROUP,
           groupName,
-          groupType,
+          sophomorixType,
         },
       },
       { upsert: true, new: true },
@@ -101,7 +102,7 @@ class ChatService {
   async sendMessage(
     conversationId: string,
     groupName: string,
-    groupType: GroupType,
+    sophomorixType: string,
     content: string,
     currentUser: JwtUser,
     members: string[],
@@ -117,7 +118,7 @@ class ChatService {
 
     await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
 
-    await this.notifyGroupMembers(members, groupName, groupType, message);
+    await this.notifyGroupMembers(members, groupName, sophomorixType, message);
 
     return message;
   }
@@ -125,19 +126,19 @@ class ChatService {
   private async notifyGroupMembers(
     members: string[],
     groupName: string,
-    groupType: GroupType,
+    sophomorixType: string,
     message: ChatMessageDocument,
   ): Promise<void> {
     if (members.length === 0) {
       return;
     }
 
-    const payload = { ...message.toJSON(), groupName, groupType };
+    const payload = { ...message.toJSON(), groupName, sophomorixType };
     this.sseService.sendEventToUsers(members, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
     const recipients = members.filter((member) => member !== message.createdBy);
     if (recipients.length > 0) {
-      const sourceId = `${groupType}/${groupName}`;
+      const sourceId = `${sophomorixType}/${groupName}`;
 
       await this.notificationsService.upsertNotificationForSource(
         recipients,
@@ -146,7 +147,7 @@ class ChatService {
           subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
           body: message.content,
           channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
-          data: { groupName, groupType, conversationId: message.conversationId.toString() },
+          data: { groupName, sophomorixType, conversationId: message.conversationId.toString() },
         },
         message.createdBy,
         {
@@ -161,57 +162,34 @@ class ChatService {
     }
   }
 
-  private async verifyGroupAccess(groupName: string, groupType: GroupType, username: string): Promise<string[]> {
-    const groups = await this.fetchGroupsFromCache(groupName, groupType);
+  private static readonly CACHE_PATH_PREFIX: Record<AllowedChatSophomorixType, string> = {
+    [SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS]: '/',
+    [SOPHOMORIX_GROUP_TYPES.PROJECT]: PROJECTS_PREFIX,
+  };
 
-    const hasAccess = groups.some((group) => group?.members?.some((member) => member.username === username));
-
-    if (!hasAccess) {
+  private async verifyGroupAccess(groupName: string, sophomorixType: string, username: string): Promise<string[]> {
+    if (!isAllowedChatSophomorixType(sophomorixType)) {
       throw new CustomHttpException(
-        CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
-        HttpStatus.FORBIDDEN,
-        { groupName, groupType },
+        CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE,
+        HttpStatus.BAD_REQUEST,
+        { sophomorixType },
         ChatService.name,
       );
     }
 
-    return ChatService.resolveMembers(groups);
-  }
+    const cachePath = `${ChatService.CACHE_PATH_PREFIX[sophomorixType]}${groupName}`;
+    const group = await this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${cachePath}`);
 
-  private async fetchGroupsFromCache(groupName: string, groupType: GroupType): Promise<(GroupWithMembers | null)[]> {
-    const pathsToCheck = ChatService.getGroupPaths(groupName, groupType);
-
-    return Promise.all(
-      pathsToCheck.map((path) => this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${path}`)),
-    );
-  }
-
-  private static resolveMembers(groups: (GroupWithMembers | null)[]): string[] {
-    const allMembers = new Set<string>();
-
-    groups.forEach((group) => {
-      group?.members?.forEach((member) => allMembers.add(member.username));
-    });
-
-    return Array.from(allMembers);
-  }
-
-  private static getGroupPaths(groupName: string, groupType: GroupType): string[] {
-    const name = groupName.startsWith('/') ? groupName.substring(1) : groupName;
-
-    switch (groupType) {
-      case GROUP_TYPES.PROJECT:
-        return [`${PROJECTS_PREFIX}${name}`];
-      case GROUP_TYPES.CLASS:
-        return [`/${name}`];
-      default:
-        throw new CustomHttpException(
-          CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE,
-          HttpStatus.BAD_REQUEST,
-          { groupType },
-          ChatService.name,
-        );
+    if (!group?.members?.some((m) => m.username === username)) {
+      throw new CustomHttpException(
+        CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
+        HttpStatus.FORBIDDEN,
+        { groupName, sophomorixType },
+        ChatService.name,
+      );
     }
+
+    return group.members.map((m) => m.username);
   }
 }
 

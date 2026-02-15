@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,10 +25,10 @@ import { faComments } from '@fortawesome/free-solid-svg-icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useChatStore from '@/store/useChatStore';
-import useAiChatStore from '@/store/useAiChatStore';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import ChatContent from './components/ChatContent';
+import useRegisterChatSections from './useRegisterChatSections';
 
 const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
   Object.values(CHAT_GROUP_TYPE_LOCATIONS).includes(value as GroupTypeLocation);
@@ -37,12 +37,7 @@ const ChatPage = () => {
   const { t } = useTranslation();
   const { groupType, groupName, chatId } = useParams<{ groupType: string; groupName: string; chatId: string }>();
   const { isLoadingGroups } = useChatStore();
-  const { fetchConversations, fetchConfig } = useAiChatStore();
-
-  useEffect(() => {
-    void fetchConversations();
-    void fetchConfig();
-  }, [fetchConversations, fetchConfig]);
+  useRegisterChatSections();
 
   const renderContent = () => {
     if (chatId) {

@@ -20,7 +20,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import ChatType from '@libs/chat/types/chatType';
-import GroupType from '@libs/chat/types/groupType';
 
 export type ConversationDocument = Conversation & Document;
 
@@ -33,7 +32,7 @@ export class Conversation {
   groupName: string;
 
   @Prop({ type: String, required: true })
-  groupType: GroupType;
+  sophomorixType: string;
 
   @Prop({ type: Date, index: true })
   lastMessageAt: Date;

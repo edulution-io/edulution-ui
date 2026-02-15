@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import GROUP_TYPES from '@libs/chat/constants/groupTypes';
+import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
 
-type GroupType = (typeof GROUP_TYPES)[keyof typeof GROUP_TYPES];
+type NotificationCounterVariant = (typeof NOTIFICATION_COUNTER_VARIANTS)[keyof typeof NOTIFICATION_COUNTER_VARIANTS];
 
-export default GroupType;
+export default NotificationCounterVariant;

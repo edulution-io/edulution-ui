@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import GROUP_TYPES from '@libs/chat/constants/groupTypes';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
 const GROUP_TYPE_TO_LOCATION: Record<string, string> = {
-  [GROUP_TYPES.CLASS]: CHAT_GROUP_TYPE_LOCATIONS.CLASSES,
-  [GROUP_TYPES.PROJECT]: CHAT_GROUP_TYPE_LOCATIONS.PROJECTS,
+  [SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS]: CHAT_GROUP_TYPE_LOCATIONS.CLASSES,
+  [SOPHOMORIX_GROUP_TYPES.PROJECT]: CHAT_GROUP_TYPE_LOCATIONS.PROJECTS,
 };
 
 export default GROUP_TYPE_TO_LOCATION;

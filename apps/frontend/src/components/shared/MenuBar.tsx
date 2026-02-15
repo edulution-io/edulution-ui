@@ -272,7 +272,7 @@ const MenuBar: React.FC = () => {
               <div className="overflow-hidden">
                 <div className="ml-2">
                   {item.children!.map((child) => {
-                    const isChildActive = activeSection === child.id;
+                    const isChildActive = activeSection === child.id || pathParts.includes(child.id);
                     return (
                       <Button
                         key={child.id}

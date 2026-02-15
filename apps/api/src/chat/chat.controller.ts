@@ -21,7 +21,6 @@ import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Que
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
-import GroupType from '@libs/chat/types/groupType';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
@@ -43,9 +42,9 @@ class ChatController {
     return this.groupsService.getUserGroupsAndProjects(currentUser.preferred_username);
   }
 
-  @Get('conversations/:groupType/:groupName/messages')
+  @Get('conversations/:sophomorixType/:groupName/messages')
   async getMessages(
-    @Param('groupType') groupType: GroupType,
+    @Param('sophomorixType') sophomorixType: string,
     @Param('groupName') groupName: string,
     @GetCurrentUser() currentUser: JwtUser,
     @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
@@ -53,30 +52,30 @@ class ChatController {
   ): Promise<ChatMessageDocument[]> {
     const conversation = await this.chatService.getAuthorizedConversation(
       groupName,
-      groupType,
+      sophomorixType,
       currentUser.preferred_username,
     );
 
     return this.chatService.getMessages(conversation.id as string, limit, offset);
   }
 
-  @Post('conversations/:groupType/:groupName/messages')
+  @Post('conversations/:sophomorixType/:groupName/messages')
   async sendMessage(
-    @Param('groupType') groupType: GroupType,
+    @Param('sophomorixType') sophomorixType: string,
     @Param('groupName') groupName: string,
     @Body() dto: CreateMessageDto,
     @GetCurrentUser() currentUser: JwtUser,
   ): Promise<ChatMessageDocument> {
     const { conversation, members } = await this.chatService.getOrCreateAuthorizedConversation(
       groupName,
-      groupType,
+      sophomorixType,
       currentUser.preferred_username,
     );
 
     return this.chatService.sendMessage(
       conversation.id as string,
       groupName,
-      groupType,
+      sophomorixType,
       dto.content,
       currentUser,
       members,

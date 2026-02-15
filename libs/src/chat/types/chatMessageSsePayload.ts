@@ -21,7 +21,7 @@ import ChatMessage from './chatMessage';
 
 interface ChatMessageSsePayload extends ChatMessage {
   groupName: string;
-  groupType: string;
+  sophomorixType: string;
 }
 
 export default ChatMessageSsePayload;

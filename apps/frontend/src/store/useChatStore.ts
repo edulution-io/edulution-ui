@@ -29,15 +29,15 @@ interface ChatStore {
   isLoading: boolean;
   isSending: boolean;
   error: string | null;
-  currentGroupType: string | null;
+  currentSophomorixType: string | null;
   currentGroupName: string | null;
   userGroups: UserChatGroups | null;
   isLoadingGroups: boolean;
 
   fetchUserGroups: () => Promise<void>;
-  fetchMessages: (groupType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
-  sendMessage: (groupType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
-  setCurrentConversation: (groupType: string, groupName: string) => void;
+  fetchMessages: (sophomorixType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
+  sendMessage: (sophomorixType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
+  setCurrentConversation: (sophomorixType: string, groupName: string) => void;
   addMessage: (message: ChatMessage) => void;
 }
 
@@ -48,7 +48,7 @@ const initialState = {
   isLoading: false,
   isSending: false,
   error: null,
-  currentGroupType: null,
+  currentSophomorixType: null,
   currentGroupName: null,
   userGroups: null,
   isLoadingGroups: false,
@@ -72,17 +72,17 @@ const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  fetchMessages: async (groupType, groupName, limit = DEFAULT_LIMIT, offset = 0) => {
+  fetchMessages: async (sophomorixType, groupName, limit = DEFAULT_LIMIT, offset = 0) => {
     set({ isLoading: true, error: null });
 
     try {
-      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${encodeURIComponent(groupName)}/messages`;
+      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}/messages`;
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
         params: { limit, offset },
       });
 
-      const { currentGroupType, currentGroupName } = get();
-      if (currentGroupType !== groupType || currentGroupName !== groupName) return;
+      const { currentSophomorixType, currentGroupName } = get();
+      if (currentSophomorixType !== sophomorixType || currentGroupName !== groupName) return;
 
       const messages = [...response.data].reverse();
 
@@ -94,11 +94,11 @@ const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  sendMessage: async (groupType, groupName, content) => {
+  sendMessage: async (sophomorixType, groupName, content) => {
     set({ isSending: true, error: null });
 
     try {
-      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${encodeURIComponent(groupName)}/messages`;
+      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}/messages`;
       const response = await eduApi.post<ChatMessage>(endpoint, { content });
 
       const newMessage = response.data;
@@ -116,12 +116,12 @@ const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  setCurrentConversation: (groupType, groupName) => {
-    const { currentGroupType, currentGroupName } = get();
+  setCurrentConversation: (sophomorixType, groupName) => {
+    const { currentSophomorixType, currentGroupName } = get();
 
-    if (currentGroupType !== groupType || currentGroupName !== groupName) {
+    if (currentSophomorixType !== sophomorixType || currentGroupName !== groupName) {
       set({
-        currentGroupType: groupType,
+        currentSophomorixType: sophomorixType,
         currentGroupName: groupName,
         messages: [],
       });

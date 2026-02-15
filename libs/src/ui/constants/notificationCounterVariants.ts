@@ -17,14 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES = {
-  SCHOOL_CLASS: 'schoolclass',
-  PARENTS: 'parents',
-  TEACHERS: 'teachers',
-  STAFF_MEMBERS: 'staffmembers',
-  DEVICES: 'devices',
-  PROJECTS: 'projects',
-  STUDENTS: 'students',
+const NOTIFICATION_COUNTER_VARIANTS = {
+  RED: 'bg-ciRed',
+  PRIMARY: 'bg-primary',
 } as const;
 
-export default SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES;
+export default NOTIFICATION_COUNTER_VARIANTS;

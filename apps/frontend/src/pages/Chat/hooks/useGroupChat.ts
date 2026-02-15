@@ -20,8 +20,8 @@
 import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
-import GROUP_TYPES from '@libs/chat/constants/groupTypes';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import useChatStore from '@/store/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -29,9 +29,9 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
-const locationToGroupType: Record<GroupTypeLocation, string> = {
-  [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: GROUP_TYPES.CLASS,
-  [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: GROUP_TYPES.PROJECT,
+const locationToSophomorixType: Record<GroupTypeLocation, string> = {
+  [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS,
+  [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: SOPHOMORIX_GROUP_TYPES.PROJECT,
 };
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
@@ -41,27 +41,27 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   const user = useUserStore((state) => state.user);
   const currentUsername = user?.username;
 
-  const groupType = locationToGroupType[groupTypeLocation];
+  const sophomorixType = locationToSophomorixType[groupTypeLocation];
 
   const groupNameRef = useRef(groupName);
-  const groupTypeRef = useRef(groupType);
+  const sophomorixTypeRef = useRef(sophomorixType);
 
   useEffect(() => {
     groupNameRef.current = groupName;
-    groupTypeRef.current = groupType;
-  }, [groupName, groupType]);
+    sophomorixTypeRef.current = sophomorixType;
+  }, [groupName, sophomorixType]);
 
   useEffect(() => {
-    setCurrentConversation(groupType, groupName);
-    void fetchMessages(groupType, groupName);
-  }, [groupType, groupName, setCurrentConversation, fetchMessages]);
+    setCurrentConversation(sophomorixType, groupName);
+    void fetchMessages(sophomorixType, groupName);
+  }, [sophomorixType, groupName, setCurrentConversation, fetchMessages]);
 
   const handleNewMessage = useCallback(
     (e: MessageEvent<string>) => {
       try {
         const payload = JSON.parse(e.data) as ChatMessageSsePayload;
 
-        if (payload.groupName !== groupNameRef.current || payload.groupType !== groupTypeRef.current) {
+        if (payload.groupName !== groupNameRef.current || payload.sophomorixType !== sophomorixTypeRef.current) {
           return;
         }
 
@@ -88,9 +88,9 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
       const messageContent = input.trim();
       setInput('');
 
-      await sendMessage(groupType, groupName, messageContent);
+      await sendMessage(sophomorixType, groupName, messageContent);
     },
-    [input, isSending, groupType, groupName, sendMessage],
+    [input, isSending, sophomorixType, groupName, sendMessage],
   );
 
   return {
