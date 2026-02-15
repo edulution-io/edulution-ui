@@ -17,9 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GROUP_TYPES = {
-  CLASS: 'class',
-  PROJECT: 'project',
-} as const;
+import ALLOWED_CHAT_SOPHOMORIX_TYPES from '@libs/chat/constants/allowedChatSophomorixTypes';
+import AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
 
-export default GROUP_TYPES;
+const isAllowedChatSophomorixType = (value: string): value is AllowedChatSophomorixType =>
+  ALLOWED_CHAT_SOPHOMORIX_TYPES.includes(value as AllowedChatSophomorixType);
+
+export default isAllowedChatSophomorixType;

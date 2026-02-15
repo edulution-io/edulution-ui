@@ -17,14 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES = {
-  SCHOOL_CLASS: 'schoolclass',
-  PARENTS: 'parents',
-  TEACHERS: 'teachers',
-  STAFF_MEMBERS: 'staffmembers',
-  DEVICES: 'devices',
-  PROJECTS: 'projects',
-  STUDENTS: 'students',
-} as const;
+import ALLOWED_CHAT_SOPHOMORIX_TYPES from '@libs/chat/constants/allowedChatSophomorixTypes';
 
-export default SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES;
+type AllowedChatSophomorixType = (typeof ALLOWED_CHAT_SOPHOMORIX_TYPES)[number];
+
+export default AllowedChatSophomorixType;

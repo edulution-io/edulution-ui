@@ -24,9 +24,9 @@ const toChatRoute = (sourceId: string): string => {
   if (separatorIndex === -1) {
     return sourceId;
   }
-  const groupType = sourceId.substring(0, separatorIndex);
+  const sophomorixType = sourceId.substring(0, separatorIndex);
   const groupName = sourceId.substring(separatorIndex + 1);
-  const location = GROUP_TYPE_TO_LOCATION[groupType];
+  const location = GROUP_TYPE_TO_LOCATION[sophomorixType];
   return location ? `${location}/${groupName}` : sourceId;
 };
 

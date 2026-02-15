@@ -17,26 +17,48 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixSchoolClassGroupTypes';
+const SOPHOMORIX_GROUP_TYPES = {
+  ADMIN_CLASS: 'adminclass',
+  TEACHER_CLASS: 'teacherclass',
+  EXTRA_CLASS: 'extraclass',
+  PROJECT: 'project',
+  SOPHOMORIX_GROUP: 'sophomorix-group',
 
-const SOPHOMORIX_OTHER_GROUP_TYPES = {
+  ROOM: 'room',
+  PRINTER: 'printer',
+  ADMINS: 'admins',
+  SCHOOL: 'school',
+  POWER_GROUP: 'powergroup',
+
+  OU_CLASS: 'ouclass',
+  ALL_CLASS: 'allclass',
+  ALL_SCHOOL: 'allschool',
+  ALL_ADMINS: 'alladmins',
+
+  INTERNET_ACCESS: 'internetaccess',
+  WIFI_ACCESS: 'wifiaccess',
+  WEBFILTER: 'webfilter',
+  INTRANET_ACCESS: 'intranetaccess',
+  PRINTING: 'printing',
+
   STUDENT: 'student',
   TEACHER: 'teacher',
-  PROJECT: 'project',
-  UNKNOWN: 'unknown',
   DEVICE: 'device',
+  UNKNOWN: 'unknown',
   GLOBALBINDUSER: 'globalbinduser',
   GLOBALADMINISTRATOR: 'globaladministrator',
   SCHOOLBINDUSER: 'schoolbinduser',
   SCHOOLADMINISTRATOR: 'schooladministrator',
   CLASSROOM_STUDENTCOMPUTER: 'classroom-studentcomputer',
   SERVER: 'server',
-  PRINTER: 'printer',
-} as const;
 
-const SOPHOMORIX_GROUP_TYPES = {
-  ...SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES,
-  ...SOPHOMORIX_OTHER_GROUP_TYPES,
+  SCHOOL_CLASS: 'schoolclass',
+  PARENTS: 'parents',
+  TEACHERS: 'teachers',
+  STAFF_MEMBERS: 'staffmembers',
+  DEVICES: 'devices',
+  PROJECTS: 'projects',
+  STUDENTS: 'students',
 } as const;
 
 export default SOPHOMORIX_GROUP_TYPES;

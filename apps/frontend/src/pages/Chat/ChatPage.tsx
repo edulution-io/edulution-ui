@@ -28,6 +28,7 @@ import useChatStore from '@/store/useChatStore';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import ChatContent from './components/ChatContent';
+import useRegisterChatSections from './useRegisterChatSections';
 
 const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
   Object.values(CHAT_GROUP_TYPE_LOCATIONS).includes(value as GroupTypeLocation);
@@ -36,6 +37,7 @@ const ChatPage = () => {
   const { t } = useTranslation();
   const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
   const { isLoadingGroups } = useChatStore();
+  useRegisterChatSections();
 
   return (
     <PageLayout hasFullWidthMain>
