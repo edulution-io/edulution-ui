@@ -29,6 +29,7 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -37,10 +38,14 @@ import APPS from '@libs/appconfig/constants/apps';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
+import ChatFeatureGuard from '../common/guards/chatFeature.guard';
 import AiChatService from './aichat.service';
 
 @ApiTags(APPS.AICHAT)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.CHAT)
+@UseGuards(ChatFeatureGuard)
 @Controller(APPS.AICHAT)
 class AiChatController {
   constructor(private readonly aiChatService: AiChatService) {}
