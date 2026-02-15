@@ -28,6 +28,7 @@ import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu'
 import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
+import useChatMenuConfig from '@/pages/Chat/useChatMenuConfig';
 import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
@@ -46,6 +47,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
+  const CHAT_MENUBAR_CONFIG = useChatMenuConfig();
   const { sections } = useSubMenuStore();
   const { scrollToSection } = useScrollToSection();
 
@@ -74,6 +76,9 @@ const useMenuBarConfig = (): MenuBarEntry => {
       case APPS.CLASS_MANAGEMENT: {
         return CLASS_MANAGEMENT_MENUBAR_CONFIG;
       }
+      case APPS.CHAT: {
+        return CHAT_MENUBAR_CONFIG;
+      }
       default: {
         return defaultReturnMenuBarEntry;
       }
@@ -99,14 +104,17 @@ const useMenuBarConfig = (): MenuBarEntry => {
 
   const menuItems: MenuItem[] = useMemo(
     () =>
-      configValues.menuItems.map((item) => ({
-        id: item.id,
-        label: item.disableTranslation ? item.label : t(item.label),
-        action: () => item.action(),
-        icon: item.icon,
-        disableTranslation: item.disableTranslation,
-        children: item.id === activeMenuItemId ? sectionChildren : undefined,
-      })),
+      configValues.menuItems.map((item) => {
+        const itemChildren = item.children ?? (item.id === activeMenuItemId ? sectionChildren : undefined);
+        return {
+          id: item.id,
+          label: item.disableTranslation ? item.label : t(item.label),
+          action: () => item.action?.(),
+          icon: item.icon,
+          disableTranslation: item.disableTranslation,
+          children: itemChildren,
+        };
+      }),
     [configValues.menuItems, t, activeMenuItemId, sectionChildren],
   );
 

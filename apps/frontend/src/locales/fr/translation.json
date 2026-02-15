@@ -10,6 +10,29 @@
   "public": "Publique",
   "actions": "Actions",
   "logo": "Logo",
+  "chat": {
+    "title": "Chat",
+    "sidebar": "Chat",
+    "conversationWith": "Conversation avec",
+    "selectConversation": "Sélectionner une conversation",
+    "chatWith": "Chat avec",
+    "schoolClass": "Classe",
+    "schoolClasses": "Classes",
+    "project": "Projet",
+    "projects": "Projets",
+    "selectFromSidebar": "Sélectionnez une classe ou un projet dans la barre latérale",
+    "noMessages": "Aucun message pour le moment",
+    "startConversation": "Écrivez le premier message",
+    "inputPlaceholder": "Tapez un message...",
+    "error": "Erreur",
+    "errors": {
+      "conversationNotFound": "Conversation introuvable",
+      "unauthorizedAccess": "Accès non autorisé",
+      "messageSendFailed": "Échec de l'envoi du message",
+      "invalidGroupType": "Type de groupe invalide"
+    },
+    "refreshGroups": "Actualiser les groupes"
+  },
   "bulletinboard": {
     "settings": "Paramètres",
     "noBulletinsToShow": "Il n'y a actuellement aucun message à afficher, il est préférable de passer à nouveau plus tard!",
@@ -255,10 +278,6 @@
       "confirmDeleteProviderConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de fournisseur de messagerie ? Cette action ne peut pas être annulée.",
       "deleteProviderConfig": "Supprimer la configuration du fournisseur de messagerie"
     }
-  },
-  "chat": {
-    "title": "Chat",
-    "sidebar": "Chat"
   },
   "errors": {
     "unexpectedError": "Une erreur inattendue s'est produite",

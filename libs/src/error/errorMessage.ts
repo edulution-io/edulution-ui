@@ -37,6 +37,7 @@ import TGlobalSettingsErrorMessages from '@libs/global-settings/types/globalSett
 import TLDrawSyncErrorMessagesType from '@libs/tldraw-sync/types/tLDrawSyncErrorMessagesType';
 import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
 import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
+import ChatErrorMessages from '@libs/chat/types/chatErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -58,6 +59,7 @@ type ErrorMessage =
   | TLDrawSyncErrorMessagesType
   | TGlobalSettingsErrorMessages
   | PathValidationErrorMessages
-  | WireguardErrorMessages;
+  | WireguardErrorMessages
+  | ChatErrorMessages;
 
 export default ErrorMessage;
