@@ -22,7 +22,7 @@ import { Table } from '@tanstack/react-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDownAZ, faArrowUpAZ, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { cn, Button } from '@edulution-io/ui-kit';
+import { cn , Button } from '@edulution-io/ui-kit';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 

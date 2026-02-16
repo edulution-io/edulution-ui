@@ -19,7 +19,7 @@
 
 /* eslint-disable react/no-danger */
 import React, { useEffect } from 'react';
-import { Button, cn } from '@edulution-io/ui-kit';
+import { Button , cn } from '@edulution-io/ui-kit';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';

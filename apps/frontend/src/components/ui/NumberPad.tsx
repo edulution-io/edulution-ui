@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { cn, Button } from '@edulution-io/ui-kit';
+import { cn , Button } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBackspace } from '@fortawesome/free-solid-svg-icons';
 

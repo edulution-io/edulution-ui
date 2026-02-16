@@ -19,7 +19,7 @@
 
 import React from 'react';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
-import { cn, Button } from '@edulution-io/ui-kit';
+import { cn , Button } from '@edulution-io/ui-kit';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';

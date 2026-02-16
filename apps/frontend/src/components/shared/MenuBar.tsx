@@ -19,7 +19,7 @@
 
 import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import { cn, Button } from '@edulution-io/ui-kit';
+import { cn , Button } from '@edulution-io/ui-kit';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
