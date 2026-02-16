@@ -17,18 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import TApps from '@libs/appconfig/types/appsType';
-import MenuItem from '@libs/menubar/menuItem';
-import MenuBarIcon from '@libs/menubar/menuBarIcon';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
-interface MenuBarEntry {
-  menuItems: MenuItem[];
-  title: string;
-  disabled?: boolean;
-  icon: MenuBarIcon;
-  color: string;
-  appName: TApps;
-  onHeaderClick?: () => void;
-}
+type MenuBarIcon = string | IconDefinition;
 
-export default MenuBarEntry;
+export default MenuBarIcon;
