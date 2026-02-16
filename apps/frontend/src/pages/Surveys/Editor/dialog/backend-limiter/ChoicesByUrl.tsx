@@ -34,6 +34,7 @@ import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog
 import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
@@ -54,6 +55,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     addNewChoice,
     setOrGetInitialChoices,
     deleteBackendLimiters,
+    uploadBackendLimiter,
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
@@ -65,9 +67,24 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     } else {
       delete limiters[selectedQuestion.name];
       form.setValue('backendLimiters', limiters);
-      void deleteBackendLimiters(surveyId);
+      if (surveyId && surveyId !== TEMPORAL_SURVEY_ID_STRING) {
+        void deleteBackendLimiters(surveyId);
+      }
     }
   }, [selectedQuestion, useBackendLimits]);
+
+  useEffect(() => {
+    if (!selectedQuestion) return;
+
+    const limiters = form.watch('backendLimiters') || {};
+    limiters[selectedQuestion.name] = currentChoices;
+    form.setValue('backendLimiters', limiters);
+
+    const surveyId = form.watch('id');
+    if (surveyId && surveyId !== TEMPORAL_SURVEY_ID_STRING) {
+      void uploadBackendLimiter(surveyId, currentChoices);
+    }
+  }, [currentChoices]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [

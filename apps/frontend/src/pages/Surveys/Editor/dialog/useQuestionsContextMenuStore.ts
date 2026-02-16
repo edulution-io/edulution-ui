@@ -47,6 +47,7 @@ interface QuestionsContextMenuStore {
 
   useBackendLimits: boolean;
   toggleUseBackendLimits: (isPublic: boolean) => void;
+  uploadBackendLimiter: (surveyId: string, choices: ChoiceDto[]) => Promise<void>;
   deleteBackendLimiters: (surveyId?: string) => Promise<void>;
 
   setOrGetInitialChoices: (surveyId?: string, currentChoices?: ChoiceDto[]) => Promise<void>;
@@ -162,12 +163,19 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
   },
 
+  uploadBackendLimiter: async (surveyId: string, choices: ChoiceDto[]) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+    try {
+      await eduApi.post<ChoiceDto[]>(`${SURVEY_CHOICES}/${surveyId}/${selectedQuestion.name}`, choices);
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
+
   deleteBackendLimiters: async (surveyId?: string) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
-    if (!surveyId || surveyId === TEMPORAL_SURVEY_ID_STRING) {
-      return;
-    }
     try {
       await eduApi.delete(`${SURVEY_CHOICES}/${surveyId}/${selectedQuestion.name}`);
     } catch (error) {

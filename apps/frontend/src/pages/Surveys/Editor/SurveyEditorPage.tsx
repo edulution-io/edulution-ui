@@ -192,13 +192,16 @@ const SurveyEditorPage = () => {
 
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;
+    const shouldUploadBackendLimiters = form.watch('id') === undefined;
     const resultingSurveyId = await updateOrCreateSurvey({
       ...form.getValues(),
       formula,
       saveNo,
     });
     if (resultingSurveyId) {
-      await uploadBackendLimiters(resultingSurveyId, form.watch('backendLimiters') || {});
+      if (shouldUploadBackendLimiters) {
+        await uploadBackendLimiters(resultingSurveyId, form.watch('backendLimiters') || {});
+      }
 
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);

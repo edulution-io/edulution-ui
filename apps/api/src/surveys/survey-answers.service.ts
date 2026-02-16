@@ -28,7 +28,7 @@ import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
-import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/show-other-item';
+import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/surveyjs-comment-suffix';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
@@ -126,9 +126,6 @@ class SurveyAnswersService implements OnModuleInit {
             `${questionName}${SURVEYJS_COMMENT_SUFFIX}`,
             choice.title,
           );
-          if (choice.limit === 0 || counter < choice.limit) {
-            filteredChoices.push(choice);
-          }
         }
         counter += await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
         if (choice.limit === 0 || counter < choice.limit) {
