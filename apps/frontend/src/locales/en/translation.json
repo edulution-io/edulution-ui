@@ -750,11 +750,23 @@
       "template": {
         "title": "Templates",
         "label": "Save as template",
-        "save": "Save template",
         "noTemplates": "No templates available",
         "noSearchResults": "No templates found",
         "searchPlaceholder": "Type to filter templates by name ...",
         "preview": "Preview",
+        "save": {
+          "title": "Save template",
+          "submit": "Save template",
+          "name": {
+            "label": "Template name",
+            "description": "If this field is left empty, the survey title will be used.",
+            "placeholder": "Survey title"
+          },
+          "accessGroups": {
+            "label": "Access groups",
+            "description": "Select the groups that can access this template. If no group is selected, the template is accessible to all users."
+          }
+        },
         "upload": {
           "success": "Template saved successfully",
           "error": "Failed to save template"
@@ -881,6 +893,7 @@
     },
     "saveDialog": {
       "title": "Save and assign to participants",
+      "surveySettings": "Survey settings",
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "isPublic": "Should the survey be public?",

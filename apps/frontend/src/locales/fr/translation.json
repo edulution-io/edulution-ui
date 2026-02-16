@@ -657,11 +657,23 @@
       "template": {
         "title": "Modèle",
         "label": "Enregistrer le modèle",
-        "save": "Enregistrer le modèle",
         "noTemplates": "Aucun modèle disponible",
         "noSearchResults": "Aucun modèle trouvé",
         "searchPlaceholder": "Tapez pour filtrer les modèles par nom ...",
         "preview": "Aperçu du modèle",
+        "save": {
+          "title": "Enregistrer le modèle",
+          "submit": "Enregistrer le modèle de sondage",
+          "name": {
+            "label": "Nom du modèle",
+            "description": "Si ce champ est laissé vide, le titre du sondage sera utilisé.",
+            "placeholder": "Titre du sondage"
+          },
+          "accessGroups": {
+            "label": "Groupes d'accès",
+            "description": "Sélectionnez les groupes qui peuvent accéder à ce modèle. Si aucun groupe n'est sélectionné, le modèle est accessible à tous les utilisateurs."
+          }
+        },
         "upload": {
           "success": "Modèle enregistré avec succès",
           "error": "Échec de l'enregistrement du modèle"
@@ -764,6 +776,7 @@
     },
     "saveDialog": {
       "title": "Enregistrer et affecter les utilisateurs",
+      "surveySettings": "Paramètres du sondage",
       "settingsFlags": "Paramètres",
       "isAnonymous": "Le sondage doit-elle être anonyme?",
       "isPublic": "Le sondage doit-elle être publique?",

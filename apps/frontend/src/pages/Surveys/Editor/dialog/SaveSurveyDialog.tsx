@@ -56,7 +56,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (form.watch('saveAsTemplate')) {
+        if (form.watch('shouldSaveAsTemplate')) {
           handleSaveTemplate();
         } else {
           submitSurvey();
@@ -67,7 +67,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
         handleClose={handleClose}
         handleSubmit={() => {}}
         disableSubmit={isSubmitting}
-        submitButtonText={form.watch('saveAsTemplate') ? 'survey.editor.template.save' : 'common.save'}
+        submitButtonText={form.watch('shouldSaveAsTemplate') ? 'survey.editor.template.save.submit' : 'common.save'}
         submitButtonType="submit"
       />
     </form>

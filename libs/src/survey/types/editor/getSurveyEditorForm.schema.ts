@@ -146,7 +146,7 @@ const getSurveyEditorFormSchema = () =>
     isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
     canUpdateFormerAnswer: z.boolean().optional(),
-    saveAsTemplate: z.boolean().optional(),
+    shouldSaveAsTemplate: z.boolean().optional(),
   });
 
 export default getSurveyEditorFormSchema;

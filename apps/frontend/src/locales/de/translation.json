@@ -751,12 +751,24 @@
       "isLoadingSurvey": "Umfrage wird geladen...",
       "template": {
         "title": "Vorlagen",
-        "save": "Vorlage speichern",
         "label": "Als Vorlage speichern",
         "noTemplates": "Es sind keine Vorlagen vorhanden",
         "noSearchResults": "Keine Vorlage gefunden",
         "searchPlaceholder": "Tippen um Vorlagen nach dem Namen zu filtern...",
         "preview": "Vorschau",
+        "save": {
+          "title": "Vorlage speichern",
+          "submit": "Vorlage speichern",
+          "name": {
+            "label": "Name der Vorlage",
+            "description": "Wird dieses Feld leer gelassen, wird der Umfragetitel verwendet.",
+            "placeholder": "Umfragetitel"
+          },
+          "accessGroups": {
+            "label": "Zugriffsgruppen",
+            "description": "Wähle die Gruppen aus, die auf diese Vorlage zugreifen können. Sollte keine Gruppe ausgewählt werden, ist die Vorlage für alle Benutzer zugänglich."
+          }
+        },
         "upload": {
           "success": "Vorlage erfolgreich gespeichert",
           "error": "Die Vorlage konnte nicht gespeichert werden"
@@ -883,6 +895,7 @@
     },
     "saveDialog": {
       "title": "Speichern und Benutzern zuweisen",
+      "surveySettings": "Umfrage Einstellungen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",
