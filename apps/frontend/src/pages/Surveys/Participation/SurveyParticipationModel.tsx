@@ -242,7 +242,14 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
     });
 
-    newModel.onValueChanged.add((sender: SurveyModel, options: ValueChangedEvent) => {
+    return newModel;
+  }, [selectedSurvey, language]);
+
+  useEffect(() => {
+    if (!surveyParticipationModel || !selectedSurvey?.id) {
+      return undefined;
+    }
+    const handler = (sender: SurveyModel, options: ValueChangedEvent) => {
       const { name } = options;
       if (!name.endsWith(SURVEYJS_COMMENT_SUFFIX)) {
         return;
@@ -258,10 +265,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
       const isSurveyPublic = selectedSurvey.isPublic || isPublic || false;
       debouncedSubmitOtherChoice(selectedSurvey.id!, questionName, otherValue, isSurveyPublic);
-    });
-
-    return newModel;
-  }, [selectedSurvey, language, debouncedSubmitOtherChoice]);
+    };
+    surveyParticipationModel.onValueChanged.add(handler);
+    return () => {
+      surveyParticipationModel.onValueChanged.remove(handler);
+    };
+  }, [surveyParticipationModel, selectedSurvey, isPublic, debouncedSubmitOtherChoice]);
 
   useEffect(() => {
     if (!selectedSurvey?.id) {

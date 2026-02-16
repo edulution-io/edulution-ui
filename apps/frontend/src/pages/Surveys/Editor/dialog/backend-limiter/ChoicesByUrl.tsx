@@ -59,25 +59,15 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   useEffect(() => {
     if (!selectedQuestion) return;
     const surveyId = form.watch('id');
-    const limiters = form.watch('backendLimiters');
+    const limiters = form.watch('backendLimiters') || {};
     if (useBackendLimits) {
-      if (limiters && limiters[selectedQuestion.name]?.length > 0) {
-        void setOrGetInitialChoices(surveyId, limiters[selectedQuestion.name]);
-      }
+      void setOrGetInitialChoices(surveyId, limiters[selectedQuestion.name]);
+    } else {
+      delete limiters[selectedQuestion.name];
+      form.setValue('backendLimiters', limiters);
+      void deleteBackendLimiters(surveyId);
     }
   }, [selectedQuestion, useBackendLimits]);
-
-  useEffect(() => {
-    if (!selectedQuestion) return;
-    const limiters = form.watch('backendLimiters') || {};
-    if (!useBackendLimits || !currentChoices || currentChoices.length === 0) {
-      delete limiters[selectedQuestion.name];
-      void deleteBackendLimiters(form.watch('id'));
-    } else {
-      limiters[selectedQuestion.name] = currentChoices;
-    }
-    form.setValue('backendLimiters', limiters);
-  }, [currentChoices]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [
