@@ -17,12 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GLOBAL_SETTINGS_TABS = {
-  CONTAINER: 'container',
-  GENERAL_SETTINGS: 'global-settings',
-  USER_ADMINISTRATION: 'user-administration',
-  INFO: 'info',
-  AI_SERVICES: 'ai-services',
-} as const;
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import AiServiceController from './ai-service.controller';
+import AiServiceService from './ai-service.service';
+import { AiService, AiServiceSchema } from './ai-service.schema';
 
-export default GLOBAL_SETTINGS_TABS;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: AiService.name, schema: AiServiceSchema }])],
+  controllers: [AiServiceController],
+  providers: [AiServiceService],
+  exports: [AiServiceService],
+})
+export default class AiServiceModule {}

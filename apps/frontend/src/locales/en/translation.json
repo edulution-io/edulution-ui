@@ -1180,6 +1180,29 @@
     "info": {
       "title": "Info"
     },
+    "aiServices": {
+      "title": "AI Services",
+      "provider": "Provider",
+      "model": "Model",
+      "isActive": "Active",
+      "baseUrl": "Base URL",
+      "apiKey": "API Key",
+      "namePlaceholder": "Service name",
+      "baseUrlPlaceholder": "https://...",
+      "apiKeyPlaceholder": "Enter API key",
+      "modelPlaceholder": "Select a model",
+      "loadingModels": "Loading models...",
+      "fetchModelsFailed": "Failed to load available models",
+      "purpose": "Purpose",
+      "searchPlaceholder": "Search AI services...",
+      "createAiService": "Create AI Service",
+      "editAiService": "Edit AI Service",
+      "deleteAiService": "Delete AI Service",
+      "confirmDelete": "Do you really want to delete this AI service?",
+      "createdSuccessfully": "AI service created successfully",
+      "updatedSuccessfully": "AI service updated successfully",
+      "deletedSuccessfully": "AI service deleted successfully"
+    },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {

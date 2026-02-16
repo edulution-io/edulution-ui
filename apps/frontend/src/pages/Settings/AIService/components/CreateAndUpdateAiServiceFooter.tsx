@@ -17,12 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GLOBAL_SETTINGS_TABS = {
-  CONTAINER: 'container',
-  GENERAL_SETTINGS: 'global-settings',
-  USER_ADMINISTRATION: 'user-administration',
-  INFO: 'info',
-  AI_SERVICES: 'ai-services',
-} as const;
+import React from 'react';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
-export default GLOBAL_SETTINGS_TABS;
+interface CreateAndUpdateAiServiceFooterProps {
+  handleFormSubmit: (e: React.FormEvent) => void;
+  isSaveButtonDisabled: boolean;
+  handleDelete: (() => void) | undefined;
+  handleClose: () => void;
+}
+
+const CreateAndUpdateAiServiceFooter = ({
+  handleFormSubmit,
+  isSaveButtonDisabled,
+  handleDelete,
+  handleClose,
+}: CreateAndUpdateAiServiceFooterProps) => (
+  <form onSubmit={handleFormSubmit}>
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={() => {}}
+      handleDelete={handleDelete}
+      submitButtonText="common.save"
+      disableSubmit={isSaveButtonDisabled}
+      submitButtonType="submit"
+    />
+  </form>
+);
+
+export default CreateAndUpdateAiServiceFooter;

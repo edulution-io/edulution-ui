@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GLOBAL_SETTINGS_TABS = {
-  CONTAINER: 'container',
-  GENERAL_SETTINGS: 'global-settings',
-  USER_ADMINISTRATION: 'user-administration',
-  INFO: 'info',
-  AI_SERVICES: 'ai-services',
-} as const;
+import AiProviderType from '@libs/aiService/types/aiProviderType';
 
-export default GLOBAL_SETTINGS_TABS;
+interface FetchAiModelsDto {
+  provider: AiProviderType;
+  baseUrl: string;
+  apiKey: string;
+}
+
+export default FetchAiModelsDto;

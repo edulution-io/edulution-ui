@@ -21,6 +21,7 @@ const AICHAT_ERROR_MESSAGES = {
   CONVERSATION_NOT_FOUND: 'aichat.errors.conversationNotFound',
   UNAUTHORIZED_ACCESS: 'aichat.errors.unauthorizedAccess',
   STREAM_FAILED: 'aichat.errors.streamFailed',
+  NO_ACTIVE_AI_SERVICE: 'aichat.errors.noActiveAiService',
 } as const;
 
 type AiChatErrorMessages = (typeof AICHAT_ERROR_MESSAGES)[keyof typeof AICHAT_ERROR_MESSAGES];

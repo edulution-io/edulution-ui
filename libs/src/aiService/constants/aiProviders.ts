@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GLOBAL_SETTINGS_TABS = {
-  CONTAINER: 'container',
-  GENERAL_SETTINGS: 'global-settings',
-  USER_ADMINISTRATION: 'user-administration',
-  INFO: 'info',
-  AI_SERVICES: 'ai-services',
+const AI_PROVIDERS = {
+  OLLAMA: 'ollama',
+  OPENAI: 'openai',
+  ANTHROPIC: 'anthropic',
+  GOOGLE: 'google',
+  CUSTOM: 'custom',
 } as const;
 
-export default GLOBAL_SETTINGS_TABS;
+export default AI_PROVIDERS;

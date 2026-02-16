@@ -23,11 +23,13 @@ import AiChatController from './aichat.controller';
 import AiChatService from './aichat.service';
 import { AiConversation, AiConversationSchema } from './schemas/aiConversation.schema';
 import { AiChatMessage, AiChatMessageSchema } from './schemas/aiChatMessage.schema';
+import AiServiceModule from '../ai-service/ai-service.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: AiConversation.name, schema: AiConversationSchema }]),
     MongooseModule.forFeature([{ name: AiChatMessage.name, schema: AiChatMessageSchema }]),
+    AiServiceModule,
   ],
   controllers: [AiChatController],
   providers: [AiChatService],

@@ -1043,6 +1043,29 @@
     "info": {
       "title": "Informations"
     },
+    "aiServices": {
+      "title": "Services IA",
+      "provider": "Fournisseur",
+      "model": "Modèle",
+      "isActive": "Actif",
+      "baseUrl": "URL de base",
+      "apiKey": "Clé API",
+      "namePlaceholder": "Nom du service",
+      "baseUrlPlaceholder": "https://...",
+      "apiKeyPlaceholder": "Saisir la clé API",
+      "modelPlaceholder": "Sélectionner un modèle",
+      "loadingModels": "Chargement des modèles...",
+      "fetchModelsFailed": "Impossible de charger les modèles disponibles",
+      "purpose": "Utilisation",
+      "searchPlaceholder": "Rechercher des services IA...",
+      "createAiService": "Créer un service IA",
+      "editAiService": "Modifier le service IA",
+      "deleteAiService": "Supprimer le service IA",
+      "confirmDelete": "Voulez-vous vraiment supprimer ce service IA ?",
+      "createdSuccessfully": "Service IA créé avec succès",
+      "updatedSuccessfully": "Service IA mis à jour avec succès",
+      "deletedSuccessfully": "Service IA supprimé avec succès"
+    },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "deleteEntries": "Supprimer entrée",

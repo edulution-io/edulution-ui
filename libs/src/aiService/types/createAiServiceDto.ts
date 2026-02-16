@@ -17,30 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { createOpenAI } from '@ai-sdk/openai';
-import { customProvider } from 'ai';
+import AiProviderType from '@libs/aiService/types/aiProviderType';
+import AiServicePurposeType from '@libs/aiService/types/aiServicePurposeType';
 
-const OLLAMA_DEFAULT_BASE_URL = 'http://localhost:11434/v1';
-const OLLAMA_DEFAULT_MODEL = 'llama3.2:latest';
+interface CreateAiServiceDto {
+  name: string;
+  provider: AiProviderType;
+  baseUrl: string;
+  apiKey: string;
+  model: string;
+  purpose: AiServicePurposeType;
+  isActive: boolean;
+}
 
-const getOllamaBaseUrl = () => process.env.OLLAMA_BASE_URL || OLLAMA_DEFAULT_BASE_URL;
-const getOllamaModel = () => process.env.OLLAMA_MODEL || OLLAMA_DEFAULT_MODEL;
-
-const createAiProvider = () => {
-  const ollama = createOpenAI({
-    baseURL: getOllamaBaseUrl(),
-    apiKey: 'ollama',
-  });
-
-  const modelId = getOllamaModel();
-
-  return customProvider({
-    languageModels: {
-      chat: ollama(modelId),
-    },
-  });
-};
-
-const AI_PROVIDER_MODEL_ID = 'chat';
-
-export { createAiProvider, AI_PROVIDER_MODEL_ID };
+export default CreateAiServiceDto;

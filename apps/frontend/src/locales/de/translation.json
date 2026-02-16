@@ -1183,6 +1183,29 @@
     "info": {
       "title": "Info"
     },
+    "aiServices": {
+      "title": "KI-Dienste",
+      "provider": "Anbieter",
+      "model": "Modell",
+      "isActive": "Aktiv",
+      "baseUrl": "Basis-URL",
+      "apiKey": "API-Schlüssel",
+      "namePlaceholder": "Dienstname",
+      "baseUrlPlaceholder": "https://...",
+      "apiKeyPlaceholder": "API-Schlüssel eingeben",
+      "modelPlaceholder": "Modell auswählen",
+      "loadingModels": "Modelle werden geladen...",
+      "fetchModelsFailed": "Verfügbare Modelle konnten nicht geladen werden",
+      "purpose": "Verwendungszweck",
+      "searchPlaceholder": "KI-Dienste suchen...",
+      "createAiService": "KI-Dienst erstellen",
+      "editAiService": "KI-Dienst bearbeiten",
+      "deleteAiService": "KI-Dienst löschen",
+      "confirmDelete": "Möchten Sie diesen KI-Dienst wirklich löschen?",
+      "createdSuccessfully": "KI-Dienst erfolgreich erstellt",
+      "updatedSuccessfully": "KI-Dienst erfolgreich aktualisiert",
+      "deletedSuccessfully": "KI-Dienst erfolgreich gelöscht"
+    },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
       "position": {

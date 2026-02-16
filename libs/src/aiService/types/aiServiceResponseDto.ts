@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GLOBAL_SETTINGS_TABS = {
-  CONTAINER: 'container',
-  GENERAL_SETTINGS: 'global-settings',
-  USER_ADMINISTRATION: 'user-administration',
-  INFO: 'info',
-  AI_SERVICES: 'ai-services',
-} as const;
+import CreateAiServiceDto from '@libs/aiService/types/createAiServiceDto';
 
-export default GLOBAL_SETTINGS_TABS;
+interface AiServiceResponseDto extends CreateAiServiceDto {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export default AiServiceResponseDto;

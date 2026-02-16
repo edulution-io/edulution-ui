@@ -39,6 +39,7 @@ import UserAdministration from './UserAdministration';
 import useGlobalSettingsApiStore from '../GlobalSettings/useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from '../GlobalSettings/GlobalSettingsFloatingButtons';
 import InfoPage from '../Info/InfoPage';
+import AiServicePage from '../AIService/AiServicePage';
 
 interface TabOption {
   id: string;
@@ -76,6 +77,7 @@ const TAB_OPTIONS: TabOption[] = [
     ),
   },
   { id: GLOBAL_SETTINGS_TABS.INFO, nameKey: 'settings.info.title', component: () => <InfoPage /> },
+  { id: GLOBAL_SETTINGS_TABS.AI_SERVICES, nameKey: 'settings.aiServices.title', component: () => <AiServicePage /> },
 ];
 
 const showFloatingButtonsTabList: Set<string> = new Set([

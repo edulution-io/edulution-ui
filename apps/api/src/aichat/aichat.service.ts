@@ -22,14 +22,17 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { streamText, UIMessage } from 'ai';
+import type { LanguageModelV3 } from '@ai-sdk/provider';
 import type { ModelMessage, UserModelMessage, AssistantModelMessage } from '@ai-sdk/provider-utils';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import AiChatConfig from '@libs/chat/types/aiChatConfig';
 import { AICHAT_ERROR_MESSAGES } from '@libs/chat/types/aiChatErrorMessages';
+import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
+import AiProviderType from '@libs/aiService/types/aiProviderType';
 import CustomHttpException from '../common/CustomHttpException';
+import AiServiceService from '../ai-service/ai-service.service';
 import { AiConversation, AiConversationDocument } from './schemas/aiConversation.schema';
 import { AiChatMessage, AiChatMessageDocument } from './schemas/aiChatMessage.schema';
-import { createAiProvider, AI_PROVIDER_MODEL_ID } from './aiProvider';
 
 const extractTextFromParts = (parts: UIMessage['parts']): string =>
   parts
@@ -39,12 +42,11 @@ const extractTextFromParts = (parts: UIMessage['parts']): string =>
 
 @Injectable()
 class AiChatService {
-  private readonly aiProvider = createAiProvider();
-
   constructor(
     @InjectModel(AiConversation.name) private aiConversationModel: Model<AiConversationDocument>,
     @InjectModel(AiChatMessage.name) private aiChatMessageModel: Model<AiChatMessageDocument>,
     private readonly configService: ConfigService,
+    private readonly aiServiceService: AiServiceService,
   ) {}
 
   getConfig(): AiChatConfig {
@@ -115,12 +117,14 @@ class AiChatService {
         content: [{ type: 'text', text: extractTextFromParts(msg.parts) }],
       }));
 
+    const model = await this.resolveLanguageModel();
+
     const result = streamText({
-      model: this.aiProvider.languageModel(AI_PROVIDER_MODEL_ID),
+      model,
       messages: modelMessages,
     });
 
-    return { result, conversationId, username };
+    return { result: result as ReturnType<typeof streamText>, conversationId, username };
   }
 
   async saveMessage(
@@ -137,6 +141,24 @@ class AiChatService {
     });
     await this.aiConversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
     return message;
+  }
+
+  private async resolveLanguageModel(): Promise<LanguageModelV3> {
+    const dbConfig = await this.aiServiceService.getActiveServiceForPurpose(AI_SERVICE_PURPOSES.CHAT);
+    if (!dbConfig) {
+      throw new CustomHttpException(
+        AICHAT_ERROR_MESSAGES.NO_ACTIVE_AI_SERVICE,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        {},
+        AiChatService.name,
+      );
+    }
+    return this.aiServiceService.createLanguageModel({
+      provider: dbConfig.provider as AiProviderType,
+      baseUrl: dbConfig.baseUrl,
+      apiKey: dbConfig.apiKey,
+      model: dbConfig.model,
+    });
   }
 
   private async getOwnedConversation(id: string, username: string): Promise<AiConversationDocument> {

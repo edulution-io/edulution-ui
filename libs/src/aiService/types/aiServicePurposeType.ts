@@ -17,12 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GLOBAL_SETTINGS_TABS = {
-  CONTAINER: 'container',
-  GENERAL_SETTINGS: 'global-settings',
-  USER_ADMINISTRATION: 'user-administration',
-  INFO: 'info',
-  AI_SERVICES: 'ai-services',
-} as const;
+import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 
-export default GLOBAL_SETTINGS_TABS;
+type AiServicePurposeType = (typeof AI_SERVICE_PURPOSES)[keyof typeof AI_SERVICE_PURPOSES];
+
+export default AiServicePurposeType;
