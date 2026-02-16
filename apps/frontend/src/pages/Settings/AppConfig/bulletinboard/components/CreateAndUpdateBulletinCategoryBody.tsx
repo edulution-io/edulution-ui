@@ -19,7 +19,7 @@
 
 import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 import DialogSwitch from '@/components/shared/DialogSwitch';
-import { Form } from '@/components/ui/Form';
+import { Form, FormControl, FormDescription, FormFieldSH, FormItem } from '@/components/ui/Form';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
@@ -83,51 +83,67 @@ const CreateAndUpdateBulletinCategoryBody = ({
           }}
         />
 
-        <div className="mb-1 font-bold">{t('bulletinboard.categories.visibilityState')}</div>
-        <DropdownSelect
-          options={bulletinVisibilityOptions}
-          selectedVal={watch('bulletinVisibility') || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE}
-          handleChange={handleVisibilityStateChange}
-          variant="dialog"
+        <FormFieldSH
+          control={form.control}
+          name="bulletinVisibility"
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold">{t('bulletinboard.categories.visibilityState')}</p>
+              <FormControl>
+                <DropdownSelect
+                  options={bulletinVisibilityOptions}
+                  selectedVal={field.value || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE}
+                  handleChange={handleVisibilityStateChange}
+                  variant="dialog"
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
 
-        <div className="flex w-full flex-col">
-          <span className="pt-4 text-lg font-bold text-background">
-            {t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}
-          </span>
-          <span className="pb-4 text-background">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</span>
+        <FormFieldSH
+          control={form.control}
+          name="visibleForGroups"
+          render={() => (
+            <FormItem>
+              <p className="font-bold">{t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}</p>
+              <FormDescription>{t('bulletinboard.categories.visibleByUsersAndGroups')}</FormDescription>
+              <FormControl>
+                <AccessGroupMultiSelect
+                  value={watch('visibleForGroups')}
+                  options={accessGroups}
+                  onChange={(groups: MultipleSelectorGroup[]) =>
+                    setValue('visibleForGroups', groups, { shouldValidate: true })
+                  }
+                  variant="dialog"
+                />
+              </FormControl>
+              <FormDescription>{t('bulletinboard.categories.accessGroupsOnlyHint')}</FormDescription>
+            </FormItem>
+          )}
+        />
 
-          <span className="text-sm italic text-muted-foreground">
-            {t('bulletinboard.categories.accessGroupsOnlyHint')}
-          </span>
-          <AccessGroupMultiSelect
-            value={watch('visibleForGroups')}
-            options={accessGroups}
-            onChange={(groups: MultipleSelectorGroup[]) =>
-              setValue('visibleForGroups', groups, { shouldValidate: true })
-            }
-            variant="dialog"
-          />
-        </div>
-
-        <div className="flex w-full flex-col">
-          <span className="pt-4 text-lg font-bold text-background">
-            {t('bulletinboard.categories.editableByUsersAndGroupsTitle')}
-          </span>
-          <span className="pb-4 text-background">{t('bulletinboard.categories.editableByUsersAndGroups')}:</span>
-
-          <span className="text-sm italic text-muted-foreground">
-            {t('bulletinboard.categories.accessGroupsOnlyHint')}
-          </span>
-          <AccessGroupMultiSelect
-            value={watch('editableByGroups')}
-            options={accessGroups}
-            onChange={(groups: MultipleSelectorGroup[]) =>
-              setValue('editableByGroups', groups, { shouldValidate: true })
-            }
-            variant="dialog"
-          />
-        </div>
+        <FormFieldSH
+          control={form.control}
+          name="editableByGroups"
+          render={() => (
+            <FormItem>
+              <p className="font-bold">{t('bulletinboard.categories.editableByUsersAndGroupsTitle')}</p>
+              <FormDescription>{t('bulletinboard.categories.editableByUsersAndGroups')}</FormDescription>
+              <FormControl>
+                <AccessGroupMultiSelect
+                  value={watch('editableByGroups')}
+                  options={accessGroups}
+                  onChange={(groups: MultipleSelectorGroup[]) =>
+                    setValue('editableByGroups', groups, { shouldValidate: true })
+                  }
+                  variant="dialog"
+                />
+              </FormControl>
+              <FormDescription>{t('bulletinboard.categories.accessGroupsOnlyHint')}</FormDescription>
+            </FormItem>
+          )}
+        />
       </form>
     </Form>
   );
