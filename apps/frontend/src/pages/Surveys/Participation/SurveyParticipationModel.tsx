@@ -17,11 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { useDebounceCallback } from 'usehooks-ts';
 import {
   ClearFilesEvent,
   ChoicesRestful,
@@ -89,13 +88,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const DEBOUNCE_DELAY_MS = 500;
-  const debouncedSubmitOtherChoice = useDebounceCallback(
-    (surveyId: string, questionName: string, otherValue: string, isSurveyPublic: boolean) => {
-      void submitOtherChoice(surveyId, questionName, otherValue, isSurveyPublic);
-    },
-    DEBOUNCE_DELAY_MS,
-  );
+  const pendingOtherChoicesRef = useRef(new Map<string, string>());
 
   const surveyParticipationModel = useMemo(() => {
     if (!selectedSurvey || !selectedSurvey.formula) {
@@ -120,11 +113,28 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!selectedSurvey.id) {
         throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
       }
+      const isSurveyPublic = selectedSurvey.isPublic || isPublic || false;
+
+      const pendingChoices = pendingOtherChoicesRef.current;
+      if (pendingChoices.size > 0) {
+        // eslint-disable-next-line no-console
+        console.log(
+          'Submitting other choices before submitting the survey answer',
+          Array.from(pendingChoices.entries()),
+        );
+
+        const submissions = Array.from(pendingChoices.entries()).map(([questionName, otherValue]) =>
+          submitOtherChoice(selectedSurvey.id!, questionName, otherValue, isSurveyPublic),
+        );
+        await Promise.all(submissions);
+        pendingChoices.clear();
+      }
+
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
           answer: surveyModel.getData() as TSurveyAnswer,
-          isPublic: selectedSurvey.isPublic || isPublic || false,
+          isPublic: isSurveyPublic,
         },
         surveyModel,
         completingEvent,
@@ -267,14 +277,13 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!question || !question.showOtherItem) {
         return;
       }
-      const isSurveyPublic = selectedSurvey.isPublic || isPublic || false;
-      debouncedSubmitOtherChoice(selectedSurvey.id!, questionName, otherValue, isSurveyPublic);
+      pendingOtherChoicesRef.current.set(questionName, otherValue);
     };
     surveyParticipationModel.onValueChanged.add(handler);
     return () => {
       surveyParticipationModel.onValueChanged.remove(handler);
     };
-  }, [surveyParticipationModel, selectedSurvey, isPublic, debouncedSubmitOtherChoice]);
+  }, [surveyParticipationModel, selectedSurvey]);
 
   useSseEventListener(
     SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED,
