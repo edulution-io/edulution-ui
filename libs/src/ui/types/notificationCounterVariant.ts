@@ -17,15 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const REQUIRED_GROUP_ATTRIBUTES = [
-  'mail',
-  'displayName',
-  'sophomorixMailList',
-  'description',
-  'proxyAddresses',
-  'sophomorixMailAlias',
-  'sophomorixJoinable',
-  'sophomorixType',
-];
+import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
 
-export default REQUIRED_GROUP_ATTRIBUTES;
+type NotificationCounterVariant = (typeof NOTIFICATION_COUNTER_VARIANTS)[keyof typeof NOTIFICATION_COUNTER_VARIANTS];
+
+export default NotificationCounterVariant;
