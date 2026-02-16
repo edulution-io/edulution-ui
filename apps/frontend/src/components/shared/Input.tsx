@@ -66,7 +66,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={isPassword && showPassword ? 'text' : type}
         inputMode={type === 'number' ? 'numeric' : undefined}
-        className={cn(inputVariants({ variant }), className)}
+        className={cn(inputVariants({ variant }), isPassword && 'pr-10', className)}
         ref={ref}
         onChange={handleChange}
         {...props}
