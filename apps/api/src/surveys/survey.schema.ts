@@ -63,7 +63,7 @@ export class Survey {
   @Prop({ required: false })
   canSubmitMultipleAnswers?: boolean;
 
-  @Prop({ default: 1 })
+  @Prop({ default: 2 })
   schemaVersion: number;
 }
 

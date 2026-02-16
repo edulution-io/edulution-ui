@@ -32,13 +32,13 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
   name,
   version: 2,
   execute: async (model) => {
-    const previousSchemaVersion = 2;
-    // const newSchemaVersion = 3;
+    const previousSchemaVersion = 1;
+    const newSchemaVersion = 2;
 
     const cursor = model.find<OldSurveyDocument>({ schemaVersion: previousSchemaVersion }).cursor();
 
-    // let counter = 0;
-    // let updateSurveyOperations: AnyBulkWriteOperation[] = [];
+    let counter = 0;
+    let updateSurveyOperations: AnyBulkWriteOperation[] = [];
 
     // eslint-disable-next-line no-restricted-syntax
     for await (const doc of cursor) {
@@ -53,17 +53,17 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
 
       // eslint-disable-next-line no-restricted-syntax
       for (const limiter of backendLimiters) {
-        // createBackendLimiterOperations.push({
-        //   insertOne: {
-        //     document: {
-        //       // eslint-disable-next-line no-underscore-dangle
-        //       surveyId: doc._id,
-        //       questionName: limiter.questionName,
-        //       choices: limiter.choices,
-        //       schemaVersion: 1,
-        //     },
-        //   },
-        // });
+        createBackendLimiterOperations.push({
+          insertOne: {
+            document: {
+              // eslint-disable-next-line no-underscore-dangle
+              surveyId: doc._id,
+              questionName: limiter.questionName,
+              choices: limiter.choices,
+              schemaVersion: 1,
+            },
+          },
+        });
 
         Logger.log(
           // eslint-disable-next-line no-underscore-dangle
@@ -76,13 +76,13 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
         try {
           await BackendLimiterModel.bulkWrite(createBackendLimiterOperations, { ordered: false });
 
-          // updateSurveyOperations.push({
-          //   updateOne: {
-          //     // eslint-disable-next-line no-underscore-dangle
-          //     filter: { _id: doc._id },
-          //     update: { $unset: { backendLimiters: "" }, $set: { schemaVersion: newSchemaVersion } },
-          //   },
-          // });
+          updateSurveyOperations.push({
+            updateOne: {
+              // eslint-disable-next-line no-underscore-dangle
+              filter: { _id: doc._id },
+              update: { $unset: { backendLimiters: '' }, $set: { schemaVersion: newSchemaVersion } },
+            },
+          });
 
           // eslint-disable-next-line no-underscore-dangle
           Logger.log(`Would remove limiters from survey document ${String(doc._id)}`, name);
@@ -94,20 +94,20 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
       }
     }
 
-    // if (updateSurveyOperations.length >= 500) {
-    //   await model.bulkWrite(updateSurveyOperations, { ordered: false });
-    //   updateSurveyOperations = [];
-    //   counter += 500;
-    // }
+    if (updateSurveyOperations.length >= 500) {
+      await model.bulkWrite(updateSurveyOperations, { ordered: false });
+      updateSurveyOperations = [];
+      counter += 500;
+    }
 
-    // if (updateSurveyOperations.length > 0) {
-    //   await model.bulkWrite(updateSurveyOperations, { ordered: false });
-    //   counter += updateSurveyOperations.length;
-    // }
+    if (updateSurveyOperations.length > 0) {
+      await model.bulkWrite(updateSurveyOperations, { ordered: false });
+      counter += updateSurveyOperations.length;
+    }
 
-    // if (counter > 0) {
-    //   Logger.log(`Migration ${name} completed: ${counter} documents migrated`);
-    // }
+    if (counter > 0) {
+      Logger.log(`Migration ${name} completed: ${counter} documents migrated`);
+    }
   },
 };
 
