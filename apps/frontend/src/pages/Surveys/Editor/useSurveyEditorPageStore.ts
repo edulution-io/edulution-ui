@@ -136,7 +136,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         const { uploadBackendLimiter } = useQuestionsContextMenuStore();
         const promises = Object.keys(backendLimiters).map((questionName) =>
           backendLimiters[questionName].length > 0
-            ? uploadBackendLimiter(surveyId, backendLimiters[questionName], questionName)
+            ? uploadBackendLimiter(surveyId, questionName, backendLimiters[questionName])
             : Promise.resolve(),
         );
         await Promise.all(promises);

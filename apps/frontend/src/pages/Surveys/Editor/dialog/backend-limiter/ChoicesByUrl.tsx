@@ -34,7 +34,6 @@ import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog
 import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
@@ -53,36 +52,43 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     toggleUseBackendLimits,
     currentChoices,
     addNewChoice,
-    setOrGetInitialChoices,
+    setInitialChoices,
+    getInitialChoices,
     deleteBackendLimiters,
     uploadBackendLimiter,
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
     if (!selectedQuestion) return;
+    const questionName = selectedQuestion.name;
     const surveyId = form.watch('id');
     const limiters = form.watch('backendLimiters') || {};
     if (useBackendLimits) {
-      void setOrGetInitialChoices(surveyId, limiters[selectedQuestion.name]);
+      if (surveyId) {
+        void getInitialChoices(surveyId, questionName);
+      } else {
+        setInitialChoices(limiters[questionName] || []);
+      }
     } else {
-      delete limiters[selectedQuestion.name];
+      delete limiters[questionName];
       form.setValue('backendLimiters', limiters);
-      if (surveyId && surveyId !== TEMPORAL_SURVEY_ID_STRING) {
-        void deleteBackendLimiters(surveyId);
+      if (surveyId) {
+        void deleteBackendLimiters(surveyId, questionName);
       }
     }
   }, [selectedQuestion, useBackendLimits]);
 
   useEffect(() => {
     if (!selectedQuestion) return;
+    const questionName = selectedQuestion.name;
 
     const limiters = form.watch('backendLimiters') || {};
-    limiters[selectedQuestion.name] = currentChoices;
+    limiters[questionName] = currentChoices;
     form.setValue('backendLimiters', limiters);
 
     const surveyId = form.watch('id');
-    if (surveyId && surveyId !== TEMPORAL_SURVEY_ID_STRING) {
-      void uploadBackendLimiter(surveyId, currentChoices);
+    if (surveyId && currentChoices.length > 0) {
+      void uploadBackendLimiter(surveyId, questionName, currentChoices);
     }
   }, [currentChoices]);
 
