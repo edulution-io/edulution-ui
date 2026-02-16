@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { useDebounceCallback } from 'usehooks-ts';
 import {
   ClearFilesEvent,
+  ChoicesRestful,
   DownloadFileEvent,
   Model,
   Serializer,
@@ -32,8 +33,11 @@ import {
   ValueChangedEvent,
 } from 'survey-core';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import UpdateRestfulChoicesDto from '@libs/survey/types/api/updateRestfulChoices.dto';
 import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/surveyjs-comment-suffix';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import useSseEventListener from '@/hooks/useSseEventListener';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
@@ -271,6 +275,30 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       surveyParticipationModel.onValueChanged.remove(handler);
     };
   }, [surveyParticipationModel, selectedSurvey, isPublic, debouncedSubmitOtherChoice]);
+
+  useSseEventListener(
+    SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED,
+    (e: MessageEvent<string>) => {
+      if (!surveyParticipationModel || !selectedSurvey?.id) {
+        return;
+      }
+      const { surveyId, questionName } = JSON.parse(e.data) as UpdateRestfulChoicesDto;
+      if (surveyId !== selectedSurvey.id) {
+        return;
+      }
+      const question = surveyParticipationModel.getQuestionByName(questionName);
+      const choicesByUrl = question?.choicesByUrl as ChoicesRestful | undefined;
+      if (!choicesByUrl || choicesByUrl.isEmpty) {
+        return;
+      }
+      ChoicesRestful.clearCache();
+      choicesByUrl.run();
+    },
+    {
+      enabled: !!surveyParticipationModel && !!selectedSurvey?.id,
+      dependencies: [surveyParticipationModel, selectedSurvey],
+    },
+  );
 
   useEffect(() => {
     if (!selectedSurvey?.id) {

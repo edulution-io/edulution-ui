@@ -156,7 +156,7 @@ class SurveysBackendLimiterService {
     if (hasNewChoices) {
       backendLimiter.choices = existingChoices;
       await backendLimiter.save();
-      this.sseService.informAllUsers(surveyId, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
+      this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
     }
   }
 
