@@ -79,7 +79,8 @@
       "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
       "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
-      "editableByUsersAndGroupsTitle": "Manage Bulletins"
+      "editableByUsersAndGroupsTitle": "Manage Bulletins",
+      "accessGroupsOnlyHint": "Only access groups can be assigned."
     },
     "errors": {
       "categoryNotFound": "Category not found",

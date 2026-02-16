@@ -92,10 +92,14 @@ const CreateAndUpdateBulletinCategoryBody = ({
         />
 
         <div className="flex w-full flex-col">
-          <p className="pt-4 text-lg font-bold text-background">
+          <span className="pt-4 text-lg font-bold text-background">
             {t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}
-          </p>
-          <p className="pb-4 text-background">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
+          </span>
+          <span className="pb-4 text-background">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</span>
+
+          <span className="text-sm italic text-muted-foreground">
+            {t('bulletinboard.categories.accessGroupsOnlyHint')}
+          </span>
           <AccessGroupMultiSelect
             value={watch('visibleForGroups')}
             options={accessGroups}
@@ -107,10 +111,14 @@ const CreateAndUpdateBulletinCategoryBody = ({
         </div>
 
         <div className="flex w-full flex-col">
-          <p className="pt-4 text-lg font-bold text-background">
+          <span className="pt-4 text-lg font-bold text-background">
             {t('bulletinboard.categories.editableByUsersAndGroupsTitle')}
-          </p>
-          <p className="pb-4 text-background">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
+          </span>
+          <span className="pb-4 text-background">{t('bulletinboard.categories.editableByUsersAndGroups')}:</span>
+
+          <span className="text-sm italic text-muted-foreground">
+            {t('bulletinboard.categories.accessGroupsOnlyHint')}
+          </span>
           <AccessGroupMultiSelect
             value={watch('editableByGroups')}
             options={accessGroups}
