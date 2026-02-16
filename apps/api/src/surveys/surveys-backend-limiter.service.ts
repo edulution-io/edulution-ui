@@ -148,7 +148,7 @@ class SurveysBackendLimiterService {
     choices.forEach((newChoice) => {
       const alreadyExists = existingChoices.some((existing) => existing.title === newChoice.title);
       if (!alreadyExists) {
-        existingChoices.push({ ...newChoice, limit: otherItemLimit });
+        existingChoices.push({ ...newChoice, limit: otherItemLimit, addedByUser: true });
         hasNewChoices = true;
       }
     });
