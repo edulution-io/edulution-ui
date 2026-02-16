@@ -47,8 +47,8 @@ interface QuestionsContextMenuStore {
 
   useBackendLimits: boolean;
   toggleUseBackendLimits: (isPublic: boolean) => void;
-  uploadBackendLimiter: (surveyId: string, choices: ChoiceDto[]) => Promise<void>;
-  deleteBackendLimiters: (surveyId?: string) => Promise<void>;
+  uploadBackendLimiter: (surveyId: string, choices: ChoiceDto[], questionName?: string) => Promise<void>;
+  deleteBackendLimiters: (surveyId?: string, questionName?: string) => Promise<void>;
 
   setOrGetInitialChoices: (surveyId?: string, currentChoices?: ChoiceDto[]) => Promise<void>;
   currentChoices: ChoiceDto[];
@@ -163,21 +163,24 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
   },
 
-  uploadBackendLimiter: async (surveyId: string, choices: ChoiceDto[]) => {
+  uploadBackendLimiter: async (surveyId: string, choices: ChoiceDto[], questionName?: string) => {
     const { selectedQuestion } = get();
-    if (!selectedQuestion) return;
+    if (!selectedQuestion && !questionName) return;
     try {
-      await eduApi.post<ChoiceDto[]>(`${SURVEY_CHOICES}/${surveyId}/${selectedQuestion.name}`, choices);
+      await eduApi.post<ChoiceDto[]>(
+        `${SURVEY_CHOICES}/${surveyId}/${selectedQuestion?.name ?? questionName}`,
+        choices,
+      );
     } catch (error) {
       handleApiError(error, set);
     }
   },
 
-  deleteBackendLimiters: async (surveyId?: string) => {
+  deleteBackendLimiters: async (surveyId?: string, questionName?: string) => {
     const { selectedQuestion } = get();
-    if (!selectedQuestion) return;
+    if (!selectedQuestion && !questionName) return;
     try {
-      await eduApi.delete(`${SURVEY_CHOICES}/${surveyId}/${selectedQuestion.name}`);
+      await eduApi.delete(`${SURVEY_CHOICES}/${surveyId}/${selectedQuestion?.name ?? questionName}`);
     } catch (error) {
       handleApiError(error, set);
     }

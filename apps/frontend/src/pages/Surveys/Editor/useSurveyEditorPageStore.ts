@@ -23,11 +23,12 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_CHOICES, SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import eduApi from '@/api/eduApi';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import handleApiError from '@/utils/handleApiError';
+import { SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
+import useQuestionsContextMenuStore from './dialog/useQuestionsContextMenuStore';
 
 interface SurveyEditorPageStore {
   storedSurvey: SurveyDto | undefined;
@@ -38,6 +39,7 @@ interface SurveyEditorPageStore {
   isUploadingFile: boolean;
 
   uploadBackendLimiters: (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => Promise<void>;
+  removeBackendLimiter: (surveyId: string, questionName: string) => Promise<void>;
 
   isOpenSurveysLogoDialog: boolean;
   setIsOpenSurveysLogoDialog: (state: boolean) => void;
@@ -131,12 +133,18 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       },
 
       uploadBackendLimiters: async (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => {
+        const { uploadBackendLimiter } = useQuestionsContextMenuStore();
         const promises = Object.keys(backendLimiters).map((questionName) =>
           backendLimiters[questionName].length > 0
-            ? eduApi.post<ChoiceDto[]>(`${SURVEY_CHOICES}/${surveyId}/${questionName}`, backendLimiters[questionName])
+            ? uploadBackendLimiter(surveyId, backendLimiters[questionName], questionName)
             : Promise.resolve(),
         );
         await Promise.all(promises);
+      },
+
+      removeBackendLimiter: async (surveyId: string, questionName: string) => {
+        const { deleteBackendLimiters } = useQuestionsContextMenuStore();
+        await deleteBackendLimiters(surveyId, questionName);
       },
 
       closeSharePublicSurveyDialog: () =>

@@ -27,11 +27,13 @@ import { faRotateLeft, faFilePdf, faFileLines, faFileCirclePlus } from '@fortawe
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import { ReactElementFactory } from 'survey-react-ui';
 import { SurveyCreatorModel } from 'survey-creator-core';
+import { Question, ChoicesRestful } from 'survey-core';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
@@ -77,6 +79,7 @@ const SurveyEditorPage = () => {
     resetStoredSurvey,
     uploadFile,
     uploadBackendLimiters,
+    removeBackendLimiter,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
   const {
@@ -179,6 +182,22 @@ const SurveyEditorPage = () => {
     creator.onUploadFile.add(async (_creatorModel, options) => {
       const promises = options.files.map((file: File) => uploadFile(file, options.callback));
       await Promise.all(promises);
+    });
+
+    creator.onElementDeleting.add((_creatorModel, options) => {
+      if (options.elementType !== 'question') {
+        return;
+      }
+      const question = options.element as Question;
+      const choicesByUrl = question.choicesByUrl as ChoicesRestful | undefined;
+      if (!choicesByUrl?.url) {
+        return;
+      }
+      const currentSurveyId = form.getValues('id');
+      if (!currentSurveyId || currentSurveyId === TEMPORAL_SURVEY_ID_STRING) {
+        return;
+      }
+      void removeBackendLimiter(currentSurveyId, question.name);
     });
   }, [creator, form, language]);
 
