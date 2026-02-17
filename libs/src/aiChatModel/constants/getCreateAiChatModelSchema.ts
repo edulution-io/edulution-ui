@@ -17,19 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import { TFunction } from 'i18next';
+import { z } from 'zod';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+const getCreateAiChatModelSchema = (t: TFunction<'translation', undefined>) =>
+  z.object({
+    name: z
+      .string()
+      .min(3, { message: t('common.min_chars', { count: 3 }) })
+      .max(100, { message: t('common.max_chars', { count: 100 }) }),
+    aiServiceId: z.string().min(1, { message: t('common.required') }),
+  });
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
-
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
-
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
-
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+export default getCreateAiChatModelSchema;

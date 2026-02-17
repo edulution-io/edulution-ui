@@ -30,6 +30,8 @@ import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import type { WebdavServerTableStore, WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import { type WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
+import type AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
+import { type AiChatModelTableStore } from '@libs/appconfig/types/aiChatModelTableStore';
 import AppConfigTableEntry from './appConfigTableEntry';
 
 export type AppConfigTableConfig =
@@ -53,4 +55,7 @@ export type AppConfigTableConfig =
     })
   | (AppConfigTableEntry<WireguardPeer, WireguardTableStore> & {
       type: typeof ExtendedOptionKeys.WIREGUARD_PEERS_TABLE;
+    })
+  | (AppConfigTableEntry<AiChatModelResponseDto, AiChatModelTableStore> & {
+      type: typeof ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE;
     });

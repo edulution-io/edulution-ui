@@ -145,7 +145,6 @@ const CreateAndUpdateAiServiceBody = ({
           form={form}
           labelTranslationId={t('settings.aiServices.apiKey')}
           placeholder={t('settings.aiServices.apiKeyPlaceholder')}
-          type="password"
           variant="dialog"
         />
 

@@ -35,7 +35,23 @@
     "refreshGroups": "Refresh groups",
     "newChat": "New Chat",
     "startNewAiChat": "Start a new AI conversation",
-    "deleteChat": "Delete chat"
+    "deleteChat": "Delete chat",
+    "aiChatModel": {
+      "createNew": "Create AI Chat Model",
+      "edit": "Edit AI Chat Model",
+      "delete": "Delete AI Chat Model",
+      "confirmDelete": "Do you really want to delete this AI chat model?",
+      "name": "Name",
+      "aiService": "AI Service",
+      "systemPrompt": "System Prompt",
+      "accessGroups": "Access Groups",
+      "isActive": "Active",
+      "selectModel": "Select Model",
+      "filterPlaceHolderText": "Search AI chat models...",
+      "createdSuccessfully": "AI chat model created successfully",
+      "updatedSuccessfully": "AI chat model updated successfully",
+      "deletedSuccessfully": "AI chat model deleted successfully"
+    }
   },
   "bulletinboard": {
     "settings": "Settings",
@@ -2162,7 +2178,9 @@
     "chatAiChatEnabledTitle": "AI Chat",
     "chatAiChatEnabledDescription": "Enable or disable the AI chat feature.",
     "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
-    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat."
+    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat.",
+    "chatAiChatModelTableTitle": "AI Chat Models",
+    "chatAiChatModelTableDescription": "Configure AI chat models with specific AI services and access groups."
   },
   "mails": {
     "errors": {

@@ -17,19 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+const AI_CHAT_MODEL_TABLE_COLUMNS = {
+  NAME: 'name',
+  AI_SERVICE: 'aiServiceName',
+  IS_ACTIVE: 'isActive',
+  CREATED_AT: 'createdAt',
+} as const;
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
-
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
-
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
-
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
-
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+export default AI_CHAT_MODEL_TABLE_COLUMNS;

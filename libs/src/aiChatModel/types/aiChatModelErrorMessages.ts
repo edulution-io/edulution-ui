@@ -17,19 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import AI_CHAT_MODEL_ERROR_MESSAGES from '@libs/aiChatModel/constants/aiChatModelErrorMessages';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+type AiChatModelErrorMessages = (typeof AI_CHAT_MODEL_ERROR_MESSAGES)[keyof typeof AI_CHAT_MODEL_ERROR_MESSAGES];
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
-
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
-
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
-
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+export default AiChatModelErrorMessages;

@@ -17,19 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
+import { IsDate, IsMongoId, IsOptional, IsString } from 'class-validator';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+class AiChatModelResponseDto extends CreateAiChatModelDto {
+  @IsMongoId()
+  id: string;
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
+  @IsString()
+  aiServiceName: string;
 
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
+  @IsDate()
+  @IsOptional()
+  createdAt: Date;
 
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
+  @IsDate()
+  @IsOptional()
+  updatedAt: Date;
+}
 
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
-
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+export default AiChatModelResponseDto;

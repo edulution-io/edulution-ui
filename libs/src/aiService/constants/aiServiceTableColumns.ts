@@ -23,6 +23,7 @@ const AI_SERVICE_TABLE_COLUMNS = {
   MODEL: 'model',
   IS_ACTIVE: 'isActive',
   CREATED_AT: 'createdAt',
+  PURPOSE: 'purpose',
 } as const;
 
 export default AI_SERVICE_TABLE_COLUMNS;

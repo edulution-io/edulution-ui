@@ -17,19 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import AiServiceModule from '../ai-service/ai-service.module';
+import AiChatModelController from './ai-chat-model.controller';
+import AiChatModelService from './ai-chat-model.service';
+import { AiChatModel, AiChatModelSchema } from './ai-chat-model.schema';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
-
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
-
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
-
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
-
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: AiChatModel.name, schema: AiChatModelSchema }]), AiServiceModule],
+  controllers: [AiChatModelController],
+  providers: [AiChatModelService],
+  exports: [AiChatModelService],
+})
+export default class AiChatModelModule {}

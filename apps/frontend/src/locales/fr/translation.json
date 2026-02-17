@@ -35,7 +35,23 @@
     "refreshGroups": "Actualiser les groupes",
     "newChat": "Nouveau Chat",
     "startNewAiChat": "Démarrer une nouvelle conversation IA",
-    "deleteChat": "Supprimer le chat"
+    "deleteChat": "Supprimer le chat",
+    "aiChatModel": {
+      "createNew": "Créer un modèle de chat IA",
+      "edit": "Modifier le modèle de chat IA",
+      "delete": "Supprimer le modèle de chat IA",
+      "confirmDelete": "Voulez-vous vraiment supprimer ce modèle de chat IA ?",
+      "name": "Nom",
+      "aiService": "Service IA",
+      "systemPrompt": "Prompt système",
+      "accessGroups": "Groupes d'accès",
+      "isActive": "Actif",
+      "selectModel": "Sélectionner un modèle",
+      "filterPlaceHolderText": "Rechercher des modèles de chat IA...",
+      "createdSuccessfully": "Modèle de chat IA créé avec succès",
+      "updatedSuccessfully": "Modèle de chat IA mis à jour avec succès",
+      "deletedSuccessfully": "Modèle de chat IA supprimé avec succès"
+    }
   },
   "bulletinboard": {
     "settings": "Paramètres",
@@ -1988,7 +2004,9 @@
     "chatAiChatEnabledTitle": "Chat IA",
     "chatAiChatEnabledDescription": "Activer ou désactiver la fonction de chat IA.",
     "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
-    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA."
+    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA.",
+    "chatAiChatModelTableTitle": "Modèles de chat IA",
+    "chatAiChatModelTableDescription": "Configurez les modèles de chat IA avec des services IA spécifiques et des groupes d'accès."
   },
   "preview": {
     "image": "Aperçu de l'image",

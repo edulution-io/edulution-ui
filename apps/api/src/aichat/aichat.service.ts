@@ -28,8 +28,10 @@ import extractTextFromParts from '@libs/chat/utils/extractTextFromParts';
 import { AICHAT_ERROR_MESSAGES } from '@libs/chat/types/aiChatErrorMessages';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 import AiProviderType from '@libs/aiService/types/aiProviderType';
+import AI_CHAT_MODEL_ERROR_MESSAGES from '@libs/aiChatModel/constants/aiChatModelErrorMessages';
 import CustomHttpException from '../common/CustomHttpException';
 import AiServiceService from '../ai-service/ai-service.service';
+import AiChatModelService from '../ai-chat-model/ai-chat-model.service';
 import { AiConversation, AiConversationDocument } from './schemas/aiConversation.schema';
 import { AiChatMessage, AiChatMessageDocument } from './schemas/aiChatMessage.schema';
 
@@ -39,6 +41,7 @@ class AiChatService {
     @InjectModel(AiConversation.name) private aiConversationModel: Model<AiConversationDocument>,
     @InjectModel(AiChatMessage.name) private aiChatMessageModel: Model<AiChatMessageDocument>,
     private readonly aiServiceService: AiServiceService,
+    private readonly aiChatModelService: AiChatModelService,
   ) {}
 
   async getConversations(username: string): Promise<AiConversationDocument[]> {
@@ -84,10 +87,16 @@ class AiChatService {
     return this.aiChatMessageModel.find({ conversationId }).sort({ createdAt: -1 }).skip(offset).limit(limit).exec();
   }
 
-  async streamChat(conversationId: string, messages: UIMessage[], username: string) {
+  async streamChat(
+    conversationId: string,
+    messages: UIMessage[],
+    username: string,
+    ldapGroups?: string[],
+    modelConfigId?: string,
+  ) {
     await this.getOwnedConversation(conversationId, username);
 
-    const lastUserMessage = [...messages].reverse().find((m) => m.role === CHAT_ROLES.USER);
+    const lastUserMessage = [...messages].reverse().find((message) => message.role === CHAT_ROLES.USER);
     if (lastUserMessage) {
       const textContent = extractTextFromParts(lastUserMessage.parts);
       if (textContent) {
@@ -96,17 +105,18 @@ class AiChatService {
     }
 
     const modelMessages: ModelMessage[] = messages
-      .filter((msg) => msg.role === CHAT_ROLES.USER || msg.role === CHAT_ROLES.ASSISTANT)
-      .map((msg): UserModelMessage | AssistantModelMessage => ({
-        role: msg.role as 'user' | 'assistant',
-        content: [{ type: 'text', text: extractTextFromParts(msg.parts) }],
+      .filter((message) => message.role === CHAT_ROLES.USER || message.role === CHAT_ROLES.ASSISTANT)
+      .map((message): UserModelMessage | AssistantModelMessage => ({
+        role: message.role as 'user' | 'assistant',
+        content: [{ type: 'text', text: extractTextFromParts(message.parts) }],
       }));
 
-    const model = await this.resolveLanguageModel();
+    const { model, systemPrompt } = await this.resolveLanguageModel(ldapGroups, modelConfigId);
 
     const result = streamText({
       model,
       messages: modelMessages,
+      ...(systemPrompt ? { system: systemPrompt } : {}),
     });
 
     return { result: result as ReturnType<typeof streamText>, conversationId, username };
@@ -128,7 +138,57 @@ class AiChatService {
     return message;
   }
 
-  private async resolveLanguageModel(): Promise<LanguageModelV3> {
+  private async resolveLanguageModel(
+    ldapGroups?: string[],
+    modelConfigId?: string,
+  ): Promise<{ model: LanguageModelV3; systemPrompt?: string }> {
+    if (modelConfigId) {
+      if (!ldapGroups) {
+        throw new CustomHttpException(
+          AI_CHAT_MODEL_ERROR_MESSAGES.ACCESS_DENIED,
+          HttpStatus.FORBIDDEN,
+          { modelConfigId },
+          AiChatService.name,
+        );
+      }
+
+      const chatModel = await this.aiChatModelService.findById(modelConfigId);
+
+      if (!chatModel.isActive) {
+        throw new CustomHttpException(
+          AI_CHAT_MODEL_ERROR_MESSAGES.NOT_FOUND,
+          HttpStatus.BAD_REQUEST,
+          { modelConfigId },
+          AiChatService.name,
+        );
+      }
+
+      const hasAccess = chatModel.accessGroups.some((group) => ldapGroups.includes(group.path));
+
+      if (!hasAccess) {
+        throw new CustomHttpException(
+          AI_CHAT_MODEL_ERROR_MESSAGES.ACCESS_DENIED,
+          HttpStatus.FORBIDDEN,
+          { modelConfigId },
+          AiChatService.name,
+        );
+      }
+
+      const services = await this.aiServiceService.findByIds([chatModel.aiServiceId]);
+      if (services.length === 0) {
+        throw new CustomHttpException(
+          AI_CHAT_MODEL_ERROR_MESSAGES.AI_SERVICE_NOT_FOUND,
+          HttpStatus.BAD_REQUEST,
+          { aiServiceId: chatModel.aiServiceId },
+          AiChatService.name,
+        );
+      }
+
+      const service = services[0];
+      const model = this.createModelFromService(service);
+      return { model, systemPrompt: chatModel.systemPrompt || undefined };
+    }
+
     const dbConfig = await this.aiServiceService.getActiveServiceForPurpose(AI_SERVICE_PURPOSES.CHAT);
 
     if (!dbConfig) {
@@ -140,7 +200,7 @@ class AiChatService {
       );
     }
 
-    return this.createModelFromService(dbConfig);
+    return { model: this.createModelFromService(dbConfig) };
   }
 
   private createModelFromService(service: {
@@ -149,7 +209,7 @@ class AiChatService {
     apiKey: string;
     model: string;
   }): LanguageModelV3 {
-    return this.aiServiceService.createLanguageModel({
+    return AiServiceService.createLanguageModel({
       provider: service.provider as AiProviderType,
       baseUrl: service.baseUrl,
       apiKey: service.apiKey,

@@ -17,19 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import React from 'react';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+interface CreateAndUpdateAiChatModelFooterProps {
+  handleFormSubmit: (e: React.FormEvent) => void;
+  isSaveButtonDisabled: () => boolean;
+  handleDelete?: () => void;
+  handleClose: () => void;
+}
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
+const CreateAndUpdateAiChatModelFooter = ({
+  handleFormSubmit,
+  isSaveButtonDisabled,
+  handleDelete,
+  handleClose,
+}: CreateAndUpdateAiChatModelFooterProps) => (
+  <form onSubmit={handleFormSubmit}>
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={() => {}}
+      handleDelete={handleDelete}
+      submitButtonText="common.save"
+      disableSubmit={isSaveButtonDisabled()}
+      submitButtonType="submit"
+    />
+  </form>
+);
 
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
-
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
-
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+export default CreateAndUpdateAiChatModelFooter;

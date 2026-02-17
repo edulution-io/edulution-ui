@@ -17,26 +17,37 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import ChatView from '@/pages/Chat/components/ChatView';
 import useAiChat from '@/pages/Chat/hooks/useAiChat';
 import useAiChatStore from '@/store/useAiChatStore';
-
-const AI_CHAT_TITLE = 'AI Chat';
 
 interface AiChatContentProps {
   chatId: string;
 }
 
 const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
+  const { t } = useTranslation();
   const adapter = useAiChat(chatId);
   const conversations = useAiChatStore((state) => state.conversations);
-  const title = conversations.find((c) => c.id === chatId)?.title ?? AI_CHAT_TITLE;
+  const availableModels = useAiChatStore((state) => state.availableModels);
+  const selectedModelId = useAiChatStore((state) => state.selectedModelId);
+  const setSelectedModelId = useAiChatStore((state) => state.setSelectedModelId);
+  const fetchAvailableModels = useAiChatStore((state) => state.fetchAvailableModels);
+  const title = conversations.find((conversation) => conversation.id === chatId)?.title ?? t('chat.newChat');
+
+  useEffect(() => {
+    void fetchAvailableModels();
+  }, [fetchAvailableModels]);
 
   return (
     <ChatView
       adapter={adapter}
       title={title}
+      models={availableModels}
+      selectedModelId={selectedModelId}
+      onModelChange={setSelectedModelId}
     />
   );
 };

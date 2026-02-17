@@ -17,19 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+class CreateAiChatModelDto {
+  @IsString()
+  name: string;
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
+  @IsString()
+  aiServiceId: string;
 
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
+  @IsString()
+  @IsOptional()
+  systemPrompt?: string;
 
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
+  @IsArray()
+  accessGroups: MultipleSelectorGroup[];
 
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
+  @IsBoolean()
+  isActive: boolean;
+}
 
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+export default CreateAiChatModelDto;

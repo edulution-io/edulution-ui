@@ -17,19 +17,35 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+export type AiChatModelDocument = AiChatModel & Document;
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
+@Schema({ timestamps: true, strict: true })
+export class AiChatModel {
+  @Prop({ required: true })
+  name: string;
 
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
+  @Prop({ required: true })
+  aiServiceId: string;
 
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
+  @Prop({ type: String, default: '' })
+  systemPrompt: string;
 
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
+  @Prop({ type: Array, default: [] })
+  accessGroups: MultipleSelectorGroup[];
 
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
+  @Prop({ type: Boolean, default: true })
+  isActive: boolean;
 
-export const AI_CHAT_MODELS_ENDPOINT = `${APPS.AICHAT}/models`;
+  @Prop({ default: 1 })
+  schemaVersion: number;
+}
+
+export const AiChatModelSchema = SchemaFactory.createForClass(AiChatModel);
+
+AiChatModelSchema.set('toJSON', {
+  virtuals: true,
+});

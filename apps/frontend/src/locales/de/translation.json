@@ -35,7 +35,23 @@
     "refreshGroups": "Gruppen aktualisieren",
     "newChat": "Neuer Chat",
     "startNewAiChat": "Starte eine neue KI-Unterhaltung",
-    "deleteChat": "Chat löschen"
+    "deleteChat": "Chat löschen",
+    "aiChatModel": {
+      "createNew": "AI-Chat-Modell erstellen",
+      "edit": "AI-Chat-Modell bearbeiten",
+      "delete": "AI-Chat-Modell löschen",
+      "confirmDelete": "Möchten Sie dieses AI-Chat-Modell wirklich löschen?",
+      "name": "Name",
+      "aiService": "AI-Dienst",
+      "systemPrompt": "System-Prompt",
+      "accessGroups": "Zugriffsgruppen",
+      "isActive": "Aktiv",
+      "selectModel": "Modell auswählen",
+      "filterPlaceHolderText": "AI-Chat-Modelle suchen...",
+      "createdSuccessfully": "AI-Chat-Modell erfolgreich erstellt",
+      "updatedSuccessfully": "AI-Chat-Modell erfolgreich aktualisiert",
+      "deletedSuccessfully": "AI-Chat-Modell erfolgreich gelöscht"
+    }
   },
   "bulletinboard": {
     "settings": "Einstellungen",
@@ -2183,7 +2199,9 @@
     "chatAiChatEnabledTitle": "AI Chat",
     "chatAiChatEnabledDescription": "Aktiviert oder deaktiviert die AI-Chat-Funktion.",
     "chatAiChatGroupsTitle": "Berechtigte Gruppen (AI Chat)",
-    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben."
+    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben.",
+    "chatAiChatModelTableTitle": "AI-Chat-Modelle",
+    "chatAiChatModelTableDescription": "Konfigurieren Sie AI-Chat-Modelle mit bestimmten AI-Diensten und Zugriffsgruppen."
   },
   "preview": {
     "image": "Bildvorschau",
