@@ -2181,8 +2181,6 @@
     "chatAiChatEnabledDescription": "Enable or disable the AI chat feature.",
     "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
     "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat.",
-    "chatAiServicesTitle": "AI Services",
-    "chatAiServicesDescription": "Select which AI services should be available for chat.",
     "chatAiAssistantTableTitle": "AI Assistants",
     "chatAiAssistantTableDescription": "Manage AI assistants with custom system prompts and access control."
   },

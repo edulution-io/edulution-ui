@@ -29,11 +29,7 @@ import AiChatConfig from '@libs/chat/types/aiChatConfig';
 import { AICHAT_ERROR_MESSAGES } from '@libs/chat/types/aiChatErrorMessages';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 import AiProviderType from '@libs/aiService/types/aiProviderType';
-import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import CustomHttpException from '../common/CustomHttpException';
-import AppConfigService from '../appconfig/appconfig.service';
 import AiServiceService from '../ai-service/ai-service.service';
 import AiAssistantService from '../ai-assistant/ai-assistant.service';
 import { AiConversation, AiConversationDocument } from './schemas/aiConversation.schema';
@@ -52,7 +48,6 @@ class AiChatService {
     @InjectModel(AiChatMessage.name) private aiChatMessageModel: Model<AiChatMessageDocument>,
     private readonly configService: ConfigService,
     private readonly aiServiceService: AiServiceService,
-    private readonly appConfigService: AppConfigService,
     private readonly aiAssistantService: AiAssistantService,
   ) {}
 
@@ -198,21 +193,7 @@ class AiChatService {
       return { model: this.createModelFromService(aiService), systemPrompt: assistant.systemPrompt };
     }
 
-    const chatConfig = await this.appConfigService.getAppConfigByName(APPS.CHAT);
-    const extendedOptions = (chatConfig?.extendedOptions ?? {}) as Record<string, unknown>;
-    const configuredServices = (extendedOptions[ExtendedOptionKeys.CHAT_AI_SERVICES] ??
-      []) as MultipleSelectorOptionSH[];
-    const serviceIds = configuredServices.map((s) => s.value);
-
-    let dbConfig = null;
-    if (serviceIds.length > 0) {
-      const activeServices = await this.aiServiceService.findByIds(serviceIds);
-      dbConfig = activeServices.length > 0 ? activeServices[0] : null;
-    }
-
-    if (!dbConfig) {
-      dbConfig = await this.aiServiceService.getActiveServiceForPurpose(AI_SERVICE_PURPOSES.CHAT);
-    }
+    const dbConfig = await this.aiServiceService.getActiveServiceForPurpose(AI_SERVICE_PURPOSES.CHAT);
 
     if (!dbConfig) {
       throw new CustomHttpException(

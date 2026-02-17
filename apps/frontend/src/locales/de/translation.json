@@ -2202,8 +2202,6 @@
     "chatAiChatEnabledDescription": "Aktiviert oder deaktiviert die AI-Chat-Funktion.",
     "chatAiChatGroupsTitle": "Berechtigte Gruppen (AI Chat)",
     "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben.",
-    "chatAiServicesTitle": "KI-Dienste",
-    "chatAiServicesDescription": "Wählen Sie aus, welche KI-Dienste für den Chat verfügbar sein sollen.",
     "chatAiAssistantTableTitle": "KI-Assistenten",
     "chatAiAssistantTableDescription": "Verwalten Sie KI-Assistenten mit benutzerdefinierten Systemaufforderungen und Zugriffskontrolle."
   },

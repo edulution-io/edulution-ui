@@ -2007,8 +2007,6 @@
     "chatAiChatEnabledDescription": "Activer ou désactiver la fonction de chat IA.",
     "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
     "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA.",
-    "chatAiServicesTitle": "Services IA",
-    "chatAiServicesDescription": "Sélectionnez les services IA disponibles pour le chat.",
     "chatAiAssistantTableTitle": "Assistants IA",
     "chatAiAssistantTableDescription": "Gérez les assistants IA avec des invites système personnalisées et un contrôle d'accès."
   },
