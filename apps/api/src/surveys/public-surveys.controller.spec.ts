@@ -24,6 +24,10 @@ import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import { HttpStatus } from '@nestjs/common';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import CustomHttpException from '../common/CustomHttpException';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answers.service';
@@ -60,6 +64,7 @@ describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
   let surveysService: SurveysService;
   let surveyAnswerService: SurveyAnswersService;
+  let surveyBackendLimiterService: SurveyBackendLimiterService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
   let surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>;
@@ -87,7 +92,13 @@ describe(PublicSurveysController.name, () => {
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: jest.fn() },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
-        { provide: SurveyBackendLimiterService, useValue: jest.fn() },
+        {
+          provide: SurveyBackendLimiterService,
+          useValue: {
+            throwErrorIfUserIsNotAllowedToAppendBackendLimiters: jest.fn(),
+            appendChoicesToBackendLimiter: jest.fn().mockResolvedValue(undefined),
+          },
+        },
         {
           provide: getModelToken(SurveysBackendLimiter.name),
           useValue: {
@@ -105,6 +116,7 @@ describe(PublicSurveysController.name, () => {
     controller = module.get<PublicSurveysController>(PublicSurveysController);
     surveysService = module.get<SurveysService>(SurveysService);
     surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveyBackendLimiterService = module.get<SurveyBackendLimiterService>(SurveyBackendLimiterService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
     surveysBackendLimiterModel = module.get<Model<SurveysBackendLimiterDocument>>(
@@ -230,7 +242,7 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
     });
 
     it('Update Choices that getSelectableChoices() returns after adding a new answer', async () => {
@@ -238,7 +250,6 @@ describe(PublicSurveysController.name, () => {
 
       surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
-        .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
@@ -259,7 +270,49 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('updateChoices', () => {
+    const surveyId = idOfPublicSurvey02.toString();
+    const questionId = publicSurvey02QuestionNameWithLimiters;
+    const choices: ChoiceDto[] = [{ name: 'newChoice', title: 'New Choice' }];
+
+    it('should call getSurvey, validate permissions, and append choices', async () => {
+      surveysService.getSurvey = jest.fn().mockResolvedValue(publicSurvey02);
+
+      await controller.updateChoices({ surveyId, questionId }, choices);
+
+      expect(surveysService.getSurvey).toHaveBeenCalledWith(surveyId);
+      expect(surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledWith(
+        publicSurvey02,
+        questionId,
+      );
+      expect(surveyBackendLimiterService.appendChoicesToBackendLimiter).toHaveBeenCalledWith(
+        surveyId,
+        questionId,
+        choices,
+      );
+    });
+
+    it('should throw FORBIDDEN when question does not allow custom choices', async () => {
+      surveysService.getSurvey = jest.fn().mockResolvedValue(publicSurvey02);
+      (surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters as jest.Mock).mockImplementation(
+        () => {
+          throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.FORBIDDEN);
+        },
+      );
+
+      try {
+        await controller.updateChoices({ surveyId, questionId }, choices);
+        fail('Expected CustomHttpException to be thrown');
+      } catch (e) {
+        expect(e).toBeInstanceOf(CustomHttpException);
+        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.FORBIDDEN);
+      }
+
+      expect(surveyBackendLimiterService.appendChoicesToBackendLimiter).not.toHaveBeenCalled();
     });
   });
 });

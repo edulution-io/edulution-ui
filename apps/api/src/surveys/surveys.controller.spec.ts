@@ -27,6 +27,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -49,6 +50,7 @@ import {
   openSurvey01,
   openSurvey02,
   publicSurvey01,
+  secondMockJWTUser,
   secondMockUser,
   secondUsername,
   secondUsersSurveyAnswerAnsweredSurvey01,
@@ -75,6 +77,7 @@ describe(SurveysController.name, () => {
   let controller: SurveysController;
   let surveyService: SurveysService;
   let surveyAnswersService: SurveyAnswersService;
+  let surveysBackendLimiterService: SurveysBackendLimiterService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
@@ -111,7 +114,16 @@ describe(SurveysController.name, () => {
             limit: jest.fn().mockResolvedValueOnce([firstUsersSurveyAnswerAnsweredSurvey01]),
           },
         },
-        { provide: SurveysBackendLimiterService, useValue: { onSurveyRemoval: jest.fn() } },
+        {
+          provide: SurveysBackendLimiterService,
+          useValue: {
+            onSurveyRemoval: jest.fn(),
+            updateOrCreateSurveysBackendLimiters: jest.fn().mockResolvedValue(undefined),
+            appendChoicesToBackendLimiter: jest.fn().mockResolvedValue(undefined),
+            throwErrorIfUserIsNotAllowedToAppendBackendLimiters: jest.fn(),
+            deleteBackendLimiter: jest.fn().mockResolvedValue(undefined),
+          },
+        },
         {
           provide: getModelToken(SurveysBackendLimiter.name),
           useValue: jest.fn(),
@@ -141,6 +153,7 @@ describe(SurveysController.name, () => {
     controller = module.get<SurveysController>(SurveysController);
     surveyService = module.get<SurveysService>(SurveysService);
     surveyAnswersService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveysBackendLimiterService = module.get<SurveysBackendLimiterService>(SurveysBackendLimiterService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });
@@ -391,6 +404,85 @@ describe(SurveysController.name, () => {
         firstUsersMockedAnswerForAnsweredSurveys01,
         attendee,
       );
+    });
+  });
+
+  describe('updateChoices', () => {
+    const surveyId = idOfPublicSurvey01.toString();
+    const questionId = 'Frage1';
+    const choices: ChoiceDto[] = [{ name: 'c1', title: 'Choice 1', limit: 5 }];
+    const mockRes = () => {
+      const json = jest.fn();
+      const status = jest.fn().mockReturnValue({ json });
+      return { status, json, res: { status } as unknown as import('express').Response };
+    };
+
+    it('should call updateOrCreateSurveysBackendLimiters when user is creator and append is not set', async () => {
+      const { res, status, json } = mockRes();
+      surveyService.getSurvey = jest.fn().mockResolvedValue(publicSurvey01);
+
+      await controller.updateChoices({ surveyId, questionId }, firstMockJWTUser, choices, res);
+
+      expect(surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters).toHaveBeenCalledWith(
+        surveyId,
+        questionId,
+        choices,
+      );
+      expect(status).toHaveBeenCalledWith(HttpStatus.OK);
+      expect(json).toHaveBeenCalledWith({ message: 'success' });
+    });
+
+    it('should call appendChoicesToBackendLimiter when user is not creator', async () => {
+      const { res, status, json } = mockRes();
+      surveyService.getSurvey = jest.fn().mockResolvedValue(publicSurvey01);
+
+      await controller.updateChoices({ surveyId, questionId }, secondMockJWTUser, choices, res);
+
+      expect(surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledWith(
+        publicSurvey01,
+        questionId,
+        secondMockJWTUser,
+      );
+      expect(surveysBackendLimiterService.appendChoicesToBackendLimiter).toHaveBeenCalledWith(
+        surveyId,
+        questionId,
+        choices,
+      );
+      expect(status).toHaveBeenCalledWith(HttpStatus.OK);
+      expect(json).toHaveBeenCalledWith({ message: 'success' });
+    });
+
+    it('should call appendChoicesToBackendLimiter when creator sets append=true', async () => {
+      const { res, status } = mockRes();
+      surveyService.getSurvey = jest.fn().mockResolvedValue(publicSurvey01);
+
+      await controller.updateChoices({ surveyId, questionId }, firstMockJWTUser, choices, res, 'true');
+
+      expect(surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledWith(
+        publicSurvey01,
+        questionId,
+        firstMockJWTUser,
+      );
+      expect(surveysBackendLimiterService.appendChoicesToBackendLimiter).toHaveBeenCalledWith(
+        surveyId,
+        questionId,
+        choices,
+      );
+      expect(status).toHaveBeenCalledWith(HttpStatus.OK);
+    });
+  });
+
+  describe('deleteBackendLimiter', () => {
+    const surveyId = idOfPublicSurvey01.toString();
+    const questionId = 'Frage1';
+
+    it('should call throwErrorIfUserIsNotCreator and deleteBackendLimiter', async () => {
+      surveyService.throwErrorIfUserIsNotCreator = jest.fn().mockResolvedValue(undefined);
+
+      await controller.deleteBackendLimiter({ surveyId, questionId }, firstMockJWTUser);
+
+      expect(surveyService.throwErrorIfUserIsNotCreator).toHaveBeenCalledWith(surveyId, firstMockJWTUser);
+      expect(surveysBackendLimiterService.deleteBackendLimiter).toHaveBeenCalledWith(surveyId, questionId);
     });
   });
 });

@@ -171,7 +171,7 @@ describe('SurveyAnswersService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
     });
 
     it('Should return those choices that are still selectable even after adding a new answer (backend limit was not reached)', async () => {
@@ -179,7 +179,6 @@ describe('SurveyAnswersService', () => {
 
       service.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
-        .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
@@ -198,7 +197,7 @@ describe('SurveyAnswersService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
     });
 
     it('Throw error when the backendLimit is not set', async () => {

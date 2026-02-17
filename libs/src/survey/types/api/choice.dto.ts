@@ -20,8 +20,8 @@
 interface ChoiceDto {
   name: string;
   title: string;
-  limit: number;
-  addedByUser?: boolean;
+  limit?: number;
+  isCustomUserEntry?: boolean;
 }
 
 export default ChoiceDto;

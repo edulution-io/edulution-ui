@@ -119,8 +119,12 @@ class SurveyAnswersService implements OnModuleInit {
     const filteredChoices: ChoiceDto[] = [];
     await Promise.all(
       possibleChoices.map(async (choice) => {
+        if (!choice.limit || choice.limit === 0) {
+          filteredChoices.push(choice);
+          return;
+        }
         let counter = 0;
-        if (choice.addedByUser) {
+        if (choice.isCustomUserEntry) {
           counter += await this.countTotalChoiceSelectionsInSurveyAnswers(
             surveyId,
             `${questionName}${SURVEYJS_COMMENT_SUFFIX}`,
@@ -128,7 +132,7 @@ class SurveyAnswersService implements OnModuleInit {
           );
         }
         counter += await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
-        if (choice.limit === 0 || counter < choice.limit) {
+        if (counter < choice.limit) {
           filteredChoices.push(choice);
         }
       }),

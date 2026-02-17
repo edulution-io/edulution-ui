@@ -270,7 +270,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     if (!otherValue.trim()) {
       return;
     }
-    const choice: ChoiceDto = { name: otherValue, title: otherValue, limit: 0 };
+    const choice: ChoiceDto = { name: otherValue, title: otherValue };
     const endpoint = isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES;
     try {
       await eduApi.post(`${endpoint}/${surveyId}/${questionName}?append=true`, [choice]);
