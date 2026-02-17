@@ -2010,7 +2010,9 @@
     "chatAiServicesTitle": "Services IA",
     "chatAiServicesDescription": "Sélectionnez les services IA disponibles pour le chat.",
     "chatAiAssistantTableTitle": "Assistants IA",
-    "chatAiAssistantTableDescription": "Gérez les assistants IA avec des invites système personnalisées et un contrôle d'accès."
+    "chatAiAssistantTableDescription": "Gérez les assistants IA avec des invites système personnalisées et un contrôle d'accès.",
+    "chatSearxngUrlTitle": "SearXNG URL",
+    "chatSearxngUrlDescription": "URL de l'instance SearXNG utilisée pour la recherche web IA."
   },
   "preview": {
     "image": "Aperçu de l'image",

@@ -53,6 +53,7 @@ const ExtendedOptionKeys = {
   CHAT_AI_CHAT_GROUPS: 'CHAT_AI_CHAT_GROUPS',
   CHAT_AI_SERVICES: 'CHAT_AI_SERVICES',
   CHAT_AI_ASSISTANT_TABLE: 'CHAT_AI_ASSISTANT_TABLE',
+  CHAT_SEARXNG_URL: 'CHAT_SEARXNG_URL',
 } as const;
 
 export default ExtendedOptionKeys;

@@ -2184,7 +2184,9 @@
     "chatAiServicesTitle": "AI Services",
     "chatAiServicesDescription": "Select which AI services should be available for chat.",
     "chatAiAssistantTableTitle": "AI Assistants",
-    "chatAiAssistantTableDescription": "Manage AI assistants with custom system prompts and access control."
+    "chatAiAssistantTableDescription": "Manage AI assistants with custom system prompts and access control.",
+    "chatSearxngUrlTitle": "SearXNG URL",
+    "chatSearxngUrlDescription": "URL of the SearXNG instance used for AI web search."
   },
   "mails": {
     "errors": {

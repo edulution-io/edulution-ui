@@ -74,6 +74,15 @@ const CHAT_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     width: 'full',
     linkedTo: ExtendedOptionKeys.CHAT_AI_CHAT_ENABLED,
   },
+  {
+    name: ExtendedOptionKeys.CHAT_SEARXNG_URL,
+    title: 'appExtendedOptions.chatSearxngUrlTitle',
+    description: 'appExtendedOptions.chatSearxngUrlDescription',
+    type: ExtendedOptionField.input,
+    value: '',
+    width: 'full',
+    linkedTo: ExtendedOptionKeys.CHAT_AI_CHAT_ENABLED,
+  },
 ];
 
 export default CHAT_EXTENDED_OPTIONS;
