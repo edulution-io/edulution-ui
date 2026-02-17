@@ -64,12 +64,14 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     const surveyId = form.watch('id');
     const limiters = form.watch('backendLimiters') || {};
     if (useBackendLimits) {
-      if (surveyId) {
+      if (currentChoices.length > 0) {
+        setInitialChoices(currentChoices);
+      } else if (surveyId) {
         void getInitialChoices(surveyId, questionName);
       } else {
         setInitialChoices(limiters[questionName] || []);
       }
-    } else {
+    } else if (limiters[questionName] && limiters[questionName].length > 0) {
       delete limiters[questionName];
       form.setValue('backendLimiters', limiters);
       if (surveyId) {

@@ -133,7 +133,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       },
 
       uploadBackendLimiters: async (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => {
-        const { uploadBackendLimiter } = useQuestionsContextMenuStore();
+        const { uploadBackendLimiter } = useQuestionsContextMenuStore.getState();
         const promises = Object.keys(backendLimiters).map((questionName) =>
           backendLimiters[questionName].length > 0
             ? uploadBackendLimiter(surveyId, questionName, backendLimiters[questionName])
@@ -143,7 +143,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       },
 
       removeBackendLimiter: async (surveyId: string, questionName: string) => {
-        const { deleteBackendLimiters } = useQuestionsContextMenuStore();
+        const { deleteBackendLimiters } = useQuestionsContextMenuStore.getState();
         await deleteBackendLimiters(surveyId, questionName);
       },
 

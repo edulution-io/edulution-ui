@@ -92,22 +92,8 @@ class SurveyAnswersService implements OnModuleInit {
       .findOne({ surveyId: new Types.ObjectId(surveyId), questionName })
       .exec();
 
-    if (!surveysBackendLimiter) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveyAnswersService.name,
-      );
-    }
-
-    if (!surveysBackendLimiter?.choices?.length) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NoBackendLimiters,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
-        SurveyAnswersService.name,
-      );
+    if (!surveysBackendLimiter || !surveysBackendLimiter?.choices?.length) {
+      return [];
     }
 
     const possibleChoices = surveysBackendLimiter.choices;
