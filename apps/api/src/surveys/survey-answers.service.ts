@@ -34,6 +34,7 @@ import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -126,7 +127,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
 
-    return filteredChoices;
+    return filteredChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   };
 
   static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceTitle: string): number => {

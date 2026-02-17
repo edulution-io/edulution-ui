@@ -62,7 +62,6 @@ import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
-import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
@@ -365,7 +364,7 @@ class SurveysController {
     SurveysController.validateParams(params, ['surveyId', 'questionId']);
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId, original === 'true');
-    return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
+    return choices;
   }
 
   @Delete(`${CHOICES}/:surveyId/:questionId`)

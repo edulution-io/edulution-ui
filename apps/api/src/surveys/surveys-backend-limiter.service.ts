@@ -142,7 +142,7 @@ class SurveysBackendLimiterService {
 
     const existingChoices = backendLimiter.choices;
     const showOtherItemChoice = existingChoices.find((choice) => choice.name === SHOW_OTHER_ITEM);
-    const otherItemLimit = showOtherItemChoice?.limit ?? 0;
+    const otherItemLimit = showOtherItemChoice?.limit ?? 1;
 
     let hasNewChoices = false;
     choices.forEach((newChoice) => {
