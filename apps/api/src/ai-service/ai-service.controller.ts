@@ -53,7 +53,7 @@ class AiServiceController {
 
   @Post('models')
   fetchAvailableModels(@Body() body: FetchAiModelsDto) {
-    return this.aiServiceService.fetchAvailableModels(body);
+    return AiServiceService.fetchAvailableModels(body);
   }
 }
 
