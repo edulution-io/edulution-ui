@@ -17,8 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AI_ASSISTANT_ERROR_MESSAGES from '@libs/aiAssistant/constants/aiAssistantErrorMessages';
+import { UIMessage } from 'ai';
 
-type AiAssistantErrorMessages = (typeof AI_ASSISTANT_ERROR_MESSAGES)[keyof typeof AI_ASSISTANT_ERROR_MESSAGES];
+const extractTextFromParts = (parts: UIMessage['parts']): string =>
+  parts
+    .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
+    .map((part) => part.text)
+    .join('');
 
-export default AiAssistantErrorMessages;
+export default extractTextFromParts;

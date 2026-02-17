@@ -43,13 +43,6 @@ const useAiChat = (chatId: string): ChatAdapter => {
       new DefaultChatTransport({
         api: `${EDU_API_URL}/${AI_CHAT_API_ENDPOINT}`,
         headers: getAuthHeaders,
-        body: () => {
-          const { selectedAssistantId: assistantId } = useAiChatStore.getState();
-          if (assistantId) {
-            return { assistantId };
-          }
-          return {};
-        },
       }),
     [],
   );

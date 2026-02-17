@@ -35,25 +35,7 @@
     "refreshGroups": "Actualiser les groupes",
     "newChat": "Nouveau Chat",
     "startNewAiChat": "Démarrer une nouvelle conversation IA",
-    "deleteChat": "Supprimer le chat",
-    "selectAssistant": "Sélectionner un assistant",
-    "assistant": {
-      "createNewAssistant": "Créer un nouvel assistant",
-      "editAssistant": "Modifier l'assistant",
-      "assistantName": "Nom de l'assistant",
-      "systemPrompt": "Invite système",
-      "systemPromptPlaceholder": "Entrez l'invite système pour cet assistant...",
-      "aiService": "Service IA",
-      "selectAiService": "Sélectionner un service IA",
-      "accessUsersAndGroupsTitle": "Contrôle d'accès",
-      "accessUsersAndGroups": "Utilisateurs et groupes pouvant utiliser cet assistant",
-      "assistantCreatedSuccessfully": "Assistant créé avec succès",
-      "assistantUpdatedSuccessfully": "Assistant mis à jour avec succès",
-      "assistantDeletedSuccessfully": "Assistant supprimé avec succès",
-      "deleteAssistant": "Supprimer l'assistant",
-      "confirmSingleAssistantDelete": "Êtes-vous sûr de vouloir supprimer cet assistant ?",
-      "filterPlaceHolderText": "Rechercher par nom d'assistant"
-    }
+    "deleteChat": "Supprimer le chat"
   },
   "bulletinboard": {
     "settings": "Paramètres",
@@ -2006,9 +1988,7 @@
     "chatAiChatEnabledTitle": "Chat IA",
     "chatAiChatEnabledDescription": "Activer ou désactiver la fonction de chat IA.",
     "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
-    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA.",
-    "chatAiAssistantTableTitle": "Assistants IA",
-    "chatAiAssistantTableDescription": "Gérez les assistants IA avec des invites système personnalisées et un contrôle d'accès."
+    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA."
   },
   "preview": {
     "image": "Aperçu de l'image",

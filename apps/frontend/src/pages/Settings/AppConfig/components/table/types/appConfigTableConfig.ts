@@ -30,14 +30,9 @@ import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import type { WebdavServerTableStore, WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import { type WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
-import type AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
-import { type AiAssistantTableStore } from '@libs/appconfig/types/aiAssistantTableStore';
 import AppConfigTableEntry from './appConfigTableEntry';
 
 export type AppConfigTableConfig =
-  | (AppConfigTableEntry<AiAssistantResponseDto, AiAssistantTableStore> & {
-      type: typeof ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE;
-    })
   | (AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore> & {
       type: typeof ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE;
     })

@@ -29,7 +29,6 @@ import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import type AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
@@ -183,7 +182,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
     type TableDataType =
       | BulletinCategoryResponseDto
-      | AiAssistantResponseDto
       | ContainerInfo
       | FileInfoDto
       | VeyonProxyItem
@@ -225,20 +223,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
     const getScrollableTable = () => {
       switch (type) {
-        case ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE: {
-          return (
-            <ScrollableTable
-              columns={columns}
-              data={tableContentData as AiAssistantResponseDto[]}
-              filterKey={filterKey}
-              filterPlaceHolderText={filterPlaceHolderText}
-              applicationName={applicationName}
-              enableRowSelection={false}
-              initialColumnVisibility={initialColumnVisibility}
-              actions={tableActions as TableAction<AiAssistantResponseDto>[]}
-            />
-          );
-        }
         case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
           return (
             <ScrollableTable

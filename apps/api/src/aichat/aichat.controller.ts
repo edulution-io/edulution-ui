@@ -42,7 +42,6 @@ import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 import ChatFeatureGuard from '../common/guards/chatFeature.guard';
 import AiChatService from './aichat.service';
-import AiAssistantService from '../ai-assistant/ai-assistant.service';
 
 @ApiTags(APPS.AICHAT)
 @ApiBearerAuth()
@@ -50,16 +49,7 @@ import AiAssistantService from '../ai-assistant/ai-assistant.service';
 @UseGuards(ChatFeatureGuard)
 @Controller(APPS.AICHAT)
 class AiChatController {
-  constructor(
-    private readonly aiChatService: AiChatService,
-    private readonly aiAssistantService: AiAssistantService,
-  ) {}
-
-  @Get('assistants')
-  async getAssistants(@GetCurrentUser() currentUser: JwtUser) {
-    const assistants = await this.aiAssistantService.findAccessibleByUser(currentUser.ldapGroups);
-    return assistants.map((a) => ({ id: a.id as string, name: a.name }));
-  }
+  constructor(private readonly aiChatService: AiChatService) {}
 
   @Get('conversations')
   async getConversations(@GetCurrentUser() currentUser: JwtUser) {
@@ -97,20 +87,14 @@ class AiChatController {
 
   @Post('chat')
   async chat(
-    @Body() body: { id: string; messages: UIMessage[]; assistantId?: string },
+    @Body() body: { id: string; messages: UIMessage[] },
     @Res() res: Response,
     @GetCurrentUser() currentUser: JwtUser,
   ) {
-    const { id: conversationId, messages, assistantId } = body;
+    const { id: conversationId, messages } = body;
     const username = currentUser.preferred_username;
 
-    const { result } = await this.aiChatService.streamChat(
-      conversationId,
-      messages,
-      username,
-      assistantId,
-      currentUser.ldapGroups,
-    );
+    const { result } = await this.aiChatService.streamChat(conversationId, messages, username);
 
     result.pipeUIMessageStreamToResponse(res, {
       onFinish: async ({ responseMessage }) => {

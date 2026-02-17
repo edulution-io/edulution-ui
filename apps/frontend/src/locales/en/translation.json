@@ -35,25 +35,7 @@
     "refreshGroups": "Refresh groups",
     "newChat": "New Chat",
     "startNewAiChat": "Start a new AI conversation",
-    "deleteChat": "Delete chat",
-    "selectAssistant": "Select Assistant",
-    "assistant": {
-      "createNewAssistant": "Create New Assistant",
-      "editAssistant": "Edit Assistant",
-      "assistantName": "Assistant Name",
-      "systemPrompt": "System Prompt",
-      "systemPromptPlaceholder": "Enter the system prompt for this assistant...",
-      "aiService": "AI Service",
-      "selectAiService": "Select an AI Service",
-      "accessUsersAndGroupsTitle": "Access Control",
-      "accessUsersAndGroups": "Users and groups that can use this assistant",
-      "assistantCreatedSuccessfully": "Assistant created successfully",
-      "assistantUpdatedSuccessfully": "Assistant updated successfully",
-      "assistantDeletedSuccessfully": "Assistant deleted successfully",
-      "deleteAssistant": "Delete Assistant",
-      "confirmSingleAssistantDelete": "Are you sure you want to delete this assistant?",
-      "filterPlaceHolderText": "Search for assistant name"
-    }
+    "deleteChat": "Delete chat"
   },
   "bulletinboard": {
     "settings": "Settings",
@@ -2180,9 +2162,7 @@
     "chatAiChatEnabledTitle": "AI Chat",
     "chatAiChatEnabledDescription": "Enable or disable the AI chat feature.",
     "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
-    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat.",
-    "chatAiAssistantTableTitle": "AI Assistants",
-    "chatAiAssistantTableDescription": "Manage AI assistants with custom system prompts and access control."
+    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat."
   },
   "mails": {
     "errors": {

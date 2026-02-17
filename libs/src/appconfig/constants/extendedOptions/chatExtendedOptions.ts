@@ -56,15 +56,6 @@ const CHAT_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     width: 'full',
     linkedTo: ExtendedOptionKeys.CHAT_AI_CHAT_ENABLED,
   },
-  {
-    name: ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE,
-    title: 'appExtendedOptions.chatAiAssistantTableTitle',
-    description: 'appExtendedOptions.chatAiAssistantTableDescription',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full',
-    linkedTo: ExtendedOptionKeys.CHAT_AI_CHAT_ENABLED,
-  },
 ];
 
 export default CHAT_EXTENDED_OPTIONS;

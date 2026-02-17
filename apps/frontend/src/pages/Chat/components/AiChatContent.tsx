@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import ChatView from '@/pages/Chat/components/ChatView';
 import useAiChat from '@/pages/Chat/hooks/useAiChat';
 import useAiChatStore from '@/store/useAiChatStore';
@@ -31,23 +31,12 @@ interface AiChatContentProps {
 const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
   const adapter = useAiChat(chatId);
   const conversations = useAiChatStore((state) => state.conversations);
-  const assistants = useAiChatStore((state) => state.assistants);
-  const selectedAssistantId = useAiChatStore((state) => state.selectedAssistantId);
-  const fetchAssistants = useAiChatStore((state) => state.fetchAssistants);
-  const setSelectedAssistantId = useAiChatStore((state) => state.setSelectedAssistantId);
   const title = conversations.find((c) => c.id === chatId)?.title ?? AI_CHAT_TITLE;
-
-  useEffect(() => {
-    void fetchAssistants();
-  }, [fetchAssistants]);
 
   return (
     <ChatView
       adapter={adapter}
       title={title}
-      assistants={assistants}
-      selectedAssistantId={selectedAssistantId}
-      onAssistantChange={setSelectedAssistantId}
     />
   );
 };

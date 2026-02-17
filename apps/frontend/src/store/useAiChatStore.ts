@@ -20,12 +20,7 @@
 import { create } from 'zustand';
 import AiConversation from '@libs/chat/types/aiConversation';
 import AiChatMessageResponse from '@libs/chat/types/aiChatMessageResponse';
-import AiAssistantOption from '@libs/chat/types/aiAssistantOption';
-import {
-  AI_CHAT_CONVERSATIONS_ENDPOINT,
-  AI_CHAT_ASSISTANTS_ENDPOINT,
-  getAiChatMessagesEndpoint,
-} from '@libs/chat/constants/chatApiEndpoints';
+import { AI_CHAT_CONVERSATIONS_ENDPOINT, getAiChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -34,8 +29,6 @@ const DEFAULT_CONVERSATION_TITLE = 'New Chat';
 interface AiChatStore {
   conversations: AiConversation[];
   activeConversationId: string | null;
-  assistants: AiAssistantOption[];
-  selectedAssistantId: string | null;
   isLoading: boolean;
   error: string | null;
   fetchConversations: () => Promise<void>;
@@ -44,15 +37,11 @@ interface AiChatStore {
   setActiveConversation: (id: string | null) => void;
   updateConversationTitle: (id: string, title: string) => Promise<void>;
   fetchMessages: (conversationId: string) => Promise<AiChatMessageResponse[]>;
-  fetchAssistants: () => Promise<void>;
-  setSelectedAssistantId: (id: string | null) => void;
 }
 
 const useAiChatStore = create<AiChatStore>((set) => ({
   conversations: [],
   activeConversationId: null,
-  assistants: [],
-  selectedAssistantId: null,
   isLoading: false,
   error: null,
 
@@ -124,19 +113,6 @@ const useAiChatStore = create<AiChatStore>((set) => ({
     } catch (error) {
       handleApiError(error, set);
     }
-  },
-
-  fetchAssistants: async () => {
-    try {
-      const response = await eduApi.get<AiAssistantOption[]>(AI_CHAT_ASSISTANTS_ENDPOINT);
-      set({ assistants: response.data });
-    } catch (error) {
-      handleApiError(error, set);
-    }
-  },
-
-  setSelectedAssistantId: (id) => {
-    set({ selectedAssistantId: id });
   },
 }));
 
