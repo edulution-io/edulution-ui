@@ -22,6 +22,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
+import extractTextFromParts from '@libs/chat/utils/extractTextFromParts';
 import { AI_CHAT_API_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -34,7 +35,7 @@ const TITLE_MAX_LENGTH = 50;
 const useAiChat = (chatId: string): ChatAdapter => {
   const [input, setInput] = useState('');
   const titleSetRef = useRef(false);
-  const { updateConversationTitle, config } = useAiChatStore();
+  const { updateConversationTitle } = useAiChatStore();
   const username = useUserStore((state) => state.user?.username);
 
   const transport = useMemo(
@@ -79,24 +80,17 @@ const useAiChat = (chatId: string): ChatAdapter => {
   const messages = useMemo<ChatMessage[]>(
     () =>
       uiMessages.map((msg) => {
-        const textContent = msg.parts
-          .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
-          .map((part) => part.text)
-          .join('');
-
-        const isAssistant = msg.role === CHAT_ROLES.ASSISTANT;
+        const textContent = extractTextFromParts(msg.parts);
 
         return {
           id: msg.id,
           role: msg.role as ChatMessage['role'],
           content: textContent,
           createdAt: new Date().toISOString(),
-          createdBy: isAssistant ? CHAT_ROLES.ASSISTANT : username,
-          createdByUserFirstName: isAssistant ? config?.assistantFirstName : undefined,
-          createdByUserLastName: isAssistant ? config?.assistantLastName : undefined,
+          createdBy: msg.role === CHAT_ROLES.ASSISTANT ? CHAT_ROLES.ASSISTANT : username,
         };
       }),
-    [uiMessages, username, config],
+    [uiMessages, username],
   );
 
   useEffect(() => {
@@ -104,10 +98,7 @@ const useAiChat = (chatId: string): ChatAdapter => {
     const firstUserMessage = uiMessages.find((msg) => msg.role === CHAT_ROLES.USER);
     if (!firstUserMessage) return;
 
-    const textContent = firstUserMessage.parts
-      .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
-      .map((part) => part.text)
-      .join('');
+    const textContent = extractTextFromParts(firstUserMessage.parts);
 
     if (textContent.trim()) {
       void updateConversationTitle(chatId, textContent.substring(0, TITLE_MAX_LENGTH));

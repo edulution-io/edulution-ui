@@ -19,12 +19,10 @@
 
 import { create } from 'zustand';
 import AiConversation from '@libs/chat/types/aiConversation';
-import AiChatConfig from '@libs/chat/types/aiChatConfig';
 import AiChatMessageResponse from '@libs/chat/types/aiChatMessageResponse';
 import AiAssistantOption from '@libs/chat/types/aiAssistantOption';
 import {
   AI_CHAT_CONVERSATIONS_ENDPOINT,
-  AI_CHAT_CONFIG_ENDPOINT,
   AI_CHAT_ASSISTANTS_ENDPOINT,
   getAiChatMessagesEndpoint,
 } from '@libs/chat/constants/chatApiEndpoints';
@@ -36,12 +34,10 @@ const DEFAULT_CONVERSATION_TITLE = 'New Chat';
 interface AiChatStore {
   conversations: AiConversation[];
   activeConversationId: string | null;
-  config: AiChatConfig | null;
   assistants: AiAssistantOption[];
   selectedAssistantId: string | null;
   isLoading: boolean;
   error: string | null;
-  fetchConfig: () => Promise<void>;
   fetchConversations: () => Promise<void>;
   createConversation: () => Promise<string | null>;
   deleteConversation: (id: string) => Promise<void>;
@@ -55,20 +51,10 @@ interface AiChatStore {
 const useAiChatStore = create<AiChatStore>((set) => ({
   conversations: [],
   activeConversationId: null,
-  config: null,
   assistants: [],
   selectedAssistantId: null,
   isLoading: false,
   error: null,
-
-  fetchConfig: async () => {
-    try {
-      const response = await eduApi.get<AiChatConfig>(AI_CHAT_CONFIG_ENDPOINT);
-      set({ config: response.data });
-    } catch (error) {
-      handleApiError(error, set);
-    }
-  },
 
   fetchConversations: async () => {
     set({ isLoading: true });

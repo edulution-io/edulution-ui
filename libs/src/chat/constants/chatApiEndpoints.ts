@@ -32,6 +32,4 @@ export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
 export const getAiChatMessagesEndpoint = (conversationId: string): string =>
   `${APPS.AICHAT}/conversations/${conversationId}/messages`;
 
-export const AI_CHAT_CONFIG_ENDPOINT = `${APPS.AICHAT}/config`;
-
 export const AI_CHAT_ASSISTANTS_ENDPOINT = `${APPS.AICHAT}/assistants`;

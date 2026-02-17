@@ -18,14 +18,13 @@
  */
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { streamText, UIMessage } from 'ai';
 import type { LanguageModelV3 } from '@ai-sdk/provider';
 import type { ModelMessage, UserModelMessage, AssistantModelMessage } from '@ai-sdk/provider-utils';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
-import AiChatConfig from '@libs/chat/types/aiChatConfig';
+import extractTextFromParts from '@libs/chat/utils/extractTextFromParts';
 import { AICHAT_ERROR_MESSAGES } from '@libs/chat/types/aiChatErrorMessages';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 import AiProviderType from '@libs/aiService/types/aiProviderType';
@@ -35,28 +34,14 @@ import AiAssistantService from '../ai-assistant/ai-assistant.service';
 import { AiConversation, AiConversationDocument } from './schemas/aiConversation.schema';
 import { AiChatMessage, AiChatMessageDocument } from './schemas/aiChatMessage.schema';
 
-const extractTextFromParts = (parts: UIMessage['parts']): string =>
-  parts
-    .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
-    .map((part) => part.text)
-    .join('');
-
 @Injectable()
 class AiChatService {
   constructor(
     @InjectModel(AiConversation.name) private aiConversationModel: Model<AiConversationDocument>,
     @InjectModel(AiChatMessage.name) private aiChatMessageModel: Model<AiChatMessageDocument>,
-    private readonly configService: ConfigService,
     private readonly aiServiceService: AiServiceService,
     private readonly aiAssistantService: AiAssistantService,
   ) {}
-
-  getConfig(): AiChatConfig {
-    return {
-      assistantFirstName: this.configService.get<string>('AI_ASSISTANT_FIRST_NAME'),
-      assistantLastName: this.configService.get<string>('AI_ASSISTANT_LAST_NAME'),
-    };
-  }
 
   async getConversations(username: string): Promise<AiConversationDocument[]> {
     return this.aiConversationModel.find({ username }).sort({ lastMessageAt: -1 }).exec();

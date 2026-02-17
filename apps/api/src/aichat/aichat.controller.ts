@@ -36,6 +36,7 @@ import { Response } from 'express';
 import { UIMessage } from 'ai';
 import APPS from '@libs/appconfig/constants/apps';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
+import extractTextFromParts from '@libs/chat/utils/extractTextFromParts';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
@@ -53,11 +54,6 @@ class AiChatController {
     private readonly aiChatService: AiChatService,
     private readonly aiAssistantService: AiAssistantService,
   ) {}
-
-  @Get('config')
-  getConfig() {
-    return this.aiChatService.getConfig();
-  }
 
   @Get('assistants')
   async getAssistants(@GetCurrentUser() currentUser: JwtUser) {
@@ -118,10 +114,7 @@ class AiChatController {
 
     result.pipeUIMessageStreamToResponse(res, {
       onFinish: async ({ responseMessage }) => {
-        const textContent = responseMessage.parts
-          .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
-          .map((part) => part.text)
-          .join('');
+        const textContent = extractTextFromParts(responseMessage.parts);
 
         if (textContent) {
           await this.aiChatService.saveMessage(conversationId, CHAT_ROLES.ASSISTANT, textContent, username);
