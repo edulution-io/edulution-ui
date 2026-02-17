@@ -34,6 +34,7 @@ import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/
 import AppConfigUpdateChecker from '@/pages/Settings/AppConfig/components/updateChecker/AppConfigUpdateChecker';
 import ScriptEditorField from '@/pages/Settings/AppConfig/components/ScriptEditorField';
 import AppConfigGroupSelect from '@/pages/Settings/AppConfig/components/AppConfigGroupSelect';
+import AppConfigAiServiceSelect from '@/pages/Settings/AppConfig/components/AppConfigAiServiceSelect';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   section: string;
@@ -162,6 +163,20 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
           : fieldPath;
         return (
           <AppConfigGroupSelect
+            key={fieldPath}
+            fieldPath={fieldPath}
+            linkedToFieldPath={linkedToFieldPath}
+            control={control}
+            option={option}
+          />
+        );
+      }
+      case ExtendedOptionField.aiServiceSelect: {
+        const linkedToFieldPath = option.linkedTo
+          ? ((settingLocation ? `${settingLocation}.extendedOptions.${option.linkedTo}` : option.linkedTo) as Path<T>)
+          : fieldPath;
+        return (
+          <AppConfigAiServiceSelect
             key={fieldPath}
             fieldPath={fieldPath}
             linkedToFieldPath={linkedToFieldPath}

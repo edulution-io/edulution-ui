@@ -118,6 +118,10 @@ class AiServiceService {
     }
   }
 
+  async findByIds(ids: string[]): Promise<AiServiceDocument[]> {
+    return this.aiServiceModel.find({ _id: { $in: ids }, isActive: true }).exec();
+  }
+
   async getActiveServiceForPurpose(purpose: AiServicePurposeType): Promise<AiServiceDocument | null> {
     return this.aiServiceModel.findOne({ purpose, isActive: true }).exec();
   }

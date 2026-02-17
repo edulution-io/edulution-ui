@@ -17,21 +17,38 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+export type AiAssistantDocument = AiAssistant & Document;
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
+@Schema({ timestamps: true, strict: true })
+export class AiAssistant {
+  @Prop({ required: true })
+  name: string;
 
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
+  @Prop({ required: true })
+  aiServiceId: string;
 
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
+  @Prop({ required: true })
+  systemPrompt: string;
 
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
+  @Prop({ type: Array, default: [] })
+  accessUsers: MultipleSelectorGroup[];
 
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
+  @Prop({ type: Array, default: [] })
+  accessGroups: MultipleSelectorGroup[];
 
-export const AI_CHAT_CONFIG_ENDPOINT = `${APPS.AICHAT}/config`;
+  @Prop({ type: Boolean, default: true })
+  isActive: boolean;
 
-export const AI_CHAT_ASSISTANTS_ENDPOINT = `${APPS.AICHAT}/assistants`;
+  @Prop({ default: 1 })
+  schemaVersion: number;
+}
+
+export const AiAssistantSchema = SchemaFactory.createForClass(AiAssistant);
+
+AiAssistantSchema.set('toJSON', {
+  virtuals: true,
+});

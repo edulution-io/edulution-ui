@@ -35,7 +35,25 @@
     "refreshGroups": "Actualiser les groupes",
     "newChat": "Nouveau Chat",
     "startNewAiChat": "Démarrer une nouvelle conversation IA",
-    "deleteChat": "Supprimer le chat"
+    "deleteChat": "Supprimer le chat",
+    "selectAssistant": "Sélectionner un assistant",
+    "assistant": {
+      "createNewAssistant": "Créer un nouvel assistant",
+      "editAssistant": "Modifier l'assistant",
+      "assistantName": "Nom de l'assistant",
+      "systemPrompt": "Invite système",
+      "systemPromptPlaceholder": "Entrez l'invite système pour cet assistant...",
+      "aiService": "Service IA",
+      "selectAiService": "Sélectionner un service IA",
+      "accessUsersAndGroupsTitle": "Contrôle d'accès",
+      "accessUsersAndGroups": "Utilisateurs et groupes pouvant utiliser cet assistant",
+      "assistantCreatedSuccessfully": "Assistant créé avec succès",
+      "assistantUpdatedSuccessfully": "Assistant mis à jour avec succès",
+      "assistantDeletedSuccessfully": "Assistant supprimé avec succès",
+      "deleteAssistant": "Supprimer l'assistant",
+      "confirmSingleAssistantDelete": "Êtes-vous sûr de vouloir supprimer cet assistant ?",
+      "filterPlaceHolderText": "Rechercher par nom d'assistant"
+    }
   },
   "bulletinboard": {
     "settings": "Paramètres",
@@ -1143,7 +1161,7 @@
           "title": "Pairs WireGuard",
           "description": "Gérez ici les pairs VPN WireGuard et les connexions site-à-site."
         },
-        "chat": {
+        "chatFeatures": {
           "title": "Fonctionnalités de chat",
           "description": "Configurez les fonctionnalités de chat disponibles pour les utilisateurs."
         },
@@ -1988,7 +2006,11 @@
     "chatAiChatEnabledTitle": "Chat IA",
     "chatAiChatEnabledDescription": "Activer ou désactiver la fonction de chat IA.",
     "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
-    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA."
+    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA.",
+    "chatAiServicesTitle": "Services IA",
+    "chatAiServicesDescription": "Sélectionnez les services IA disponibles pour le chat.",
+    "chatAiAssistantTableTitle": "Assistants IA",
+    "chatAiAssistantTableDescription": "Gérez les assistants IA avec des invites système personnalisées et un contrôle d'accès."
   },
   "preview": {
     "image": "Aperçu de l'image",

@@ -17,21 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+const AI_ASSISTANT_ERROR_MESSAGES = {
+  NOT_FOUND: 'aiAssistant.errors.notFound',
+} as const;
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
-
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
-
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
-
-export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
-
-export const getAiChatMessagesEndpoint = (conversationId: string): string =>
-  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
-
-export const AI_CHAT_CONFIG_ENDPOINT = `${APPS.AICHAT}/config`;
-
-export const AI_CHAT_ASSISTANTS_ENDPOINT = `${APPS.AICHAT}/assistants`;
+export default AI_ASSISTANT_ERROR_MESSAGES;

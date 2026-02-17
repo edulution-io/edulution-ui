@@ -21,9 +21,11 @@ import { create } from 'zustand';
 import AiConversation from '@libs/chat/types/aiConversation';
 import AiChatConfig from '@libs/chat/types/aiChatConfig';
 import AiChatMessageResponse from '@libs/chat/types/aiChatMessageResponse';
+import AiAssistantOption from '@libs/chat/types/aiAssistantOption';
 import {
   AI_CHAT_CONVERSATIONS_ENDPOINT,
   AI_CHAT_CONFIG_ENDPOINT,
+  AI_CHAT_ASSISTANTS_ENDPOINT,
   getAiChatMessagesEndpoint,
 } from '@libs/chat/constants/chatApiEndpoints';
 import eduApi from '@/api/eduApi';
@@ -35,6 +37,8 @@ interface AiChatStore {
   conversations: AiConversation[];
   activeConversationId: string | null;
   config: AiChatConfig | null;
+  assistants: AiAssistantOption[];
+  selectedAssistantId: string | null;
   isLoading: boolean;
   error: string | null;
   fetchConfig: () => Promise<void>;
@@ -44,12 +48,16 @@ interface AiChatStore {
   setActiveConversation: (id: string | null) => void;
   updateConversationTitle: (id: string, title: string) => Promise<void>;
   fetchMessages: (conversationId: string) => Promise<AiChatMessageResponse[]>;
+  fetchAssistants: () => Promise<void>;
+  setSelectedAssistantId: (id: string | null) => void;
 }
 
 const useAiChatStore = create<AiChatStore>((set) => ({
   conversations: [],
   activeConversationId: null,
   config: null,
+  assistants: [],
+  selectedAssistantId: null,
   isLoading: false,
   error: null,
 
@@ -130,6 +138,19 @@ const useAiChatStore = create<AiChatStore>((set) => ({
     } catch (error) {
       handleApiError(error, set);
     }
+  },
+
+  fetchAssistants: async () => {
+    try {
+      const response = await eduApi.get<AiAssistantOption[]>(AI_CHAT_ASSISTANTS_ENDPOINT);
+      set({ assistants: response.data });
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
+
+  setSelectedAssistantId: (id) => {
+    set({ selectedAssistantId: id });
   },
 }));
 

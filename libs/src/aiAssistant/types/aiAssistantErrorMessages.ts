@@ -16,3 +16,9 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
+
+import AI_ASSISTANT_ERROR_MESSAGES from '@libs/aiAssistant/constants/aiAssistantErrorMessages';
+
+type AiAssistantErrorMessages = (typeof AI_ASSISTANT_ERROR_MESSAGES)[keyof typeof AI_ASSISTANT_ERROR_MESSAGES];
+
+export default AiAssistantErrorMessages;

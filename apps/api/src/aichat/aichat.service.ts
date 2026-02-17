@@ -29,8 +29,13 @@ import AiChatConfig from '@libs/chat/types/aiChatConfig';
 import { AICHAT_ERROR_MESSAGES } from '@libs/chat/types/aiChatErrorMessages';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 import AiProviderType from '@libs/aiService/types/aiProviderType';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import CustomHttpException from '../common/CustomHttpException';
+import AppConfigService from '../appconfig/appconfig.service';
 import AiServiceService from '../ai-service/ai-service.service';
+import AiAssistantService from '../ai-assistant/ai-assistant.service';
 import { AiConversation, AiConversationDocument } from './schemas/aiConversation.schema';
 import { AiChatMessage, AiChatMessageDocument } from './schemas/aiChatMessage.schema';
 
@@ -47,6 +52,8 @@ class AiChatService {
     @InjectModel(AiChatMessage.name) private aiChatMessageModel: Model<AiChatMessageDocument>,
     private readonly configService: ConfigService,
     private readonly aiServiceService: AiServiceService,
+    private readonly appConfigService: AppConfigService,
+    private readonly aiAssistantService: AiAssistantService,
   ) {}
 
   getConfig(): AiChatConfig {
@@ -99,7 +106,13 @@ class AiChatService {
     return this.aiChatMessageModel.find({ conversationId }).sort({ createdAt: -1 }).skip(offset).limit(limit).exec();
   }
 
-  async streamChat(conversationId: string, messages: UIMessage[], username: string) {
+  async streamChat(
+    conversationId: string,
+    messages: UIMessage[],
+    username: string,
+    assistantId?: string,
+    ldapGroups?: string[],
+  ) {
     await this.getOwnedConversation(conversationId, username);
 
     const lastUserMessage = [...messages].reverse().find((m) => m.role === CHAT_ROLES.USER);
@@ -117,10 +130,11 @@ class AiChatService {
         content: [{ type: 'text', text: extractTextFromParts(msg.parts) }],
       }));
 
-    const model = await this.resolveLanguageModel();
+    const { model, systemPrompt } = await this.resolveLanguageModelAndPrompt(assistantId, ldapGroups);
 
     const result = streamText({
       model,
+      system: systemPrompt,
       messages: modelMessages,
     });
 
@@ -143,8 +157,63 @@ class AiChatService {
     return message;
   }
 
-  private async resolveLanguageModel(): Promise<LanguageModelV3> {
-    const dbConfig = await this.aiServiceService.getActiveServiceForPurpose(AI_SERVICE_PURPOSES.CHAT);
+  private async resolveLanguageModelAndPrompt(
+    assistantId?: string,
+    ldapGroups?: string[],
+  ): Promise<{ model: LanguageModelV3; systemPrompt?: string }> {
+    if (assistantId) {
+      const assistant = await this.aiAssistantService.findById(assistantId);
+
+      if (!assistant.isActive) {
+        throw new CustomHttpException(
+          AICHAT_ERROR_MESSAGES.NO_ACTIVE_AI_SERVICE,
+          HttpStatus.SERVICE_UNAVAILABLE,
+          { assistantId },
+          AiChatService.name,
+        );
+      }
+
+      const hasAccess = assistant.accessGroups.some((group) => ldapGroups?.includes(group.path));
+      if (!hasAccess) {
+        throw new CustomHttpException(
+          AICHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
+          HttpStatus.FORBIDDEN,
+          { assistantId },
+          AiChatService.name,
+        );
+      }
+
+      const aiServices = await this.aiServiceService.findByIds([assistant.aiServiceId]);
+      const aiService = aiServices.length > 0 ? aiServices[0] : null;
+
+      if (!aiService) {
+        throw new CustomHttpException(
+          AICHAT_ERROR_MESSAGES.NO_ACTIVE_AI_SERVICE,
+          HttpStatus.SERVICE_UNAVAILABLE,
+          { assistantId },
+          AiChatService.name,
+        );
+      }
+
+      return { model: this.createModelFromService(aiService), systemPrompt: assistant.systemPrompt };
+    }
+
+    const chatConfig = await this.appConfigService.getAppConfigByName(APPS.CHAT);
+    const extendedOptions = (chatConfig?.extendedOptions ?? {}) as Record<string, unknown>;
+    const configuredServices = (extendedOptions[ExtendedOptionKeys.CHAT_AI_SERVICES] ??
+      []) as MultipleSelectorOptionSH[];
+    const serviceIds = configuredServices.map((s) => s.value);
+
+    let dbConfig = null;
+    if (serviceIds.length > 0) {
+      const activeServices = await this.aiServiceService.findByIds(serviceIds);
+      dbConfig = activeServices.length > 0 ? activeServices[0] : null;
+    }
+
+    if (!dbConfig) {
+      dbConfig = await this.aiServiceService.getActiveServiceForPurpose(AI_SERVICE_PURPOSES.CHAT);
+    }
+
     if (!dbConfig) {
       throw new CustomHttpException(
         AICHAT_ERROR_MESSAGES.NO_ACTIVE_AI_SERVICE,
@@ -153,11 +222,21 @@ class AiChatService {
         AiChatService.name,
       );
     }
+
+    return { model: this.createModelFromService(dbConfig) };
+  }
+
+  private createModelFromService(service: {
+    provider: string;
+    baseUrl: string;
+    apiKey: string;
+    model: string;
+  }): LanguageModelV3 {
     return this.aiServiceService.createLanguageModel({
-      provider: dbConfig.provider as AiProviderType,
-      baseUrl: dbConfig.baseUrl,
-      apiKey: dbConfig.apiKey,
-      model: dbConfig.model,
+      provider: service.provider as AiProviderType,
+      baseUrl: service.baseUrl,
+      apiKey: service.apiKey,
+      model: service.model,
     });
   }
 

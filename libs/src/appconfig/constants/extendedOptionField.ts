@@ -29,6 +29,7 @@ const ExtendedOptionField = {
   scriptEditor: 'scriptEditor',
   appLogo: 'appLogo',
   groupSelect: 'groupSelect',
+  aiServiceSelect: 'aiServiceSelect',
 } as const;
 
 export default ExtendedOptionField;

@@ -71,6 +71,7 @@ import WireguardModule from '../wireguard/wireguard.module';
 import ChatModule from '../chat/chat.module';
 import AiChatModule from '../aichat/aichat.module';
 import AiServiceModule from '../ai-service/ai-service.module';
+import AiAssistantModule from '../ai-assistant/ai-assistant.module';
 
 @Module({
   imports: [
@@ -148,6 +149,7 @@ import AiServiceModule from '../ai-service/ai-service.module';
     ChatModule,
     AiChatModule,
     AiServiceModule,
+    AiAssistantModule,
   ],
   providers: [
     {

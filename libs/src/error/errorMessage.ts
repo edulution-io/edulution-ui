@@ -40,6 +40,7 @@ import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages
 import ChatErrorMessages from '@libs/chat/types/chatErrorMessages';
 import AiChatErrorMessages from '@libs/chat/types/aiChatErrorMessages';
 import AiServiceErrorMessages from '@libs/aiService/types/aiServiceErrorMessages';
+import AiAssistantErrorMessages from '@libs/aiAssistant/types/aiAssistantErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -64,6 +65,7 @@ type ErrorMessage =
   | WireguardErrorMessages
   | ChatErrorMessages
   | AiChatErrorMessages
-  | AiServiceErrorMessages;
+  | AiServiceErrorMessages
+  | AiAssistantErrorMessages;
 
 export default ErrorMessage;

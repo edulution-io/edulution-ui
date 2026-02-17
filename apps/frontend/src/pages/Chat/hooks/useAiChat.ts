@@ -20,24 +20,16 @@
 import { useState, useCallback, useMemo, useEffect, useRef, FormEvent } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
-import type ChatAdapter from '@libs/chat/types/chatAdapter';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import { AI_CHAT_API_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import eduApi from '@/api/eduApi';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useAiChatStore from '@/store/useAiChatStore';
+import getAuthHeaders from '@/utils/getAuthHeaders';
+import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 
 const TITLE_MAX_LENGTH = 50;
-
-const getAuthHeaders = (): Record<string, string> => {
-  const authHeader = eduApi.defaults.headers.Authorization;
-  if (typeof authHeader === 'string') {
-    return { Authorization: authHeader };
-  }
-  return {};
-};
 
 const useAiChat = (chatId: string): ChatAdapter => {
   const [input, setInput] = useState('');
@@ -50,6 +42,13 @@ const useAiChat = (chatId: string): ChatAdapter => {
       new DefaultChatTransport({
         api: `${EDU_API_URL}/${AI_CHAT_API_ENDPOINT}`,
         headers: getAuthHeaders,
+        body: () => {
+          const { selectedAssistantId: assistantId } = useAiChatStore.getState();
+          if (assistantId) {
+            return { assistantId };
+          }
+          return {};
+        },
       }),
     [],
   );
@@ -91,7 +90,7 @@ const useAiChat = (chatId: string): ChatAdapter => {
           id: msg.id,
           role: msg.role as ChatMessage['role'],
           content: textContent,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
           createdBy: isAssistant ? CHAT_ROLES.ASSISTANT : username,
           createdByUserFirstName: isAssistant ? config?.assistantFirstName : undefined,
           createdByUserLastName: isAssistant ? config?.assistantLastName : undefined,

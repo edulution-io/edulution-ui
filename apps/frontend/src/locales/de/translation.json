@@ -35,7 +35,25 @@
     "refreshGroups": "Gruppen aktualisieren",
     "newChat": "Neuer Chat",
     "startNewAiChat": "Starte eine neue KI-Unterhaltung",
-    "deleteChat": "Chat löschen"
+    "deleteChat": "Chat löschen",
+    "selectAssistant": "Assistent auswählen",
+    "assistant": {
+      "createNewAssistant": "Neuen Assistenten erstellen",
+      "editAssistant": "Assistent bearbeiten",
+      "assistantName": "Assistentenname",
+      "systemPrompt": "Systemaufforderung",
+      "systemPromptPlaceholder": "Geben Sie die Systemaufforderung für diesen Assistenten ein...",
+      "aiService": "KI-Dienst",
+      "selectAiService": "KI-Dienst auswählen",
+      "accessUsersAndGroupsTitle": "Zugriffskontrolle",
+      "accessUsersAndGroups": "Benutzer und Gruppen, die diesen Assistenten verwenden können",
+      "assistantCreatedSuccessfully": "Assistent erfolgreich erstellt",
+      "assistantUpdatedSuccessfully": "Assistent erfolgreich aktualisiert",
+      "assistantDeletedSuccessfully": "Assistent erfolgreich gelöscht",
+      "deleteAssistant": "Assistent löschen",
+      "confirmSingleAssistantDelete": "Sind Sie sicher, dass Sie diesen Assistenten löschen möchten?",
+      "filterPlaceHolderText": "Nach Assistentenname suchen"
+    }
   },
   "bulletinboard": {
     "settings": "Einstellungen",
@@ -1287,7 +1305,7 @@
           "title": "WireGuard Peers",
           "description": "Hier können WireGuard VPN-Peers und Site-to-Site-Verbindungen verwaltet werden."
         },
-        "chat": {
+        "chatFeatures": {
           "title": "Chat-Funktionen",
           "description": "Lege fest, welche Chat-Funktionen den Nutzern zur Verfügung stehen."
         },
@@ -2183,7 +2201,11 @@
     "chatAiChatEnabledTitle": "AI Chat",
     "chatAiChatEnabledDescription": "Aktiviert oder deaktiviert die AI-Chat-Funktion.",
     "chatAiChatGroupsTitle": "Berechtigte Gruppen (AI Chat)",
-    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben."
+    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben.",
+    "chatAiServicesTitle": "KI-Dienste",
+    "chatAiServicesDescription": "Wählen Sie aus, welche KI-Dienste für den Chat verfügbar sein sollen.",
+    "chatAiAssistantTableTitle": "KI-Assistenten",
+    "chatAiAssistantTableDescription": "Verwalten Sie KI-Assistenten mit benutzerdefinierten Systemaufforderungen und Zugriffskontrolle."
   },
   "preview": {
     "image": "Bildvorschau",
