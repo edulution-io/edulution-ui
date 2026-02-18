@@ -17,10 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface UserPreferencesDto {
-  username: string;
-  collapsedBulletins: Record<string, boolean>;
-  bulletinBoardGridRows?: string;
-}
+const BULLETIN_BOARD_GRID_ROWS = {
+  AUTO: 'auto',
+  ONE: '1',
+  TWO: '2',
+  THREE: '3',
+} as const;
 
-export default UserPreferencesDto;
+export default BULLETIN_BOARD_GRID_ROWS;
