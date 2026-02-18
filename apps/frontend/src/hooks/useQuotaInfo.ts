@@ -22,7 +22,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import formatQuotaInGb from '@libs/common/utils/formatQuotaInGb';
 import getProgressBarColor from '@libs/common/utils/getProgressBarColor';
-import type QuotaResponse, { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
+import QuotaResponse, { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 
