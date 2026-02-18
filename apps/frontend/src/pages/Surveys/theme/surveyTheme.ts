@@ -85,8 +85,8 @@ const surveyTheme: ITheme = {
     '--sjs-icon-color': 'var(--ring)',
   },
   header: {
-    height: 100,
     inheritWidthFrom: 'survey',
+    inheritHeightFrom: 'auto',
   } as IHeader,
   headerView: 'basic',
   isPanelless: false,

@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { CardContent as SHCardContent, CardSH as SHCard } from '@/components/ui/CardSH';
 import { cva, type VariantProps } from 'class-variance-authority';
 

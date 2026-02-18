@@ -19,6 +19,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -38,6 +39,10 @@ describe('SseService', () => {
         {
           provide: CACHE_MANAGER,
           useValue: mockCacheManager,
+        },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
         },
       ],
     }).compile();

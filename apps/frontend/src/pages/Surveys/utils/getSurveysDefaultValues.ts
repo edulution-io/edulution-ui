@@ -29,6 +29,8 @@ const getSurveysDefaultValues = (theme: ThemeType): Partial<SurveyDto> & { formu
   formula: {
     title: i18n.t('survey.newTitle'),
     logo: getAssetUrl(APPS.SURVEYS, ASSET_TYPES.logo, theme),
+    logoWidth: '320px',
+    logoPosition: 'right',
   },
   isAnonymous: false,
   canSubmitMultipleAnswers: false,

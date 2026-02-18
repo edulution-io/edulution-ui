@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { html as beautifyHtml } from 'js-beautify';
-import { Button } from '@/components/shared/Button';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { Textarea } from '@/components/ui/Textarea';
 import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -29,7 +29,6 @@ import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEdito
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import cn from '@libs/common/utils/className';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 import useFileTableStore from './useFileTableStore';
 

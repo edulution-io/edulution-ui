@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AppStoreIcon } from '@/assets/icons';
 import { Card } from '@/components/shared/Card';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigDto from '@libs/appconfig/types/appConfigDto';

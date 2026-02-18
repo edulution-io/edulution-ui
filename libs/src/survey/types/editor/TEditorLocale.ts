@@ -28,6 +28,9 @@ interface TEditorLocale {
   pe: {
     pageTitlePlaceholder: string;
   };
+  tabs: {
+    preview: string;
+  };
 }
 
 export default TEditorLocale;

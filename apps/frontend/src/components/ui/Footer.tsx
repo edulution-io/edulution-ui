@@ -25,18 +25,28 @@ import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
+import { cn } from '@edulution-io/ui-kit';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
+import useFooterColors from '@/hooks/useFooterColors';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   const { language } = useLanguage();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const { isMobileView, isTabletView } = useMedia();
+  const footerColors = useFooterColors();
 
   const publicAppConfigs = useAppConfigsStore((s) => s.publicAppConfigs);
 
   const isVersionInfoVisible = (!isMobileView && !isTabletView && isAuthenticated) || !isAuthenticated;
+  const textColorClass = footerColors?.textColor === TEXT_COLOR_VARIANT.LIGHT ? 'text-white' : 'text-ciDarkGrey';
 
   return (
-    <footer className="bg-background-centered-shadow min-h-5 w-full px-2 pb-1 text-sm text-muted">
+    <footer
+      className={cn(
+        'min-h-5 w-full px-2 pb-1',
+        footerColors ? textColorClass : 'text-muted-foreground dark:text-muted-light',
+      )}
+    >
       <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4">
         {isVersionInfoVisible && (
           <span className="text-center md:text-left">
@@ -51,7 +61,7 @@ const Footer = () => {
               key={config.name}
               to={`/${config.name}`}
             >
-              {getDisplayName(config, language)}
+              <span className="font-bold">{getDisplayName(config, language)}</span>
             </Link>
           ))}
         </div>

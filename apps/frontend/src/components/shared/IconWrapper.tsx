@@ -18,7 +18,7 @@
  */
 
 import React, { CSSProperties, useMemo } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import {
   CUSTOM_UPLOAD_IDENTIFIER,
@@ -68,18 +68,28 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
         style={{
           width,
           height,
-          WebkitMaskImage: `url(${resolvedIconSrc})`,
-          maskImage: `url(${resolvedIconSrc})`,
-          WebkitMaskRepeat: 'no-repeat',
-          maskRepeat: 'no-repeat',
-          WebkitMaskSize: fontAwesomeMaskSize,
-          maskSize: fontAwesomeMaskSize,
-          WebkitMaskPosition: 'center',
-          maskPosition: 'center',
-          backgroundColor: 'currentColor',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           ...style,
         }}
-      />
+      >
+        <div
+          style={{
+            width: fontAwesomeMaskSize,
+            height: fontAwesomeMaskSize,
+            WebkitMaskImage: `url(${resolvedIconSrc})`,
+            maskImage: `url(${resolvedIconSrc})`,
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+            WebkitMaskPosition: 'center',
+            maskPosition: 'center',
+            backgroundColor: 'currentColor',
+          }}
+        />
+      </div>
     );
   }
 

@@ -27,7 +27,6 @@ import { RowSelectionState } from '@tanstack/react-table';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
-import useFileSharingStore from './useFileSharingStore';
 
 interface UseFileSharingMoveDialogStore {
   activeCollectionOperation: LmnApiCollectOperationsType;
@@ -43,6 +42,7 @@ interface UseFileSharingMoveDialogStore {
   setIsLoading: (isLoading: boolean) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   setActiveCollectionOperation: (collectionType: LmnApiCollectOperationsType) => void;
+  clearDialogFilesOnShareChange: () => void;
   reset: () => void;
 }
 
@@ -67,11 +67,7 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
       const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
         params: { type: ContentType.FILE, path, share: shareName },
       });
-      const webdavShareType = useFileSharingStore
-        .getState()
-        .webdavShares.find((s) => s.displayName === shareName)?.type;
-      if (!webdavShareType) return;
-      const dialogShownFiles = processWebdavResponse(data, webdavShareType);
+      const dialogShownFiles = processWebdavResponse(data, path);
 
       set({
         dialogShownFiles,
@@ -92,11 +88,7 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
         params: { type: ContentType.DIRECTORY, path, share: shareName },
       });
 
-      const webdavShareType = useFileSharingStore
-        .getState()
-        .webdavShares.find((s) => s.displayName === shareName)?.type;
-      if (!webdavShareType) return;
-      const dialogShownDirs = processWebdavResponse(data, webdavShareType);
+      const dialogShownDirs = processWebdavResponse(data, path);
 
       set({ dialogShownDirs });
     } catch (error) {
@@ -110,6 +102,15 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setDialogShownFiles: (files: DirectoryFileDTO[]) => set({ dialogShownFiles: files }),
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+  clearDialogFilesOnShareChange: () => {
+    set({
+      dialogShownFiles: [],
+      dialogShownDirs: [],
+      selectedItems: [],
+      selectedRows: {},
+      isLoading: true,
+    });
+  },
   reset: () => set(initialState),
 }));
 

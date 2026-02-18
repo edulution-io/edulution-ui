@@ -20,7 +20,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { parse } from 'yaml';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { Textarea } from '../ui/Textarea';
 
 type YamlEditorProps = {

@@ -18,10 +18,9 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBackspace } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '../shared/Button';
 
 interface NumberPadProps {
   onPress: (digit: string) => void;

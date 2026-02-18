@@ -129,7 +129,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
   public async enqueue<T>(
     method: HttpMethods.GET | HttpMethods.POST | HttpMethods.PUT | HttpMethods.DELETE,
     endpoint: string,
-    payload?: { name: string },
+    payload?: Record<string, unknown>,
     config?: AxiosRequestConfig,
   ): Promise<T> {
     const job = await this.queue.add(

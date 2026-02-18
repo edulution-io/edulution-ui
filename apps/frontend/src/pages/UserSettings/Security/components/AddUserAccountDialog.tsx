@@ -30,7 +30,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import { decryptPassword, deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import TotpInput from '@/pages/LoginPage/components/TotpInput';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import getUserAccountFormSchema from './getUserAccountSchema';

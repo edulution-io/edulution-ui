@@ -20,7 +20,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import QuestionsContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
@@ -28,24 +27,17 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 interface QuestionsContextMenuProps {
   form: UseFormReturn<SurveyDto>;
-  creator: SurveyCreatorModel;
   isOpenQuestionContextMenu: boolean;
   setIsOpenQuestionContextMenu: (state: boolean) => void;
-  isLoading: boolean;
   trigger?: React.ReactNode;
 }
 
 const QuestionsContextMenu = (props: QuestionsContextMenuProps) => {
-  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu, creator, isLoading } = props;
+  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => (
-    <QuestionsContextMenuBody
-      form={form}
-      creator={creator}
-    />
-  );
+  const getDialogBody = () => <QuestionsContextMenuBody form={form} />;
 
   const handleClose = () => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu);
 
@@ -62,8 +54,8 @@ const QuestionsContextMenu = (props: QuestionsContextMenuProps) => {
       trigger={trigger}
       handleOpenChange={() => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu)}
       title={t('survey.editor.questionSettings.title')}
-      body={!isLoading && getDialogBody()}
-      footer={!isLoading && getFooter()}
+      body={getDialogBody()}
+      footer={getFooter()}
       desktopContentClassName="w-[50%] max-w-[600px] min-w-[350px] max-h-[90%] overflow-auto"
     />
   );

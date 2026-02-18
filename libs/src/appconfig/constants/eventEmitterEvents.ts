@@ -21,6 +21,8 @@ const EVENT_EMITTER_EVENTS = {
   APPCONFIG_UPDATED: 'appconfig.updated',
   APP_ACCESS_MAP_UPDATED: 'appconfig.accessMapUpdated',
   WEBDAV_BASEURL_CHANGED: 'webdav.baseUrlChanged',
+  SSE_USER_CONNECTED: 'sse.user.connected',
+  SSE_USER_DISCONNECTED: 'sse.user.disconnected',
 } as const;
 
 export default EVENT_EMITTER_EVENTS;

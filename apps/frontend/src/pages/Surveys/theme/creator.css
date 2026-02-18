@@ -3,6 +3,19 @@
 @tailwind utilities;
 
 .survey-editor {
+  div.sd-header__text {
+    h3.sd-title {
+      span.sv-string-viewer {
+        font-size: 2rem !important;
+      }
+    }
+    div.sd-description {
+      span.sv-string-viewer {
+        font-size: 1.5rem !important;
+      }
+    }
+  }
+
   .svc-creator__content-wrapper.svc-flex-row,
   .svc-creator__content-holder.svc-flex-column,
   .svc-scroll__wrapper,
@@ -44,6 +57,38 @@
     visibility: hidden;
     height: 0 !important;
     display: none !important;
+  }
+
+  .svc-logo-image {
+    .svc-logo-image-controls {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    :hover .svc-logo-image-controls {
+      opacity: 1;
+    }
+
+    .svc-context-button {
+      background-color: var(--secondary-foreground);
+      use {
+        fill: var(--ring);
+        stroke: transparent;
+      }
+      :hover use {
+        fill: var(--primary);
+      }
+    }
+    .svc-context-button--danger:hover use {
+      fill: var(--destructive);
+    }
+  }
+
+  .svc-logo-image-placeholder {
+    opacity: 0.8;
+    stroke: var(--accent-foreground);
+  }
+  .svc-logo-image-placeholder:hover {
+    fill: var(--primary);
   }
 
   /* all icons limit size */

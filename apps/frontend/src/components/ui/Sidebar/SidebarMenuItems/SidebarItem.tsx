@@ -28,7 +28,7 @@ import useTrulyVisible from '@/hooks/useTrulyVisible';
 import DynamicEllipsis from '@/components/shared/DynamicEllipsis';
 import SidebarItemPopover from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemPopover';
 import SidebarItemIcon from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemIcon';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   menuItem,

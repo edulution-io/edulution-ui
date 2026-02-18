@@ -20,7 +20,8 @@
 import React from 'react';
 import { DefaultExtensionType, defaultStyles, FileIcon } from 'react-file-icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import getFileCategory from '@libs/filesharing/utils/getFileCategory';
 import fileIconColors from '@/theme/fileIconColor';
 import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
 
@@ -44,7 +45,7 @@ const FileTypeIcon: React.FC<FileTypeIconProps> = ({ filename, size }) => {
     );
   }
 
-  const fileType = getFileCategorie(filename);
+  const fileType = getFileCategory(filename);
   const labelColor = fileIconColors[fileType] || fileIconColors.default;
 
   return (

@@ -20,6 +20,7 @@
 import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
+import UpdateBulletinBoardGridRowsDto from '@libs/user-preferences/types/update-bulletin-board-grid-rows.dto';
 import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import UserPreferencesService from './user-preferences.service';
@@ -40,6 +41,14 @@ class UserPreferencesController {
     @Body() updateBulletinCollapsedDto: UpdateBulletinCollapsedDto,
   ) {
     return this.userPreferencesService.updateBulletinCollapsedState(currentUsername, updateBulletinCollapsedDto);
+  }
+
+  @Patch('bulletin-board-grid-rows')
+  async updateBulletinBoardGridRows(
+    @GetCurrentUsername() currentUsername: string,
+    @Body() updateBulletinBoardGridRowsDto: UpdateBulletinBoardGridRowsDto,
+  ) {
+    return this.userPreferencesService.updateBulletinBoardGridRows(currentUsername, updateBulletinBoardGridRowsDto);
   }
 }
 

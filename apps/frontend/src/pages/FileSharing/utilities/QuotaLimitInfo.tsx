@@ -20,7 +20,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 import { useTranslation } from 'react-i18next';
 

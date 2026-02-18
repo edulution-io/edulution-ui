@@ -25,7 +25,7 @@ import i18n from '@/i18n';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';

@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "unlimited",
     "appTitle": "Info Board",
     "description": "Here you can find your latest bulletins",
+    "view": "View",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Row",
+    "viewTwoRows": "2 Rows",
+    "viewThreeRows": "3 Rows",
     "sidebar": "Info Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -95,6 +100,35 @@
       "unauthorizedUpdateCategory": "No permission to update this category",
       "attachmentNotFound": "Attachment not found",
       "attachmentDeletionFailed": "Failed to delete an attachment"
+    }
+  },
+  "notificationscenter": {
+    "appTitle": "Notifications",
+    "description": "Here you can find all your notifications",
+    "sidebar": "Notifications",
+    "noNotifications": "You have no notifications",
+    "markAllAsRead": "Mark all as read",
+    "markAsRead": "Mark as read",
+    "from": "from {{ author }}",
+    "systemNotification": "System notification",
+    "messagesSection": "Messages",
+    "systemSection": "System Notifications",
+    "noMessages": "No messages",
+    "noSystemNotifications": "No system notifications",
+    "deleteAll": "Delete all",
+    "deleteAllMessages": "Delete all messages",
+    "deleteAllSystem": "Delete all system notifications",
+    "confirmDeleteAll": "Are you sure you want to delete all {{count}} notifications?",
+    "confirmDeleteMessages": "Are you sure you want to delete all {{count}} messages?",
+    "confirmDeleteSystem": "Are you sure you want to delete all {{count}} system notifications?",
+    "actionCannotBeUndone": "This action cannot be undone.",
+    "deletedNotifications": "{{count}} notification deleted",
+    "deletedNotifications_other": "{{count}} notifications deleted",
+    "loadMore": "Load more",
+    "menu": {
+      "all": "All",
+      "messages": "Messages",
+      "system": "System"
     }
   },
   "mountpoints": {
@@ -186,6 +220,7 @@
       "GetUserSchoolClassFailed": "Failed to get user school class",
       "GetUserProjectsFailed": "Failed to get user projects",
       "GetUserFailed": "Fetching failed",
+      "GetUsersFailed": "Failed to get users",
       "UpdateUserFailed": "Update failed",
       "GetCurrentUserRoomFailed": "Failed to get current user room",
       "CreateProjectFailed": "Create project failed",
@@ -220,6 +255,7 @@
       "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
       "failed": "The mail theme could not be updated."
     },
+    "newMail": "{{count}} new email(s) received",
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
@@ -510,7 +546,8 @@
     "webdavInfo": {
       "title": "WebDAV Access",
       "description": "Use this URL to connect to your files via WebDAV clients",
-      "url": "WebDAV URL",
+      "urlWindowsMac": "WebDAV URL (Windows / macOS)",
+      "urlLinux": "WebDAV URL (Linux)",
       "username": "Username",
       "passwordHint": "Use your login password to authenticate",
       "tutorialsTitle": "Setup Tutorials",
@@ -744,7 +781,8 @@
         "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
         "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
         "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
-        "pageTitlePlaceHolder": "Enter page title"
+        "pageTitlePlaceHolder": "Enter page title",
+        "previewTabTitle": "Preview"
       },
       "isLoadingSurvey": "Survey is loading...",
       "template": {
@@ -806,6 +844,20 @@
         "filterPlaceHolderText": "Search for option",
         "imageWidth": "Width of one image in pixel [px]",
         "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
+      },
+      "surveyLogo": {
+        "title": "Survey Logo",
+        "width": {
+          "label": "Width of the logo in pixels (min. 150 px)",
+          "placeholder": "Enter the width of the logo in pixels"
+        },
+        "position": {
+          "label": "Position of the logo",
+          "placeholder": "Choose the position of the logo",
+          "left": "Left of the title",
+          "right": "Right of the title",
+          "description": "The Position for the logo relative to the title of the survey is visible in the 'Preview' tab."
+        }
       }
     },
     "participate": {
@@ -846,7 +898,8 @@
       "notAbleToUpdateSurveyAnswerError": "Unable to update the submitted survey answer.",
       "notAbleToCreateSurveyAnswerError": "Unable to create the user's survey answer.",
       "notAbleToDeleteSurveyAnswerError": "Unable to delete the user's survey answer.",
-      "notAbleToCountChoices": "Unable to count the choices."
+      "notAbleToCountChoices": "Unable to count the choices.",
+      "alreadyParticipated": "You have already participated."
     }
   },
   "surveys": {
@@ -1424,7 +1477,8 @@
       "qrCodeDescription": "Scan this QR code with the WireGuard app on your mobile device to set up the VPN connection.",
       "configDownload": "Configuration File",
       "configDownloadDescription": "Download the WireGuard configuration file to import it into the WireGuard app on your computer.",
-      "downloadButton": "Download Configuration"
+      "downloadButton": "Download Configuration",
+      "error": "The VPN service is currently unavailable. Please try again later or contact an administrator."
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
@@ -1504,6 +1558,8 @@
     "filter": "Filter",
     "showHiddenFiles": "Show hidden files",
     "showSystemFiles": "Show system files",
+    "expand": "Expand",
+    "collapse": "Collapse",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "dbInvalidId": "Invalid database ID",
@@ -2022,7 +2078,8 @@
   "users": {
     "errors": {
       "notFoundError": "User does not exist",
-      "updateError": "Not able to update the user"
+      "updateError": "Not able to update the user",
+      "passwordNotSetError": "Password is not set for this user"
     }
   },
   "permission": {
@@ -2223,6 +2280,7 @@
       "short": "Root",
       "notConfigured": "No root path configured. Please contact the system administrator."
     },
+    "noSharesConfigured": "No shares configured. Please contact the system administrator.",
     "selectPlaceholder": "Select...",
     "authentication": {
       "title": "Authentication",

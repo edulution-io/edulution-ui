@@ -26,7 +26,7 @@ import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import PageTitle from '@/components/PageTitle';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import IconWrapper from '@/components/shared/IconWrapper';
 import useSidebarStore from '../useSidebarStore';
 

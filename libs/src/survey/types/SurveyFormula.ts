@@ -33,6 +33,10 @@ class SurveyFormula {
   // only defined in page-less mode
   elements?: TSurveyElement[];
 
+  logoWidth?: string;
+
+  logoPosition?: 'left' | 'right';
+
   calculatedValues?: { name: string; value?: string; expression?: string; includeIntoResult?: boolean }[];
 }
 

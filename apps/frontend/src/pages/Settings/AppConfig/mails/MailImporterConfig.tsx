@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { DropdownSelect } from '@/components';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto } from '@libs/mail/types';
 import { UseFormReturn } from 'react-hook-form';
