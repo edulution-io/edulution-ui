@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
@@ -59,6 +59,14 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
   const [updateChecked, setUpdateChecked] = useState(true);
   const [killChecked, setKillChecked] = useState(true);
 
+  useEffect(() => {
+    if (isOpen) {
+      setAddChecked(true);
+      setUpdateChecked(true);
+      setKillChecked(true);
+    }
+  }, [isOpen]);
+
   const isError = useMemo(() => checkResult && hasCheckOutputErrors(checkResult), [checkResult]);
 
   if (isLoading) {
@@ -97,7 +105,7 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
     const errorDetails = CHECK_RESULT.ERROR ?? {};
 
     return (
-      <div className="flex max-h-[80vh] flex-col gap-4 overflow-y-auto scrollbar-thin">
+      <div className="flex max-h-[80vh] flex-col gap-4 overflow-y-auto text-base scrollbar-thin">
         <div className="rounded-lg border border-red-500 bg-red-900/20 p-4">
           <div className="mb-2 flex items-center gap-2 font-bold text-red-400">
             <FontAwesomeIcon icon={faTriangleExclamation} />
@@ -185,7 +193,7 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
   );
 
   const successBody = () => (
-    <div className="flex max-h-[80vh] flex-col overflow-y-auto scrollbar-thin">
+    <div className="flex max-h-[80vh] flex-col overflow-y-auto text-base scrollbar-thin">
       <Tabs defaultValue={CHECK_RESULT_TAB_VALUES.OVERVIEW}>
         <TabsList>
           <TabsTrigger value={CHECK_RESULT_TAB_VALUES.OVERVIEW}>{t('usermanagement.checkResult.overview')}</TabsTrigger>
@@ -223,7 +231,19 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
     </div>
   );
 
-  const body = isError ? errorBody() : successBody();
+  const getBody = () => {
+    if (isApplying) {
+      return (
+        <div className="flex flex-1 items-center justify-center">
+          <CircleLoader />
+        </div>
+      );
+    }
+    if (isError) return errorBody();
+    return successBody();
+  };
+
+  const body = getBody();
 
   const getFooter = () => {
     if (isError || !hasAnyChanges) {

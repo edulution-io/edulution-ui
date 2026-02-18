@@ -978,6 +978,7 @@ class LmnApiService {
         undefined,
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          timeout: 120000,
         },
       );
 
