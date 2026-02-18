@@ -24,6 +24,11 @@ import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManageme
 import LIST_MANAGEMENT_CSV_FIELDS from '@libs/userManagement/constants/listManagementCsvFields';
 import LIST_MANAGEMENT_DEFAULTS from '@libs/userManagement/constants/listManagementDefaults';
 
+const isCommentEntry = (entry: ListManagementEntry): boolean => {
+  const firstValue = Object.values(entry)[0];
+  return typeof firstValue === 'string' && firstValue.trimStart().startsWith('#');
+};
+
 const entriesToRows = (entries: ListManagementEntry[], managementList: ManagementListType): ListManagementRow[] => {
   if (!Array.isArray(entries)) return [];
   const columns = LIST_MANAGEMENT_COLUMNS[managementList];
@@ -89,4 +94,4 @@ const csvToEntries = (csv: string, managementList: ManagementListType): ListMana
     });
 };
 
-export { createEmptyEntry, entriesToRows, rowsToEntries, entriesToCsv, csvToEntries };
+export { isCommentEntry, createEmptyEntry, entriesToRows, rowsToEntries, entriesToCsv, csvToEntries };

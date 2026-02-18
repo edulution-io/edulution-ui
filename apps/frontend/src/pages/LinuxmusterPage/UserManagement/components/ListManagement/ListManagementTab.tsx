@@ -54,15 +54,21 @@ const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
   const listData = getListData(managementList ?? '');
   const { managementListEntries, savedListEntries, deletedEntryIndices } = listData;
 
+  const [rows, setRows] = useState<ListManagementRow[]>([]);
+  const isInternalChange = useRef(false);
+  const prevSchoolRef = useRef(effectiveSchool);
+
   useEffect(() => {
     if (!isAuthReady) return;
     if (effectiveSchool && managementList) {
-      void fetchManagementList(effectiveSchool, managementList);
+      const schoolChanged = prevSchoolRef.current !== effectiveSchool;
+      prevSchoolRef.current = effectiveSchool;
+      if (schoolChanged) {
+        setRows([]);
+      }
+      void fetchManagementList(effectiveSchool, managementList, schoolChanged || undefined);
     }
   }, [effectiveSchool, managementList, isAuthReady]);
-
-  const [rows, setRows] = useState<ListManagementRow[]>([]);
-  const isInternalChange = useRef(false);
 
   useEffect(() => {
     if (isInternalChange.current) {

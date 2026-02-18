@@ -53,8 +53,6 @@ import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
-import getAdminFileSuffix from '@libs/userManagement/utils/getAdminFileSuffix';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
@@ -873,8 +871,10 @@ class LmnApiService {
       });
 
       if (managementList) {
-        const suffix = getAdminFileSuffix(managementList as ManagementListType);
-        return response.data.filter((user) => user.sophomorixAdminFile?.endsWith(suffix));
+        const filename = `${managementList}.csv`;
+        return response.data.filter(
+          (user) => user.sophomorixAdminFile === filename || user.sophomorixAdminFile?.endsWith(`.${filename}`),
+        );
       }
 
       return response.data;

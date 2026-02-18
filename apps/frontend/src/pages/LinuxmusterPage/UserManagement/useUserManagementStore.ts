@@ -32,6 +32,7 @@ import type ListData from '@libs/userManagement/types/listData';
 import EMPTY_LIST_DATA from '@libs/userManagement/constants/emptyListData';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
+import { isCommentEntry } from '@libs/userManagement/utils/csvUtils';
 
 const { ROLES, LIST_MANAGEMENT, USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -142,12 +143,13 @@ const useUserManagementStore = create<UserManagementStore>()(
           const response = await eduApi.get<ListManagementEntry[]>(`${LIST_MANAGEMENT}/${school}/${managementList}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
+          const entries = response.data.filter((entry) => !isCommentEntry(entry));
 
           if (isBackground && cached && hasUnsavedChanges(cached)) {
             set((s) => ({
               listDataByType: {
                 ...s.listDataByType,
-                [managementList]: { ...cached, savedListEntries: response.data },
+                [managementList]: { ...cached, savedListEntries: entries },
               },
             }));
           } else {
@@ -155,8 +157,8 @@ const useUserManagementStore = create<UserManagementStore>()(
               listDataByType: {
                 ...s.listDataByType,
                 [managementList]: {
-                  managementListEntries: response.data,
-                  savedListEntries: response.data,
+                  managementListEntries: entries,
+                  savedListEntries: entries,
                   deletedEntryIndices: [],
                 },
               },
