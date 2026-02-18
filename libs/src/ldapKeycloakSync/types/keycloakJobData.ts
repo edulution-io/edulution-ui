@@ -23,6 +23,6 @@ import { AxiosRequestConfig } from 'axios';
 export interface KeycloakJobData {
   method: HttpMethods;
   endpoint: string;
-  payload?: { name: string };
+  payload?: Record<string, unknown>;
   config?: AxiosRequestConfig;
 }

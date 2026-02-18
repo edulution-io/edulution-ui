@@ -75,7 +75,11 @@ describe(SurveysController.name, () => {
   let surveyAnswersService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
-  const pushMock = { notify: jest.fn() };
+  const pushMock = {
+    notify: jest.fn(),
+    upsertNotificationForSource: jest.fn().mockResolvedValue(undefined),
+    cascadeDeleteBySourceId: jest.fn().mockResolvedValue(undefined),
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SurveysController],
