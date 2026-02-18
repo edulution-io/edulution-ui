@@ -21,6 +21,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import {
   faChalkboardTeacher,
   faGlobe,
@@ -31,7 +32,7 @@ import {
   faUserTie,
 } from '@fortawesome/free-solid-svg-icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import { Card, CardContent } from '@/components/shared/Card';
+import { Card } from '@/components/shared/Card';
 import {
   USER_MANAGEMENT_EXTRASTUDENTS_PATH,
   USER_MANAGEMENT_GLOBALADMINS_PATH,
@@ -42,10 +43,17 @@ import {
   USER_MANAGEMENT_TEACHERS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
-import type UserTypeCard from '@libs/userManagement/types/userTypeCard';
 import { LinuxmusterIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useRegisterUserManagementSections from './UserManagement/useRegisterUserManagementSections';
+
+interface UserTypeCard {
+  labelKey: string;
+  icon: IconDefinition;
+  path: string;
+  defaultTab: string;
+  lmnOnly: boolean;
+}
 
 const USER_TYPE_CARDS: UserTypeCard[] = [
   {
@@ -118,26 +126,23 @@ const LinuxmusterEntryPage: React.FC = () => {
     <PageLayout nativeAppHeader={nativeAppHeader}>
       <div className="p-4">
         <h2 className="mb-4 text-xl font-semibold">{t('linuxmuster.userManagement')}</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-wrap gap-2">
           {visibleCards.map((card) => (
-            <Card
+            <button
               key={card.labelKey}
-              variant="grid"
+              type="button"
               onClick={() => navigate(`/${card.path}/${card.defaultTab}`)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') navigate(`/${card.path}/${card.defaultTab}`);
-              }}
             >
-              <CardContent className="flex items-center gap-4 p-6">
-                <FontAwesomeIcon
-                  icon={card.icon}
-                  className="h-8 w-8 text-ciLightBlue"
-                />
-                <span className="text-lg font-medium">{t(card.labelKey)}</span>
-              </CardContent>
-            </Card>
+              <Card variant="tile">
+                <div className="m-4 flex flex-col items-center">
+                  <FontAwesomeIcon
+                    icon={card.icon}
+                    className="h-12 w-12 md:h-14 md:w-14"
+                  />
+                  <p>{t(card.labelKey)}</p>
+                </div>
+              </Card>
+            </button>
           ))}
         </div>
       </div>
