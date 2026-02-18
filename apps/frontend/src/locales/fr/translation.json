@@ -740,8 +740,6 @@
     },
     "errors": {
       "submitAnswerError": "La réponse n'a pas pu être enregistrée.",
-      "submitOtherChoiceError": "Les choix personnalisés pour les questions suivantes n'ont pas pu être enregistrés : {{questionNames}}. Veuillez réessayer.",
-      "duplicateChoiceError": "Le choix pour la question \"{{questionName}}\" existe déjà. Veuillez modifier votre réponse.",
       "updateOrCreateError": "L'enquête ne pouvait ni être mise à jour ni créée.",
       "deleteError": "Les enquêtes n'ont pas pu être supprimées.",
       "imageDeletionFailed": "Pas toutes les images des enquêtes n'ont pu être supprimées.",
@@ -755,7 +753,7 @@
       "participationErrorSurveyExpired": "Le sondage a expiré.",
       "idTypeError": "ID de sondage non valide.",
       "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse.",
-      "choiceLimitReachedError": "La limite pour l'une des options définies par l'utilisateur a été atteinte."
+      "choiceLimitReachedError": "Les choix personnalisés pour les questions suivantes n'ont pas pu être enregistrés : {{questionNames}}. Veuillez réessayer."
     }
   },
   "survey-answer": {
