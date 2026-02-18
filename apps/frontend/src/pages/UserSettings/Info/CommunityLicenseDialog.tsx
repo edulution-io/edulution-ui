@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import useCommunityLicenseStore from './useCommunityLicenseStore';
 

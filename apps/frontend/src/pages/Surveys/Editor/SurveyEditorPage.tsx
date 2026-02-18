@@ -24,6 +24,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { faRotateLeft, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import { ReactElementFactory } from 'survey-react-ui';
+import { SurveyCreatorModel } from 'survey-creator-core';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
@@ -39,6 +41,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import SurveysLogoSettingsDialog from '@/pages/Surveys/Editor/dialog/SurveysLogoSettingsDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
@@ -48,6 +51,11 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import CustomLogoImageComponent from '@/pages/Surveys/Editor/components/CustomLogoImageComponent';
+
+ReactElementFactory.Instance.registerElement('svc-logo-image', (props: { data: SurveyCreatorModel }) => (
+  <CustomLogoImageComponent data={props.data} />
+));
 
 interface SurveyEditorPageProps {
   initialFormValues: SurveyDto;
@@ -58,6 +66,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const {
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
+    isOpenSurveysLogoDialog,
+    setIsOpenSurveysLogoDialog,
     updateOrCreateSurvey,
     isLoading,
     reset: resetEditorPage,
@@ -77,14 +87,13 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     setIsOpenQuestionContextMenu,
     isOpenQuestionContextMenu,
     setSelectedQuestion,
-    isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { isSuperAdmin } = useLdapGroups();
-  const { theme } = useThemeStore();
+  const { getResolvedTheme } = useThemeStore();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -162,7 +171,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     form.reset(initialFormValues);
     if (creator) {
       creator.saveNo = 0;
-      creator.JSON = getSurveysDefaultValues(theme).formula;
+      creator.JSON = getSurveysDefaultValues(getResolvedTheme()).formula;
     }
   }, [form, initialFormValues, creator]);
 
@@ -280,12 +289,15 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         handleSaveTemplate={handleSaveTemplate}
         isSubmitting={isLoading}
       />
+      <SurveysLogoSettingsDialog
+        surveyCreator={creator}
+        isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
+        setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
+      />
       <QuestionsContextMenu
         form={form}
-        creator={creator}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
-        isLoading={isUpdatingBackendLimiters}
       />
       <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
     </>

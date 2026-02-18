@@ -213,9 +213,18 @@ class UsersService {
 
   async getPassword(username: string): Promise<string> {
     const existingUser = await this.userModel.findOne({ username }, 'password encryptKey').lean();
-    if (!existingUser || !existingUser.password) {
+    if (!existingUser) {
       throw new CustomHttpException(
         UserErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        UsersService.name,
+      );
+    }
+
+    if (!existingUser.password) {
+      throw new CustomHttpException(
+        UserErrorMessages.PasswordNotSetError,
         HttpStatus.NOT_FOUND,
         undefined,
         UsersService.name,
@@ -358,7 +367,7 @@ class UsersService {
     }
   }
 
-  async getPushTokensByUsersnames(usernames: string[]): Promise<string[]> {
+  async getPushTokensByUsernames(usernames: string[]): Promise<string[]> {
     const users = await this.userModel
       .find({ username: { $in: usernames } })
       .select('registeredPushTokens')

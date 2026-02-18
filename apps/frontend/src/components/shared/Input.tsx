@@ -19,7 +19,7 @@
 
 import React, { useState } from 'react';
 import { type VariantProps } from 'class-variance-authority';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -66,7 +66,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={isPassword && showPassword ? 'text' : type}
         inputMode={type === 'number' ? 'numeric' : undefined}
-        className={cn(inputVariants({ variant }), className)}
+        className={cn(inputVariants({ variant }), isPassword && 'pr-10', className)}
         ref={ref}
         onChange={handleChange}
         {...props}

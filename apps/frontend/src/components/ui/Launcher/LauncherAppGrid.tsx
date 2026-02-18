@@ -29,7 +29,7 @@ import useSidebarItems from '@/hooks/useSidebarItems';
 import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import IconWrapper from '@/components/shared/IconWrapper';

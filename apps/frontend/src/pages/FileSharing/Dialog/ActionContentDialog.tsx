@@ -222,15 +222,17 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       desktopContentClassName={desktopComponentClassName}
       mobileContentClassName={mobileComponentClassName}
       body={
-        <div
-          role="presentation"
-          onKeyDown={handleDialogKeyDown}
-        >
-          <Component
-            form={form}
-            isRenaming={isRenaming}
-          />
-        </div>
+        isDialogOpen ? (
+          <div
+            role="presentation"
+            onKeyDown={handleDialogKeyDown}
+          >
+            <Component
+              form={form}
+              isRenaming={isRenaming}
+            />
+          </div>
+        ) : null
       }
       footer={
         error ? (

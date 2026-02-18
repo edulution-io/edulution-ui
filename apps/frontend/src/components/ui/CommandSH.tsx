@@ -27,7 +27,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Command as CommandPrimitive } from 'cmdk';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { Dialog, DialogContent } from '@/components/ui/Dialog';
 
 const CommandSH = React.forwardRef<

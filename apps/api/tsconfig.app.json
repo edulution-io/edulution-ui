@@ -8,6 +8,6 @@
     "composite": true,
     "declaration": true
   },
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
-  "include": ["./**/*", "../../libs/**/*", "../../package.json"]
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "../../libs/ui-kit/**/*"],
+  "include": ["./**/*", "../../libs/src/**/*", "../../package.json"]
 }

@@ -29,6 +29,9 @@ import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
@@ -38,6 +41,7 @@ import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConfe
 import { OnEvent } from '@nestjs/event-emitter';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -192,11 +196,11 @@ class ConferencesService implements OnModuleInit {
     if (isRunning) {
       await this.stopConference(conference, isConferenceRunningInBBB);
     } else {
-      await this.startConference(conference, isConferenceRunningInBBB);
+      await this.startConference(conference, isConferenceRunningInBBB, username);
     }
   }
 
-  async startConference(conference: Conference, shouldUpdateInBBB: boolean) {
+  async startConference(conference: Conference, shouldUpdateInBBB: boolean, triggeredBy: string) {
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
@@ -221,16 +225,29 @@ class ConferencesService implements OnModuleInit {
         conference.invitedAttendees,
       );
 
-      // TODO: #1152
+      const title = NOTIFICATION_TEMPLATES.CONFERENCE.STARTED.title(conference.name);
+      const pushNotification = NOTIFICATION_TEMPLATES.CONFERENCE.STARTED.body(conference.name);
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title: `Konferenz gestartet: ${conference.name}`,
-        body: `Die Konferenz "${conference.name}" wurde gestartet.`,
-        data: {
-          meetingID: conference.meetingID,
-          type: 'conference_started',
+      await this.notificationService.upsertNotificationForSource(
+        invitedMembersList,
+        {
+          title,
+          body: pushNotification,
+          data: {
+            meetingID: conference.meetingID,
+            type: 'conference_started',
+          },
         },
-      });
+        triggeredBy,
+        {
+          type: NOTIFICATION_TYPE.SYSTEM,
+          sourceType: NOTIFICATION_SOURCE_TYPE.CONFERENCE,
+          sourceId: conference.meetingID,
+          title,
+          pushNotification,
+          createdBy: NOTIFICATION_CREATOR_SYSTEM,
+        },
+      );
 
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
@@ -416,6 +433,17 @@ class ConferencesService implements OnModuleInit {
     if (result.deletedCount === 0) {
       throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
     }
+
+    await Promise.all(
+      meetingIDs.map((meetingId) =>
+        this.notificationService.cascadeDeleteBySourceId(meetingId).catch((error) => {
+          Logger.error(
+            `Failed to cascade delete notifications for conference ${meetingId}: ${error}`,
+            ConferencesService.name,
+          );
+        }),
+      ),
+    );
 
     const invitedMembersList = (
       await Promise.all(

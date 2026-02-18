@@ -20,7 +20,7 @@
 import { TooltipContent, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { Tooltip } from '@/components/ui/Tooltip';
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface ActionTooltipProps {
   trigger: React.ReactNode;

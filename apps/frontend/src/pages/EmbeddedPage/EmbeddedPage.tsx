@@ -18,7 +18,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -30,6 +30,9 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useUserAccounts from '@/hooks/useUserAccounts';
+import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import detectIframeColor from '@libs/ui/utils/detectIframeColor';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 import EmbeddedPageContent from './EmbeddedPageContent';
 
@@ -37,8 +40,8 @@ const EmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
   const { language } = useLanguage();
   const { tableContentData, fetchTableContent } = useFileTableStore();
-
   const { appConfigs } = useAppConfigsStore();
+  const setFooterColors = useFrameStore((s) => s.setFooterColors);
 
   const rootPathName = getFromPathName(pathname, 1);
 
@@ -48,9 +51,20 @@ const EmbeddedPage: React.FC = () => {
     void fetchTableContent(rootPathName as TApps);
   }, [rootPathName]);
 
+  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
+    const colors = detectIframeColor(iframe);
+    setFooterColors(rootPathName, colors);
+  };
+
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
-  if (!currentAppConfig) return null;
+  if (!currentAppConfig)
+    return (
+      <Navigate
+        to={LANDING_PAGE_ROUTE}
+        replace
+      />
+    );
   const pageTitle = getDisplayName(currentAppConfig, language);
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
   const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/file/${rootPathName}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
@@ -69,6 +83,7 @@ const EmbeddedPage: React.FC = () => {
         htmlContent={htmlContent}
         urlSyncEnabled={urlSyncEnabled}
         preloadBasePage={preloadBasePage}
+        onIframeLoad={handleIframeLoad}
       />
     </PageLayout>
   );

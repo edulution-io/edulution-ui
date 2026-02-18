@@ -33,6 +33,12 @@ export class UserPreferences extends Document {
     default: {},
   })
   collapsedBulletins: Record<string, boolean>;
+
+  @Prop({
+    type: String,
+    default: '1',
+  })
+  bulletinBoardGridRows: string;
 }
 
 export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);

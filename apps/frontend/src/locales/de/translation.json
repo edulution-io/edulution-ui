@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "unbegrenzt gültig",
     "appTitle": "Info Board",
     "description": "Hier findest du deine aktuellen Mitteilungen",
+    "view": "Ansicht",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Zeile",
+    "viewTwoRows": "2 Zeilen",
+    "viewThreeRows": "3 Zeilen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
@@ -95,6 +100,35 @@
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
       "attachmentNotFound": "Anhang nicht gefunden",
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
+    }
+  },
+  "notificationscenter": {
+    "appTitle": "Benachrichtigungen",
+    "description": "Hier findest du alle deine Benachrichtigungen",
+    "sidebar": "Benachrichtigungen",
+    "noNotifications": "Du hast keine Benachrichtigungen",
+    "markAllAsRead": "Alle als gelesen markieren",
+    "markAsRead": "Als gelesen markieren",
+    "from": "von {{ author }}",
+    "systemNotification": "Systembenachrichtigung",
+    "messagesSection": "Nachrichten",
+    "systemSection": "Systembenachrichtigungen",
+    "noMessages": "Keine Nachrichten",
+    "noSystemNotifications": "Keine Systembenachrichtigungen",
+    "deleteAll": "Alle löschen",
+    "deleteAllMessages": "Alle Nachrichten löschen",
+    "deleteAllSystem": "Alle Systembenachrichtigungen löschen",
+    "confirmDeleteAll": "Möchtest du wirklich alle {{count}} Benachrichtigungen löschen?",
+    "confirmDeleteMessages": "Möchtest du wirklich alle {{count}} Nachrichten löschen?",
+    "confirmDeleteSystem": "Möchtest du wirklich alle {{count}} Systembenachrichtigungen löschen?",
+    "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deletedNotifications": "{{count}} Benachrichtigung gelöscht",
+    "deletedNotifications_other": "{{count}} Benachrichtigungen gelöscht",
+    "loadMore": "Mehr laden",
+    "menu": {
+      "all": "Alle",
+      "messages": "Nachrichten",
+      "system": "System"
     }
   },
   "appstore": {
@@ -177,6 +211,7 @@
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
+      "GetUsersFailed": "Abrufen der Benutzer fehlgeschlagen",
       "UpdateUserFailed": "Aktualisierung fehlgeschlagen",
       "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
       "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
@@ -211,6 +246,7 @@
       "generic": "Das Mail-Theme wurde aktualisiert. Bitte lade die Seite neu, um die Änderungen zu übernehmen.",
       "failed": "Das Mail-Theme konnte nicht aktualisiert werden."
     },
+    "newMail": "{{count}} neue E-Mail(s) erhalten",
     "importer": {
       "filterPlaceHolderText": "Suche nach Benutzernamen",
       "title": "E-Mail-Sync",
@@ -509,7 +545,8 @@
     "webdavInfo": {
       "title": "WebDAV-Zugang",
       "description": "Verwende diese URL, um dich mit deinen Dateien über WebDAV-Clients zu verbinden",
-      "url": "WebDAV-URL",
+      "urlWindowsMac": "WebDAV-URL (Windows / macOS)",
+      "urlLinux": "WebDAV-URL (Linux)",
       "username": "Benutzername",
       "passwordHint": "Verwende dein Anmeldepasswort zur Authentifizierung",
       "tutorialsTitle": "Anleitungen",
@@ -737,14 +774,17 @@
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "fileDeletionError": "Die Datei konnte nicht gelöscht werden",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
-      "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
-      "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
+        "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
+        "previewTabTitle": "Vorschau"
+      },
       "isLoadingSurvey": "Umfrage wird geladen...",
       "template": {
         "title": "Vorlagen",
@@ -805,6 +845,20 @@
         "filterPlaceHolderText": "Option suchen",
         "imageWidth": "Breite eines Bildes in Pixel [px]",
         "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
+      },
+      "surveyLogo": {
+        "title": "Logo der Umfrage",
+        "width": {
+          "label": "Breite des Logos in Pixel (mind. 150 px)",
+          "placeholder": "Gib die Breite des Logos in Pixel an"
+        },
+        "position": {
+          "label": "Position des Logos",
+          "placeholder": "Wähle die Position des Logos",
+          "left": "Links vom Titel",
+          "right": "Rechts vom Titel",
+          "description": "Die Position des Logos relativ zum Titel der Umfrage ist im Tab 'Vorschau' einzusehen."
+        }
       }
     },
     "participate": {
@@ -845,7 +899,8 @@
       "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden.",
-      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden."
+      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden.",
+      "alreadyParticipated": "Du hast bereits teilgenommen."
     }
   },
   "surveys": {
@@ -1424,7 +1479,8 @@
       "qrCodeDescription": "Scanne diesen QR-Code mit der WireGuard App auf deinem Mobilgerät, um die VPN-Verbindung einzurichten.",
       "configDownload": "Konfigurationsdatei",
       "configDownloadDescription": "Lade die WireGuard-Konfigurationsdatei herunter, um sie in der WireGuard App auf deinem Computer zu importieren.",
-      "downloadButton": "Konfiguration herunterladen"
+      "downloadButton": "Konfiguration herunterladen",
+      "error": "Der VPN-Dienst ist derzeit nicht erreichbar. Bitte versuche es später erneut oder wende dich an einen Administrator."
     },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
@@ -1503,6 +1559,8 @@
     "filter": "Filter",
     "showHiddenFiles": "Versteckte Dateien anzeigen",
     "showSystemFiles": "Systemdateien anzeigen",
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "dbInvalidId": "Ungültige Datenbank-ID",
@@ -2021,7 +2079,8 @@
   "users": {
     "errors": {
       "notFoundError": "Benutzer existiert nicht",
-      "updateError": "Benutzer konnte nicht aktualisiert werden"
+      "updateError": "Benutzer konnte nicht aktualisiert werden",
+      "passwordNotSetError": "Passwort ist für diesen Benutzer nicht gesetzt"
     }
   },
   "permission": {
@@ -2222,6 +2281,7 @@
       "short": "Root",
       "notConfigured": "Kein Root-Pfad konfiguriert. Bitte kontaktiere den Systemadministrator."
     },
+    "noSharesConfigured": "Keine Freigaben konfiguriert. Bitte kontaktiere den Systemadministrator.",
     "selectPlaceholder": "Wähle...",
     "authentication": {
       "title": "Authentifizierung",

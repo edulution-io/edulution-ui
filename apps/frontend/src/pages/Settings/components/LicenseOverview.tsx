@@ -20,7 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import type LicenseInfoDto from '@libs/license/types/license-info.dto';
 import LicenseField from './LicenseField';
 import RegisterLicenseDialog from './RegisterLicenseDialog';

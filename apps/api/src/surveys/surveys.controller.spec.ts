@@ -26,6 +26,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -74,7 +75,11 @@ describe(SurveysController.name, () => {
   let surveyAnswersService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
-  const pushMock = { notify: jest.fn() };
+  const pushMock = {
+    notify: jest.fn(),
+    upsertNotificationForSource: jest.fn().mockResolvedValue(undefined),
+    cascadeDeleteBySourceId: jest.fn().mockResolvedValue(undefined),
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SurveysController],
@@ -118,6 +123,10 @@ describe(SurveysController.name, () => {
         { provide: NotificationsService, useValue: pushMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
+        },
       ],
     }).compile();
 

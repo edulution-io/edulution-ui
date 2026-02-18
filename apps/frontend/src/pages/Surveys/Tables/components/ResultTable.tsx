@@ -36,18 +36,17 @@ const ResultTable: FC<ResultTableDialogBodyProps> = ({ formula, result }) => {
   const { language } = useLanguage();
 
   useEffect(() => {
+    if (!containerRef.current) {
+      return undefined;
+    }
+
     const surveyModel = new SurveyModel(formula);
     const surveyTable = new Tabulator(surveyModel, result || []);
     surveyTable.locale = language;
-
-    if (containerRef.current) {
-      surveyTable.render(containerRef.current);
-    }
+    surveyTable.render(containerRef.current);
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
-      }
+      surveyTable.destroy();
     };
   }, [formula, result, language]);
 

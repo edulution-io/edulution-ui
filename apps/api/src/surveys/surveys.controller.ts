@@ -19,7 +19,7 @@
 
 import { randomUUID } from 'crypto';
 import { join } from 'path';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   Body,
   Controller,
@@ -30,6 +30,7 @@ import {
   Post,
   Patch,
   Query,
+  Req,
   Res,
   UploadedFile,
   UseGuards,
@@ -183,6 +184,7 @@ class SurveysController {
   async serveFileFromAnswer(
     @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
     @GetCurrentUser() currentUser: JWTUser,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
     const { userName, surveyId, questionId, filename } = params;
@@ -190,7 +192,7 @@ class SurveysController {
     if (userName !== currentUser.preferred_username) {
       await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
     }
-    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, req, res);
   }
 
   @Post()
@@ -228,23 +230,25 @@ class SurveysController {
   async serveFile(
     @Param() params: { surveyId: string; questionId: string; filename: string },
     @GetCurrentUser() currentUser: JWTUser,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
     const { surveyId, questionId, filename } = params;
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const path = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFile(path, filename, res);
+    return this.filesystemService.serveFile(path, filename, req, res);
   }
 
   @Get(`${FILES}/:filename`)
   async serveTempFile(
     @Param() params: { filename: string },
+    @Req() req: Request,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
     const { filename } = params;
     const path = join(SURVEYS, username);
-    return this.filesystemService.serveTempFile(path, filename, res);
+    return this.filesystemService.serveTempFile(path, filename, req, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
@@ -318,13 +322,17 @@ class SurveysController {
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)
-  async getChoices(@Param() params: { surveyId: string; questionId: string }, @GetCurrentUser() currentUser: JWTUser) {
+  async getChoices(
+    @Param() params: { surveyId: string; questionId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Query('original') original?: string,
+  ) {
     const { surveyId, questionId } = params;
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId, original === 'true');
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 

@@ -1,0 +1,73 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import { SVGProps, forwardRef } from 'react';
+
+type HexagonIconProps = SVGProps<SVGSVGElement>;
+
+const HexagonIcon = forwardRef<SVGSVGElement, HexagonIconProps>((props, ref) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-2 -2 489.56 426.55"
+    preserveAspectRatio="xMidYMid meet"
+    overflow="visible"
+    ref={ref}
+    {...props}
+  >
+    <defs>
+      <clipPath id="hexagon-clippath">
+        <path
+          fill="none"
+          d="M113.73,399.1L12.36,227.21c-2.9-4.92-4.35-10.42-4.35-15.93s1.45-11.02,4.35-15.93L113.73,23.45c5.64-9.56,15.92-15.43,27.02-15.43h204.05c11.1,0,21.38,5.87,27.02,15.43l101.37,171.9c2.91,4.94,4.35,10.47,4.35,16.03s-1.46,10.94-4.35,15.84l-101.37,171.9c-5.64,9.56-15.92,15.43-27.02,15.43h-204.05c-11.1,0-21.38-5.87-27.02-15.43M140.75,0h0c-13.94,0-26.84,7.37-33.92,19.38L5.46,191.27c-3.64,6.17-5.46,13.09-5.46,20s1.82,13.83,5.46,20l101.37,171.89c7.08,12.01,19.98,19.38,33.92,19.38h204.05c13.94,0,26.84-7.37,33.92-19.38l101.37-171.89c3.61-6.13,5.46-13.01,5.46-19.91s-1.8-13.9-5.46-20.1L378.73,19.38c-7.08-12.01-19.98-19.38-33.92-19.38h-204.05Z"
+        />
+      </clipPath>
+      <linearGradient
+        id="hexagon-gradient"
+        x1="-176.63"
+        y1="510.55"
+        x2="-175.15"
+        y2="510.55"
+        gradientTransform="translate(58069.09 168062.02) scale(328.77 -328.77)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop
+          offset="0"
+          stopColor="var(--ci-light-green)"
+        />
+        <stop
+          offset="1"
+          stopColor="var(--ci-dark-blue)"
+        />
+      </linearGradient>
+    </defs>
+    <g clipPath="url(#hexagon-clippath)">
+      <rect
+        fill="url(#hexagon-gradient)"
+        x="-2"
+        y="-2"
+        width="489.56"
+        height="426.55"
+      />
+    </g>
+  </svg>
+));
+
+HexagonIcon.displayName = 'HexagonIcon';
+
+export default HexagonIcon;

@@ -29,7 +29,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import LinuxmusterVersionResponse from '@libs/lmnApi/types/linuxmusterVersionResponse';
 
-const { USER, USERS_QUOTA, AUTH } = LMN_API_EDU_API_ENDPOINTS;
+const { USER, USERS, USERS_QUOTA, AUTH } = LMN_API_EDU_API_ENDPOINTS;
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -46,6 +46,7 @@ interface UseLmnApiStore {
   setLmnApiToken: () => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<LmnUserInfo | null>;
+  fetchUsers: (usernames: string[]) => Promise<LmnUserInfo[]>;
   fetchUsersQuota: (name: string) => Promise<void>;
   patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
   getLmnVersion: () => Promise<void>;
@@ -118,6 +119,27 @@ const useLmnApiStore = create<UseLmnApiStore>(
         } catch (error) {
           handleApiError(error, set);
           return null;
+        } finally {
+          set({ isFetchUserLoading: false });
+        }
+      },
+
+      fetchUsers: async (usernames): Promise<LmnUserInfo[]> => {
+        if (usernames.length === 0) return [];
+
+        set({ isFetchUserLoading: true, error: null });
+        try {
+          const response = await eduApi.post<LmnUserInfo[]>(
+            USERS,
+            { usernames },
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
+            },
+          );
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return [];
         } finally {
           set({ isFetchUserLoading: false });
         }

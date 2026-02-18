@@ -19,7 +19,7 @@
 
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsLeftRight, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
