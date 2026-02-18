@@ -98,7 +98,7 @@ export {
   targetQuestionName,
   newChoiceName,
   newChoiceTitle,
-  showOtherItemChioceLimit,
+  showOtherItemChoiceLimit,
   dropdownQuestionWithShowOtherItemName,
   dropdownQuestionWithoutShowOtherItemName,
   mockSurveyId,

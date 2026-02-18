@@ -30,7 +30,7 @@ import {
   targetQuestionName,
   newChoiceName,
   newChoiceTitle,
-  showOtherItemChioceLimit,
+  showOtherItemChoiceLimit,
   dropdownQuestionWithShowOtherItemName,
   dropdownQuestionWithoutShowOtherItemName,
   mockSurveyId,
@@ -61,6 +61,7 @@ describe(SurveysBackendLimiterService.name, () => {
     mockModel = {
       findOneAndUpdate: jest.fn(),
       findOne: jest.fn(),
+      updateOne: jest.fn(),
       deleteOne: jest.fn(),
       deleteMany: jest.fn(),
     };
@@ -223,46 +224,62 @@ describe(SurveysBackendLimiterService.name, () => {
     });
 
     it('should append new choices with isCustomUserEntry and inherited limit', async () => {
-      const saveMock = jest.fn().mockResolvedValue(undefined);
-      const backendLimiter = { choices: [...existingChoicesWithShowOtherItem], save: saveMock };
+      const backendLimiter = { choices: [...existingChoicesWithShowOtherItem] };
 
       mockModel.findOne.mockReturnValue({
         exec: jest.fn().mockResolvedValue(backendLimiter),
       });
+      mockModel.updateOne.mockReturnValue({
+        exec: jest.fn().mockResolvedValue({ modifiedCount: 1 }),
+      });
 
       await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, newChoices);
 
-      expect(saveMock).toHaveBeenCalled();
-      expect(backendLimiter.choices).toHaveLength(3);
-      expect(backendLimiter.choices[2]).toEqual({
-        name: newChoiceName,
-        title: newChoiceTitle,
-        limit: showOtherItemChioceLimit,
-        isCustomUserEntry: true,
-      });
+      expect(mockModel.updateOne).toHaveBeenCalledWith(
+        {
+          surveyId: new Types.ObjectId(mockSurveyId),
+          questionName: mockQuestionName,
+          'choices.title': { $ne: newChoiceTitle },
+        },
+        {
+          $push: {
+            choices: {
+              name: newChoiceName,
+              title: newChoiceTitle,
+              limit: showOtherItemChoiceLimit,
+              isCustomUserEntry: true,
+            },
+          },
+        },
+      );
       expect(mockSseService.informAllUsers).toHaveBeenCalledWith(
         { surveyId: mockSurveyId, questionName: mockQuestionName },
         SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED,
       );
     });
 
-    it('should not append duplicate choices matched by title', async () => {
-      const saveMock = jest.fn();
-      const backendLimiter = { choices: [...existingChoicesWithoutShowOtherItem], save: saveMock };
+    it('should throw CONFLICT for duplicate choices matched by title', async () => {
+      const backendLimiter = { choices: [...existingChoicesWithoutShowOtherItem] };
 
       mockModel.findOne.mockReturnValue({
         exec: jest.fn().mockResolvedValue(backendLimiter),
       });
+      mockModel.updateOne.mockReturnValue({
+        exec: jest.fn().mockResolvedValue({ modifiedCount: 0 }),
+      });
 
-      await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, duplicateChoices);
-
-      expect(saveMock).not.toHaveBeenCalled();
-      expect(backendLimiter.choices).toHaveLength(1);
+      try {
+        await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, duplicateChoices);
+        fail('Expected CustomHttpException to be thrown');
+      } catch (e) {
+        expect(e).toBeInstanceOf(CustomHttpException);
+        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.CONFLICT);
+      }
+      expect(mockSseService.informAllUsers).not.toHaveBeenCalled();
     });
 
-    it('should not call save when no new choices are added', async () => {
-      const saveMock = jest.fn();
-      const backendLimiter = { choices: [...existingChoicesWithoutShowOtherItem], save: saveMock };
+    it('should not update when no choices are provided', async () => {
+      const backendLimiter = { choices: [...existingChoicesWithoutShowOtherItem] };
 
       mockModel.findOne.mockReturnValue({
         exec: jest.fn().mockResolvedValue(backendLimiter),
@@ -270,7 +287,7 @@ describe(SurveysBackendLimiterService.name, () => {
 
       await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, []);
 
-      expect(saveMock).not.toHaveBeenCalled();
+      expect(mockModel.updateOne).not.toHaveBeenCalled();
       expect(mockSseService.informAllUsers).not.toHaveBeenCalled();
     });
   });

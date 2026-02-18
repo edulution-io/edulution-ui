@@ -17,19 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum SurveyErrorMessages {
-  UpdateOrCreateError = 'survey.errors.updateOrCreateError',
-  DeleteError = 'survey.errors.deleteError',
-  NoAnswers = 'survey.errors.noAnswerError',
-  NoFormula = 'survey.errors.noFormulaError',
-  NoBackendLimiters = 'survey.errors.noBackendLimitersError',
-  NotFoundError = 'survey.errors.notFoundError',
-  MISSING_ID_ERROR = 'survey.errors.missingIdError',
-  SurveyFormulaStructuralError = 'survey.errors.surveyFormulaStructuralError',
-  ParticipationErrorUserNotAssigned = 'survey.errors.participationErrorUserNotAssigned',
-  ParticipationErrorSurveyExpired = 'survey.errors.participationErrorSurveyExpired',
-  ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',
-  DuplicateChoiceError = 'survey.errors.duplicateChoiceError',
-}
+const CHOICES_DEFAULT_LIMIT: number = 1;
 
-export default SurveyErrorMessages;
+export default CHOICES_DEFAULT_LIMIT;

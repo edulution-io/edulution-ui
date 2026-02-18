@@ -89,6 +89,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   const { language } = useLanguage();
 
   const pendingOtherChoicesRef = useRef(new Map<string, string>());
+  const isCompletingRef = useRef(false);
 
   const surveyParticipationModel = useMemo(() => {
     if (!selectedSurvey || !selectedSurvey.formula) {
@@ -109,44 +110,66 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       action: () => setOpenExportPDFDialog(true),
     });
 
-    newModel.onCompleting.add(async (surveyModel, completingEvent) => {
+    newModel.onCompleting.add((surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {
         throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
       }
+      if (isCompletingRef.current) {
+        return;
+      }
+      // eslint-disable-next-line no-param-reassign
+      completingEvent.allow = false;
+      isCompletingRef.current = true;
       const isSurveyPublic = selectedSurvey.isPublic || isPublic || false;
 
-      const pendingChoices = pendingOtherChoicesRef.current;
-      if (pendingChoices.size > 0) {
-        // eslint-disable-next-line no-console
-        console.log(
-          'Submitting other choices before submitting the survey answer',
-          Array.from(pendingChoices.entries()),
-        );
-
-        const submissions = Array.from(pendingChoices.entries()).map(([questionName, otherValue]) =>
+      const submitPendingChoices = async (): Promise<boolean> => {
+        const pendingChoices = pendingOtherChoicesRef.current;
+        if (pendingChoices.size === 0) {
+          return true;
+        }
+        const entries = Array.from(pendingChoices.entries());
+        const submissions = entries.map(([questionName, otherValue]) =>
           submitOtherChoice(selectedSurvey.id!, questionName, otherValue, isSurveyPublic),
         );
-        await Promise.all(submissions);
-        pendingChoices.clear();
-      }
+        const results = await Promise.allSettled(submissions);
+        const failedQuestionNames = results
+          .map((result, index) => (result.status === 'rejected' ? entries[index][0] : null))
+          .filter((name): name is string => name !== null);
 
-      const success = await answerSurvey(
-        {
-          surveyId: selectedSurvey.id,
-          answer: surveyModel.getData() as TSurveyAnswer,
-          isPublic: isSurveyPublic,
-        },
-        surveyModel,
-        completingEvent,
-      );
-
-      if (success) {
-        if (!isPublic) {
-          if (updateOpenSurveys) void updateOpenSurveys();
-          if (updateAnsweredSurveys) void updateAnsweredSurveys();
+        if (failedQuestionNames.length > 0) {
+          toast.warning(t('survey.errors.submitOtherChoiceError', { questionNames: failedQuestionNames.join(', ') }));
+          return false;
         }
-        toast.success(t('survey.participate.saveAnswerSuccess'));
-      }
+        pendingChoices.clear();
+        return true;
+      };
+
+      void submitPendingChoices().then(async (choicesSucceeded) => {
+        if (!choicesSucceeded) {
+          isCompletingRef.current = false;
+          return;
+        }
+
+        const success = await answerSurvey(
+          {
+            surveyId: selectedSurvey.id!,
+            answer: surveyModel.getData() as TSurveyAnswer,
+            isPublic: isSurveyPublic,
+          },
+          surveyModel,
+          completingEvent,
+        );
+
+        if (success) {
+          if (!isPublic) {
+            if (updateOpenSurveys) void updateOpenSurveys();
+            if (updateAnsweredSurveys) void updateAnsweredSurveys();
+          }
+          toast.success(t('survey.participate.saveAnswerSuccess'));
+        } else {
+          isCompletingRef.current = false;
+        }
+      });
     });
 
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {

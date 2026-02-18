@@ -856,6 +856,8 @@
     },
     "errors": {
       "submitAnswerError": "The answer could not be submitted.",
+      "submitOtherChoiceError": "The custom choices for the following questions could not be saved: {{questionNames}}. Please try again.",
+      "duplicateChoiceError": "The choice for question \"{{questionName}}\" already exists. Please change your answer.",
       "updateOrCreateError": "Unable to update or create the survey.",
       "deleteError": "The surveys could not be deleted.",
       "noAnswerError": "No answers available jet.",

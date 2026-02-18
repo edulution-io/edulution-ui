@@ -199,11 +199,16 @@ class PublicSurveysController {
 
   @Post(`${CHOICES}/:surveyId/:questionId`)
   @Public()
-  async updateChoices(@Param() params: { surveyId: string; questionId: string }, @Body() choices: ChoiceDto[]) {
+  async updateChoices(
+    @Param() params: { surveyId: string; questionId: string },
+    @Body() choices: ChoiceDto[],
+    @Res() res: Response,
+  ) {
     const { surveyId, questionId } = params;
     const survey = await this.surveyService.getSurvey(surveyId);
     this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(survey, questionId);
     await this.surveysBackendLimiterService.appendChoicesToBackendLimiter(surveyId, questionId, choices);
+    return res.status(HttpStatus.OK).json({ message: 'success' });
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)

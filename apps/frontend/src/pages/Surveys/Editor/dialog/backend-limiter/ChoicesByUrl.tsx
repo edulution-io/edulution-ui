@@ -78,7 +78,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
         void deleteBackendLimiters(surveyId, questionName);
       }
     }
-  }, [selectedQuestion, useBackendLimits]);
+  }, [selectedQuestion, useBackendLimits, form, setInitialChoices, getInitialChoices, deleteBackendLimiters]);
 
   useEffect(() => {
     if (!selectedQuestion) return;
@@ -92,7 +92,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     if (surveyId && currentChoices.length > 0) {
       void uploadBackendLimiter(surveyId, questionName, currentChoices);
     }
-  }, [currentChoices]);
+  }, [currentChoices, selectedQuestion, form, uploadBackendLimiter]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [

@@ -42,6 +42,8 @@ const SurveysBackendLimiterSchema = SchemaFactory.createForClass(SurveysBackendL
 
 SurveysBackendLimiterSchema.index({ surveyId: 1, questionName: 1 }, { unique: true });
 
+SurveysBackendLimiterSchema.index({ surveyId: 1 });
+
 SurveysBackendLimiterSchema.set('toJSON', {
   virtuals: true,
 });

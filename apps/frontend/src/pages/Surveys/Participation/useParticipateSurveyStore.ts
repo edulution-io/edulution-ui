@@ -20,7 +20,7 @@
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
-import { HttpStatusCode } from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
@@ -274,8 +274,13 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     const endpoint = isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES;
     try {
       await eduApi.post(`${endpoint}/${surveyId}/${questionName}?append=true`, [choice]);
-    } catch (error) {
-      handleApiError(error, set);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.status === Number(HttpStatusCode.Conflict)) {
+        toast.error(t('survey.errors.duplicateChoiceError', { questionName }));
+      } else {
+        handleApiError(error, set);
+      }
+      throw error;
     }
   },
 

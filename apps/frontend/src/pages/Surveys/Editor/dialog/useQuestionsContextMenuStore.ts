@@ -20,6 +20,7 @@
 import { create } from 'zustand';
 import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
+import CHOICES_DEFAULT_LIMIT from '@libs/survey/constants/choices-default-limit';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
@@ -185,7 +186,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     const { currentChoices, addChoice } = get();
     const newChoiceTitle = `choice-${currentChoices.length}`;
     const newChoiceName = `${newChoiceTitle}-${getRandomUUID()}`;
-    addChoice(newChoiceName, `${newChoiceTitle}`, 1);
+    addChoice(newChoiceName, `${newChoiceTitle}`, CHOICES_DEFAULT_LIMIT);
   },
 
   removeChoice: (name: string) => {
@@ -198,7 +199,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     const { currentChoices } = get();
     const updatedChoices = currentChoices.map((c: ChoiceDto) => {
       if (c.name === choiceName) {
-        const updatedChoice = c;
+        const updatedChoice = { ...c };
         updatedChoice.name = newName;
         return updatedChoice;
       }
@@ -241,7 +242,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     if (!showOtherItem) {
       selectedQuestion.showOtherItem = true;
       set({ showOtherItem: true });
-      addChoice(SHOW_OTHER_ITEM, SHOW_OTHER_ITEM);
+      addChoice(SHOW_OTHER_ITEM, SHOW_OTHER_ITEM, CHOICES_DEFAULT_LIMIT);
     } else {
       selectedQuestion.showOtherItem = false;
       set({ showOtherItem: false });

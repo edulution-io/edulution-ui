@@ -39,7 +39,7 @@ export const newChoiceName: string = 'newChoice';
 export const newChoiceTitle: string = 'New Choice';
 const newChoice: ChoiceDto = { name: newChoiceName, title: newChoiceTitle, limit: 0 };
 
-export const showOtherItemChioceLimit: number = 10;
+export const showOtherItemChoiceLimit: number = 10;
 const showOtherItemChoice: ChoiceDto = { name: SHOW_OTHER_ITEM, title: SHOW_OTHER_ITEM, limit: 10 };
 
 export const targetQuestionName: string = 'targetQuestion';

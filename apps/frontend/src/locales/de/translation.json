@@ -858,6 +858,8 @@
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
+      "submitOtherChoiceError": "Die benutzerdefinierten Antwortmöglichkeiten für folgende Fragen konnten nicht gespeichert werden: {{questionNames}}. Bitte versuchen Sie es erneut.",
+      "duplicateChoiceError": "Die Auswahlmöglichkeit für Frage \"{{questionName}}\" existiert bereits. Bitte ändern Sie Ihre Antwort.",
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",

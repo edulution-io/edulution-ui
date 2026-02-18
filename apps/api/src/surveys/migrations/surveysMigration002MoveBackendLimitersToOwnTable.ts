@@ -3,7 +3,6 @@
  * All rights reserved.
  *
  * This software is dual-licensed under the terms of:
-
  *
  * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
  *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
@@ -38,14 +37,24 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
     const cursor = model.find<OldSurveyDocument>({ schemaVersion: previousSchemaVersion }).cursor();
 
     let counter = 0;
-    let updateSurveyOperations: AnyBulkWriteOperation[] = [];
+    const updateSurveyOperations: AnyBulkWriteOperation[] = [];
 
     // eslint-disable-next-line no-restricted-syntax
     for await (const doc of cursor) {
       const { backendLimiters } = doc;
 
-      // eslint-disable-next-line no-continue
-      if (!backendLimiters || backendLimiters.length === 0) continue;
+      if (!backendLimiters || backendLimiters.length === 0) {
+        updateSurveyOperations.push({
+          updateOne: {
+            // eslint-disable-next-line no-underscore-dangle
+            filter: { _id: doc._id },
+            update: { $set: { schemaVersion: newSchemaVersion } },
+          },
+        });
+
+        // eslint-disable-next-line no-continue
+        continue;
+      }
 
       const BackendLimiterModel = model.db.model<SurveysBackendLimiterDocument>('SurveysBackendLimiter');
 
@@ -67,7 +76,7 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
 
         Logger.log(
           // eslint-disable-next-line no-underscore-dangle
-          `Would insert backend limiter for survey ${String(doc._id)} and question ${limiter.questionName}: ${JSON.stringify(limiter.choices)}`,
+          `Inserting backend limiter for survey ${String(doc._id)} and question ${limiter.questionName}: ${JSON.stringify(limiter.choices)}`,
           name,
         );
       }
@@ -85,19 +94,13 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
           });
 
           // eslint-disable-next-line no-underscore-dangle
-          Logger.log(`Would remove limiters from survey document ${String(doc._id)}`, name);
+          Logger.log(`Removing backend limiters from survey document ${String(doc._id)}`, name);
         } catch (error) {
           Logger.error(`Failed to migrate document ${doc.id}:`, error);
           // eslint-disable-next-line no-continue
           continue;
         }
       }
-    }
-
-    if (updateSurveyOperations.length >= 500) {
-      await model.bulkWrite(updateSurveyOperations, { ordered: false });
-      updateSurveyOperations = [];
-      counter += 500;
     }
 
     if (updateSurveyOperations.length > 0) {
