@@ -19,8 +19,7 @@
 
 import React from 'react';
 import { Action } from 'survey-core';
-import { Button } from '@/components/shared/Button';
-import cn from '@libs/common/utils/className';
+import { Button, cn } from '@edulution-io/ui-kit';
 
 interface SurveyNavigationButtonProps {
   item: Action;
