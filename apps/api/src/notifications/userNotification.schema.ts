@@ -52,7 +52,7 @@ export class UserNotification {
 
 export const UserNotificationSchema = SchemaFactory.createForClass(UserNotification);
 
-UserNotificationSchema.index({ username: 1, createdAt: -1 });
+UserNotificationSchema.index({ username: 1, updatedAt: -1 });
 UserNotificationSchema.index({ username: 1, readAt: 1 });
 UserNotificationSchema.index({ notificationId: 1, username: 1 }, { unique: true });
 
