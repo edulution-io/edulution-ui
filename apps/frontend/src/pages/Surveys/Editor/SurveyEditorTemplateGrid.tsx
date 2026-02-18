@@ -82,8 +82,9 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         variant="default"
         width="auto"
+        className="mt-1"
       />
-      <div className={cn('space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin')}>
+      <div className={cn('space-2 flex w-full flex-wrap gap-2 overflow-y-auto pb-2 scrollbar-thin')}>
         <SurveyEditorTemplateCard
           key="create-new-card"
           creator={surveyCreator}
