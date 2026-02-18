@@ -53,6 +53,7 @@ type UseFileSharingStore = {
   currentlyDisabledFiles: Record<string, boolean>;
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
+  clearFilesOnShareChange: () => void;
   setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
   setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
   updateDownloadProgress: (progress: DownloadFileDto) => void;
@@ -129,6 +130,18 @@ const useFileSharingStore = create<UseFileSharingStore>(
         set({ isLoading });
       },
 
+      clearFilesOnShareChange: () => {
+        set({
+          files: [],
+          selectedItems: [],
+          selectedRows: {},
+          isLoading: true,
+          pathToRestoreSession: '/',
+          fileOperationProgress: null,
+          currentPath: '/',
+        });
+      },
+
       fetchFiles: async (shareName, path: string = '/') => {
         try {
           set({ isLoading: true });
@@ -136,9 +149,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
             params: { type: ContentType.FILE, path, share: shareName },
           });
 
-          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
-          if (!webdavShareType) return;
-          const files = processWebdavResponse(data, webdavShareType);
+          const files = processWebdavResponse(data, path);
 
           set({
             currentPath: path,

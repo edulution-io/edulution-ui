@@ -25,7 +25,7 @@
 - Linting: ESLint (Airbnb + TypeScript, a11y, import rules). Run `npm run lint`.
 - Formatting: Prettier (2 spaces, 120 cols, single quotes, trailing commas). Run `npm run format`.
 - React: Function components as arrow functions; allow prop spreading; avoid `console` except `info|warn|error`.
-- Shared code lives under `libs/`, move utility functions, types, and constants always there. Do not move UI components there.
+- Shared code lives under `libs/`, move utility functions, types, and constants always there (in separate files). Do not move UI components there.
 - File names: The file name should match the default export name.
 - Never comment in the code.
 - Prefer default exports over named exports. Default export at the end of the file.
@@ -40,6 +40,7 @@
 - Use generic types over unsafe type casting.
 - Migrations MUST always increase the schema version number so later migrations are triggered.
 - Only use @fortawesome/free-solid-svg-icons for icons
+- Many UI components are wrappers for shadcn/@radix-ui components (component/filename postfix with "SH"). We use our custom wrappers instead.
 
 ## Testing Guidelines
 

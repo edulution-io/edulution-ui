@@ -31,6 +31,7 @@ import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import SseService from '../sse/sse.service';
@@ -195,7 +196,7 @@ export default class TLDrawSyncService {
         TLDrawSyncService.name,
       );
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to cleanup room logs: ${errorMessage}`, TLDrawSyncService.name);
     }
   }

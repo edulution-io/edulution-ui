@@ -19,7 +19,7 @@
 import React, { ReactNode, useCallback } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { Row } from '@tanstack/react-table';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { TableRow } from '@/components/ui/Table';
 
 type TableRowVariant = 'default' | 'dialog';
@@ -31,6 +31,8 @@ interface DraggableRowProps<TData> {
   enableDragAndDrop: boolean;
   canDropOnRow?: (row: TData) => boolean;
   variant?: TableRowVariant;
+  isKeyboardFocused?: boolean;
+  onRowClick?: (item: TData) => void;
 }
 
 const DraggableTableRow = <TData,>({
@@ -40,6 +42,8 @@ const DraggableTableRow = <TData,>({
   enableDragAndDrop,
   canDropOnRow,
   variant = 'default',
+  isKeyboardFocused = false,
+  onRowClick,
 }: DraggableRowProps<TData>) => {
   const {
     attributes,
@@ -70,10 +74,15 @@ const DraggableTableRow = <TData,>({
 
   const isSelected = row.getIsSelected();
 
+  const handleClick = useCallback(() => {
+    onRowClick?.(row.original);
+  }, [onRowClick, row.original]);
+
   return (
     <TableRow
       ref={combinedRef}
       variant={variant}
+      data-row-id={row.id}
       data-state={isSelected ? 'selected' : undefined}
       data-disabled={isRowDisabled ? 'true' : undefined}
       className={cn(
@@ -81,7 +90,9 @@ const DraggableTableRow = <TData,>({
         isDragging && 'opacity-30',
         isDragging && isSelected && 'ring-2 ring-primary ring-offset-2',
         isOver && canDrop && 'bg-primary/10 ring-2 ring-inset ring-primary',
+        isKeyboardFocused && 'relative z-10 ring-2 ring-inset ring-primary',
       )}
+      onClick={handleClick}
       {...listeners}
       {...attributes}
     >

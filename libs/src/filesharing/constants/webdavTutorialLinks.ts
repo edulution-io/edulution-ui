@@ -20,15 +20,15 @@
 const WEBDAV_TUTORIAL_LINKS = [
   {
     key: 'windows',
-    url: 'https://learn.microsoft.com/en-us/iis/publish/using-webdav/using-the-webdav-redirector#method-1-mapping-drives-using-the-map-network-drive-wizard',
+    url: 'https://docs.edulution.io/docs/edulution-ui/features/dateien/webdav-windows/',
   },
   {
     key: 'macos',
-    url: 'https://support.apple.com/en-us/guide/mac-help/mchlp1546/mac',
+    url: 'https://docs.edulution.io/docs/edulution-ui/features/dateien/webdav-macos',
   },
   {
     key: 'linux',
-    url: 'https://help.gnome.org/users/gnome-help/stable/nautilus-connect.html.en',
+    url: 'https://docs.edulution.io/docs/edulution-ui/features/dateien/webdav-linux',
   },
 ] as const;
 

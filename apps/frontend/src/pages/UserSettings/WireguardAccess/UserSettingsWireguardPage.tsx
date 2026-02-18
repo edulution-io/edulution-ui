@@ -24,9 +24,12 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { VPNIcon } from '@/assets/icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
-import { Button } from '@/components/shared/Button';
-import cn from '@libs/common/utils/className';
+import { Button, cn } from '@edulution-io/ui-kit';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import { Card } from '@/components/shared/Card';
 import useUserWireguardStore from './useUserWireguardStore';
 
 const UserSettingsWireguardPage: React.FC = () => {
@@ -37,6 +40,7 @@ const UserSettingsWireguardPage: React.FC = () => {
     qrCode,
     config,
     isLoading,
+    error,
     hasPeer,
     fetchPeer,
     fetchPeerStatus,
@@ -45,6 +49,8 @@ const UserSettingsWireguardPage: React.FC = () => {
     downloadConfig,
     reset,
   } = useUserWireguardStore();
+  const appConfigs = useAppConfigsStore((state) => state.appConfigs);
+  const isWireguardAppConfigured = !!findAppConfigByName(appConfigs, APPS.WIREGUARD);
 
   useEffect(() => {
     void fetchPeer();
@@ -59,6 +65,8 @@ const UserSettingsWireguardPage: React.FC = () => {
     }
   }, [hasPeer, fetchPeerStatus, fetchQRCode, fetchConfig]);
 
+  if (!isWireguardAppConfigured) return null;
+
   if (isLoading) {
     return (
       <PageLayout
@@ -71,6 +79,25 @@ const UserSettingsWireguardPage: React.FC = () => {
         <div className="flex items-center justify-center py-12">
           <CircleLoader />
         </div>
+      </PageLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageLayout
+        nativeAppHeader={{
+          title: t('usersettings.wireguard.title'),
+          description: t('usersettings.wireguard.description'),
+          iconSrc: VPNIcon,
+        }}
+      >
+        <Card
+          variant="text"
+          className="p-6 text-center"
+        >
+          <p className="text-muted-foreground">{t('usersettings.wireguard.error')}</p>
+        </Card>
       </PageLayout>
     );
   }

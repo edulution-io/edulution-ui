@@ -19,7 +19,7 @@
 
 import React from 'react';
 import TableAction from '@libs/common/types/tableAction';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { TableCell, TableFooter, TableRow } from '@/components/ui/Table';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
@@ -43,10 +43,11 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
       return (
         <Button
           key={translationId}
-          className="flex h-2 w-full items-center justify-center"
+          className="flex w-full items-center justify-center"
           onClick={() => onClick()}
           type="button"
           variant="btn-outline"
+          size="lg"
           disabled={disabled}
         >
           <FontAwesomeIcon

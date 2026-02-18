@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { NavLink } from 'react-router-dom';

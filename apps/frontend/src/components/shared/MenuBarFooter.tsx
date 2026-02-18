@@ -19,7 +19,7 @@
 
 import React, { type ComponentType } from 'react';
 import APPS from '@libs/appconfig/constants/apps';
-import MenuBarQuota from '@/pages/FileSharing/MenuBarQuota';
+import FileSharingMenuBarFooter from '@/pages/FileSharing/FileSharingMenuBarFooter';
 
 interface MenuBarFooterProps {
   isCollapsed: boolean;
@@ -28,7 +28,7 @@ interface MenuBarFooterProps {
 type FooterComponent = ComponentType<MenuBarFooterProps>;
 
 const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
-  [APPS.FILE_SHARING]: MenuBarQuota,
+  [APPS.FILE_SHARING]: FileSharingMenuBarFooter,
 };
 
 interface Props {

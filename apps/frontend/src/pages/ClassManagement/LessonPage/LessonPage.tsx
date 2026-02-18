@@ -46,7 +46,7 @@ import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const LessonPage = () => {
@@ -58,6 +58,7 @@ const LessonPage = () => {
     removeSession,
     fetchSchoolClass,
     fetchUserSessions,
+    fetchRoom,
   } = useClassManagementStore();
   const { isSuperAdmin } = useLdapGroups();
 
@@ -65,7 +66,7 @@ const LessonPage = () => {
 
   const navigate = useNavigate();
 
-  const { lmnApiToken, getOwnUser } = useLmnApiStore();
+  const { lmnApiToken, getOwnUser, fetchUsers } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
     isLoading,
@@ -126,6 +127,15 @@ const LessonPage = () => {
         const schoolClass = await fetchSchoolClass(groupNameParams!, true);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
+        }
+        break;
+      }
+      case UserGroups.Room: {
+        await fetchRoom();
+        const { userRoom: room } = useClassManagementStore.getState();
+        if (room?.usersList && room.usersList.length > 0) {
+          const users = await fetchUsers(room.usersList);
+          setMember(users);
         }
         break;
       }
@@ -226,6 +236,7 @@ const LessonPage = () => {
             <Button
               onClick={onSaveSessionsButtonClick}
               variant="btn-table"
+              size="lg"
             >
               <span className="text-nowrap px-4">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
@@ -238,6 +249,7 @@ const LessonPage = () => {
             <Button
               onClick={closeSession}
               variant="btn-table"
+              size="lg"
             >
               <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
               <FontAwesomeIcon

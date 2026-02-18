@@ -17,12 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import AnchorSection from '@/components/shared/AnchorSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import useSubMenuStore from '@/store/useSubMenuStore';
+import Section from '@libs/menubar/section';
+import { HASH_SCROLL_DELAY_MS } from '@libs/ui/constants/animationTiming';
 
 interface SectionAccordionProps {
   children: React.ReactNode;
@@ -39,14 +42,14 @@ interface SectionAccordionItemProps {
   variant?: 'default' | 'transparent';
 }
 
-const getChildIds = (children: React.ReactNode): string[] => {
-  const ids: string[] = [];
+const getSections = (children: React.ReactNode): Section[] => {
+  const sections: Section[] = [];
   React.Children.forEach(children, (child) => {
     if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id) {
-      ids.push(child.props.id);
+      sections.push({ id: child.props.id, label: child.props.label });
     }
   });
-  return ids;
+  return sections;
 };
 
 const SectionAccordion: React.FC<SectionAccordionProps> = ({
@@ -55,23 +58,45 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   defaultOpenAll = false,
   className,
 }) => {
+  const { sectionToOpen, clearOpenRequest, setSections } = useSubMenuStore();
+  const sections = useMemo(() => getSections(children), [children]);
+  const sectionIds = useMemo(() => sections.map((s) => s.id), [sections]);
+
   const [openItems, setOpenItems] = useState<string[]>(() => {
     if (defaultOpenAll) {
-      return getChildIds(children);
+      return sectionIds;
     }
     return defaultOpen;
   });
+
+  useEffect(() => {
+    setSections(sections);
+    return () => setSections([]);
+  }, [sections, setSections]);
+
+  useEffect(() => {
+    if (!sectionToOpen) return;
+
+    if (!openItems.includes(sectionToOpen)) {
+      setOpenItems((prev) => [...prev, sectionToOpen]);
+    }
+
+    clearOpenRequest();
+  }, [sectionToOpen, openItems, clearOpenRequest]);
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
     if (hash) {
       setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
 
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         const element = document.getElementById(hash);
         element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      }, HASH_SCROLL_DELAY_MS);
+
+      return () => clearTimeout(timeoutId);
     }
+    return undefined;
   }, []);
 
   const handleValueChange = (value: string[]) => {
@@ -102,38 +127,48 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
   children,
   className,
   variant = 'default',
-}) => (
-  <Item
-    value={id}
-    className={cn('text-card-foreground', variant === 'default' && 'bg-glass rounded-xl backdrop-blur-lg ', className)}
-  >
-    <AnchorSection id={id}>
-      <Header className="flex">
-        <Trigger
+}) => {
+  const activeSection = useSubMenuStore((state) => state.activeSection);
+  const isHighlighted = activeSection === id;
+
+  return (
+    <Item
+      value={id}
+      className={cn(
+        'text-card-foreground transition-all duration-300',
+        variant === 'default' && 'bg-glass rounded-xl backdrop-blur-lg dark:bg-muted-background',
+        isHighlighted && 'blinking',
+        className,
+      )}
+    >
+      <AnchorSection id={id}>
+        <Header className="flex">
+          <Trigger
+            className={cn(
+              'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
+              'transition-all [&[data-state=open]>svg]:rotate-180',
+              variant === 'default' && 'px-6',
+            )}
+          >
+            <h3>{label}</h3>
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200"
+            />
+          </Trigger>
+        </Header>
+        <Content
           className={cn(
-            'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
-            'transition-all [&[data-state=open]>svg]:rotate-180',
-            variant === 'default' && 'px-6',
+            'overflow-hidden text-sm',
+            'data-[state=closed]:animate-accordion-up',
+            'data-[state=open]:animate-accordion-down',
           )}
         >
-          <h3>{label}</h3>
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200"
-          />
-        </Trigger>
-      </Header>
-      <Content
-        className={cn(
-          'overflow-hidden text-sm',
-          'data-[state=closed]:animate-accordion-up',
-          'data-[state=open]:animate-accordion-down',
-        )}
-      >
-        <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
-      </Content>
-    </AnchorSection>
-  </Item>
-);
+          <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
+        </Content>
+      </AnchorSection>
+    </Item>
+  );
+};
 
 export { SectionAccordion, SectionAccordionItem };

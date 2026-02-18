@@ -22,6 +22,7 @@ import { Request } from 'express';
 import { diskStorage, MulterError } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
+import SVG_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/svgUploadAllowedMimeTypes';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 
 /**
@@ -57,7 +58,7 @@ export const attachmentFileFilter = (
   file: Express.Multer.File,
   callback: (error: Error | null, acceptFile: boolean) => void,
 ) => {
-  if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+  if ([...IMAGE_UPLOAD_ALLOWED_MIME_TYPES, ...SVG_UPLOAD_ALLOWED_MIME_TYPES].includes(file.mimetype)) {
     callback(null, true);
   } else {
     const err = new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname);

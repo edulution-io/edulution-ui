@@ -18,9 +18,8 @@
  */
 
 import React, { useCallback } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-import { Button } from '@/components/shared/Button';
 
 interface MinuteButtonProps {
   minute: number;

@@ -52,6 +52,7 @@ import {
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
 import { GROUPS_CACHE_INITIALIZED_EVENT } from '@libs/groups/constants/cacheInitializedEvents';
+import LDAP_SYNC_ACTIVE_EVENT from '@libs/ldapKeycloakSync/constants/ldapSyncActiveEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import Attendee from '../conferences/attendee.schema';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
@@ -72,6 +73,8 @@ class GroupsService {
 
   private groupsCacheInitialized = false;
 
+  private ldapSyncActive = false;
+
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async initializeService() {
     await this.updateGroupsAndMembersInCache();
@@ -80,6 +83,15 @@ class GroupsService {
   @OnEvent(GROUPS_CACHE_REFRESH_EVENT, { async: true })
   async handleGroupsCacheRefresh() {
     await this.updateGroupsAndMembersInCache();
+  }
+
+  @OnEvent(LDAP_SYNC_ACTIVE_EVENT)
+  handleLdapSyncActive(active: boolean) {
+    if (this.ldapSyncActive === active) {
+      return;
+    }
+    this.ldapSyncActive = active;
+    Logger.log(`LDAP sync active state changed to: ${active}`, GroupsService.name);
   }
 
   async fetchAllUsers(): Promise<LDAPUser[]> {
@@ -240,11 +252,14 @@ class GroupsService {
     updatedMembers?: GroupMemberDto[],
   ): Promise<void> {
     let newMembers = updatedMembers;
-    if (!newMembers?.length) {
+    if (updatedMembers === undefined) {
       newMembers = await this.fetchGroupMembers(group.id);
     }
 
-    Logger.verbose(`Updating group ${group.name} (${group.id}) with ${newMembers?.length} members`, GroupsService.name);
+    Logger.verbose(
+      `Updating group ${group.name} (${group.id}) with ${newMembers?.length ?? 0} members`,
+      GroupsService.name,
+    );
     const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
 
     await this.cacheManager.set(
@@ -259,6 +274,11 @@ class GroupsService {
 
   @Interval(KEYCLOAK_GROUPS_SYNC_INTERVAL_MS)
   async updateGroupsAndMembersInCache(): Promise<void> {
+    if (this.ldapSyncActive && this.groupsCacheInitialized) {
+      Logger.debug('LDAP sync active, skipping Keycloak polling for groups', GroupsService.name);
+      return;
+    }
+
     if (this.isUpdatingGroupsAndMembersInCache) return;
     this.isUpdatingGroupsAndMembersInCache = true;
 
@@ -387,6 +407,51 @@ class GroupsService {
     }
   }
 
+  async updateGroupAttributes(groupId: string, name: string, attributes: Record<string, string[]>): Promise<void> {
+    try {
+      await this.keycloakQueue.enqueue(HttpMethods.PUT, `/groups/${groupId}`, { name, attributes });
+    } catch (error) {
+      Logger.error(`Failed to update attributes for group ${groupId}: ${(error as Error).message}`, GroupsService.name);
+    }
+  }
+
+  async updateGroupAttributesInCache(groupPath: string, attributes: Record<string, string[]>): Promise<void> {
+    try {
+      const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+        `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`,
+      );
+
+      if (!groupWithMembers) {
+        return;
+      }
+
+      const updatedGroup = { ...groupWithMembers, attributes: { ...groupWithMembers.attributes, ...attributes } };
+      await this.cacheManager.set(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`, updatedGroup, GROUPS_CACHE_TTL_MS);
+    } catch (error) {
+      Logger.error(
+        `Failed to update attributes in cache for ${groupPath}: ${(error as Error).message}`,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async updateAllGroupsAttributesInCache(attributesByPath: Map<string, Record<string, string[]>>): Promise<void> {
+    try {
+      const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+
+      allGroups.forEach((group, index) => {
+        const attributes = attributesByPath.get(group.path);
+        if (attributes) {
+          allGroups[index] = { ...group, attributes: { ...group.attributes, ...attributes } };
+        }
+      });
+
+      await this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allGroups, GROUPS_CACHE_TTL_MS);
+    } catch (error) {
+      Logger.error(`Failed to batch-update group attributes in cache: ${(error as Error).message}`, GroupsService.name);
+    }
+  }
+
   async searchGroupsByName(search: string): Promise<Group[]> {
     try {
       return await this.keycloakQueue.enqueue<Group[]>(HttpMethods.GET, `/groups?search=${encodeURIComponent(search)}`);
@@ -443,6 +508,46 @@ class GroupsService {
         undefined,
         GroupsService.name,
       );
+    }
+  }
+
+  async addGroupToCache(group: Group): Promise<void> {
+    try {
+      const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+
+      const existingIndex = allGroups.findIndex((g) => g.id === group.id);
+      if (existingIndex >= 0) {
+        allGroups[existingIndex] = group;
+      } else {
+        allGroups.push(group);
+      }
+
+      const groupWithMembers: GroupWithMembers = { ...group, members: [] };
+
+      await Promise.all([
+        this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allGroups, GROUPS_CACHE_TTL_MS),
+        this.cacheManager.set(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`, groupWithMembers, GROUPS_CACHE_TTL_MS),
+      ]);
+
+      Logger.debug(`Added group ${group.name} to cache`, GroupsService.name);
+    } catch (error) {
+      Logger.error(`Failed to add group ${group.name} to cache: ${(error as Error).message}`, GroupsService.name);
+    }
+  }
+
+  async deleteGroupFromCache(groupId: string, groupPath: string): Promise<void> {
+    try {
+      const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+      const filteredGroups = allGroups.filter((g) => g.id !== groupId);
+
+      await Promise.all([
+        this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, filteredGroups, GROUPS_CACHE_TTL_MS),
+        this.cacheManager.del(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`),
+      ]);
+
+      Logger.debug(`Deleted group ${groupPath} from cache`, GroupsService.name);
+    } catch (error) {
+      Logger.error(`Failed to delete group ${groupPath} from cache: ${(error as Error).message}`, GroupsService.name);
     }
   }
 }

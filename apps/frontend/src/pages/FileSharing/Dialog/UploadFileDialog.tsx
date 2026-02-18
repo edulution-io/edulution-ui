@@ -30,7 +30,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 const UploadFileDialog = () => {
   const { webdavShare } = useParams();
   const { currentPath } = useFileSharingStore();
-  const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, setFilesToUpload } =
+  const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, updateFilesToUpload } =
     useHandleUploadFileStore();
 
   const { eduApiToken } = useUserStore();
@@ -38,7 +38,7 @@ const UploadFileDialog = () => {
   const [remountKey, setRemountKey] = useState(0);
 
   const handleClose = () => {
-    setFilesToUpload([]);
+    updateFilesToUpload(() => []);
     setRemountKey((k) => k + 1);
     closeUploadDialog();
   };

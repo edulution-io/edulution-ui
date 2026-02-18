@@ -186,7 +186,7 @@ const SettingsOverviewPage: React.FC = () => {
             </TabsContent>
           ))}
         </Tabs>
-        {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}{' '}
+        {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}
       </>
     );
 

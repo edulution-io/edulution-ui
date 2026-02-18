@@ -17,19 +17,38 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownSelect } from '@/components';
 import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 import useFileSharingStore from '../../useFileSharingStore';
 
-type WebdavShareSelectDropdownProps = { webdavShare?: string; showRootOnly?: boolean };
+type WebdavShareSelectDropdownProps = {
+  webdavShare?: string;
+  showRootOnly?: boolean;
+};
 
 const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ webdavShare, showRootOnly = false }) => {
   const { t } = useTranslation();
   const { webdavShares, selectedWebdavShare, setSelectedWebdavShare } = useFileSharingStore();
 
-  const filteredShares = showRootOnly ? webdavShares.filter((share) => share.isRootServer) : webdavShares;
+  const filteredShares = useMemo(() => {
+    if (showRootOnly) {
+      return webdavShares.filter((share) => share.isRootServer);
+    }
+
+    if (!webdavShare) {
+      return webdavShares.filter((share) => !share.isRootServer);
+    }
+
+    const currentShare = webdavShares.find((share) => share.displayName === webdavShare);
+    if (!currentShare) {
+      return webdavShares.filter((share) => !share.isRootServer);
+    }
+
+    const rootServerName = currentShare.isRootServer ? currentShare.displayName : currentShare.rootServer;
+    return webdavShares.filter((share) => !share.isRootServer && share.rootServer === rootServerName);
+  }, [webdavShares, webdavShare, showRootOnly]);
 
   const webdavShareOptions: DropdownOptions[] = filteredShares.map((item) => ({
     id: item.displayName,
@@ -44,7 +63,7 @@ const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ w
 
       setSelectedWebdavShare(currentWebdavShare);
     }
-  }, [webdavShare, webdavShares, showRootOnly]);
+  }, [webdavShare, webdavShares, filteredShares]);
 
   return (
     <DropdownSelect
