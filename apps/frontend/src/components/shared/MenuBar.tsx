@@ -19,14 +19,14 @@
 
 import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import { cn , Button } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faArrowRightToBracket,
   faArrowRightFromBracket,
-  IconDefinition,
+  faArrowRightToBracket,
   faChevronDown,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
@@ -40,9 +40,14 @@ import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableShare
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useSubMenuStore from '@/store/useSubMenuStore';
-import useMenuBarStore from './useMenuBarStore';
-import MenuBarFooter from './MenuBarFooter';
+import getDisplayName from '@/utils/getDisplayName';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import useLanguage from '@/hooks/useLanguage';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import IconWrapper from './IconWrapper';
+import MenuBarFooter from './MenuBarFooter';
+import useMenuBarStore from './useMenuBarStore';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -56,6 +61,12 @@ const MenuBar: React.FC = () => {
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
   const { createVariableSharePathname } = useVariableSharePathname();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+  const { appConfigs } = useAppConfigsStore();
+  const { language } = useLanguage();
+  const { isLmn } = useDeploymentTarget();
+
+  const rootPathName = getFromPathName(pathname, 1);
+  const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -131,10 +142,27 @@ const MenuBar: React.FC = () => {
 
   useEffect(() => {
     if (pathParts[1]) {
-      setIsSelected(pathParts[1]);
-      setExpandedItems((prev) => new Set(prev).add(pathParts[1]));
+      const isTopLevel = menuBarEntries.menuItems.some((item) => item.id === pathParts[1]);
+      if (isTopLevel) {
+        setIsSelected(pathParts[1]);
+        setExpandedItems((prev) => {
+          if (prev.has(pathParts[1])) return prev;
+          return new Set(prev).add(pathParts[1]);
+        });
+      } else {
+        const parentItem = menuBarEntries.menuItems.find((item) =>
+          item.children?.some((child) => child.id === pathParts[1]),
+        );
+        if (parentItem) {
+          setIsSelected(parentItem.id);
+          setExpandedItems((prev) => {
+            if (prev.has(parentItem.id)) return prev;
+            return new Set(prev).add(parentItem.id);
+          });
+        }
+      }
     }
-  }, [pathParts]);
+  }, [pathParts, menuBarEntries.menuItems]);
 
   const handleHeaderIconClick = () => {
     switch (pathParts[0]) {
@@ -271,7 +299,7 @@ const MenuBar: React.FC = () => {
               <div className="overflow-hidden">
                 <div className="ml-2">
                   {item.children!.map((child) => {
-                    const isChildActive = activeSection === child.id;
+                    const isChildActive = activeSection === child.id || pathParts.includes(child.id);
                     return (
                       <Button
                         key={child.id}
@@ -318,11 +346,15 @@ const MenuBar: React.FC = () => {
     </div>
   );
 
+  const pageTitle = currentAppConfig
+    ? getDisplayName(currentAppConfig, language, isLmn)
+    : t(`${menuBarEntries.appName}.sidebar`);
+
   return (
     <>
       {activeItem && (
         <PageTitle
-          title={t(`${menuBarEntries.appName}.sidebar`)}
+          title={pageTitle}
           translationId={activeItem.label}
           disableTranslation={activeItem.disableTranslation}
         />

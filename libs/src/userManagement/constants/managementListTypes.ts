@@ -17,8 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import USER_TYPES from './userTypes';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+const MANAGEMENT_LIST_TYPES = {
+  STUDENTS: USER_TYPES.STUDENTS,
+  TEACHERS: USER_TYPES.TEACHERS,
+  EXTRASTUDENTS: USER_TYPES.EXTRASTUDENTS,
+  PARENTS: USER_TYPES.PARENTS,
+  STAFF: USER_TYPES.STAFF,
+} as const;
 
-export default Section;
+export type ManagementListType = (typeof MANAGEMENT_LIST_TYPES)[keyof typeof MANAGEMENT_LIST_TYPES];
+
+export default MANAGEMENT_LIST_TYPES;
