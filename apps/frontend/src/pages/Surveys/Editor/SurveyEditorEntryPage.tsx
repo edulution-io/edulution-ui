@@ -49,6 +49,9 @@ const SurveyEditorEntryPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (!surveyId) {
+      return;
+    }
     const isAnotherSurvey = lastEditedSurveyId !== surveyId;
     if (isAnotherSurvey) {
       resetEditorPage();
