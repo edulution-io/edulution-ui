@@ -17,10 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface UserPreferencesDto {
-  username: string;
-  collapsedBulletins: Record<string, boolean>;
-  bulletinBoardGridRows?: string;
-}
+import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
 
-export default UserPreferencesDto;
+type NotificationCounterVariant = (typeof NOTIFICATION_COUNTER_VARIANTS)[keyof typeof NOTIFICATION_COUNTER_VARIANTS];
+
+export default NotificationCounterVariant;

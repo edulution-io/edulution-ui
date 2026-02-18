@@ -264,6 +264,22 @@ const FileSharingTable = () => {
     [fileCategoryFilters, setFileCategoryFilter],
   );
 
+  const activeFilterCount = useMemo(
+    () =>
+      categoryFilterOptions.filter((option) => !option.checked).length +
+      (showSystemFiles ? 1 : 0) +
+      (showHiddenFiles ? 1 : 0),
+    [categoryFilterOptions, showSystemFiles, showHiddenFiles],
+  );
+
+  const handleResetFilters = useCallback(() => {
+    Object.values(FILE_CATEGORIES).forEach((category) => {
+      setFileCategoryFilter(APPS.FILE_SHARING, category, true);
+    });
+    setShowSystemFiles(APPS.FILE_SHARING, false);
+    setShowHiddenFiles(APPS.FILE_SHARING, false);
+  }, [setFileCategoryFilter, setShowSystemFiles, setShowHiddenFiles]);
+
   const filterOptions: FilterOption[] = useMemo(
     () => [
       {
@@ -322,6 +338,8 @@ const FileSharingTable = () => {
           gridItemConfig={gridItemConfig}
           viewModeStorageKey={APPS.FILE_SHARING}
           filterOptions={filterOptions}
+          activeFilterCount={activeFilterCount}
+          onResetFilters={handleResetFilters}
           focusedRowId={focusedFile?.filePath ?? null}
           onGridItemClick={handleItemClick}
           onSortedRowsChange={handleSortedRowsChange}

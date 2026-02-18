@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface UserPreferencesDto {
-  username: string;
-  collapsedBulletins: Record<string, boolean>;
-  bulletinBoardGridRows?: string;
-}
+const NOTIFICATION_COUNTER_VARIANTS = {
+  RED: 'bg-ciRed',
+  PRIMARY: 'bg-primary',
+} as const;
 
-export default UserPreferencesDto;
+export default NOTIFICATION_COUNTER_VARIANTS;
