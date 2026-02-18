@@ -17,10 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface UserPreferencesDto {
-  username: string;
-  collapsedBulletins: Record<string, boolean>;
-  bulletinBoardGridRows?: string;
-}
+type UpdateBulletinBoardGridRowsDto = { gridRows: string };
 
-export default UserPreferencesDto;
+export default UpdateBulletinBoardGridRowsDto;
