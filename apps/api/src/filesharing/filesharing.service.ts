@@ -361,7 +361,7 @@ class FilesharingService {
     }
 
     const pathWithoutWebdav = getPathWithoutWebdav(publicShare.filePath, webdavShare.pathname);
-    const webDavUrl = new URL(encodeURI(pathWithoutWebdav), webdavShare.url).href;
+    const webDavUrl = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
     const client = await this.webDavService.getClient(creator.username, share);
 
     const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
