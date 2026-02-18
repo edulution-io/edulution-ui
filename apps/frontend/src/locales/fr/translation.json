@@ -1319,6 +1319,26 @@
       "downloadButton": "Télécharger la configuration",
       "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
     },
+    "pairing": {
+      "myParents": "Mes Parents",
+      "myChildren": "Mes Enfants",
+      "description": "Connectez votre compte avec vos parents ou enfants.",
+      "myCode": "Mon Code d'Appariement",
+      "myCodeDescription": "Partagez ce code avec la personne avec laquelle vous souhaitez vous connecter. Le code est valide 5 minutes.",
+      "enterCode": "Saisir le Code",
+      "enterCodeDescription": "Saisissez le code d'appariement que vous avez reçu de votre parent ou enfant.",
+      "enterCodePlaceholder": "Saisir le code d'appariement",
+      "submitCode": "Connecter",
+      "relationships": "Connexions",
+      "noRelationships": "Pas encore de connexions.",
+      "statusPending": "En attente",
+      "statusAccepted": "Accepté",
+      "pairingSuccess": "Demande de connexion envoyée avec succès!",
+      "codeRefreshed": "Nouveau code d'appariement généré.",
+      "codeExpired": "Le code a expiré. Veuillez demander un nouveau code.",
+      "parent": "Parent",
+      "student": "Élève"
+    },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
       "qrCodeInstructions": "Scannez le code QR avec une application Authenticator qui prend en charge TOTP (mot de passe unique basé sur le temps).",

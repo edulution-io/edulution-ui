@@ -1,0 +1,165 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { Model } from 'mongoose';
+import { randomUUID } from 'crypto';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
+import PAIRING_CODE_TTL_MS from '@libs/pairing/constants/pairingCodeTtlMs';
+import PAIRING_ERROR_MESSAGES from '@libs/pairing/constants/pairingErrorMessages';
+import type PairingDto from '@libs/pairing/types/pairingDto';
+import CustomHttpException from '../common/CustomHttpException';
+import { Pairing, PairingDocument } from './pairing.schema';
+
+const PAIRING_CODE_KEY_PREFIX = 'pairing:code:';
+const PAIRING_USER_KEY_PREFIX = 'pairing:user:';
+const PAIRING_CODE_LENGTH = 8;
+
+@Injectable()
+class PairingService {
+  constructor(
+    @InjectModel(Pairing.name) private readonly pairingModel: Model<PairingDocument>,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+  ) {}
+
+  async getOrCreateCode(username: string): Promise<string> {
+    const codeKey = `${PAIRING_CODE_KEY_PREFIX}${username}`;
+    const existingCode = await this.cacheManager.get<string>(codeKey);
+
+    if (existingCode) {
+      return existingCode;
+    }
+
+    return this.generateAndStoreCode(username);
+  }
+
+  async refreshCode(username: string): Promise<string> {
+    await this.deleteExistingCode(username);
+    return this.generateAndStoreCode(username);
+  }
+
+  async createPairing(username: string, groups: string[], code: string): Promise<PairingDto> {
+    const targetUsername = await this.resolveCode(code);
+
+    if (username === targetUsername) {
+      throw new CustomHttpException(
+        PAIRING_ERROR_MESSAGES.CANNOT_PAIR_WITH_SELF,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        PairingService.name,
+      );
+    }
+
+    const isParent = groups.includes(GroupRoles.PARENT);
+    const isStudent = groups.includes(GroupRoles.STUDENT);
+
+    if (!isParent && !isStudent) {
+      throw new CustomHttpException(
+        PAIRING_ERROR_MESSAGES.INVALID_ROLE,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        PairingService.name,
+      );
+    }
+
+    const parent = isParent ? username : targetUsername;
+    const student = isStudent ? username : targetUsername;
+
+    const existingPairing = await this.pairingModel.findOne({ parent, student }).lean();
+    if (existingPairing) {
+      throw new CustomHttpException(
+        PAIRING_ERROR_MESSAGES.PAIRING_ALREADY_EXISTS,
+        HttpStatus.CONFLICT,
+        undefined,
+        PairingService.name,
+      );
+    }
+
+    const pairing = await this.pairingModel.create({
+      parent,
+      student,
+      status: PAIRING_STATUS.PENDING,
+    });
+
+    Logger.log(`Pairing created: ${parent} <-> ${student}`, PairingService.name);
+
+    return { parent: pairing.parent, student: pairing.student, status: pairing.status };
+  }
+
+  async getRelationships(username: string, groups: string[]): Promise<PairingDto[]> {
+    const isParent = groups.includes(GroupRoles.PARENT);
+    const isStudent = groups.includes(GroupRoles.STUDENT);
+
+    const filter: Record<string, string> = {};
+    if (isParent) {
+      filter.parent = username;
+    } else if (isStudent) {
+      filter.student = username;
+    }
+
+    const pairings = await this.pairingModel.find(filter).lean();
+
+    return pairings.map((p) => ({ parent: p.parent, student: p.student, status: p.status }));
+  }
+
+  private async resolveCode(code: string): Promise<string> {
+    const userKey = `${PAIRING_USER_KEY_PREFIX}${code}`;
+    const username = await this.cacheManager.get<string>(userKey);
+
+    if (!username) {
+      throw new CustomHttpException(
+        PAIRING_ERROR_MESSAGES.CODE_EXPIRED,
+        HttpStatus.GONE,
+        undefined,
+        PairingService.name,
+      );
+    }
+
+    return username;
+  }
+
+  private async deleteExistingCode(username: string): Promise<void> {
+    const codeKey = `${PAIRING_CODE_KEY_PREFIX}${username}`;
+    const existingCode = await this.cacheManager.get<string>(codeKey);
+
+    if (existingCode) {
+      await this.cacheManager.del(codeKey);
+      await this.cacheManager.del(`${PAIRING_USER_KEY_PREFIX}${existingCode}`);
+    }
+  }
+
+  private async generateAndStoreCode(username: string): Promise<string> {
+    const code = randomUUID().slice(0, PAIRING_CODE_LENGTH).toUpperCase();
+    const codeKey = `${PAIRING_CODE_KEY_PREFIX}${username}`;
+    const userKey = `${PAIRING_USER_KEY_PREFIX}${code}`;
+
+    await this.cacheManager.set(codeKey, code, PAIRING_CODE_TTL_MS);
+    await this.cacheManager.set(userKey, username, PAIRING_CODE_TTL_MS);
+
+    Logger.log(`Pairing code generated for ${username}`, PairingService.name);
+
+    return code;
+  }
+}
+
+export default PairingService;

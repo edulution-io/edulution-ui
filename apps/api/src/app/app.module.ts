@@ -67,6 +67,7 @@ import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
 import AccessGuard from '../auth/access.guard';
 import AuthGuard from '../auth/auth.guard';
+import PairingModule from '../pairing/pairing.module';
 import WireguardModule from '../wireguard/wireguard.module';
 
 @Module({
@@ -141,6 +142,7 @@ import WireguardModule from '../wireguard/wireguard.module';
     SseModule,
     TLDrawSyncModule,
     ScriptsModule,
+    PairingModule,
     WireguardModule,
   ],
   providers: [

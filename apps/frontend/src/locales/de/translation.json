@@ -1466,6 +1466,26 @@
       "downloadButton": "Konfiguration herunterladen",
       "error": "Der VPN-Dienst ist derzeit nicht erreichbar. Bitte versuche es später erneut oder wende dich an einen Administrator."
     },
+    "pairing": {
+      "myParents": "Meine Eltern",
+      "myChildren": "Meine Kinder",
+      "description": "Verbinde dein Konto mit deinen Eltern oder Kindern.",
+      "myCode": "Mein Pairing-Code",
+      "myCodeDescription": "Teile diesen Code mit der Person, mit der du dich verbinden möchtest. Der Code ist 5 Minuten gültig.",
+      "enterCode": "Code eingeben",
+      "enterCodeDescription": "Gib den Pairing-Code ein, den du von deinem Elternteil oder Kind erhalten hast.",
+      "enterCodePlaceholder": "Pairing-Code eingeben",
+      "submitCode": "Verbinden",
+      "relationships": "Verbindungen",
+      "noRelationships": "Noch keine Verbindungen.",
+      "statusPending": "Ausstehend",
+      "statusAccepted": "Akzeptiert",
+      "pairingSuccess": "Verbindungsanfrage erfolgreich gesendet!",
+      "codeRefreshed": "Neuer Pairing-Code generiert.",
+      "codeExpired": "Der Code ist abgelaufen. Bitte einen neuen Code anfordern.",
+      "parent": "Elternteil",
+      "student": "Schüler"
+    },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",

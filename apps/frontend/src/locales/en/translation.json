@@ -1463,6 +1463,26 @@
       "downloadButton": "Download Configuration",
       "error": "The VPN service is currently unavailable. Please try again later or contact an administrator."
     },
+    "pairing": {
+      "myParents": "My Parents",
+      "myChildren": "My Children",
+      "description": "Connect your account with your parents or children.",
+      "myCode": "My Pairing Code",
+      "myCodeDescription": "Share this code with the person you want to connect with. The code is valid for 5 minutes.",
+      "enterCode": "Enter Code",
+      "enterCodeDescription": "Enter the pairing code you received from your parent or child.",
+      "enterCodePlaceholder": "Enter pairing code",
+      "submitCode": "Connect",
+      "relationships": "Connections",
+      "noRelationships": "No connections yet.",
+      "statusPending": "Pending",
+      "statusAccepted": "Accepted",
+      "pairingSuccess": "Connection request sent successfully!",
+      "codeRefreshed": "New pairing code generated.",
+      "codeExpired": "The code has expired. Please request a new code.",
+      "parent": "Parent",
+      "student": "Student"
+    },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
