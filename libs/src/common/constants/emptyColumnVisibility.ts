@@ -17,8 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type { VisibilityState } from '@tanstack/react-table';
-
-const EMPTY_COLUMN_VISIBILITY: VisibilityState = {};
+const EMPTY_COLUMN_VISIBILITY: Record<string, boolean> = {};
 
 export default EMPTY_COLUMN_VISIBILITY;

@@ -22,9 +22,9 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import formatQuotaInGb from '@libs/common/utils/formatQuotaInGb';
 import getProgressBarColor from '@libs/common/utils/getProgressBarColor';
-import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
-import type { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
+import type QuotaResponse, { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
+import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 
 interface UseQuotaInfoResult {
   quotaUsed: number | string;
@@ -43,7 +43,7 @@ const useQuotaInfo = (externalUser?: LmnUserInfo, externalQuota?: QuotaResponse)
 
   const effectiveUser = externalUser ?? lmnUser;
   const effectiveQuota = externalQuota ?? usersQuota;
-  const school = effectiveUser?.school ?? 'default-school';
+  const school = effectiveUser?.school ?? DEFAULT_SCHOOL;
 
   useEffect(() => {
     if (!externalUser && !externalQuota && lmnApiToken && user?.username) {
@@ -52,7 +52,7 @@ const useQuotaInfo = (externalUser?: LmnUserInfo, externalQuota?: QuotaResponse)
   }, [lmnApiToken, user?.username, externalUser, externalQuota]);
 
   return useMemo(() => {
-    const quota = effectiveQuota?.[effectiveUser?.school || 'default-school'] as QuotaInfo | undefined;
+    const quota = effectiveQuota?.[effectiveUser?.school || DEFAULT_SCHOOL] as QuotaInfo | undefined;
     const quotaUsed = quota?.used ?? '--';
     const quotaHardLimit = quota?.hard_limit ?? '--';
     const mailQuota = effectiveUser?.sophomorixMailQuotaCalculated?.[0] ?? '--';
