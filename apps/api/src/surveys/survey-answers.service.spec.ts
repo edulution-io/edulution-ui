@@ -158,7 +158,7 @@ describe('SurveyAnswersService', () => {
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[0]),
+        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters]),
       });
 
       const result = await service.getSelectableChoices(
@@ -184,7 +184,7 @@ describe('SurveyAnswersService', () => {
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[0]),
+        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters]),
       });
 
       const result = await service.getSelectableChoices(

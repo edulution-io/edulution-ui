@@ -30,6 +30,7 @@ enum SurveyErrorMessages {
   ParticipationErrorSurveyExpired = 'survey.errors.participationErrorSurveyExpired',
   ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',
   DuplicateChoiceError = 'survey.errors.duplicateChoiceError',
+  ChoiceLimitReachedError = 'survey.errors.choiceLimitReachedError',
 }
 
 export default SurveyErrorMessages;

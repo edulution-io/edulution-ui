@@ -35,7 +35,15 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { randomUUID } from 'crypto';
-import { SURVEYS, ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import {
+  SURVEYS,
+  ANSWER,
+  PUBLIC_USER,
+  FILES,
+  PUBLIC_SURVEYS,
+  CHOICES,
+  BULK_CHOICES,
+} from '@libs/survey/constants/surveys-endpoint';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
@@ -197,17 +205,21 @@ class PublicSurveysController {
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, req, res);
   }
 
-  @Post(`${CHOICES}/:surveyId/:questionId`)
+  @Post(`${BULK_CHOICES}/:surveyId`)
   @Public()
-  async updateChoices(
-    @Param() params: { surveyId: string; questionId: string },
-    @Body() choices: ChoiceDto[],
+  async validateAndAppendBulkChoices(
+    @Param() params: { surveyId: string },
+    @Body() choicesMap: Record<string, ChoiceDto[]>,
     @Res() res: Response,
   ) {
-    const { surveyId, questionId } = params;
+    const { surveyId } = params;
     const survey = await this.surveyService.getSurvey(surveyId);
-    this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(survey, questionId);
-    await this.surveysBackendLimiterService.appendChoicesToBackendLimiter(surveyId, questionId, choices);
+
+    Object.keys(choicesMap).forEach((questionName) => {
+      this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(survey, questionName);
+    });
+
+    await this.surveyAnswerService.validateAndAppendBulkChoices(surveyId, choicesMap);
     return res.status(HttpStatus.OK).json({ message: 'success' });
   }
 

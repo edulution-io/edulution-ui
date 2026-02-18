@@ -869,7 +869,8 @@
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
       "missingIdError": "Missing survey ID.",
-      "missingAnswerError": "Please provide an answer before submitting."
+      "missingAnswerError": "Please provide an answer before submitting.",
+      "choiceLimitReachedError": "The limit for one of the user-defined choices has been reached."
     }
   },
   "survey-answer": {

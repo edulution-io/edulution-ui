@@ -26,9 +26,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyQuestionPanelTypes from '@libs/survey/constants/surveyQuestionPanelTypes';
-import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import SHOW_OTHER_ITEM_DEFAULT_LIMIT from '@libs/survey/constants/choices-default-limit';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import { Survey } from './survey.schema';
@@ -126,51 +124,6 @@ class SurveysBackendLimiterService {
       throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
-  }
-
-  async appendChoicesToBackendLimiter(surveyId: string, questionName: string, choices: ChoiceDto[]): Promise<void> {
-    const objectId = new Types.ObjectId(surveyId);
-    const backendLimiter = await this.surveysBackendLimiterModel.findOne({ surveyId: objectId, questionName }).exec();
-
-    if (!backendLimiter) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysBackendLimiterService.name,
-      );
-    }
-
-    const showOtherItemChoice = backendLimiter.choices.find((choice) => choice.name === SHOW_OTHER_ITEM);
-    const otherItemLimit = showOtherItemChoice?.limit ?? SHOW_OTHER_ITEM_DEFAULT_LIMIT;
-
-    const results = await Promise.all(
-      choices.map((newChoice) =>
-        this.surveysBackendLimiterModel
-          .updateOne(
-            { surveyId: objectId, questionName, 'choices.title': { $ne: newChoice.title } },
-            { $push: { choices: { ...newChoice, limit: otherItemLimit, isCustomUserEntry: true } } },
-          )
-          .exec(),
-      ),
-    );
-
-    const addedCount = results.reduce((sum, result) => sum + result.modifiedCount, 0);
-    const duplicateCount = results.length - addedCount;
-
-    if (duplicateCount > 0 && addedCount === 0) {
-      const duplicateChoices = choices.map((choice) => choice.title);
-      throw new CustomHttpException(
-        SurveyErrorMessages.DuplicateChoiceError,
-        HttpStatus.CONFLICT,
-        { duplicateChoices },
-        SurveysBackendLimiterService.name,
-      );
-    }
-
-    if (addedCount > 0) {
-      this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
-    }
   }
 
   async deleteBackendLimiter(surveyId: string, questionName: string): Promise<void> {

@@ -32,8 +32,8 @@ import {
   PUBLIC_SURVEY_ANSWER_ENDPOINT,
   SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
   PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
-  SURVEY_CHOICES,
-  PUBLIC_SURVEY_CHOICES,
+  SURVEY_BULK_CHOICES,
+  PUBLIC_SURVEY_BULK_CHOICES,
 } from '@libs/survey/constants/surveys-endpoint';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
@@ -85,7 +85,7 @@ interface ParticipateSurveyStore {
   ) => Promise<string>;
   isDeletingFile?: boolean;
 
-  submitOtherChoice: (surveyId: string, questionName: string, otherValue: string, isPublic: boolean) => Promise<void>;
+  submitAllOtherChoices: (surveyId: string, choicesMap: Record<string, string>, isPublic: boolean) => Promise<void>;
 
   reset: () => void;
 }
@@ -261,22 +261,30 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  submitOtherChoice: async (
+  submitAllOtherChoices: async (
     surveyId: string,
-    questionName: string,
-    otherValue: string,
+    choicesMap: Record<string, string>,
     isPublic: boolean,
   ): Promise<void> => {
-    if (!otherValue.trim()) {
+    const bulkChoices: Record<string, ChoiceDto[]> = {};
+    Object.entries(choicesMap).forEach(([questionName, otherValue]) => {
+      if (otherValue.trim()) {
+        bulkChoices[questionName] = [{ name: otherValue, title: otherValue }];
+      }
+    });
+
+    if (Object.keys(bulkChoices).length === 0) {
       return;
     }
-    const choice: ChoiceDto = { name: otherValue, title: otherValue };
-    const endpoint = isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES;
+
+    const endpoint = isPublic ? PUBLIC_SURVEY_BULK_CHOICES : SURVEY_BULK_CHOICES;
     try {
-      await eduApi.post(`${endpoint}/${surveyId}/${questionName}?append=true`, [choice]);
+      await eduApi.post(`${endpoint}/${surveyId}`, bulkChoices);
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response?.status === Number(HttpStatusCode.Conflict)) {
-        toast.error(t('survey.errors.duplicateChoiceError', { questionName }));
+        const questionNames = (error.response?.data as { details?: { questionNames?: string[] } })?.details
+          ?.questionNames;
+        toast.error(t('survey.errors.choiceLimitReachedError', { questionNames: questionNames?.join(', ') ?? '' }));
       } else {
         handleApiError(error, set);
       }

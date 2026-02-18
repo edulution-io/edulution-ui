@@ -21,7 +21,7 @@ import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { randomUUID } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -35,7 +35,10 @@ import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
+import CHOICES_DEFAULT_LIMIT from '@libs/survey/constants/choices-default-limit';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import CustomHttpException from '../common/CustomHttpException';
+import SseService from '../sse/sse.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
@@ -54,6 +57,7 @@ class SurveyAnswersService implements OnModuleInit {
     @InjectModel(SurveysBackendLimiter.name) private surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>,
     private readonly groupsService: GroupsService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
+    private readonly sseService: SseService,
   ) {}
 
   async onModuleInit() {
@@ -198,6 +202,96 @@ class SurveyAnswersService implements OnModuleInit {
       count += answerCount;
     });
     return count;
+  }
+
+  async validateAndAppendBulkChoices(surveyId: string, choicesMap: Record<string, ChoiceDto[]>): Promise<void> {
+    const objectId = new Types.ObjectId(surveyId);
+    const questionNames = Object.keys(choicesMap);
+
+    if (questionNames.length === 0) {
+      return;
+    }
+
+    const backendLimiters = await Promise.all(
+      questionNames.map((questionName) =>
+        this.surveysBackendLimiterModel.findOne({ surveyId: objectId, questionName }).exec(),
+      ),
+    );
+
+    const limitReachedQuestionNames: string[] = [];
+    const creationOperations: Array<() => Promise<void>> = [];
+    const affectedQuestionNames: string[] = [];
+
+    await Promise.all(
+      questionNames.map(async (questionName, index) => {
+        const backendLimiter = backendLimiters[index];
+        if (!backendLimiter) {
+          Logger.warn(`Backend limiter not found for question ${questionName}, skipping`, SurveyAnswersService.name);
+          return;
+        }
+
+        const newChoices = choicesMap[questionName];
+        if (!newChoices || newChoices.length === 0) {
+          return;
+        }
+
+        const showOtherItemChoice = backendLimiter.choices.find((choice) => choice.name === SHOW_OTHER_ITEM);
+        const otherItemLimit = showOtherItemChoice?.limit ?? CHOICES_DEFAULT_LIMIT;
+
+        const existingTitles = new Set(backendLimiter.choices.map((choice) => choice.title));
+
+        await Promise.all(
+          newChoices.map(async (newChoice) => {
+            if (existingTitles.has(newChoice.title)) {
+              if (otherItemLimit === 0) {
+                return;
+              }
+              const commentCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
+                surveyId,
+                `${questionName}${SURVEYJS_COMMENT_SUFFIX}`,
+                newChoice.title,
+              );
+              const answerCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
+                surveyId,
+                questionName,
+                newChoice.title,
+              );
+              if (commentCount + answerCount >= otherItemLimit) {
+                limitReachedQuestionNames.push(questionName);
+              }
+            } else {
+              affectedQuestionNames.push(questionName);
+              creationOperations.push(() =>
+                this.surveysBackendLimiterModel
+                  .updateOne(
+                    { surveyId: objectId, questionName, 'choices.title': { $ne: newChoice.title } },
+                    { $push: { choices: { ...newChoice, limit: otherItemLimit, isCustomUserEntry: true } } },
+                  )
+                  .exec()
+                  .then(() => undefined),
+              );
+            }
+          }),
+        );
+      }),
+    );
+
+    if (limitReachedQuestionNames.length > 0) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.ChoiceLimitReachedError,
+        HttpStatus.CONFLICT,
+        { questionNames: limitReachedQuestionNames },
+        SurveyAnswersService.name,
+      );
+    }
+
+    if (creationOperations.length > 0) {
+      await Promise.all(creationOperations.map((operation) => operation()));
+      const uniqueAffectedQuestionNames = [...new Set(affectedQuestionNames)];
+      uniqueAffectedQuestionNames.forEach((questionName) => {
+        this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
+      });
+    }
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {

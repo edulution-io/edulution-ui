@@ -754,7 +754,8 @@
       "participationErrorAlreadyParticipated": "Vous avez déjà participé.",
       "participationErrorSurveyExpired": "Le sondage a expiré.",
       "idTypeError": "ID de sondage non valide.",
-      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse."
+      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse.",
+      "choiceLimitReachedError": "La limite pour l'une des options définies par l'utilisateur a été atteinte."
     }
   },
   "survey-answer": {

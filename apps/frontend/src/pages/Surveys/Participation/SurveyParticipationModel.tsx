@@ -80,8 +80,15 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile, submitOtherChoice } =
-    useParticipateSurveyStore();
+  const {
+    fetchAnswer,
+    isFetching,
+    answerSurvey,
+    previousAnswer,
+    uploadTempFile,
+    deleteTempFile,
+    submitAllOtherChoices,
+  } = useParticipateSurveyStore();
 
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
@@ -127,21 +134,14 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         if (pendingChoices.size === 0) {
           return true;
         }
-        const entries = Array.from(pendingChoices.entries());
-        const submissions = entries.map(([questionName, otherValue]) =>
-          submitOtherChoice(selectedSurvey.id!, questionName, otherValue, isSurveyPublic),
-        );
-        const results = await Promise.allSettled(submissions);
-        const failedQuestionNames = results
-          .map((result, index) => (result.status === 'rejected' ? entries[index][0] : null))
-          .filter((name): name is string => name !== null);
-
-        if (failedQuestionNames.length > 0) {
-          toast.warning(t('survey.errors.submitOtherChoiceError', { questionNames: failedQuestionNames.join(', ') }));
+        try {
+          const choicesMap = Object.fromEntries(pendingChoices);
+          await submitAllOtherChoices(selectedSurvey.id!, choicesMap, isSurveyPublic);
+          pendingChoices.clear();
+          return true;
+        } catch {
           return false;
         }
-        pendingChoices.clear();
-        return true;
       };
 
       void submitPendingChoices().then(async (choicesSucceeded) => {

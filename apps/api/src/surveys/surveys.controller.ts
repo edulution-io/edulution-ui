@@ -41,6 +41,7 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
+  BULK_CHOICES,
   CAN_PARTICIPATE,
   CHOICES,
   FILES,
@@ -63,6 +64,7 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
@@ -330,24 +332,44 @@ class SurveysController {
     @GetCurrentUser() currentUser: JWTUser,
     @Body() choices: ChoiceDto[],
     @Res() res: Response,
-    @Query('append') append?: string,
   ) {
     const { surveyId, questionId } = params;
     SurveysController.validateParams(params, ['surveyId', 'questionId']);
     const survey = await this.surveyService.getSurvey(surveyId, currentUser);
 
     const isCreator = survey.creator.username === currentUser?.preferred_username;
-    if (isCreator && append !== 'true') {
-      await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
-      return res.status(HttpStatus.OK).json({ message: 'success' });
+    if (!isCreator) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        SurveysController.name,
+      );
     }
+    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
+    return res.status(HttpStatus.OK).json({ message: 'success' });
+  }
 
-    this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
-      survey,
-      questionId,
-      currentUser,
-    );
-    await this.surveysBackendLimiterService.appendChoicesToBackendLimiter(surveyId, questionId, choices);
+  @Post(`${BULK_CHOICES}/:surveyId`)
+  async appendBulkChoices(
+    @Param() params: { surveyId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Body() choicesMap: Record<string, ChoiceDto[]>,
+    @Res() res: Response,
+  ) {
+    const { surveyId } = params;
+    SurveysController.validateParams(params, ['surveyId']);
+    const survey = await this.surveyService.getSurvey(surveyId, currentUser);
+
+    Object.keys(choicesMap).forEach((questionName) => {
+      this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
+        survey,
+        questionName,
+        currentUser,
+      );
+    });
+
+    await this.surveyAnswerService.validateAndAppendBulkChoices(surveyId, choicesMap);
     return res.status(HttpStatus.OK).json({ message: 'success' });
   }
 
