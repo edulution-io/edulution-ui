@@ -30,6 +30,9 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 import useUserPreferencesStore from '@/store/useUserPreferencesStore';
 import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
+import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
+import useMedia from '@/hooks/useMedia';
+import { cn } from '@edulution-io/ui-kit';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
@@ -40,7 +43,10 @@ const BulletinBoardPage = () => {
     isLoading,
     isEditorialModeEnabled,
     hydrateCollapsed,
+    hydrateGridRows,
+    gridRows,
   } = useBulletinBoardStore();
+  const { isMobileView } = useMedia();
 
   const { getUserPreferences } = useUserPreferencesStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
@@ -48,12 +54,19 @@ const BulletinBoardPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userPreferences = await getUserPreferences([USER_PREFERENCES_FIELDS.collapsedBulletins]);
+      const userPreferences = await getUserPreferences([
+        USER_PREFERENCES_FIELDS.collapsedBulletins,
+        USER_PREFERENCES_FIELDS.bulletinBoardGridRows,
+      ] as string[]);
 
       if (userPreferences?.collapsedBulletins) {
         hydrateCollapsed(userPreferences.collapsedBulletins);
       } else {
         hydrateCollapsed({});
+      }
+
+      if (userPreferences?.bulletinBoardGridRows) {
+        hydrateGridRows(userPreferences.bulletinBoardGridRows);
       }
 
       void getCategoriesWithEditPermission();
@@ -67,9 +80,39 @@ const BulletinBoardPage = () => {
     bulletinBoardNotifications,
     getUserPreferences,
     hydrateCollapsed,
+    hydrateGridRows,
     getBulletinsByCategories,
     getCategoriesWithEditPermission,
   ]);
+
+  const isMultiRow = gridRows !== BULLETIN_BOARD_GRID_ROWS.ONE;
+  const isAutoLayout = gridRows === BULLETIN_BOARD_GRID_ROWS.AUTO;
+
+  const getColumnCount = () => {
+    if (!isMultiRow || isAutoLayout) return undefined;
+    const rowCount = gridRows === BULLETIN_BOARD_GRID_ROWS.TWO ? 2 : 3;
+    const categoryCount = bulletinsByCategories?.length ?? 1;
+    return Math.max(1, Math.ceil(categoryCount / rowCount));
+  };
+
+  const getContainerClassName = () => {
+    if (isAutoLayout) {
+      return 'grid grid-cols-1 gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin md:h-full md:max-h-full md:auto-rows-[1fr] md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))]';
+    }
+    if (isMultiRow) {
+      return 'grid h-full max-h-full gap-3 overflow-x-auto overflow-y-auto p-3 scrollbar-thin md:overflow-x-hidden';
+    }
+    return 'flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin';
+  };
+
+  const getContainerStyle = (): React.CSSProperties | undefined => {
+    const cols = getColumnCount();
+    if (!cols) return undefined;
+    if (isMobileView) {
+      return { gridTemplateColumns: `repeat(${cols}, minmax(85vw, 1fr))` };
+    }
+    return { gridTemplateColumns: `repeat(${cols}, 1fr)` };
+  };
 
   const getPageContent = () => {
     if (isEditorialModeEnabled) {
@@ -77,7 +120,10 @@ const BulletinBoardPage = () => {
     }
 
     return (
-      <div className="flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin">
+      <div
+        className={getContainerClassName()}
+        style={getContainerStyle()}
+      >
         {(isLoading || isInitialLoading) && <LoadingIndicatorDialog isOpen />}
 
         {bulletinsByCategories &&
@@ -90,6 +136,7 @@ const BulletinBoardPage = () => {
                 canEditCategory={canEditCategory}
                 category={category}
                 bulletins={bulletins}
+                gridRows={gridRows}
               />
             ))}
 
@@ -106,13 +153,14 @@ const BulletinBoardPage = () => {
 
   return (
     <PageLayout
+      hasFullWidthMain={isMobileView}
       nativeAppHeader={{
         title: t('bulletinboard.appTitle'),
         description: t('bulletinboard.description'),
         iconSrc: InfoBoardIcon,
       }}
     >
-      {getPageContent()}
+      <div className={cn('h-full pl-4', isEditorialModeEnabled && isMobileView && 'pr-6')}>{getPageContent()}</div>
 
       <BulletinBoardEditorialFloatingButtonsBar />
     </PageLayout>
