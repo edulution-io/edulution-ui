@@ -22,11 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { faSquareArrowUpRight, faFileArrowDown, faTableCells } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import {
-  CREATOR_SURVEYS_PAGE,
-  EDIT_SURVEY_PAGE,
-  PARTICIPATE_SURVEY_PAGE,
-} from '@libs/survey/constants/surveys-endpoint';
+import { EDIT_SURVEY_PAGE, PARTICIPATE_SURVEY_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
@@ -97,7 +93,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   const config: FloatingButtonsBarConfig = {
     buttons: [
       CreateButton(() => {
-        navigate(`/${CREATOR_SURVEYS_PAGE}`);
+        navigate(`/${EDIT_SURVEY_PAGE}`);
       }),
 
       EditButton(() => {

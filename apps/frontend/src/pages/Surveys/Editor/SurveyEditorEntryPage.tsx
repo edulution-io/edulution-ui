@@ -30,7 +30,11 @@ import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDi
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
-const SurveyEditorEntryPage = () => {
+interface SurveyEditorEntryPageProps {
+  isCreatingNew?: boolean;
+}
+
+const SurveyEditorEntryPage = ({ isCreatingNew }: SurveyEditorEntryPageProps) => {
   const { user } = useUserStore();
   const surveyCreator: AttendeeDto = useMemo(() => getCreatorFromUserDto(user), [user]);
 
@@ -49,7 +53,7 @@ const SurveyEditorEntryPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!surveyId) {
+    if (!isCreatingNew && !surveyId) {
       return;
     }
     const isAnotherSurvey = lastEditedSurveyId !== surveyId;
