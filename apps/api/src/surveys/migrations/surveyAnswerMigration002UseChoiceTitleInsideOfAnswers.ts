@@ -21,30 +21,26 @@
 import { AnyBulkWriteOperation } from 'mongoose';
 import { Logger } from '@nestjs/common';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Migration } from '../../migration/migration.type';
 import { SurveyAnswerDocument } from '../survey-answers.schema';
+import { SurveysBackendLimiterDocument } from '../surveys-backend-limiter.schema';
 
 const name = '002-enforce-the-choice-title-usage-inside-of-survey-answers';
 
-type OldSurveyDto = Omit<SurveyDto, 'backendLimiters'> & {
-  backendLimiters?: { questionName: string; choices: ChoiceDto[] }[];
-};
 type AnswerValue = string | string[] | object | object[];
 type AnswerRecord = Record<string, AnswerValue>;
+
+type LimiterEntry = { questionName: string; choices: ChoiceDto[] };
 
 const applyChoiceTitle = (value: unknown, nameToTitle: Map<string, string>): unknown => {
   if (typeof value === 'string') return nameToTitle.get(value) ?? value;
   return value;
 };
 
-const updateSurveyQuestionAnswer = (
-  surveyAnswer: AnswerRecord,
-  backendLimiters: { questionName: string; choices: ChoiceDto[] }[],
-): AnswerRecord => {
+const updateSurveyQuestionAnswer = (surveyAnswer: AnswerRecord, limiters: LimiterEntry[]): AnswerRecord => {
   const limiterMap = new Map<string, Map<string, string>>();
 
-  backendLimiters.forEach((limiter) => {
+  limiters.forEach((limiter) => {
     const nameToTitle = new Map(limiter.choices.map((c) => [c.name, c.title]));
     limiterMap.set(limiter.questionName, nameToTitle);
   });
@@ -67,12 +63,21 @@ const updateSurveyQuestionAnswer = (
   return result;
 };
 
+const toLimiterEntries = (
+  backendLimiters: Record<string, ChoiceDto[]> | { questionName: string; choices: ChoiceDto[] }[],
+): LimiterEntry[] => {
+  if (Array.isArray(backendLimiters)) return backendLimiters;
+  return Object.entries(backendLimiters).map(([questionName, choices]) => ({ questionName, choices }));
+};
+
 const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAnswerDocument> = {
   name,
   version: 2,
   execute: async (model) => {
     const previousSchemaVersion = 2;
     const newSchemaVersion = 3;
+
+    const BackendLimiterModel = model.db.model<SurveysBackendLimiterDocument>('SurveysBackendLimiter');
 
     const cursor = model
       .find<SurveyAnswerDocument>({ schemaVersion: previousSchemaVersion })
@@ -87,15 +92,33 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
       // eslint-disable-next-line no-continue
       if (!doc.surveyId) continue;
 
-      const { backendLimiters } = doc.surveyId as unknown as OldSurveyDto;
+      const populatedSurvey = doc.surveyId as unknown as {
+        _id: unknown;
+        backendLimiters?: Record<string, ChoiceDto[]> | { questionName: string; choices: ChoiceDto[] }[];
+      };
+      let limiters: LimiterEntry[] = [];
+
+      if (
+        populatedSurvey.backendLimiters &&
+        (Array.isArray(populatedSurvey.backendLimiters)
+          ? populatedSurvey.backendLimiters.length > 0
+          : Object.keys(populatedSurvey.backendLimiters).length > 0)
+      ) {
+        limiters = toLimiterEntries(populatedSurvey.backendLimiters);
+      } else {
+        // eslint-disable-next-line no-underscore-dangle
+        const limiterDocs = await BackendLimiterModel.find({ surveyId: populatedSurvey._id }).lean();
+        limiters = limiterDocs.map((d) => ({ questionName: d.questionName, choices: d.choices as ChoiceDto[] }));
+      }
+
       // eslint-disable-next-line no-continue
-      if (!backendLimiters || backendLimiters.length === 0) continue;
+      if (limiters.length === 0) continue;
 
       const answer = doc.answer as AnswerRecord;
       // eslint-disable-next-line no-continue
       if (!answer || Object.keys(answer).length === 0) continue;
 
-      const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters);
+      const updatedAnswer = updateSurveyQuestionAnswer(answer, limiters);
 
       ops.push({
         updateOne: {

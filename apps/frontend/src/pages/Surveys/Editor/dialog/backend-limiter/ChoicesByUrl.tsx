@@ -58,11 +58,27 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     uploadBackendLimiter,
   } = useQuestionsContextMenuStore();
 
+  const convertBackendLimitersToRecord = (
+    backendLimiters: Record<string, ChoiceDto[]> | { questionName: string; choices: ChoiceDto[] }[],
+  ): Record<string, ChoiceDto[]> => {
+    if (Array.isArray(backendLimiters)) {
+      const limitersRecord: Record<string, ChoiceDto[]> = {};
+      backendLimiters.forEach((limiter) => {
+        if (limiter.questionName) {
+          limitersRecord[limiter.questionName] = limiter.choices || [];
+        }
+      });
+      return limitersRecord;
+    }
+    return backendLimiters;
+  };
+
   useEffect(() => {
     if (!selectedQuestion) return;
     const questionName = selectedQuestion.name;
     const surveyId = form.watch('id');
-    const limiters = form.watch('backendLimiters') || {};
+    const rawLimiters = form.watch('backendLimiters') || {};
+    const limiters = convertBackendLimitersToRecord(rawLimiters);
     if (useBackendLimits) {
       if (currentChoices.length > 0) {
         setInitialChoices(currentChoices);
@@ -84,7 +100,8 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     if (!selectedQuestion) return;
     const questionName = selectedQuestion.name;
 
-    const limiters = form.watch('backendLimiters') || {};
+    const rawLimiters = form.watch('backendLimiters') || {};
+    const limiters = convertBackendLimitersToRecord(rawLimiters);
     limiters[questionName] = currentChoices;
     form.setValue('backendLimiters', limiters);
 

@@ -68,18 +68,30 @@ const getSurveyTemplateFormSchema = () =>
           ),
         ),
         backendLimiters: z
-          .array(
-            z.object({
-              questionName: z.string().optional(),
-              choices: z.array(
+          .union([
+            z.array(
+              z.object({
+                questionName: z.string().optional(),
+                choices: z.array(
+                  z.object({
+                    name: z.string().optional(),
+                    title: z.string().optional(),
+                    limit: z.number().optional(),
+                  }),
+                ),
+              }),
+            ),
+            z.record(
+              z.string(),
+              z.array(
                 z.object({
                   name: z.string().optional(),
                   title: z.string().optional(),
                   limit: z.number().optional(),
                 }),
               ),
-            }),
-          )
+            ),
+          ])
           .optional(),
         invitedGroups: z.array(z.object({})),
         isAnonymous: z.boolean().optional(),

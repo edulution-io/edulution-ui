@@ -38,7 +38,10 @@ interface SurveyEditorPageStore {
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingFile: boolean;
 
-  uploadBackendLimiters: (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => Promise<void>;
+  uploadBackendLimiters: (
+    surveyId: string,
+    backendLimiters: Record<string, ChoiceDto[]> | { questionName: string; choices: ChoiceDto[] }[],
+  ) => Promise<void>;
   removeBackendLimiter: (surveyId: string, questionName: string) => Promise<void>;
 
   isOpenSurveysLogoDialog: boolean;
@@ -132,8 +135,20 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         }
       },
 
-      uploadBackendLimiters: async (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => {
+      uploadBackendLimiters: async (
+        surveyId: string,
+        backendLimiters: Record<string, ChoiceDto[]> | { questionName: string; choices: ChoiceDto[] }[],
+      ) => {
         const { uploadBackendLimiter } = useQuestionsContextMenuStore.getState();
+        if (Array.isArray(backendLimiters)) {
+          const promises = backendLimiters.map((limiter) =>
+            limiter.choices.length > 0
+              ? uploadBackendLimiter(surveyId, limiter.questionName, limiter.choices)
+              : Promise.resolve(),
+          );
+          await Promise.all(promises);
+          return;
+        }
         const promises = Object.keys(backendLimiters).map((questionName) =>
           backendLimiters[questionName].length > 0
             ? uploadBackendLimiter(surveyId, questionName, backendLimiters[questionName])
