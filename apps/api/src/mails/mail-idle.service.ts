@@ -47,6 +47,8 @@ interface IdleConnection {
   reconnectTimer?: NodeJS.Timeout;
   reconnectAttempts: number;
   isErrorHandled: boolean;
+  isFetching: boolean;
+  pendingFetch?: { prevCount: number; count: number };
 }
 
 interface ImapConfig {
@@ -190,6 +192,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       previousMailCount: 0,
       reconnectAttempts: 0,
       isErrorHandled: false,
+      isFetching: false,
     };
 
     client.on('error', (err: Error) => {
@@ -272,8 +275,44 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
+    if (connection.isFetching) {
+      connection.pendingFetch = { prevCount, count };
+      return;
+    }
+
+    connection.isFetching = true;
+
     try {
-      const newMailRange = `${prevCount + 1}:${count}`;
+      await this.drainFetchQueue(username, prevCount, count);
+    } finally {
+      connection.isFetching = false;
+    }
+  }
+
+  private async drainFetchQueue(username: string, prevCount: number, count: number): Promise<void> {
+    const connection = this.idleConnections.get(username);
+    if (!connection?.client?.usable) {
+      return;
+    }
+
+    await this.fetchAndNotifyForRange(username, prevCount, count);
+
+    if (connection.pendingFetch && connection.client?.usable) {
+      const { prevCount: nextPrevCount, count: nextCount } = connection.pendingFetch;
+      connection.pendingFetch = undefined;
+      await this.drainFetchQueue(username, nextPrevCount, nextCount);
+    }
+  }
+
+  private async fetchAndNotifyForRange(username: string, prevCount: number, count: number): Promise<void> {
+    const connection = this.idleConnections.get(username);
+    if (!connection?.client?.usable) {
+      return;
+    }
+
+    try {
+      const rangeStart = Math.max(prevCount + 1, count - MAIL_IDLE_CONFIG.MAX_FEED_MAILS + 1);
+      const newMailRange = `${rangeStart}:*`;
       const messages = await connection.client.fetchAll(newMailRange, { envelope: true, uid: true });
 
       await Promise.all(
