@@ -1144,9 +1144,8 @@
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
-      "title": "Informations"
+      "title": "Licence"
     },
-    "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "deleteEntries": "Supprimer entrée",
       "deleteEntries_other": "Supprimer {{count}} entrées",
@@ -1752,7 +1751,10 @@
     "item": "{{count}} utilisateur",
     "items": "{{count}} utilisateurs",
     "userManagement": "Gestion des utilisateurs",
-    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
+    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs.",
+    "versionInfo": "Aperçu des versions",
+    "system": "Système",
+    "versionMismatch": "La version de l'API Linuxmuster est trop ancienne. La version {{version}} ou ultérieure est requise."
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",

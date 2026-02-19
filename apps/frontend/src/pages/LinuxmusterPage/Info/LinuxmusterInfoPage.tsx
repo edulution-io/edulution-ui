@@ -17,26 +17,31 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import useUserStore from '@/store/UserStore/useUserStore';
-import useDeploymentTarget from './useDeploymentTarget';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import { LinuxmusterIcon } from '@/assets/icons';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import LmnVersionInfo from './LmnVersionInfo';
 
-const useInitLmnApi = () => {
+const LinuxmusterInfoPage: React.FC = () => {
+  const { t } = useTranslation();
   const { isLmn } = useDeploymentTarget();
-  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
-  const { lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion } = useLmnApiStore();
 
-  useEffect(() => {
-    if (!isLmn || !isAuthenticated) return;
+  const nativeAppHeader = {
+    title: t(isLmn ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric'),
+    description: t('linuxmuster.description'),
+    iconSrc: LinuxmusterIcon,
+  };
 
-    if (!lmnApiToken) {
-      void setLmnApiToken();
-    } else {
-      void getOwnUser();
-      void getLmnVersion();
-    }
-  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion]);
+  return (
+    <PageLayout nativeAppHeader={nativeAppHeader}>
+      <div className="p-4">
+        <h2 className="mb-4 text-xl font-semibold">{t('linuxmuster.versionInfo')}</h2>
+        <LmnVersionInfo />
+      </div>
+    </PageLayout>
+  );
 };
 
-export default useInitLmnApi;
+export default LinuxmusterInfoPage;

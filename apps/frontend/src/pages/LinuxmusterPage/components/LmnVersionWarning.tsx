@@ -17,26 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import useUserStore from '@/store/UserStore/useUserStore';
-import useDeploymentTarget from './useDeploymentTarget';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { MIN_LMN_VERSION } from '@libs/lmnApi/utils/isLmnVersionSupported';
 
-const useInitLmnApi = () => {
-  const { isLmn } = useDeploymentTarget();
-  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
-  const { lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion } = useLmnApiStore();
+const LmnVersionWarning: React.FC = () => {
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (!isLmn || !isAuthenticated) return;
-
-    if (!lmnApiToken) {
-      void setLmnApiToken();
-    } else {
-      void getOwnUser();
-      void getLmnVersion();
-    }
-  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion]);
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-yellow-400 bg-yellow-50 p-4 dark:bg-yellow-900/20">
+      <FontAwesomeIcon
+        icon={faTriangleExclamation}
+        className="h-6 w-6 text-yellow-600 dark:text-yellow-400"
+      />
+      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+        {t('linuxmuster.versionMismatch', { version: MIN_LMN_VERSION })}
+      </p>
+    </div>
+  );
 };
 
-export default useInitLmnApi;
+export default LmnVersionWarning;

@@ -20,6 +20,7 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import {
+  LINUXMUSTER_INFO_LOCATION,
   LINUXMUSTER_PATH,
   USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
   USER_MANAGEMENT_GLOBALADMINS_LOCATION,
@@ -32,6 +33,7 @@ import {
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import LinuxmusterEntryPage from '@/pages/LinuxmusterPage/LinuxmusterEntryPage';
+import LinuxmusterInfoPage from '@/pages/LinuxmusterPage/Info/LinuxmusterInfoPage';
 import UserManagementPage from '@/pages/LinuxmusterPage/UserManagement/UserManagementPage';
 
 const getLinuxmusterRoutes = () => [
@@ -42,6 +44,10 @@ const getLinuxmusterRoutes = () => [
     <Route
       path=""
       element={<LinuxmusterEntryPage />}
+    />
+    <Route
+      path={LINUXMUSTER_INFO_LOCATION}
+      element={<LinuxmusterInfoPage />}
     />
     <Route path={USER_MANAGEMENT_LOCATION}>
       <Route

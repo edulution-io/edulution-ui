@@ -1287,9 +1287,8 @@
       "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
-      "title": "Info"
+      "title": "License"
     },
-    "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
         "title": "Sorting",
@@ -1918,7 +1917,10 @@
     "item": "{{count}} user",
     "items": "{{count}} users",
     "userManagement": "User Management",
-    "description": "Manage your school server settings and users."
+    "description": "Manage your school server settings and users.",
+    "versionInfo": "Version overview",
+    "system": "System",
+    "versionMismatch": "The Linuxmuster API version is too old. At least version {{version}} is required."
   },
   "whiteboard": {
     "title": "WHITEBOARD",
