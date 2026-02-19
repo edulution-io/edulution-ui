@@ -649,6 +649,7 @@
     "titleLmn": "SERVEUR SCOLAIRE",
     "titleGeneric": "SERVEUR",
     "menuTitle": "Gestion des utilisateurs",
+    "pairingAssignment": "Attribution parentale",
     "description": "Afficher et gérer les comptes utilisateurs, les listes et les rôles.",
     "students": "Élèves",
     "teachers": "Enseignants",
@@ -1470,7 +1471,16 @@
       "codeRefreshed": "Nouveau code d'appariement généré.",
       "codeExpired": "Le code a expiré. Veuillez demander un nouveau code.",
       "parent": "Parent",
-      "student": "Élève"
+      "student": "Élève",
+      "statusRejected": "Rejeté",
+      "statusColumn": "Statut",
+      "createdAt": "Créé le",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "statusUpdated": "Statut mis à jour avec succès.",
+      "assignment": "Attribution parentale",
+      "assignmentDescription": "Gérer les demandes d'association parent-élève.",
+      "filterPlaceholder": "Rechercher par parent ou élève..."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",

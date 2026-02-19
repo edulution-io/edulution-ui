@@ -741,6 +741,7 @@
     "titleLmn": "SCHOOL SERVER",
     "titleGeneric": "SERVER",
     "menuTitle": "User management",
+    "pairingAssignment": "Parent Assignment",
     "description": "View and manage user accounts, lists, and roles.",
     "students": "Students",
     "teachers": "Teachers",
@@ -1620,7 +1621,16 @@
       "codeRefreshed": "New pairing code generated.",
       "codeExpired": "The code has expired. Please request a new code.",
       "parent": "Parent",
-      "student": "Student"
+      "student": "Student",
+      "statusRejected": "Rejected",
+      "statusColumn": "Status",
+      "createdAt": "Created at",
+      "accept": "Accept",
+      "reject": "Reject",
+      "statusUpdated": "Status updated successfully.",
+      "assignment": "Parent Assignment",
+      "assignmentDescription": "Manage parent-student pairing requests.",
+      "filterPlaceholder": "Search by parent or student..."
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",

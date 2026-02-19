@@ -20,9 +20,14 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faListCheck, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
-import { LINUXMUSTER_PATH, USER_MANAGEMENT_LOCATION } from '@libs/userManagement/constants/userManagementPaths';
+import {
+  LINUXMUSTER_PATH,
+  PAIRING_ASSIGNMENT_LOCATION,
+  PAIRING_ASSIGNMENT_PATH,
+  USER_MANAGEMENT_LOCATION,
+} from '@libs/userManagement/constants/userManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -33,6 +38,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
   const { isLmn } = useDeploymentTarget();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
+  const navigateToPairingAssignment = useCallback(() => navigate(`/${PAIRING_ASSIGNMENT_PATH}`), [navigate]);
 
   return useMemo(
     () => ({
@@ -47,9 +53,15 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faListCheck,
           action: navigateToLinuxmuster,
         },
+        {
+          id: PAIRING_ASSIGNMENT_LOCATION,
+          label: 'usermanagement.pairingAssignment',
+          icon: faUserGroup,
+          action: navigateToPairingAssignment,
+        },
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster],
+    [isLmn, t, navigateToLinuxmuster, navigateToPairingAssignment],
   );
 };
 

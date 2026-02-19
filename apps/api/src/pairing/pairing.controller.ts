@@ -17,13 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import PAIRING_API_ENDPOINT from '@libs/pairing/constants/pairingApiEndpoint';
+import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
+import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import type SubmitPairingCodeDto from '@libs/pairing/types/submitPairingCodeDto';
+import type UpdatePairingStatusDto from '@libs/pairing/types/updatePairingStatusDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
+import AdminGuard from '../common/guards/admin.guard';
 import PairingService from './pairing.service';
+
+const DEFAULT_PAGE_LIMIT = 50;
 
 @Controller(PAIRING_API_ENDPOINT)
 @ApiBearerAuth()
@@ -55,6 +61,27 @@ class PairingController {
   @Get()
   async getRelationships(@GetCurrentUsername() username: string, @GetCurrentUserGroups() groups: string[]) {
     return this.pairingService.getRelationships(username, groups);
+  }
+
+  @Get(PAIRING_ADMIN_ENDPOINTS.ALL)
+  @UseGuards(AdminGuard)
+  @ApiQuery({ name: 'status', required: false, type: String, example: PAIRING_STATUS.PENDING })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: DEFAULT_PAGE_LIMIT })
+  async getAllPairings(
+    @Query('status') status: string = PAIRING_STATUS.PENDING,
+    @Query('page') page = '1',
+    @Query('limit') limit = String(DEFAULT_PAGE_LIMIT),
+  ) {
+    const p = Math.max(1, parseInt(page, 10));
+    const l = Math.min(DEFAULT_PAGE_LIMIT, Math.max(1, parseInt(limit, 10)));
+    return this.pairingService.getAllPairings(status, p, l);
+  }
+
+  @Patch(`:id/${PAIRING_ADMIN_ENDPOINTS.STATUS}`)
+  @UseGuards(AdminGuard)
+  async updatePairingStatus(@Param('id') id: string, @Body() body: UpdatePairingStatusDto) {
+    return this.pairingService.updatePairingStatus(id, body.status);
   }
 }
 

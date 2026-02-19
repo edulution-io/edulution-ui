@@ -28,6 +28,7 @@ import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import PAIRING_CODE_TTL_MS from '@libs/pairing/constants/pairingCodeTtlMs';
 import PAIRING_ERROR_MESSAGES from '@libs/pairing/constants/pairingErrorMessages';
 import type PairingDto from '@libs/pairing/types/pairingDto';
+import type PaginatedPairingsDto from '@libs/pairing/types/paginatedPairingsDto';
 import CustomHttpException from '../common/CustomHttpException';
 import { Pairing, PairingDocument } from './pairing.schema';
 
@@ -103,7 +104,14 @@ class PairingService {
 
     Logger.log(`Pairing created: ${parent} <-> ${student}`, PairingService.name);
 
-    return { parent: pairing.parent, student: pairing.student, status: pairing.status };
+    return {
+      id: String(pairing.id),
+      parent: pairing.parent,
+      student: pairing.student,
+      status: pairing.status,
+      createdAt: pairing.createdAt.toISOString(),
+      updatedAt: pairing.updatedAt.toISOString(),
+    };
   }
 
   async getRelationships(username: string, groups: string[]): Promise<PairingDto[]> {
@@ -119,7 +127,66 @@ class PairingService {
 
     const pairings = await this.pairingModel.find(filter).lean();
 
-    return pairings.map((p) => ({ parent: p.parent, student: p.student, status: p.status }));
+    return pairings.map((p) => PairingService.toPairingDto(p));
+  }
+
+  async getAllPairings(status: string, page: number, limit: number): Promise<PaginatedPairingsDto> {
+    const filter: Record<string, string> = {};
+    if (status) {
+      filter.status = status;
+    }
+
+    const [pairings, total] = await Promise.all([
+      this.pairingModel
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      this.pairingModel.countDocuments(filter),
+    ]);
+
+    return {
+      data: pairings.map((p) => PairingService.toPairingDto(p)),
+      total,
+    };
+  }
+
+  async updatePairingStatus(pairingId: string, status: string): Promise<PairingDto> {
+    const pairing = await this.pairingModel.findByIdAndUpdate(pairingId, { status }, { new: true }).lean();
+
+    if (!pairing) {
+      throw new CustomHttpException(
+        PAIRING_ERROR_MESSAGES.CODE_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        PairingService.name,
+      );
+    }
+
+    Logger.log(`Pairing ${pairingId} status updated to ${status}`, PairingService.name);
+
+    return PairingService.toPairingDto(pairing);
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  private static toPairingDto(p: {
+    _id: unknown;
+    parent: string;
+    student: string;
+    status: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }): PairingDto {
+    return {
+      // eslint-disable-next-line no-underscore-dangle
+      id: String(p._id),
+      parent: p.parent,
+      student: p.student,
+      status: p.status,
+      createdAt: p.createdAt?.toISOString() ?? '',
+      updatedAt: p.updatedAt?.toISOString() ?? '',
+    };
   }
 
   private async resolveCode(code: string): Promise<string> {

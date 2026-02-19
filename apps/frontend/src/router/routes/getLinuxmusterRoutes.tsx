@@ -21,6 +21,7 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import {
   LINUXMUSTER_PATH,
+  PAIRING_ASSIGNMENT_LOCATION,
   USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
   USER_MANAGEMENT_GLOBALADMINS_LOCATION,
   USER_MANAGEMENT_LOCATION,
@@ -33,6 +34,7 @@ import {
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import LinuxmusterEntryPage from '@/pages/LinuxmusterPage/LinuxmusterEntryPage';
 import UserManagementPage from '@/pages/LinuxmusterPage/UserManagement/UserManagementPage';
+import PairingAssignmentPage from '@/pages/LinuxmusterPage/PairingAssignment/PairingAssignmentPage';
 
 const getLinuxmusterRoutes = () => [
   <Route
@@ -136,6 +138,10 @@ const getLinuxmusterRoutes = () => [
         element={<UserManagementPage userType="globaladmins" />}
       />
     </Route>
+    <Route
+      path={PAIRING_ASSIGNMENT_LOCATION}
+      element={<PairingAssignmentPage />}
+    />
   </Route>,
 ];
 

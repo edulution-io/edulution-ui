@@ -742,6 +742,7 @@
     "titleLmn": "SCHULSERVER",
     "titleGeneric": "SERVER",
     "menuTitle": "Benutzerverwaltung",
+    "pairingAssignment": "Elternzuweisung",
     "description": "Benutzerkonten, Listen und Rollen anzeigen und verwalten.",
     "students": "Schüler",
     "teachers": "Lehrer",
@@ -1623,7 +1624,16 @@
       "codeRefreshed": "Neuer Pairing-Code generiert.",
       "codeExpired": "Der Code ist abgelaufen. Bitte einen neuen Code anfordern.",
       "parent": "Elternteil",
-      "student": "Schüler"
+      "student": "Schüler",
+      "statusRejected": "Abgelehnt",
+      "statusColumn": "Status",
+      "createdAt": "Erstellt am",
+      "accept": "Akzeptieren",
+      "reject": "Ablehnen",
+      "statusUpdated": "Status erfolgreich aktualisiert.",
+      "assignment": "Elternzuweisung",
+      "assignmentDescription": "Eltern-Schüler-Zuweisungen verwalten.",
+      "filterPlaceholder": "Nach Elternteil oder Schüler suchen..."
     },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
