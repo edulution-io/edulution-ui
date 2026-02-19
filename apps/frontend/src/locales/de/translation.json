@@ -1976,6 +1976,7 @@
     "createdAt": "Erstellt am",
     "accept": "Akzeptieren",
     "reject": "Ablehnen",
+    "statusAll": "Alle",
     "statusPending": "Ausstehend",
     "statusAccepted": "Akzeptiert",
     "statusRejected": "Abgelehnt",

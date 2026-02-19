@@ -1807,6 +1807,7 @@
     "createdAt": "Créé le",
     "accept": "Accepter",
     "reject": "Rejeter",
+    "statusAll": "Tous",
     "statusPending": "En attente",
     "statusAccepted": "Accepté",
     "statusRejected": "Rejeté",

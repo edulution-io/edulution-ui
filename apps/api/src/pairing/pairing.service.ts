@@ -143,7 +143,7 @@ class PairingService {
     return pairings.map((p) => PairingService.toPairingDto(p));
   }
 
-  async getAllPairings(status: string): Promise<PairingDto[]> {
+  async getAllPairings(status?: PairingStatusType): Promise<PairingDto[]> {
     const filter: Record<string, string> = {};
     if (status) {
       filter.status = status;

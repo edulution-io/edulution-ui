@@ -21,9 +21,9 @@ import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PAIRING_API_ENDPOINT, PAIRING_API_ENDPOINT_CODE } from '@libs/pairing/constants/pairingApiEndpoint';
 import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import type SubmitPairingCodeDto from '@libs/pairing/types/submitPairingCodeDto';
 import type UpdatePairingStatusDto from '@libs/pairing/types/updatePairingStatusDto';
+import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import AdminGuard from '../common/guards/admin.guard';
@@ -63,7 +63,7 @@ class PairingController {
 
   @Get(PAIRING_ADMIN_ENDPOINTS.ALL)
   @UseGuards(AdminGuard)
-  async getAllPairings(@Query('status') status: string = PAIRING_STATUS.PENDING) {
+  async getAllPairings(@Query('status') status?: PairingStatusType) {
     return this.pairingService.getAllPairings(status);
   }
 

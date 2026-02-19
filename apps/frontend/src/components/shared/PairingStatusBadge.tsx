@@ -45,9 +45,7 @@ const PairingStatusBadge: React.FC<PairingStatusBadgeProps> = ({ status, classNa
   const style = PAIRING_STATUS_STYLES[status] ?? 'bg-gray-500 text-white';
   const translationKey = PAIRING_STATUS_TRANSLATIONS[status] ?? status;
 
-  return (
-    <BadgeSH className={cn('h-auto border-none px-2 py-1 text-xs', style, className)}>{t(translationKey)}</BadgeSH>
-  );
+  return <BadgeSH className={cn('!h-auto !py-0 text-sm', style, className)}>{t(translationKey)}</BadgeSH>;
 };
 
 export default PairingStatusBadge;

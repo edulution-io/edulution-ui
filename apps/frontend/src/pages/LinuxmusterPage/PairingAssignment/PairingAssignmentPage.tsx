@@ -20,6 +20,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
+import PAIRING_STATUS_FILTER_ALL from '@libs/pairing/constants/pairingStatusFilterAll';
 import type PairingDto from '@libs/pairing/types/pairingDto';
 import type FilterOption from '@libs/ui/types/filterOption';
 import APPS from '@libs/appconfig/constants/apps';
@@ -60,8 +61,18 @@ const PairingAssignmentPage: React.FC = () => {
   );
 
   const filterOptions: FilterOption[] = useMemo(
-    () =>
-      Object.values(PAIRING_STATUS).map((status) => ({
+    () => [
+      {
+        key: 'all',
+        translationKey: 'pairing.statusAll',
+        checked: statusFilter === PAIRING_STATUS_FILTER_ALL,
+        onChange: (enabled: boolean) => {
+          if (enabled) {
+            setStatusFilter(PAIRING_STATUS_FILTER_ALL);
+          }
+        },
+      },
+      ...Object.values(PAIRING_STATUS).map((status) => ({
         key: status,
         translationKey: `pairing.status${status.charAt(0).toUpperCase()}${status.slice(1)}`,
         checked: statusFilter === status,
@@ -71,10 +82,11 @@ const PairingAssignmentPage: React.FC = () => {
           }
         },
       })),
+    ],
     [statusFilter, setStatusFilter],
   );
 
-  const activeFilterCount = statusFilter !== PAIRING_STATUS.PENDING ? 1 : 0;
+  const activeFilterCount = statusFilter !== PAIRING_STATUS_FILTER_ALL ? 1 : 0;
 
   const handleResetFilters = useCallback(() => {
     setStatusFilter(PAIRING_STATUS.PENDING);

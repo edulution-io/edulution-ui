@@ -25,6 +25,7 @@ import i18n from '@/i18n';
 import { PAIRING_API_ENDPOINT } from '@libs/pairing/constants/pairingApiEndpoint';
 import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
+import PAIRING_STATUS_FILTER_ALL from '@libs/pairing/constants/pairingStatusFilterAll';
 import type PairingDto from '@libs/pairing/types/pairingDto';
 
 interface PairingAssignmentStore {
@@ -46,8 +47,9 @@ const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => (
     set({ isLoading: true });
     try {
       const { statusFilter } = get();
+      const params = statusFilter !== PAIRING_STATUS_FILTER_ALL ? { status: statusFilter } : {};
       const { data } = await eduApi.get<PairingDto[]>(`${PAIRING_API_ENDPOINT}/${PAIRING_ADMIN_ENDPOINTS.ALL}`, {
-        params: { status: statusFilter },
+        params,
       });
       set({ pairings: data });
     } catch (error) {

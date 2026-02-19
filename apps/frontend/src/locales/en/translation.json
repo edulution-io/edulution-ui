@@ -1973,6 +1973,7 @@
     "createdAt": "Created at",
     "accept": "Accept",
     "reject": "Reject",
+    "statusAll": "All",
     "statusPending": "Pending",
     "statusAccepted": "Accepted",
     "statusRejected": "Rejected",
