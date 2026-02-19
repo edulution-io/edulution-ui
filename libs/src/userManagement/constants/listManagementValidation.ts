@@ -21,7 +21,7 @@ import type { ColumnKey } from '@libs/userManagement/types/columnConfig';
 
 const TEXT_FIELD_REGEX = /^[a-zA-Z0-9äöüÄÖÜß\- ]+$/;
 
-const BIRTHDAY_FORMAT_REGEX = /^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
+const BIRTHDAY_FORMAT_REGEX = /^(0?[1-9]|[12]\d|3[01])\.(0?[1-9]|1[0-2])\.\d{4}$/;
 
 const isValidBirthday = (value: string): boolean => {
   if (!BIRTHDAY_FORMAT_REGEX.test(value)) return false;

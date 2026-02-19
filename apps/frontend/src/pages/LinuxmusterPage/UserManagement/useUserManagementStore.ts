@@ -115,12 +115,12 @@ const useUserManagementStore = create<UserManagementStore>()(
 
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const params = new URLSearchParams();
-          if (school) params.append(SOPHOMORIX_QUERY_PARAMS.SCHOOL, school);
-          if (managementList) params.append(SOPHOMORIX_QUERY_PARAMS.MANAGEMENT_LIST, managementList);
-          const query = params.toString() ? `?${params.toString()}` : '';
-          const response = await eduApi.get<LmnUserInfo[]>(`${ROLES}/${role}${query}`, {
+          const response = await eduApi.get<LmnUserInfo[]>(`${ROLES}/${role}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            params: {
+              [SOPHOMORIX_QUERY_PARAMS.SCHOOL]: school,
+              [SOPHOMORIX_QUERY_PARAMS.MANAGEMENT_LIST]: managementList,
+            },
           });
           set((s) => ({ usersByType: { ...s.usersByType, [userType]: response.data } }));
         } catch (error) {
@@ -268,24 +268,22 @@ const useUserManagementStore = create<UserManagementStore>()(
 
       fetchSelectedUserDetails: async (username: string) => {
         set({ isLoadingUserDetails: true });
-        try {
-          const { lmnApiToken } = useLmnApiStore.getState();
-          const headers = { [HTTP_HEADERS.XApiKey]: lmnApiToken };
+        const { lmnApiToken } = useLmnApiStore.getState();
+        const headers = { [HTTP_HEADERS.XApiKey]: lmnApiToken };
 
-          const [userResult, quotaResult] = await Promise.allSettled([
-            eduApi.get<LmnUserInfo>(`${USER}/${username}`, { headers }),
-            eduApi.get<QuotaResponse>(`${USER}/${username}/${USERS_QUOTA}`, { headers }),
-          ]);
+        const [userResult, quotaResult] = await Promise.allSettled([
+          eduApi.get<LmnUserInfo>(`${USER}/${username}`, { headers }),
+          eduApi.get<QuotaResponse>(`${USER}/${username}/${USERS_QUOTA}`, { headers }),
+        ]);
 
+        const currentUser = get().selectedUserDetails;
+        if (currentUser) {
           set({
-            selectedUserDetails: userResult.status === 'fulfilled' ? userResult.value.data : get().selectedUserDetails,
+            selectedUserDetails: userResult.status === 'fulfilled' ? userResult.value.data : currentUser,
             selectedUserQuota: quotaResult.status === 'fulfilled' ? quotaResult.value.data : null,
           });
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isLoadingUserDetails: false });
         }
+        set({ isLoadingUserDetails: false });
       },
 
       setSelectedUserDetails: (user: LmnUserInfo | null) => {

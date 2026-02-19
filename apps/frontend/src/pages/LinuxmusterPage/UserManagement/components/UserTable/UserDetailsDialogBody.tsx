@@ -72,7 +72,7 @@ const UserDetailsDialogBody: React.FC<UserDetailsDialogBodyProps> = ({ user, quo
   const managementGroups = allMembers.filter(isManagementGroup).map(extractCnFromDn);
 
   return (
-    <div className="space-y-4 text-base text-background">
+    <div className="space-y-4 text-base">
       <AccordionSH
         type="multiple"
         defaultValue={['properties']}

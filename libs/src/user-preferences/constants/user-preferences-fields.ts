@@ -19,6 +19,7 @@
 
 const USER_PREFERENCES_FIELDS = {
   collapsedBulletins: 'collapsedBulletins',
+  bulletinBoardGridRows: 'bulletinBoardGridRows',
 } as const;
 
 export default USER_PREFERENCES_FIELDS;

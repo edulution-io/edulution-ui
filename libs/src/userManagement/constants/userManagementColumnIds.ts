@@ -22,6 +22,7 @@ const USER_MANAGEMENT_COLUMN_IDS = {
   CLASS: 'class',
   DISPLAY_NAME: 'displayName',
   SOPHOMORIX_STATUS: 'sophomorixStatus',
+  BIRTHDAY: 'birthday',
   ACTIONS: 'actions',
 } as const;
 
