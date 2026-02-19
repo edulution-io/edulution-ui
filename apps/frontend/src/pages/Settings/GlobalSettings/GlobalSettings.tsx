@@ -43,6 +43,7 @@ import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppCo
 import applyBackgroundImage from '@/utils/applyBackgroundImage';
 import useThemeStore from '@/store/useThemeStore';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import WebhookClientsTable from '@/pages/Settings/Webhooks/WebhookClientsTable';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
 
 type GlobalSettingsProps<T extends FieldValues> = {
@@ -205,6 +206,13 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
             label={t('settings.globalSettings.organisationInfo.title')}
           >
             <AddOrganisationInfo form={form} />
+          </SectionAccordionItem>
+
+          <SectionAccordionItem
+            id="webhooks"
+            label={t('settings.webhooks.title')}
+          >
+            <WebhookClientsTable />
           </SectionAccordionItem>
         </SectionAccordion>
       </form>

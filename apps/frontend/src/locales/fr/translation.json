@@ -1144,6 +1144,20 @@
     "info": {
       "title": "Informations"
     },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "Clé API",
+      "createdAt": "Créé le",
+      "select": "Sélection",
+      "addClient": "Ajouter un client Webhook",
+      "deleteClient": "Supprimer le client Webhook",
+      "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer les clients Webhook sélectionnés?",
+      "selectUserAgent": "Sélectionner le User-Agent",
+      "createSuccess": "Client Webhook créé",
+      "deleteSuccess": "Client Webhook supprimé",
+      "filterPlaceholder": "Filtrer les clients Webhook..."
+    },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "deleteEntries": "Supprimer entrée",

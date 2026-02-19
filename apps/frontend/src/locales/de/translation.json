@@ -1290,6 +1290,20 @@
     "info": {
       "title": "Info"
     },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API-Key",
+      "createdAt": "Erstellt am",
+      "select": "Auswahl",
+      "addClient": "Webhook-Client hinzufügen",
+      "deleteClient": "Webhook-Client löschen",
+      "deleteConfirmMessage": "Möchten Sie die ausgewählten Webhook-Clients wirklich löschen?",
+      "selectUserAgent": "User-Agent auswählen",
+      "createSuccess": "Webhook-Client erstellt",
+      "deleteSuccess": "Webhook-Client gelöscht",
+      "filterPlaceholder": "Webhook-Clients filtern..."
+    },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
       "position": {
