@@ -17,10 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import APPS from '@libs/appconfig/constants/apps';
-import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
+import USER_TYPES from './userTypes';
 
-const LinuxmusterPage: React.FC = () => <NativeFrame appName={APPS.LINUXMUSTER} />;
+const USER_TYPE_TO_ROLE: Record<string, string> = {
+  [USER_TYPES.STUDENTS]: 'student',
+  [USER_TYPES.TEACHERS]: 'teacher',
+  [USER_TYPES.EXTRASTUDENTS]: 'student',
+  [USER_TYPES.PARENTS]: 'parent',
+  [USER_TYPES.STAFF]: 'staff',
+  [USER_TYPES.SCHOOLADMINS]: 'schooladministrator',
+  [USER_TYPES.SCHOOLBINDUSERS]: 'schoolbinduser',
+  [USER_TYPES.GLOBALADMINS]: 'globaladministrator',
+  [USER_TYPES.GLOBALBINDUSERS]: 'globalbinduser',
+};
 
-export default LinuxmusterPage;
+export default USER_TYPE_TO_ROLE;

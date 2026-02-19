@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { useMemo } from 'react';
 import { ClassManagementIcon, CreateProjectIcon, EnrolIcon, PrintIcon, LearningManagementIcon } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -32,48 +33,44 @@ import {
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 
-const useClassManagementMenu = () => {
+const useClassManagementMenu = (): MenuBarEntry => {
   const navigate = useNavigate();
-  const menuBar = (): MenuBarEntry => ({
-    title: 'classmanagement.title',
-    appName: APPS.CLASS_MANAGEMENT,
-    icon: ClassManagementIcon,
-    color: 'hover:bg-ciGreenToBlue',
-    menuItems: [
-      {
-        id: CLASS_MANAGEMENT_LESSON_LOCATION,
-        label: 'classmanagement.lesson',
-        icon: LearningManagementIcon,
-        action: () => {
-          navigate(CLASS_MANAGEMENT_LESSON_PATH);
+
+  return useMemo(
+    () => ({
+      title: 'classmanagement.title',
+      appName: APPS.CLASS_MANAGEMENT,
+      icon: ClassManagementIcon,
+      color: 'hover:bg-ciGreenToBlue',
+      menuItems: [
+        {
+          id: CLASS_MANAGEMENT_LESSON_LOCATION,
+          label: 'classmanagement.lesson',
+          icon: LearningManagementIcon,
+          action: () => navigate(CLASS_MANAGEMENT_LESSON_PATH),
         },
-      },
-      {
-        id: CLASS_MANAGEMENT_ENROL_LOCATION,
-        label: 'classmanagement.enrol',
-        icon: EnrolIcon,
-        action: () => {
-          navigate(CLASS_MANAGEMENT_ENROL_PATH);
+        {
+          id: CLASS_MANAGEMENT_ENROL_LOCATION,
+          label: 'classmanagement.enrol',
+          icon: EnrolIcon,
+          action: () => navigate(CLASS_MANAGEMENT_ENROL_PATH),
         },
-      },
-      {
-        id: CLASS_MANAGEMENT_PRINT_PASSWORDS_LOCATION,
-        label: 'classmanagement.printPasswords',
-        icon: PrintIcon,
-        action: () => {
-          navigate(CLASS_MANAGEMENT_PRINT_PASSWORDS_PATH);
+        {
+          id: CLASS_MANAGEMENT_PRINT_PASSWORDS_LOCATION,
+          label: 'classmanagement.printPasswords',
+          icon: PrintIcon,
+          action: () => navigate(CLASS_MANAGEMENT_PRINT_PASSWORDS_PATH),
         },
-      },
-      {
-        id: CLASS_MANAGEMENT_PROJECTS_LOCATION,
-        label: 'classmanagement.myProjects',
-        icon: CreateProjectIcon,
-        action: () => {
-          navigate(CLASS_MANAGEMENT_PROJECTS_PATH);
+        {
+          id: CLASS_MANAGEMENT_PROJECTS_LOCATION,
+          label: 'classmanagement.myProjects',
+          icon: CreateProjectIcon,
+          action: () => navigate(CLASS_MANAGEMENT_PROJECTS_PATH),
         },
-      },
-    ],
-  });
-  return menuBar();
+      ],
+    }),
+    [navigate],
+  );
 };
+
 export default useClassManagementMenu;
