@@ -21,8 +21,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
-
-const MASKED_VALUE = '********';
+import MASKED_VALUE from '@libs/common/constants/maskedValue';
 
 interface MaskedCellProps {
   value: string;
