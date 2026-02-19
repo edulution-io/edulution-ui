@@ -28,6 +28,7 @@ import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import PAIRING_ERROR_MESSAGES from '@libs/pairing/constants/pairingErrorMessages';
 import type PairingDto from '@libs/pairing/types/pairingDto';
 import PAIRING_CACHE_CONFIG from '@libs/pairing/constants/pairingCacheConfig';
+import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
 import CustomHttpException from '../common/CustomHttpException';
 import { Pairing, PairingDocument } from './pairing.schema';
 
@@ -174,7 +175,7 @@ class PairingService {
     id?: unknown;
     parent: string;
     student: string;
-    status: string;
+    status: PairingStatusType;
     createdAt?: Date;
     updatedAt?: Date;
   }): PairingDto {
