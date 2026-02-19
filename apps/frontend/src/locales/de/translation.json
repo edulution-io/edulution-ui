@@ -747,13 +747,13 @@
     "teachers": "Lehrer",
     "extrastudents": "Extra-Schüler",
     "parents": "Eltern",
-    "staff": "Angestellte",
+    "staff": "Mitarbeiter",
     "schooladmins": "Schuladmins",
     "schoolbindusers": "Schul Binduser",
     "globaladmins": "Globaladmins",
     "globalbindusers": "Globale Binduser",
     "tabs": {
-      "table": "Tabelle",
+      "table": "Benutzer",
       "list": "Listenverwaltung"
     },
     "filterUsers": "Benutzer filtern...",
@@ -787,6 +787,8 @@
     "csvPlaceholder": "CSV-Inhalt wird hier angezeigt...",
     "addUser": "Benutzer hinzufügen",
     "check": "Prüfen",
+    "saveConfirmTitle": "Liste speichern",
+    "saveConfirmMessage": "Die Liste muss vor der Prüfung gespeichert werden. Möchten Sie die Liste jetzt speichern und fortfahren?",
     "apply": "Anwenden",
     "exportCsv": "CSV exportieren",
     "csv": {

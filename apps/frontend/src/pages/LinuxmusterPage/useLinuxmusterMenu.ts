@@ -20,7 +20,7 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
 import { LINUXMUSTER_PATH, USER_MANAGEMENT_LOCATION } from '@libs/userManagement/constants/userManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
@@ -41,6 +41,12 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
       icon: LinuxmusterIcon,
       color: 'hover:bg-ciGreenToBlue',
       menuItems: [
+        {
+          id: LINUXMUSTER_PATH,
+          label: 'common.overview',
+          icon: faGrip,
+          action: navigateToLinuxmuster,
+        },
         {
           id: USER_MANAGEMENT_LOCATION,
           label: 'usermanagement.menuTitle',

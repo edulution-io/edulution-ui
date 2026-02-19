@@ -752,7 +752,7 @@
     "globaladmins": "Global Admins",
     "globalbindusers": "Global Bind Users",
     "tabs": {
-      "table": "Table",
+      "table": "Users",
       "list": "List Management"
     },
     "filterUsers": "Filter users...",
@@ -786,6 +786,8 @@
     "csvPlaceholder": "CSV content will be displayed here...",
     "addUser": "Add user",
     "check": "Check",
+    "saveConfirmTitle": "Save list",
+    "saveConfirmMessage": "The list must be saved before checking. Do you want to save the list now and continue?",
     "apply": "Apply",
     "exportCsv": "Export CSV",
     "csv": {

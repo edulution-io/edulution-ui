@@ -45,7 +45,6 @@ import {
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import { LinuxmusterIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import useRegisterUserManagementSections from './UserManagement/useRegisterUserManagementSections';
 
 interface UserTypeCard {
   labelKey: string;
@@ -111,8 +110,6 @@ const LinuxmusterEntryPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isLmn } = useDeploymentTarget();
-
-  useRegisterUserManagementSections();
 
   const visibleCards = isLmn ? USER_TYPE_CARDS : USER_TYPE_CARDS.filter((card) => !card.lmnOnly);
 
