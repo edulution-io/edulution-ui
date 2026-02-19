@@ -25,7 +25,7 @@ type DropdownMenuItemType = {
   isSeparator?: boolean;
   isCheckbox?: boolean;
   checked?: boolean;
-  onCheckedChange?: (checked: boolean) => void;
+  onCheckedChange?: (checked: boolean) => void | Promise<void>;
   icon?: IconDefinition;
   iconColor?: string;
   preventClose?: boolean;

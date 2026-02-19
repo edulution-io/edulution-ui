@@ -72,6 +72,9 @@ export class Notification {
   @Prop()
   createdAt: Date;
 
+  @Prop()
+  updatedAt: Date;
+
   @Prop({
     type: Date,
     required: true,

@@ -44,6 +44,12 @@ const NOTIFICATION_TEMPLATES = {
       body: (conferenceName: string) => `Die Konferenz "${conferenceName}" wurde gestartet.`,
     },
   },
+  MAIL: {
+    NEW: {
+      title: (subject: string) => subject || 'Neue E-Mail',
+      body: (from: string) => `Neue E-Mail von ${from}`,
+    },
+  },
 } as const;
 
 export default NOTIFICATION_TEMPLATES;
