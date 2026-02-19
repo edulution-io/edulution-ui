@@ -35,7 +35,6 @@ export const RESULT = 'results';
 export const FILES = 'files';
 export const TEMPLATES = 'templates';
 export const CHOICES = 'choices';
-export const BULK_CHOICES = 'bulk-choices';
 export const CAN_PARTICIPATE = 'can-participate';
 export const HAS_ANSWERS = 'has-answers';
 export const PUBLIC_USER = 'public-user';
@@ -48,9 +47,6 @@ export const SURVEY_HAS_ANSWERS_ENDPOINT = `${SURVEYS}/${HAS_ANSWERS}`;
 
 export const SURVEY_CHOICES = `${SURVEYS}/${CHOICES}`;
 export const PUBLIC_SURVEY_CHOICES = `${PUBLIC_SURVEYS}/${CHOICES}`;
-
-export const SURVEY_BULK_CHOICES = `${SURVEYS}/${BULK_CHOICES}`;
-export const PUBLIC_SURVEY_BULK_CHOICES = `${PUBLIC_SURVEYS}/${BULK_CHOICES}`;
 
 export const SURVEY_ANSWER_ENDPOINT = `${SURVEYS}/${ANSWER}`;
 export const PUBLIC_SURVEY_ANSWER_ENDPOINT = `${PUBLIC_SURVEYS}/${ANSWER}`;

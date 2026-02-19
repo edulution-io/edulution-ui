@@ -32,8 +32,8 @@ import {
   PUBLIC_SURVEY_ANSWER_ENDPOINT,
   SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
   PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
-  SURVEY_BULK_CHOICES,
-  PUBLIC_SURVEY_BULK_CHOICES,
+  SURVEY_CHOICES,
+  PUBLIC_SURVEY_CHOICES,
 } from '@libs/survey/constants/surveys-endpoint';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
@@ -277,7 +277,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       return;
     }
 
-    const endpoint = isPublic ? PUBLIC_SURVEY_BULK_CHOICES : SURVEY_BULK_CHOICES;
+    const endpoint = isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES;
     try {
       await eduApi.post(`${endpoint}/${surveyId}`, bulkChoices);
     } catch (error: unknown) {

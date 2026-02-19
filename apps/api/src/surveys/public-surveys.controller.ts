@@ -35,15 +35,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { randomUUID } from 'crypto';
-import {
-  SURVEYS,
-  ANSWER,
-  PUBLIC_USER,
-  FILES,
-  PUBLIC_SURVEYS,
-  CHOICES,
-  BULK_CHOICES,
-} from '@libs/survey/constants/surveys-endpoint';
+import { SURVEYS, ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
@@ -205,7 +197,7 @@ class PublicSurveysController {
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, req, res);
   }
 
-  @Post(`${BULK_CHOICES}/:surveyId`)
+  @Post(`${CHOICES}/:surveyId`)
   @Public()
   async validateAndAppendBulkChoices(
     @Param() params: { surveyId: string },

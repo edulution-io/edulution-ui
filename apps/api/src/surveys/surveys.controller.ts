@@ -41,7 +41,6 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
-  BULK_CHOICES,
   CAN_PARTICIPATE,
   CHOICES,
   FILES,
@@ -326,6 +325,29 @@ class SurveysController {
     }
   }
 
+  @Post(`${CHOICES}/:surveyId`)
+  async appendBulkChoices(
+    @Param() params: { surveyId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Body() choicesMap: Record<string, ChoiceDto[]>,
+    @Res() res: Response,
+  ) {
+    const { surveyId } = params;
+    SurveysController.validateParams(params, ['surveyId']);
+    const survey = await this.surveyService.getSurvey(surveyId, currentUser);
+
+    Object.keys(choicesMap).forEach((questionName) => {
+      this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
+        survey,
+        questionName,
+        currentUser,
+      );
+    });
+
+    await this.surveyAnswerService.validateAndAppendBulkChoices(surveyId, choicesMap);
+    return res.status(HttpStatus.OK).json({ message: 'success' });
+  }
+
   @Post(`${CHOICES}/:surveyId/:questionId`)
   async updateChoices(
     @Param() params: { surveyId: string; questionId: string },
@@ -347,29 +369,6 @@ class SurveysController {
       );
     }
     await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
-    return res.status(HttpStatus.OK).json({ message: 'success' });
-  }
-
-  @Post(`${BULK_CHOICES}/:surveyId`)
-  async appendBulkChoices(
-    @Param() params: { surveyId: string },
-    @GetCurrentUser() currentUser: JWTUser,
-    @Body() choicesMap: Record<string, ChoiceDto[]>,
-    @Res() res: Response,
-  ) {
-    const { surveyId } = params;
-    SurveysController.validateParams(params, ['surveyId']);
-    const survey = await this.surveyService.getSurvey(surveyId, currentUser);
-
-    Object.keys(choicesMap).forEach((questionName) => {
-      this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
-        survey,
-        questionName,
-        currentUser,
-      );
-    });
-
-    await this.surveyAnswerService.validateAndAppendBulkChoices(surveyId, choicesMap);
     return res.status(HttpStatus.OK).json({ message: 'success' });
   }
 

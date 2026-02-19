@@ -21,7 +21,7 @@ import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { randomUUID } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -226,7 +226,6 @@ class SurveyAnswersService implements OnModuleInit {
       questionNames.map(async (questionName, index) => {
         const backendLimiter = backendLimiters[index];
         if (!backendLimiter) {
-          Logger.warn(`Backend limiter not found for question ${questionName}, skipping`, SurveyAnswersService.name);
           return;
         }
 
