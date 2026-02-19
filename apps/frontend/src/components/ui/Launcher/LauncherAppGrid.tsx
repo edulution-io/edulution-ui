@@ -20,7 +20,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -29,7 +28,6 @@ import useSidebarItems from '@/hooks/useSidebarItems';
 import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
-import { cn } from '@edulution-io/ui-kit';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import IconWrapper from '@/components/shared/IconWrapper';
@@ -109,10 +107,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
               to={app.link}
               onClick={onClose}
             >
-              <Card
-                className={cn(GRID_CARD, { 'bg-ciGreenToBlue text-white': app.link === currentAppPath })}
-                variant="dialog"
-              >
+              <Card variant={app.link === currentAppPath ? 'tileSelected' : 'tile'}>
                 <div className="relative m-4 flex flex-col items-center">
                   <IconWrapper
                     iconSrc={app.icon}

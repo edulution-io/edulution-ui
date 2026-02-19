@@ -57,13 +57,18 @@ interface UserPermissions {
   'lm:users:extraclasses:read': boolean;
   'lm:users:extrastudents:read': boolean;
   'lm:users:globaladmins:create': boolean;
+  'lm:users:parents:read': boolean;
+  'lm:users:parents:write': boolean;
   'lm:users:passwords': boolean;
   'lm:users:schooladmins:create': boolean;
+  'lm:users:staff:read': boolean;
+  'lm:users:staff:write': boolean;
   'lm:users:students:read': boolean;
   'lm:users:students:write': boolean;
   'lm:users:teachers:list': boolean;
   'lm:users:teachers:read': boolean;
   'lm:users:teachers:write': boolean;
+  'lm:users:users:delete': boolean;
   'lmn:clients:config': boolean;
   'lmn:groupmembership': boolean;
   'lmn:groupmemberships:write': boolean;
@@ -91,12 +96,34 @@ interface UserPermissions {
   'sidebar:view:/view/lmn/sessionsList': boolean;
   'sidebar:view:/view/lmn/users/globaladmins': boolean;
   'sidebar:view:/view/lmn/users/listmanagement': boolean;
+  'sidebar:view:/view/lmn/users/parents': boolean;
   'sidebar:view:/view/lmn/users/print-passwords': boolean;
   'sidebar:view:/view/lmn/users/schooladmins': boolean;
+  'sidebar:view:/view/lmn/users/staff': boolean;
   'sidebar:view:/view/lmn/users/students': boolean;
   'sidebar:view:/view/lmn/users/teachers': boolean;
   'sidebar:view:/view/lmn/websession': boolean;
+  'sidebar:view:/view/lmn/wireguard': boolean;
   'sidebar:view:/view/lmn_clients': boolean;
+}
+
+interface CustomFieldValue {
+  title: string;
+  canRead: boolean;
+  canWrite: boolean;
+  value: string | string[];
+}
+
+interface CustomFields {
+  proxyAddresses: CustomFieldValue;
+  sophomorixCustom1: CustomFieldValue;
+  sophomorixCustom2: CustomFieldValue;
+  sophomorixCustom3: CustomFieldValue;
+  sophomorixCustom4: CustomFieldValue;
+  sophomorixCustomMulti1: CustomFieldValue;
+  sophomorixCustomMulti2: CustomFieldValue;
+  sophomorixCustomMulti3: CustomFieldValue;
+  sophomorixCustomMulti4: CustomFieldValue;
 }
 
 interface LmnUserInfo {
@@ -109,6 +136,8 @@ interface LmnUserInfo {
   mail: string[];
   memberOf: string[];
   name: string;
+  objectClass?: string[];
+  preferredLanguage?: string;
   proxyAddresses: string[];
   sAMAccountName: string;
   sAMAccountType: string;
@@ -135,8 +164,17 @@ interface LmnUserInfo {
   sophomorixFirstnameASCII: string;
   sophomorixFirstnameInitial: string;
   sophomorixFirstPassword: string;
+  sophomorixIntrinsic1?: string;
   sophomorixIntrinsic2: string | string[];
   sophomorixIntrinsic3: string | string[];
+  sophomorixIntrinsic4?: string;
+  sophomorixIntrinsic5?: string;
+  sophomorixIntrinsicMulti1?: string[];
+  sophomorixIntrinsicMulti2?: string[];
+  sophomorixIntrinsicMulti3?: string[];
+  sophomorixIntrinsicMulti4?: string[];
+  sophomorixIntrinsicMulti5?: string[];
+  sophomorixMailQuota?: string[];
   sophomorixMailQuotaCalculated: string[];
   sophomorixMailQuotaUsed: string[];
   sophomorixQuota: string[];
@@ -152,10 +190,13 @@ interface LmnUserInfo {
   sophomorixUserToken: string;
   sophomorixWebuiDashboard: string[];
   sophomorixWebuiPermissionsCalculated: string[];
-  sophomorixIntrinsicMulti1?: string[];
   thumbnailPhoto: string;
   unixHomeDirectory: string;
+  userAccountControl?: number;
+  whenChanged?: string;
   dn: string;
+  children?: unknown[];
+  customFields?: CustomFields;
   examMode: boolean;
   examTeacher: '';
   examBaseCn: '';
@@ -163,6 +204,7 @@ interface LmnUserInfo {
   intranet: boolean;
   isAdmin: boolean;
   lmnsessions: LmnApiSession[];
+  parents?: string[];
   permissions: UserPermissions;
   printers: string[];
   printing: boolean;
