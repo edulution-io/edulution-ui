@@ -20,11 +20,11 @@
 import path, { join } from 'path';
 import { BadRequestException } from '@nestjs/common';
 import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
-import sanitizeFileName from '@libs/filesystem/utils/sanitizeFileName';
+import sanitizePath from '@libs/filesystem/utils/sanitizePath';
 
 const MAX_PATH_LENGTH = 300;
 
-const validatePath = (base: string, value: string | string[]): string => {
+const validatePath = (base: string, value: string | string[] | null): string => {
   if (value === null) {
     throw new BadRequestException(PathValidationErrorMessages.NoString);
   }
@@ -39,7 +39,7 @@ const validatePath = (base: string, value: string | string[]): string => {
     throw new BadRequestException(PathValidationErrorMessages.PathTooLong);
   }
 
-  const sanitized = sanitizeFileName(trimmed);
+  const sanitized = sanitizePath(trimmed);
   const fullPath = path.resolve(base, sanitized);
   const baseResolved = path.resolve(base);
 

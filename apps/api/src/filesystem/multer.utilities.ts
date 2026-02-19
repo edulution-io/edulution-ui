@@ -26,13 +26,6 @@ import SVG_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/svgUploadAllow
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import validatePath from '../common/pipes/validatePath';
 
-/**
- * Generates a disk storage configuration that can dynamically
- * determine destination paths and file names.
- *
- * @param getDestinationPath - function returning the folder path, given the request
- * @param fileNameGenerator - optional function to generate the file name
- */
 export const createDiskStorage = (
   basePath: string,
   getDestinationPath: (req: Request) => string,
