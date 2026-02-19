@@ -29,7 +29,6 @@ import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import useLinuxmusterMenu from '@/pages/LinuxmusterPage/useLinuxmusterMenu';
-import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
@@ -37,53 +36,48 @@ import useSubMenuStore from '@/store/useSubMenuStore';
 import useScrollToSection from '@/hooks/useScrollToSection';
 import useLdapGroups from './useLdapGroups';
 
+const DISABLED_MENU_BAR_ENTRY: MenuBarEntry = {
+  menuItems: [],
+  title: '',
+  icon: '',
+  color: '',
+  disabled: true,
+  appName: APPS.NONE,
+};
+
 const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const { isSuperAdmin } = useLdapGroups();
 
-  const SETTINGS_MENU_CONFIG = useAppConfigPageMenu();
-  const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
-  const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
-  const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
-  const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
-  const LINUXMUSTER_MENUBAR_CONFIG = useLinuxmusterMenu();
+  const settingsMenuConfig = useAppConfigPageMenu();
+  const userSettingsMenuConfig = useUserSettingsMenuConfig();
+  const fileSharingMenuConfig = useFileSharingMenuConfig();
+  const surveysMenuConfig = useSurveysPageMenu();
+  const classManagementMenuConfig = useClassManagementMenu();
+  const linuxmusterMenuConfig = useLinuxmusterMenu();
   const { sections } = useSubMenuStore();
   const { scrollToSection } = useScrollToSection();
 
-  const menuBarConfigSwitch = (): MenuBarEntry => {
-    const rootPathName = getFromPathName(pathname, 1);
-
-    if (rootPathName === SETTINGS_PATH && isSuperAdmin) return SETTINGS_MENU_CONFIG;
-    if (rootPathName === USER_SETTINGS_PATH) return USERSETTINGS_MENUBAR_CONFIG;
-
-    const defaultReturnMenuBarEntry = {
-      menuItems: [],
-      title: '',
-      icon: '',
-      color: '',
-      disabled: true,
-      appName: APPS.NONE,
-    };
-
-    switch (rootPathName as TApps) {
-      case APPS.FILE_SHARING: {
-        return FILE_SHARING_MENUBAR_CONFIG;
-      }
-      case APPS.SURVEYS: {
-        return SURVEYS_MENUBAR_CONFIG;
-      }
-      case APPS.CLASS_MANAGEMENT: {
-        return CLASS_MANAGEMENT_MENUBAR_CONFIG;
-      }
-      case APPS.LINUXMUSTER: {
-        return LINUXMUSTER_MENUBAR_CONFIG;
-      }
-      default: {
-        return defaultReturnMenuBarEntry;
-      }
-    }
-  };
+  const menuBarConfigRegistry: Partial<Record<string, MenuBarEntry>> = useMemo(
+    () => ({
+      [APPS.FILE_SHARING]: fileSharingMenuConfig,
+      [APPS.SURVEYS]: surveysMenuConfig,
+      [APPS.CLASS_MANAGEMENT]: classManagementMenuConfig,
+      [APPS.LINUXMUSTER]: linuxmusterMenuConfig,
+      [USER_SETTINGS_PATH]: userSettingsMenuConfig,
+      ...(isSuperAdmin ? { [SETTINGS_PATH]: settingsMenuConfig } : {}),
+    }),
+    [
+      fileSharingMenuConfig,
+      surveysMenuConfig,
+      classManagementMenuConfig,
+      linuxmusterMenuConfig,
+      userSettingsMenuConfig,
+      isSuperAdmin,
+      settingsMenuConfig,
+    ],
+  );
 
   const sectionChildren: MenuItem[] = useMemo(
     () =>
@@ -97,7 +91,8 @@ const useMenuBarConfig = (): MenuBarEntry => {
     [sections, scrollToSection],
   );
 
-  const configValues = menuBarConfigSwitch();
+  const rootPathName = getFromPathName(pathname, 1);
+  const configValues = menuBarConfigRegistry[rootPathName] ?? DISABLED_MENU_BAR_ENTRY;
   const activeMenuItemId = getFromPathName(pathname, 2);
 
   const getItemChildren = (itemId: string): MenuItem[] | undefined => {
@@ -129,6 +124,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
       icon: configValues.icon,
       color: configValues.color,
       appName: configValues.appName,
+      onHeaderClick: configValues.onHeaderClick,
     }),
     [
       menuItems,
@@ -138,6 +134,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
       configValues.icon,
       configValues.color,
       configValues.appName,
+      configValues.onHeaderClick,
     ],
   );
 };
