@@ -31,7 +31,7 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import copyToClipboard from '@/utils/copyToClipboard';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
+import PairingStatusBadge from '@/components/shared/PairingStatusBadge';
 import usePairingStore from './usePairingStore';
 import PairingFloatingButtons from './PairingFloatingButtons';
 
@@ -69,13 +69,6 @@ const PairingPage: React.FC = () => {
       void fetchRelationships();
     }
   }, [codeInput, submitPairingCode, fetchRelationships]);
-
-  const getStatusLabel = (status: string) => {
-    if (status === PAIRING_STATUS.PENDING) return t('usersettings.pairing.statusPending');
-    if (status === PAIRING_STATUS.ACCEPTED) return t('usersettings.pairing.statusAccepted');
-    if (status === PAIRING_STATUS.REJECTED) return t('usersettings.pairing.statusRejected');
-    return status;
-  };
 
   if (isLoading && !pairingCode) {
     return (
@@ -190,7 +183,7 @@ const PairingPage: React.FC = () => {
                         ? `${t('usersettings.pairing.parent')}: ${rel.parent}`
                         : `${t('usersettings.pairing.student')}: ${rel.student}`}
                     </span>
-                    <span className="rounded-full bg-muted px-3 py-1 text-sm">{getStatusLabel(rel.status)}</span>
+                    <PairingStatusBadge status={rel.status} />
                   </div>
                 ))}
               </div>

@@ -82,7 +82,7 @@ class PairingService {
     const parent = isParent ? username : targetUsername;
     const student = isStudent ? username : targetUsername;
 
-    const existingPairing = await this.pairingModel.findOne({ parent, student }).lean({ virtuals: true });
+    const existingPairing = await this.pairingModel.findOne({ parent, student }).exec();
     if (existingPairing) {
       throw new CustomHttpException(
         PAIRING_ERROR_MESSAGES.PAIRING_ALREADY_EXISTS,
@@ -114,7 +114,7 @@ class PairingService {
       filter.student = username;
     }
 
-    const pairings = await this.pairingModel.find(filter).lean({ virtuals: true });
+    const pairings = await this.pairingModel.find(filter).exec();
 
     return pairings.map((p) => PairingService.toPairingDto(p));
   }
@@ -131,7 +131,7 @@ class PairingService {
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean({ virtuals: true }),
+        .exec(),
       this.pairingModel.countDocuments(filter),
     ]);
 
@@ -142,9 +142,7 @@ class PairingService {
   }
 
   async updatePairingStatus(pairingId: string, status: string): Promise<PairingDto> {
-    const pairing = await this.pairingModel
-      .findByIdAndUpdate(pairingId, { status }, { new: true })
-      .lean({ virtuals: true });
+    const pairing = await this.pairingModel.findByIdAndUpdate(pairingId, { status }, { new: true }).exec();
 
     if (!pairing) {
       throw new CustomHttpException(

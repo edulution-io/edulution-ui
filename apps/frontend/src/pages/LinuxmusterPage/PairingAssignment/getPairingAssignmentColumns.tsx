@@ -19,7 +19,6 @@
 
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { useTranslation } from 'react-i18next';
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
 import type PairingDto from '@libs/pairing/types/pairingDto';
 import type TableAction from '@libs/common/types/tableAction';
@@ -27,18 +26,7 @@ import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import sortString from '@libs/common/utils/sortString';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
-
-const PAIRING_STATUS_CLASS_MAP: Record<string, string> = {
-  [PAIRING_STATUS.PENDING]: 'bg-yellow-500',
-  [PAIRING_STATUS.ACCEPTED]: 'bg-ciGreen',
-  [PAIRING_STATUS.REJECTED]: 'bg-ciRed',
-};
-
-const PAIRING_STATUS_TRANSLATION_MAP: Record<string, string> = {
-  [PAIRING_STATUS.PENDING]: 'pairing.statusPending',
-  [PAIRING_STATUS.ACCEPTED]: 'pairing.statusAccepted',
-  [PAIRING_STATUS.REJECTED]: 'pairing.statusRejected',
-};
+import PairingStatusBadge from '@/components/shared/PairingStatusBadge';
 
 const COLUMN_IDS = {
   PARENT: 'parent',
@@ -81,13 +69,7 @@ const getPairingAssignmentColumns = ({
     header: ({ column }) => <SortableHeader<PairingDto, unknown> column={column} />,
     accessorFn: (row) => row.status,
     size: 120,
-    cell: ({ row }) => {
-      const { t } = useTranslation();
-      const { status } = row.original;
-      const statusClass = PAIRING_STATUS_CLASS_MAP[status] || 'bg-gray-500';
-      const translationKey = PAIRING_STATUS_TRANSLATION_MAP[status] || status;
-      return <span className={`rounded px-2 py-1 text-xs text-white ${statusClass}`}>{t(translationKey)}</span>;
-    },
+    cell: ({ row }) => <PairingStatusBadge status={row.original.status} />,
     enableSorting: true,
     sortingFn: (rowA, rowB) => sortString(rowA.original.status, rowB.original.status),
   },
