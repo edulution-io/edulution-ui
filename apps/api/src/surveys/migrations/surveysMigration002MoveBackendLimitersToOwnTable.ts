@@ -32,7 +32,7 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
   version: 2,
   execute: async (model) => {
     const previousSchemaVersion = 1;
-    const newSchemaVersion = 2;
+    // const newSchemaVersion = 2;
 
     const cursor = model.find<OldSurveyDocument>({ schemaVersion: previousSchemaVersion }).cursor();
 
@@ -44,13 +44,14 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
       const { backendLimiters } = doc;
 
       if (!backendLimiters || backendLimiters.length === 0) {
-        updateSurveyOperations.push({
-          updateOne: {
-            // eslint-disable-next-line no-underscore-dangle
-            filter: { _id: doc._id },
-            update: { $set: { schemaVersion: newSchemaVersion } },
-          },
-        });
+        // TODO: ACTIVATE WHEN PR IS ACCEPTED TO NOT DESTROY YOUR SURVEY DATA FOR THIS BRANCH
+        // updateSurveyOperations.push({
+        //   updateOne: {
+        //     // eslint-disable-next-line no-underscore-dangle
+        //     filter: { _id: doc._id },
+        //     update: { $set: { schemaVersion: newSchemaVersion } },
+        //   },
+        // });
 
         // eslint-disable-next-line no-continue
         continue;
@@ -85,13 +86,14 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
         try {
           await BackendLimiterModel.bulkWrite(createBackendLimiterOperations, { ordered: false });
 
-          updateSurveyOperations.push({
-            updateOne: {
-              // eslint-disable-next-line no-underscore-dangle
-              filter: { _id: doc._id },
-              update: { $unset: { backendLimiters: '' }, $set: { schemaVersion: newSchemaVersion } },
-            },
-          });
+          // TODO: ACTIVATE WHEN PR IS ACCEPTED TO NOT DESTROY YOUR SURVEY DATA FOR OTHER BRANCHES
+          // updateSurveyOperations.push({
+          //   updateOne: {
+          //     // eslint-disable-next-line no-underscore-dangle
+          //     filter: { _id: doc._id },
+          //     update: { $unset: { backendLimiters: '' }, $set: { schemaVersion: newSchemaVersion } },
+          //   },
+          // });
 
           // eslint-disable-next-line no-underscore-dangle
           Logger.log(`Removing backend limiters from survey document ${String(doc._id)}`, name);
