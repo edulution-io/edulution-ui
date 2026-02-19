@@ -17,6 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_STATUS_FILTER_ALL = '';
+import PARENT_CHILD_PAIRING_ERROR_MESSAGES from '../constants/parentChildPairingErrorMessages';
 
-export default PAIRING_STATUS_FILTER_ALL;
+type ParentChildPairingErrorMessagesType =
+  (typeof PARENT_CHILD_PAIRING_ERROR_MESSAGES)[keyof typeof PARENT_CHILD_PAIRING_ERROR_MESSAGES];
+
+export default ParentChildPairingErrorMessagesType;

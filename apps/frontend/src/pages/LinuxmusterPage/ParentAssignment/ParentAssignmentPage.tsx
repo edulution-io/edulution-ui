@@ -20,9 +20,9 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import getTokenPayload from '@libs/common/utils/getTokenPayload';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
-import PAIRING_STATUS_FILTER_ALL from '@libs/pairing/constants/pairingStatusFilterAll';
-import type PairingDto from '@libs/pairing/types/pairingDto';
+import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
+import PARENT_CHILD_PAIRING_STATUS_FILTER_ALL from '@libs/parent-child-pairing/constants/parentChildPairingStatusFilterAll';
+import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 import type FilterOption from '@libs/ui/types/filterOption';
 import { cn } from '@edulution-io/ui-kit';
 import APPS from '@libs/appconfig/constants/apps';
@@ -35,13 +35,13 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useUserStore from '@/store/UserStore/useUserStore';
-import usePairingAssignmentStore from './usePairingAssignmentStore';
-import getPairingAssignmentColumns from './getPairingAssignmentColumns';
+import useParentAssignmentStore from './useParentAssignmentStore';
+import getParentAssignmentColumns from './getParentAssignmentColumns';
 
-const PairingAssignmentPage: React.FC = () => {
+const ParentAssignmentPage: React.FC = () => {
   const { t } = useTranslation();
   const { pairings, isLoading, statusFilter, fetchPairings, updateStatus, setStatusFilter, setSelectedSchool } =
-    usePairingAssignmentStore();
+    useParentAssignmentStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { selectedSchool: classManagementSchool, schools, getSchools } = useClassManagementStore();
   const eduApiToken = useUserStore((s) => s.eduApiToken);
@@ -77,21 +77,21 @@ const PairingAssignmentPage: React.FC = () => {
   }, [fetchPairings]);
 
   const handleAccept = useCallback(
-    (pairing: PairingDto) => {
-      void updateStatus(pairing.id, PAIRING_STATUS.ACCEPTED);
+    (pairing: ParentChildPairingDto) => {
+      void updateStatus(pairing.id, PARENT_CHILD_PAIRING_STATUS.ACCEPTED);
     },
     [updateStatus],
   );
 
   const handleReject = useCallback(
-    (pairing: PairingDto) => {
-      void updateStatus(pairing.id, PAIRING_STATUS.REJECTED);
+    (pairing: ParentChildPairingDto) => {
+      void updateStatus(pairing.id, PARENT_CHILD_PAIRING_STATUS.REJECTED);
     },
     [updateStatus],
   );
 
   const columns = useMemo(
-    () => getPairingAssignmentColumns({ onAccept: handleAccept, onReject: handleReject }),
+    () => getParentAssignmentColumns({ onAccept: handleAccept, onReject: handleReject }),
     [handleAccept, handleReject],
   );
 
@@ -99,17 +99,17 @@ const PairingAssignmentPage: React.FC = () => {
     () => [
       {
         key: 'all',
-        translationKey: 'pairing.statusAll',
-        checked: statusFilter === PAIRING_STATUS_FILTER_ALL,
+        translationKey: 'parentChildPairing.statusAll',
+        checked: statusFilter === PARENT_CHILD_PAIRING_STATUS_FILTER_ALL,
         onChange: (enabled: boolean) => {
           if (enabled) {
-            setStatusFilter(PAIRING_STATUS_FILTER_ALL);
+            setStatusFilter(PARENT_CHILD_PAIRING_STATUS_FILTER_ALL);
           }
         },
       },
-      ...Object.values(PAIRING_STATUS).map((status) => ({
+      ...Object.values(PARENT_CHILD_PAIRING_STATUS).map((status) => ({
         key: status,
-        translationKey: `pairing.status${status.charAt(0).toUpperCase()}${status.slice(1)}`,
+        translationKey: `parentChildPairing.status${status.charAt(0).toUpperCase()}${status.slice(1)}`,
         checked: statusFilter === status,
         onChange: (enabled: boolean) => {
           if (enabled) {
@@ -121,16 +121,16 @@ const PairingAssignmentPage: React.FC = () => {
     [statusFilter, setStatusFilter],
   );
 
-  const statusFilterCount = statusFilter !== PAIRING_STATUS_FILTER_ALL ? 1 : 0;
+  const statusFilterCount = statusFilter !== PARENT_CHILD_PAIRING_STATUS_FILTER_ALL ? 1 : 0;
   const activeFilterCount = statusFilterCount + 1;
 
   const handleResetFilters = useCallback(() => {
-    setStatusFilter(PAIRING_STATUS.PENDING);
+    setStatusFilter(PARENT_CHILD_PAIRING_STATUS.PENDING);
   }, [setStatusFilter]);
 
   const nativeAppHeader = {
-    title: t('pairing.assignment'),
-    description: t('pairing.assignmentDescription'),
+    title: t('parentChildPairing.assignment'),
+    description: t('parentChildPairing.assignmentDescription'),
     iconSrc: LinuxmusterIcon,
   };
 
@@ -146,7 +146,7 @@ const PairingAssignmentPage: React.FC = () => {
           columns={columns}
           data={pairings}
           filterKey="parent"
-          filterPlaceHolderText="pairing.filterPlaceholder"
+          filterPlaceHolderText="parentChildPairing.filterPlaceholder"
           applicationName={APPS.LINUXMUSTER}
           getRowId={(row) => row.id}
           searchBarAdditionalComponent={
@@ -178,4 +178,4 @@ const PairingAssignmentPage: React.FC = () => {
   );
 };
 
-export default PairingAssignmentPage;
+export default ParentAssignmentPage;

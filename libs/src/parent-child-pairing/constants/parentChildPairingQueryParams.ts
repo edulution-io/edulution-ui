@@ -17,25 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
-import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import usePairingStore from './usePairingStore';
+const PARENT_CHILD_PAIRING_QUERY_PARAMS = {
+  STATUS: 'status',
+  SCHOOL: 'school',
+} as const;
 
-const PairingFloatingButtons: React.FC = () => {
-  const { refreshPairingCode } = usePairingStore();
-
-  const config: FloatingButtonsBarConfig = {
-    buttons: [
-      ReloadButton(() => {
-        void refreshPairingCode();
-      }),
-    ],
-    keyPrefix: 'pairing-page-floating-button_',
-  };
-
-  return <FloatingButtonsBar config={config} />;
-};
-
-export default PairingFloatingButtons;
+export default PARENT_CHILD_PAIRING_QUERY_PARAMS;

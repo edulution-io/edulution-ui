@@ -19,13 +19,13 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
-import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
+import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
+import type ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
 
-export type PairingDocument = Pairing & Document;
+export type ParentChildPairingDocument = ParentChildPairing & Document;
 
 @Schema({ timestamps: true })
-export class Pairing {
+export class ParentChildPairing {
   @Prop({ type: String, required: true })
   parent: string;
 
@@ -35,8 +35,8 @@ export class Pairing {
   @Prop({ type: String, required: true })
   school: string;
 
-  @Prop({ type: String, required: true, default: PAIRING_STATUS.PENDING })
-  status: PairingStatusType;
+  @Prop({ type: String, required: true, default: PARENT_CHILD_PAIRING_STATUS.PENDING })
+  status: ParentChildPairingStatusType;
 
   @Prop({ type: Number, default: 1 })
   schemaVersion: number;
@@ -48,10 +48,10 @@ export class Pairing {
   updatedAt: Date;
 }
 
-export const PairingSchema = SchemaFactory.createForClass(Pairing);
+export const ParentChildPairingSchema = SchemaFactory.createForClass(ParentChildPairing);
 
-PairingSchema.index({ parent: 1, student: 1 }, { unique: true });
+ParentChildPairingSchema.index({ parent: 1, student: 1 }, { unique: true });
 
-PairingSchema.set('toJSON', {
+ParentChildPairingSchema.set('toJSON', {
   virtuals: true,
 });

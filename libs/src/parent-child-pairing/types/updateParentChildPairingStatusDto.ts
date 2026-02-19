@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import PAIRING_ERROR_MESSAGES from '../constants/pairingErrorMessages';
+interface UpdateParentChildPairingStatusDto {
+  status: string;
+}
 
-type PairingErrorMessagesType = (typeof PAIRING_ERROR_MESSAGES)[keyof typeof PAIRING_ERROR_MESSAGES];
-
-export default PairingErrorMessagesType;
+export default UpdateParentChildPairingStatusDto;

@@ -650,7 +650,7 @@
     "titleLmn": "SERVEUR SCOLAIRE",
     "titleGeneric": "SERVEUR",
     "menuTitle": "Gestion des utilisateurs",
-    "pairingAssignment": "Attribution parentale",
+    "parentAssignment": "Attribution parentale",
     "description": "Afficher et gérer les comptes utilisateurs, les listes et les rôles.",
     "students": "Élèves",
     "teachers": "Enseignants",
@@ -1454,7 +1454,7 @@
       "downloadButton": "Télécharger la configuration",
       "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
     },
-    "pairing": {
+    "parentChildPairing": {
       "myParents": "Mes Parents",
       "myChildren": "Mes Enfants",
       "description": "Connectez votre compte avec vos parents ou enfants.",
@@ -1797,9 +1797,9 @@
     "userManagement": "Gestion des utilisateurs",
     "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
   },
-  "pairing": {
+  "parentChildPairing": {
     "assignment": "Attribution parentale",
-    "assignmentDescription": "Gérer les demandes d'association parent-élève.",
+    "assignmentDescription": "Gérer les demandes d’association parent-élève.",
     "filterPlaceholder": "Rechercher par parent ou élève...",
     "parent": "Parent",
     "student": "Élève",

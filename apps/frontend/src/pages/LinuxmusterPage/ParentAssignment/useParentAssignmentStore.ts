@@ -22,15 +22,15 @@ import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
-import { PAIRING_API_ENDPOINT } from '@libs/pairing/constants/pairingApiEndpoint';
-import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
-import PAIRING_QUERY_PARAMS from '@libs/pairing/constants/pairingQueryParams';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
-import PAIRING_STATUS_FILTER_ALL from '@libs/pairing/constants/pairingStatusFilterAll';
-import type PairingDto from '@libs/pairing/types/pairingDto';
+import { PARENT_CHILD_PAIRING_API_ENDPOINT } from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoint';
+import PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingAdminEndpoints';
+import PARENT_CHILD_PAIRING_QUERY_PARAMS from '@libs/parent-child-pairing/constants/parentChildPairingQueryParams';
+import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
+import PARENT_CHILD_PAIRING_STATUS_FILTER_ALL from '@libs/parent-child-pairing/constants/parentChildPairingStatusFilterAll';
+import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 
-interface PairingAssignmentStore {
-  pairings: PairingDto[];
+interface ParentAssignmentStore {
+  pairings: ParentChildPairingDto[];
   isLoading: boolean;
   statusFilter: string;
   selectedSchool: string;
@@ -41,10 +41,10 @@ interface PairingAssignmentStore {
   setSelectedSchool: (school: string) => void;
 }
 
-const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => ({
+const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
   pairings: [],
   isLoading: false,
-  statusFilter: PAIRING_STATUS.PENDING,
+  statusFilter: PARENT_CHILD_PAIRING_STATUS.PENDING,
   selectedSchool: '',
 
   fetchPairings: async () => {
@@ -52,15 +52,16 @@ const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => (
     try {
       const { statusFilter, selectedSchool } = get();
       const params: Record<string, string> = {};
-      if (statusFilter !== PAIRING_STATUS_FILTER_ALL) {
+      if (statusFilter !== PARENT_CHILD_PAIRING_STATUS_FILTER_ALL) {
         params.status = statusFilter;
       }
       if (selectedSchool) {
-        params[PAIRING_QUERY_PARAMS.SCHOOL] = selectedSchool;
+        params[PARENT_CHILD_PAIRING_QUERY_PARAMS.SCHOOL] = selectedSchool;
       }
-      const { data } = await eduApi.get<PairingDto[]>(`${PAIRING_API_ENDPOINT}/${PAIRING_ADMIN_ENDPOINTS.ALL}`, {
-        params,
-      });
+      const { data } = await eduApi.get<ParentChildPairingDto[]>(
+        `${PARENT_CHILD_PAIRING_API_ENDPOINT}/${PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS.ALL}`,
+        { params },
+      );
       set({ pairings: data });
     } catch (error) {
       handleApiError(error, set);
@@ -71,8 +72,10 @@ const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => (
 
   updateStatus: async (id: string, status: string) => {
     try {
-      await eduApi.patch(`${PAIRING_API_ENDPOINT}/${id}/${PAIRING_ADMIN_ENDPOINTS.STATUS}`, { status });
-      toast.success(i18n.t('pairing.statusUpdated'));
+      await eduApi.patch(`${PARENT_CHILD_PAIRING_API_ENDPOINT}/${id}/${PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS.STATUS}`, {
+        status,
+      });
+      toast.success(i18n.t('parentChildPairing.statusUpdated'));
       await get().fetchPairings();
     } catch (error) {
       handleApiError(error, set);
@@ -90,4 +93,4 @@ const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => (
   },
 }));
 
-export default usePairingAssignmentStore;
+export default useParentAssignmentStore;

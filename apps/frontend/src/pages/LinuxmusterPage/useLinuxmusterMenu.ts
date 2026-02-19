@@ -24,8 +24,8 @@ import { faListCheck, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
 import {
   LINUXMUSTER_PATH,
-  PAIRING_ASSIGNMENT_LOCATION,
-  PAIRING_ASSIGNMENT_PATH,
+  PARENT_ASSIGNMENT_LOCATION,
+  PARENT_ASSIGNMENT_PATH,
   USER_MANAGEMENT_LOCATION,
 } from '@libs/userManagement/constants/userManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
@@ -38,7 +38,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
   const { isLmn } = useDeploymentTarget();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
-  const navigateToPairingAssignment = useCallback(() => navigate(`/${PAIRING_ASSIGNMENT_PATH}`), [navigate]);
+  const navigateToParentAssignment = useCallback(() => navigate(`/${PARENT_ASSIGNMENT_PATH}`), [navigate]);
 
   return useMemo(
     () => ({
@@ -54,14 +54,14 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           action: navigateToLinuxmuster,
         },
         {
-          id: PAIRING_ASSIGNMENT_LOCATION,
-          label: 'usermanagement.pairingAssignment',
+          id: PARENT_ASSIGNMENT_LOCATION,
+          label: 'usermanagement.parentAssignment',
           icon: faUserGroup,
-          action: navigateToPairingAssignment,
+          action: navigateToParentAssignment,
         },
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster, navigateToPairingAssignment],
+    [isLmn, t, navigateToLinuxmuster, navigateToParentAssignment],
   );
 };
 

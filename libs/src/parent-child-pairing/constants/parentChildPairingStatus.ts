@@ -17,8 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import PAIRING_STATUS from '../constants/pairingStatus';
+const PARENT_CHILD_PAIRING_STATUS = {
+  PENDING: 'pending',
+  ACCEPTED: 'accepted',
+  REJECTED: 'rejected',
+} as const;
 
-type PairingStatusType = (typeof PAIRING_STATUS)[keyof typeof PAIRING_STATUS];
-
-export default PairingStatusType;
+export default PARENT_CHILD_PAIRING_STATUS;

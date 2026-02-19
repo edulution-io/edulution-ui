@@ -17,16 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type PairingStatusType from './pairingStatusType';
+import React from 'react';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import useParentChildPairingStore from './useParentChildPairingStore';
 
-interface PairingDto {
-  id: string;
-  parent: string;
-  student: string;
-  school: string;
-  status: PairingStatusType;
-  createdAt: string;
-  updatedAt: string;
-}
+const ParentChildPairingFloatingButtons: React.FC = () => {
+  const { refreshPairingCode } = useParentChildPairingStore();
 
-export default PairingDto;
+  const config: FloatingButtonsBarConfig = {
+    buttons: [
+      ReloadButton(() => {
+        void refreshPairingCode();
+      }),
+    ],
+    keyPrefix: 'parent-child-pairing-page-floating-button_',
+  };
+
+  return <FloatingButtonsBar config={config} />;
+};
+
+export default ParentChildPairingFloatingButtons;

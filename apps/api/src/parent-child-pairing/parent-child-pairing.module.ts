@@ -17,9 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_QUERY_PARAMS = {
-  STATUS: 'status',
-  SCHOOL: 'school',
-} as const;
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import ParentChildPairingService from './parent-child-pairing.service';
+import ParentChildPairingController from './parent-child-pairing.controller';
+import { ParentChildPairing, ParentChildPairingSchema } from './parent-child-pairing.schema';
 
-export default PAIRING_QUERY_PARAMS;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: ParentChildPairing.name, schema: ParentChildPairingSchema }])],
+  providers: [ParentChildPairingService],
+  controllers: [ParentChildPairingController],
+  exports: [ParentChildPairingService],
+})
+export default class ParentChildPairingModule {}

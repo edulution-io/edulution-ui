@@ -743,7 +743,7 @@
     "titleLmn": "SCHULSERVER",
     "titleGeneric": "SERVER",
     "menuTitle": "Benutzerverwaltung",
-    "pairingAssignment": "Elternzuweisung",
+    "parentAssignment": "Elternzuweisung",
     "description": "Benutzerkonten, Listen und Rollen anzeigen und verwalten.",
     "students": "Schüler",
     "teachers": "Lehrer",
@@ -1607,7 +1607,7 @@
       "downloadButton": "Konfiguration herunterladen",
       "error": "Der VPN-Dienst ist derzeit nicht erreichbar. Bitte versuche es später erneut oder wende dich an einen Administrator."
     },
-    "pairing": {
+    "parentChildPairing": {
       "myParents": "Meine Eltern",
       "myChildren": "Meine Kinder",
       "description": "Verbinde dein Konto mit deinen Eltern oder Kindern.",
@@ -1966,7 +1966,7 @@
     "userManagement": "Benutzerverwaltung",
     "description": "Verwalte deine Schulserver-Einstellungen und Benutzer."
   },
-  "pairing": {
+  "parentChildPairing": {
     "assignment": "Elternzuweisung",
     "assignmentDescription": "Eltern-Schüler-Zuweisungen verwalten.",
     "filterPlaceholder": "Nach Elternteil oder Schüler suchen...",

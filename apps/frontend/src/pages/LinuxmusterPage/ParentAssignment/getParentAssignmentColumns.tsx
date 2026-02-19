@@ -20,13 +20,13 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
-import type PairingDto from '@libs/pairing/types/pairingDto';
+import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 import type TableAction from '@libs/common/types/tableAction';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
+import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
 import sortString from '@libs/common/utils/sortString';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
-import PairingStatusBadge from '@/components/shared/PairingStatusBadge';
+import ParentChildPairingStatusBadge from '@/components/shared/ParentChildPairingStatusBadge';
 
 const COLUMN_IDS = {
   PARENT: 'parent',
@@ -37,19 +37,19 @@ const COLUMN_IDS = {
   ACTIONS: 'actions',
 } as const;
 
-interface PairingAssignmentColumnsProps {
-  onAccept: (pairing: PairingDto) => void;
-  onReject: (pairing: PairingDto) => void;
+interface ParentAssignmentColumnsProps {
+  onAccept: (pairing: ParentChildPairingDto) => void;
+  onReject: (pairing: ParentChildPairingDto) => void;
 }
 
-const getPairingAssignmentColumns = ({
+const getParentAssignmentColumns = ({
   onAccept,
   onReject,
-}: PairingAssignmentColumnsProps): ColumnDef<PairingDto>[] => [
+}: ParentAssignmentColumnsProps): ColumnDef<ParentChildPairingDto>[] => [
   {
     id: COLUMN_IDS.PARENT,
-    meta: { translationId: 'pairing.parent' },
-    header: ({ column }) => <SortableHeader<PairingDto, unknown> column={column} />,
+    meta: { translationId: 'parentChildPairing.parent' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
     accessorFn: (row) => row.parent,
     cell: ({ row }) => row.original.parent,
     enableSorting: true,
@@ -57,8 +57,8 @@ const getPairingAssignmentColumns = ({
   },
   {
     id: COLUMN_IDS.STUDENT,
-    meta: { translationId: 'pairing.student' },
-    header: ({ column }) => <SortableHeader<PairingDto, unknown> column={column} />,
+    meta: { translationId: 'parentChildPairing.student' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
     accessorFn: (row) => row.student,
     cell: ({ row }) => row.original.student,
     enableSorting: true,
@@ -66,8 +66,8 @@ const getPairingAssignmentColumns = ({
   },
   {
     id: COLUMN_IDS.SCHOOL,
-    meta: { translationId: 'pairing.school' },
-    header: ({ column }) => <SortableHeader<PairingDto, unknown> column={column} />,
+    meta: { translationId: 'parentChildPairing.school' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
     accessorFn: (row) => row.school,
     cell: ({ row }) => row.original.school,
     enableSorting: true,
@@ -75,18 +75,18 @@ const getPairingAssignmentColumns = ({
   },
   {
     id: COLUMN_IDS.STATUS,
-    meta: { translationId: 'pairing.statusColumn' },
-    header: ({ column }) => <SortableHeader<PairingDto, unknown> column={column} />,
+    meta: { translationId: 'parentChildPairing.statusColumn' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
     accessorFn: (row) => row.status,
     size: 120,
-    cell: ({ row }) => <PairingStatusBadge status={row.original.status} />,
+    cell: ({ row }) => <ParentChildPairingStatusBadge status={row.original.status} />,
     enableSorting: true,
     sortingFn: (rowA, rowB) => sortString(rowA.original.status, rowB.original.status),
   },
   {
     id: COLUMN_IDS.CREATED_AT,
-    meta: { translationId: 'pairing.createdAt' },
-    header: ({ column }) => <SortableHeader<PairingDto, unknown> column={column} />,
+    meta: { translationId: 'parentChildPairing.createdAt' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
     accessorFn: (row) => row.createdAt,
     size: 160,
     cell: ({ row }) => {
@@ -104,20 +104,20 @@ const getPairingAssignmentColumns = ({
     size: 50,
     cell: ({ row }) => {
       const { status } = row.original;
-      const actions: TableAction<PairingDto>[] = [];
+      const actions: TableAction<ParentChildPairingDto>[] = [];
 
-      if (status !== PAIRING_STATUS.ACCEPTED) {
+      if (status !== PARENT_CHILD_PAIRING_STATUS.ACCEPTED) {
         actions.push({
           icon: faCheck,
-          translationId: 'pairing.accept',
+          translationId: 'parentChildPairing.accept',
           onClick: () => onAccept(row.original),
         });
       }
 
-      if (status !== PAIRING_STATUS.REJECTED) {
+      if (status !== PARENT_CHILD_PAIRING_STATUS.REJECTED) {
         actions.push({
           icon: faBan,
-          translationId: 'pairing.reject',
+          translationId: 'parentChildPairing.reject',
           onClick: () => onReject(row.original),
         });
       }
@@ -134,4 +134,4 @@ const getPairingAssignmentColumns = ({
   },
 ];
 
-export default getPairingAssignmentColumns;
+export default getParentAssignmentColumns;

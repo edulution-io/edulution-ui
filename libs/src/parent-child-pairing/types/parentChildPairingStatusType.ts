@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface UpdatePairingStatusDto {
-  status: string;
-}
+import PARENT_CHILD_PAIRING_STATUS from '../constants/parentChildPairingStatus';
 
-export default UpdatePairingStatusDto;
+type ParentChildPairingStatusType = (typeof PARENT_CHILD_PAIRING_STATUS)[keyof typeof PARENT_CHILD_PAIRING_STATUS];
+
+export default ParentChildPairingStatusType;

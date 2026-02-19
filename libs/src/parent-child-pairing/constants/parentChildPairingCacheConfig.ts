@@ -17,10 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_STATUS = {
-  PENDING: 'pending',
-  ACCEPTED: 'accepted',
-  REJECTED: 'rejected',
+const PARENT_CHILD_PAIRING_CACHE_CONFIG = {
+  CODE_KEY_PREFIX: 'parent-child-pairing:code:',
+  USER_KEY_PREFIX: 'parent-child-pairing:user:',
+  CODE_LENGTH: 8,
+  CODE_TTL_MS: 300_000,
 } as const;
 
-export default PAIRING_STATUS;
+export default PARENT_CHILD_PAIRING_CACHE_CONFIG;

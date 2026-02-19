@@ -24,23 +24,24 @@ import { Cache } from 'cache-manager';
 import { Model } from 'mongoose';
 import { randomUUID } from 'crypto';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
-import PAIRING_ERROR_MESSAGES from '@libs/pairing/constants/pairingErrorMessages';
-import type PairingDto from '@libs/pairing/types/pairingDto';
-import PAIRING_CACHE_CONFIG from '@libs/pairing/constants/pairingCacheConfig';
-import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
+import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
+import PARENT_CHILD_PAIRING_ERROR_MESSAGES from '@libs/parent-child-pairing/constants/parentChildPairingErrorMessages';
+import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
+import PARENT_CHILD_PAIRING_CACHE_CONFIG from '@libs/parent-child-pairing/constants/parentChildPairingCacheConfig';
+import type ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
 import CustomHttpException from '../common/CustomHttpException';
-import { Pairing, PairingDocument } from './pairing.schema';
+import { ParentChildPairing, ParentChildPairingDocument } from './parent-child-pairing.schema';
 
 @Injectable()
-class PairingService {
+class ParentChildPairingService {
   constructor(
-    @InjectModel(Pairing.name) private readonly pairingModel: Model<PairingDocument>,
+    @InjectModel(ParentChildPairing.name)
+    private readonly parentChildPairingModel: Model<ParentChildPairingDocument>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async getOrCreateCode(username: string, groups: string[], school: string): Promise<string> {
-    const codeKey = `${PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
+    const codeKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const existingCode = await this.cacheManager.get<string>(codeKey);
 
     if (existingCode) {
@@ -55,15 +56,20 @@ class PairingService {
     return this.generateAndStoreCode(username, groups, school);
   }
 
-  async createPairing(username: string, groups: string[], callerSchool: string, code: string): Promise<PairingDto> {
+  async createParentChildPairing(
+    username: string,
+    groups: string[],
+    callerSchool: string,
+    code: string,
+  ): Promise<ParentChildPairingDto> {
     const target = await this.resolveCode(code);
 
     if (username === target.username) {
       throw new CustomHttpException(
-        PAIRING_ERROR_MESSAGES.CANNOT_PAIR_WITH_SELF,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.CANNOT_PAIR_WITH_SELF,
         HttpStatus.BAD_REQUEST,
         undefined,
-        PairingService.name,
+        ParentChildPairingService.name,
       );
     }
 
@@ -72,10 +78,10 @@ class PairingService {
 
     if (!callerIsParent && !callerIsStudent) {
       throw new CustomHttpException(
-        PAIRING_ERROR_MESSAGES.INVALID_ROLE,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.INVALID_ROLE,
         HttpStatus.FORBIDDEN,
         undefined,
-        PairingService.name,
+        ParentChildPairingService.name,
       );
     }
 
@@ -84,10 +90,10 @@ class PairingService {
 
     if (!targetIsParent && !targetIsStudent) {
       throw new CustomHttpException(
-        PAIRING_ERROR_MESSAGES.INVALID_ROLE,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.INVALID_ROLE,
         HttpStatus.FORBIDDEN,
         undefined,
-        PairingService.name,
+        ParentChildPairingService.name,
       );
     }
 
@@ -96,10 +102,10 @@ class PairingService {
 
     if (!hasParent || !hasStudent) {
       throw new CustomHttpException(
-        PAIRING_ERROR_MESSAGES.INCOMPATIBLE_ROLES,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.INCOMPATIBLE_ROLES,
         HttpStatus.BAD_REQUEST,
         undefined,
-        PairingService.name,
+        ParentChildPairingService.name,
       );
     }
 
@@ -107,29 +113,32 @@ class PairingService {
     const student = callerIsStudent ? username : target.username;
     const school = callerIsStudent ? callerSchool : target.school;
 
-    const existingPairing = await this.pairingModel.findOne({ parent, student }).exec();
+    const existingPairing = await this.parentChildPairingModel.findOne({ parent, student }).exec();
     if (existingPairing) {
       throw new CustomHttpException(
-        PAIRING_ERROR_MESSAGES.PAIRING_ALREADY_EXISTS,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.PAIRING_ALREADY_EXISTS,
         HttpStatus.CONFLICT,
         undefined,
-        PairingService.name,
+        ParentChildPairingService.name,
       );
     }
 
-    const pairing = await this.pairingModel.create({
+    const parentChildPairing = await this.parentChildPairingModel.create({
       parent,
       student,
       school,
-      status: PAIRING_STATUS.PENDING,
+      status: PARENT_CHILD_PAIRING_STATUS.PENDING,
     });
 
-    Logger.log(`Pairing created: ${parent} <-> ${student} (school: ${school})`, PairingService.name);
+    Logger.log(
+      `Parent-child pairing created: ${parent} <-> ${student} (school: ${school})`,
+      ParentChildPairingService.name,
+    );
 
-    return PairingService.toPairingDto(pairing);
+    return ParentChildPairingService.toParentChildPairingDto(parentChildPairing);
   }
 
-  async getRelationships(username: string, groups: string[]): Promise<PairingDto[]> {
+  async getRelationships(username: string, groups: string[]): Promise<ParentChildPairingDto[]> {
     const isParent = groups.includes(GroupRoles.PARENT);
     const isStudent = groups.includes(GroupRoles.STUDENT);
 
@@ -140,12 +149,15 @@ class PairingService {
       filter.student = username;
     }
 
-    const pairings = await this.pairingModel.find(filter).exec();
+    const pairings = await this.parentChildPairingModel.find(filter).exec();
 
-    return pairings.map((p) => PairingService.toPairingDto(p));
+    return pairings.map((p) => ParentChildPairingService.toParentChildPairingDto(p));
   }
 
-  async getAllPairings(status?: PairingStatusType, school?: string): Promise<PairingDto[]> {
+  async getAllParentChildPairings(
+    status?: ParentChildPairingStatusType,
+    school?: string,
+  ): Promise<ParentChildPairingDto[]> {
     const filter: Record<string, string> = {};
     if (status) {
       filter.status = status;
@@ -154,37 +166,39 @@ class PairingService {
       filter.school = school;
     }
 
-    const pairings = await this.pairingModel.find(filter).sort({ createdAt: -1 }).exec();
+    const pairings = await this.parentChildPairingModel.find(filter).sort({ createdAt: -1 }).exec();
 
-    return pairings.map((p) => PairingService.toPairingDto(p));
+    return pairings.map((p) => ParentChildPairingService.toParentChildPairingDto(p));
   }
 
-  async updatePairingStatus(pairingId: string, status: string): Promise<PairingDto> {
-    const pairing = await this.pairingModel.findByIdAndUpdate(pairingId, { status }, { new: true }).exec();
+  async updateParentChildPairingStatus(pairingId: string, status: string): Promise<ParentChildPairingDto> {
+    const parentChildPairing = await this.parentChildPairingModel
+      .findByIdAndUpdate(pairingId, { status }, { new: true })
+      .exec();
 
-    if (!pairing) {
+    if (!parentChildPairing) {
       throw new CustomHttpException(
-        PAIRING_ERROR_MESSAGES.CODE_NOT_FOUND,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.CODE_NOT_FOUND,
         HttpStatus.NOT_FOUND,
         undefined,
-        PairingService.name,
+        ParentChildPairingService.name,
       );
     }
 
-    Logger.log(`Pairing ${pairingId} status updated to ${status}`, PairingService.name);
+    Logger.log(`Parent-child pairing ${pairingId} status updated to ${status}`, ParentChildPairingService.name);
 
-    return PairingService.toPairingDto(pairing);
+    return ParentChildPairingService.toParentChildPairingDto(parentChildPairing);
   }
 
-  private static toPairingDto(p: {
+  private static toParentChildPairingDto(p: {
     id?: unknown;
     parent: string;
     student: string;
     school: string;
-    status: PairingStatusType;
+    status: ParentChildPairingStatusType;
     createdAt?: Date;
     updatedAt?: Date;
-  }): PairingDto {
+  }): ParentChildPairingDto {
     return {
       id: String(p.id),
       parent: p.parent,
@@ -197,15 +211,15 @@ class PairingService {
   }
 
   private async resolveCode(code: string): Promise<{ username: string; groups: string[]; school: string }> {
-    const userKey = `${PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
+    const userKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
     const userData = await this.cacheManager.get<{ username: string; groups: string[]; school: string }>(userKey);
 
     if (!userData) {
       throw new CustomHttpException(
-        PAIRING_ERROR_MESSAGES.CODE_EXPIRED,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.CODE_EXPIRED,
         HttpStatus.GONE,
         undefined,
-        PairingService.name,
+        ParentChildPairingService.name,
       );
     }
 
@@ -213,27 +227,27 @@ class PairingService {
   }
 
   private async deleteExistingCode(username: string): Promise<void> {
-    const codeKey = `${PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
+    const codeKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const existingCode = await this.cacheManager.get<string>(codeKey);
 
     if (existingCode) {
       await this.cacheManager.del(codeKey);
-      await this.cacheManager.del(`${PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${existingCode}`);
+      await this.cacheManager.del(`${PARENT_CHILD_PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${existingCode}`);
     }
   }
 
   private async generateAndStoreCode(username: string, groups: string[], school: string): Promise<string> {
-    const code = randomUUID().slice(0, PAIRING_CACHE_CONFIG.CODE_LENGTH).toUpperCase();
-    const codeKey = `${PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
-    const userKey = `${PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
+    const code = randomUUID().slice(0, PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_LENGTH).toUpperCase();
+    const codeKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
+    const userKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
 
-    await this.cacheManager.set(codeKey, code, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
-    await this.cacheManager.set(userKey, { username, groups, school }, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
+    await this.cacheManager.set(codeKey, code, PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_TTL_MS);
+    await this.cacheManager.set(userKey, { username, groups, school }, PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_TTL_MS);
 
-    Logger.log(`Pairing code generated for ${username}`, PairingService.name);
+    Logger.log(`Parent-child pairing code generated for ${username}`, ParentChildPairingService.name);
 
     return code;
   }
 }
 
-export default PairingService;
+export default ParentChildPairingService;

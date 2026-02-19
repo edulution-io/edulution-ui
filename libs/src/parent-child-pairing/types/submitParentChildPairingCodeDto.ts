@@ -17,7 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_API_ENDPOINT = 'pairing';
-const PAIRING_API_ENDPOINT_CODE = 'code';
+interface SubmitParentChildPairingCodeDto {
+  code: string;
+}
 
-export { PAIRING_API_ENDPOINT, PAIRING_API_ENDPOINT_CODE };
+export default SubmitParentChildPairingCodeDto;

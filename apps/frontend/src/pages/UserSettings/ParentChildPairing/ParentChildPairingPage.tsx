@@ -31,11 +31,11 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import copyToClipboard from '@/utils/copyToClipboard';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
-import PairingStatusBadge from '@/components/shared/PairingStatusBadge';
-import usePairingStore from './usePairingStore';
-import PairingFloatingButtons from './PairingFloatingButtons';
+import ParentChildPairingStatusBadge from '@/components/shared/ParentChildPairingStatusBadge';
+import useParentChildPairingStore from './useParentChildPairingStore';
+import ParentChildPairingFloatingButtons from './ParentChildPairingFloatingButtons';
 
-const PairingPage: React.FC = () => {
+const ParentChildPairingPage: React.FC = () => {
   const { t } = useTranslation();
   const { ldapGroups } = useLdapGroups();
   const [codeInput, setCodeInput] = useState('');
@@ -48,12 +48,14 @@ const PairingPage: React.FC = () => {
     submitPairingCode,
     fetchRelationships,
     reset,
-  } = usePairingStore();
+  } = useParentChildPairingStore();
 
   const isStudent = ldapGroups.includes(GroupRoles.STUDENT);
 
-  const title = isStudent ? t('usersettings.pairing.myParents') : t('usersettings.pairing.myChildren');
-  const description = t('usersettings.pairing.description');
+  const title = isStudent
+    ? t('usersettings.parentChildPairing.myParents')
+    : t('usersettings.parentChildPairing.myChildren');
+  const description = t('usersettings.parentChildPairing.description');
 
   useEffect(() => {
     void fetchPairingCode();
@@ -96,11 +98,11 @@ const PairingPage: React.FC = () => {
     >
       <SectionAccordion defaultOpenAll>
         <SectionAccordionItem
-          id="pairing-code"
-          label={t('usersettings.pairing.myCode')}
+          id="parent-child-pairing-code"
+          label={t('usersettings.parentChildPairing.myCode')}
         >
           <div className="space-y-4">
-            <p className="text-muted-foreground">{t('usersettings.pairing.myCodeDescription')}</p>
+            <p className="text-muted-foreground">{t('usersettings.parentChildPairing.myCodeDescription')}</p>
             {pairingCode ? (
               <div className="flex flex-col items-center justify-center gap-4">
                 <QRCodeDisplay
@@ -136,17 +138,17 @@ const PairingPage: React.FC = () => {
 
         <SectionAccordionItem
           id="enter-code"
-          label={t('usersettings.pairing.enterCode')}
+          label={t('usersettings.parentChildPairing.enterCode')}
         >
           <div className="space-y-4">
-            <p className="text-muted-foreground">{t('usersettings.pairing.enterCodeDescription')}</p>
+            <p className="text-muted-foreground">{t('usersettings.parentChildPairing.enterCodeDescription')}</p>
             <div className="flex items-center gap-3">
               <Input
                 type="text"
                 variant="default"
                 value={codeInput}
                 onChange={(e) => setCodeInput(e.target.value)}
-                placeholder={t('usersettings.pairing.enterCodePlaceholder')}
+                placeholder={t('usersettings.parentChildPairing.enterCodePlaceholder')}
                 className="max-w-[400px]"
               />
               <Button
@@ -158,7 +160,7 @@ const PairingPage: React.FC = () => {
                 }}
                 disabled={isSubmitting || !codeInput.trim()}
               >
-                {t('usersettings.pairing.submitCode')}
+                {t('usersettings.parentChildPairing.submitCode')}
               </Button>
             </div>
           </div>
@@ -166,11 +168,11 @@ const PairingPage: React.FC = () => {
 
         <SectionAccordionItem
           id="relationships"
-          label={t('usersettings.pairing.relationships')}
+          label={t('usersettings.parentChildPairing.relationships')}
         >
           <div className="space-y-3">
             {relationships.length === 0 ? (
-              <p className="text-muted-foreground">{t('usersettings.pairing.noRelationships')}</p>
+              <p className="text-muted-foreground">{t('usersettings.parentChildPairing.noRelationships')}</p>
             ) : (
               <div className="grid gap-2">
                 {relationships.map((rel) => (
@@ -180,10 +182,10 @@ const PairingPage: React.FC = () => {
                   >
                     <span>
                       {isStudent
-                        ? `${t('usersettings.pairing.parent')}: ${rel.parent}`
-                        : `${t('usersettings.pairing.student')}: ${rel.student}`}
+                        ? `${t('usersettings.parentChildPairing.parent')}: ${rel.parent}`
+                        : `${t('usersettings.parentChildPairing.student')}: ${rel.student}`}
                     </span>
-                    <PairingStatusBadge status={rel.status} />
+                    <ParentChildPairingStatusBadge status={rel.status} />
                   </div>
                 ))}
               </div>
@@ -192,9 +194,9 @@ const PairingPage: React.FC = () => {
         </SectionAccordionItem>
       </SectionAccordion>
 
-      <PairingFloatingButtons />
+      <ParentChildPairingFloatingButtons />
     </PageLayout>
   );
 };
 
-export default PairingPage;
+export default ParentChildPairingPage;

@@ -17,8 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface SubmitPairingCodeDto {
-  code: string;
-}
+const PARENT_CHILD_PAIRING_ERROR_MESSAGES = {
+  CODE_NOT_FOUND: 'parentChildPairing.errors.codeNotFound',
+  CODE_EXPIRED: 'parentChildPairing.errors.codeExpired',
+  CANNOT_PAIR_WITH_SELF: 'parentChildPairing.errors.cannotPairWithSelf',
+  PAIRING_ALREADY_EXISTS: 'parentChildPairing.errors.pairingAlreadyExists',
+  INVALID_ROLE: 'parentChildPairing.errors.invalidRole',
+  INCOMPATIBLE_ROLES: 'parentChildPairing.errors.incompatibleRoles',
+} as const;
 
-export default SubmitPairingCodeDto;
+export default PARENT_CHILD_PAIRING_ERROR_MESSAGES;

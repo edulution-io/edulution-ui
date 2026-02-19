@@ -17,9 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_ADMIN_ENDPOINTS = {
-  ALL: 'all',
-  STATUS: 'status',
-} as const;
+const PARENT_CHILD_PAIRING_API_ENDPOINT = 'parent-child-pairing';
+const PARENT_CHILD_PAIRING_API_ENDPOINT_CODE = 'code';
 
-export default PAIRING_ADMIN_ENDPOINTS;
+export { PARENT_CHILD_PAIRING_API_ENDPOINT, PARENT_CHILD_PAIRING_API_ENDPOINT_CODE };
