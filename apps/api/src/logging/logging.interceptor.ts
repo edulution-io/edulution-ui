@@ -88,7 +88,7 @@ class LoggingInterceptor implements NestInterceptor {
     }
 
     if (logLevel === LOG_LEVELS.VERBOSE) {
-      const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
+      const ip = req.headers[HTTP_HEADERS.XForwarededFor] || req.socket.remoteAddress;
       const userAgent = req.headers[HTTP_HEADERS.UserAgent];
       const contentLength = res.getHeader(HTTP_HEADERS.ContentLength) ?? '-';
       const contextClassName = context.getClass().name;
@@ -115,7 +115,7 @@ class LoggingInterceptor implements NestInterceptor {
   private static logError(err: unknown, req: Request): void {
     const { method, url, params, query, path } = req;
     const error = err instanceof Error ? err : new Error(String(err));
-    const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
+    const ip = req.headers[HTTP_HEADERS.XForwarededFor] || req.socket.remoteAddress;
 
     if (LoggingInterceptor.isAuthEndpointUnauthorized(err, path)) {
       if (logLevel === LOG_LEVELS.DEBUG || logLevel === LOG_LEVELS.VERBOSE) {

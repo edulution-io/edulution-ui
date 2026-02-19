@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "illimité",
     "appTitle": "Tableau d'affichage",
     "description": "Ici, vous trouverez vos messages actuels",
+    "view": "Affichage",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Ligne",
+    "viewTwoRows": "2 Lignes",
+    "viewThreeRows": "3 Lignes",
     "filterPlaceHolderText": "Rechercher des noms de catégorie",
     "sidebar": "Tableau d'affichage",
     "newCategorie": "Nouvelle catégorie",
@@ -74,7 +79,8 @@
       "visibleByUsersAndGroups": "Cette catégorie avec ses messages est visible pour les utilisateurs et les groupes sur la page d'accueil",
       "visibleByUsersAndGroupsTitle": "Page d'accueil",
       "editableByUsersAndGroups": "Cette catégorie est éditable par les utilisateurs et les groupes de l'application Bulletin Board",
-      "editableByUsersAndGroupsTitle": "Gérer les messages"
+      "editableByUsersAndGroupsTitle": "Gérer les messages",
+      "accessGroupsOnlyHint": "Seuls les groupes d'accès peuvent être attribués."
     },
     "errors": {
       "categoryNotFound": "Catégorie introuvable",
@@ -639,6 +645,125 @@
       "placeholder": "Sélectionner une école"
     }
   },
+  "usermanagement": {
+    "title": "UTILISATEURS",
+    "titleLmn": "SERVEUR SCOLAIRE",
+    "titleGeneric": "SERVEUR",
+    "menuTitle": "Gestion des utilisateurs",
+    "description": "Afficher et gérer les comptes utilisateurs, les listes et les rôles.",
+    "students": "Élèves",
+    "teachers": "Enseignants",
+    "extrastudents": "Élèves supplémentaires",
+    "parents": "Parents",
+    "staff": "Personnel",
+    "schooladmins": "Admins d'école",
+    "schoolbindusers": "Utilisateurs Bind d'école",
+    "globaladmins": "Admins globaux",
+    "globalbindusers": "Utilisateurs Bind globaux",
+    "tabs": {
+      "table": "Tableau",
+      "list": "Gestion des listes"
+    },
+    "filterUsers": "Filtrer les utilisateurs...",
+    "loginClass": "Login / Classe",
+    "name": "Nom",
+    "status": "Statut",
+    "passwordActions": "Actions de mot de passe",
+    "showFirstPassword": "Afficher le premier mot de passe",
+    "restoreFirstPassword": "Restaurer le premier mot de passe",
+    "setRandomFirstPassword": "Définir un premier mot de passe aléatoire",
+    "setCustomPassword": "Définir un mot de passe personnalisé",
+    "setCurrentPassword": "Définir le mot de passe utilisateur actuel",
+    "userDetails": "Détails de l'utilisateur",
+    "properties": "Propriétés",
+    "loginname": "Nom de connexion",
+    "mailAlias": "Alias de messagerie",
+    "class": "Classe",
+    "sophomorixStatus": "Statut Sophomorix",
+    "role": "Rôle",
+    "schoolname": "Nom de l'école",
+    "userId": "ID utilisateur (optionnel)",
+    "birthdate": "Date de naissance",
+    "deactivationDate": "Date de désactivation",
+    "tolerationDate": "Date de tolérance",
+    "creationDate": "Date de création",
+    "groupMembership": "Appartenance au groupe",
+    "quota": "Quota",
+    "noQuotaInfo": "Aucune information de quota disponible",
+    "noListAvailable": "Aucune gestion de liste disponible pour ce type d'utilisateur.",
+    "listDescription": "Gestion des listes pour {{school}}/{{list}}.csv",
+    "csvPlaceholder": "Le contenu CSV sera affiché ici...",
+    "addUser": "Ajouter un utilisateur",
+    "check": "Vérifier",
+    "apply": "Appliquer",
+    "exportCsv": "Exporter CSV",
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Déposez le fichier ici pour importer",
+      "download": "Télécharger CSV"
+    },
+    "validationFailed": "Veuillez corriger tous les champs invalides avant d'enregistrer",
+    "listSaved": "Liste enregistrée avec succès. Utilisez \"Vérifier\" pour examiner et appliquer les modifications.",
+    "checkCompleted": "Vérification terminée",
+    "applyCompleted": "Application terminée",
+    "checkResult": {
+      "title": "Résultat de la vérification",
+      "checkFailed": "Vérification échouée",
+      "overview": "Aperçu",
+      "add": "Ajouter",
+      "update": "Mettre à jour",
+      "delete": "Supprimer",
+      "usersToAdd": "Utilisateurs à ajouter",
+      "usersToUpdate": "Utilisateurs à mettre à jour",
+      "usersToDelete": "Utilisateurs à supprimer",
+      "addNewUsers": "Ajouter de nouveaux utilisateurs",
+      "updateUsers": "Mettre à jour les utilisateurs",
+      "deleteUsers": "Supprimer les utilisateurs",
+      "apply": "Appliquer",
+      "noChanges": "Aucune modification détectée. Les données actuelles correspondent aux comptes utilisateurs existants.",
+      "columns": {
+        "class": "Classe",
+        "login": "Login",
+        "name": "Nom",
+        "role": "Rôle",
+        "school": "École",
+        "changes": "Modifications",
+        "file": "Fichier",
+        "reason": "Raison"
+      }
+    },
+    "details": "Détails",
+    "login": "Login",
+    "list": {
+      "class": "Classe",
+      "lastName": "Nom de famille",
+      "firstName": "Prénom",
+      "birthday": "Date de naissance",
+      "login": "Login souhaité",
+      "loginTooltip": "Cette entrée est lue directement depuis le fichier CSV et peut différer du login réel de l'utilisateur (stocké dans LDAP)",
+      "category": "Catégorie",
+      "add": {
+        "students": "Ajouter un élève",
+        "teachers": "Ajouter un enseignant",
+        "extrastudents": "Ajouter un élève supplémentaire",
+        "parents": "Ajouter un parent",
+        "staff": "Ajouter un membre du personnel"
+      }
+    },
+    "sophomorixStatusValues": {
+      "U": "Utilisable",
+      "S": "Auto-activé",
+      "E": "Activé",
+      "P": "Permanent",
+      "A": "Réactivé",
+      "T": "Toléré",
+      "D": "Désactivé",
+      "F": "Gelé",
+      "L": "Verrouillé",
+      "K": "Supprimable",
+      "R": "Retirable"
+    }
+  },
   "select": "Choisir",
   "selectAll": "Sélectionnez tout",
   "details": "Détails",
@@ -1020,6 +1145,20 @@
     "info": {
       "title": "Informations"
     },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "Clé API",
+      "createdAt": "Créé le",
+      "select": "Sélection",
+      "addClient": "Ajouter un client Webhook",
+      "deleteClient": "Supprimer le client Webhook",
+      "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer les clients Webhook sélectionnés?",
+      "selectUserAgent": "Sélectionner le User-Agent",
+      "createSuccess": "Client Webhook créé",
+      "deleteSuccess": "Client Webhook supprimé",
+      "filterPlaceholder": "Filtrer les clients Webhook..."
+    },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "deleteEntries": "Supprimer entrée",
@@ -1384,6 +1523,9 @@
     "showSystemFiles": "Afficher les fichiers système",
     "expand": "Développer",
     "collapse": "Réduire",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "never": "Jamais",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
@@ -1618,8 +1760,12 @@
     }
   },
   "linuxmuster": {
-    "title": "Linuxmuster",
-    "sidebar": "Linuxmuster"
+    "sidebarLmn": "Serveur scolaire",
+    "sidebarGeneric": "Serveur",
+    "item": "{{count}} utilisateur",
+    "items": "{{count}} utilisateurs",
+    "userManagement": "Gestion des utilisateurs",
+    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",

@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
 import { cn } from '@edulution-io/ui-kit';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
+import EMPTY_COLUMN_VISIBILITY from '@libs/common/constants/emptyColumnVisibility';
 import pinRowToTop from '@libs/ui/utils/pinRowToTop';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
@@ -64,6 +65,7 @@ interface DataTableProps<TData, TValue> {
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
   searchBarAdditionalComponent?: ReactNode;
+  activeFilterCount?: number;
   focusedRowId?: string | null;
   onSortedRowsChange?: (sortedData: TData[]) => void;
   onRowClick?: (item: TData) => void;
@@ -87,7 +89,7 @@ const ScrollableTable = <TData, TValue>({
   showHeader = true,
   showSelectedCount = true,
   isDialog = false,
-  initialColumnVisibility = {},
+  initialColumnVisibility = EMPTY_COLUMN_VISIBILITY,
   actions,
   showSearchBarAndColumnSelect = true,
   getRowDisabled,
@@ -95,6 +97,7 @@ const ScrollableTable = <TData, TValue>({
   enableDragAndDrop = false,
   canDropOnRow,
   searchBarAdditionalComponent,
+  activeFilterCount,
   focusedRowId,
   onSortedRowsChange,
   onRowClick,
@@ -150,7 +153,7 @@ const ScrollableTable = <TData, TValue>({
       )}
 
       <div className="h-full w-full flex-1 overflow-auto pr-1 scrollbar-thin">
-        {!!data.length && showSearchBarAndColumnSelect && (
+        {(!!data.length || !!activeFilterCount) && showSearchBarAndColumnSelect && (
           <div className="flex items-center gap-2 pb-4 pt-2">
             <div className="min-w-0 flex-1">
               <Input
