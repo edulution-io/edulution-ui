@@ -73,6 +73,7 @@ const PairingPage: React.FC = () => {
   const getStatusLabel = (status: string) => {
     if (status === PAIRING_STATUS.PENDING) return t('usersettings.pairing.statusPending');
     if (status === PAIRING_STATUS.ACCEPTED) return t('usersettings.pairing.statusAccepted');
+    if (status === PAIRING_STATUS.REJECTED) return t('usersettings.pairing.statusRejected');
     return status;
   };
 

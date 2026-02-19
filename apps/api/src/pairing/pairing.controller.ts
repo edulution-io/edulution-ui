@@ -19,7 +19,7 @@
 
 import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
-import PAIRING_API_ENDPOINT from '@libs/pairing/constants/pairingApiEndpoint';
+import { PAIRING_API_ENDPOINT, PAIRING_API_ENDPOINT_CODE } from '@libs/pairing/constants/pairingApiEndpoint';
 import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import type SubmitPairingCodeDto from '@libs/pairing/types/submitPairingCodeDto';
@@ -33,17 +33,17 @@ const DEFAULT_PAGE_LIMIT = 50;
 
 @Controller(PAIRING_API_ENDPOINT)
 @ApiBearerAuth()
-@ApiTags('Pairing')
+@ApiTags(PAIRING_API_ENDPOINT)
 class PairingController {
   constructor(private readonly pairingService: PairingService) {}
 
-  @Get('code')
+  @Get(PAIRING_API_ENDPOINT_CODE)
   async getCode(@GetCurrentUsername() username: string) {
     const code = await this.pairingService.getOrCreateCode(username);
     return { code };
   }
 
-  @Put('code')
+  @Put(PAIRING_API_ENDPOINT_CODE)
   async refreshCode(@GetCurrentUsername() username: string) {
     const code = await this.pairingService.refreshCode(username);
     return { code };

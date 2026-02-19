@@ -1467,6 +1467,7 @@
       "noRelationships": "Pas encore de connexions.",
       "statusPending": "En attente",
       "statusAccepted": "Accepté",
+      "statusRejected": "Rejeté",
       "pairingSuccess": "Demande de connexion envoyée avec succès!",
       "codeRefreshed": "Nouveau code d'appariement généré.",
       "codeExpired": "Le code a expiré. Veuillez demander un nouveau code.",

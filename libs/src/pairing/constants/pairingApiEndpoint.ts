@@ -18,5 +18,6 @@
  */
 
 const PAIRING_API_ENDPOINT = 'pairing';
+const PAIRING_API_ENDPOINT_CODE = 'code';
 
-export default PAIRING_API_ENDPOINT;
+export { PAIRING_API_ENDPOINT, PAIRING_API_ENDPOINT_CODE };
