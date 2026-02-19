@@ -42,6 +42,7 @@ import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
 import useNotificationStore from '@/store/useNotificationStore';
+import NEW_MAIL_TOAST_ID from '@libs/mail/constants/newMailToastId';
 
 const useNotifications = () => {
   const { t } = useTranslation();
@@ -106,7 +107,7 @@ const useNotifications = () => {
   const handleNewMail = (e: MessageEvent<string>) => {
     const notification = JSON.parse(e.data) as MailNewMailNotificationDto;
     void getMails();
-    toast.info(t('mail.newMail', { count: notification.newMailCount }));
+    toast.info(t('mail.newMail', { count: notification.newMailCount }), { id: NEW_MAIL_TOAST_ID });
   };
 
   useSseEventListener(SSE_MESSAGE_TYPE.MAIL_NEW_MAIL, handleNewMail, {
