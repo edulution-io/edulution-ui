@@ -63,11 +63,13 @@ const useFileSharingPage = () => {
 
   const previousWebdavShare = useRef<string | undefined>(webdavShare);
   const hasRestoredSession = useRef(false);
+  const lastFetchedKey = useRef('');
 
   const isChildOfShareRoot = useCallback(
     (filePath: string) => {
+      if (shareRootPath === '/') return true;
       const normalizedRoot = shareRootPath.replace(/\/+$/, '');
-      return normalizedRoot === '' || filePath === shareRootPath || filePath.startsWith(`${normalizedRoot}/`);
+      return filePath === shareRootPath || filePath.startsWith(`${normalizedRoot}/`);
     },
     [shareRootPath],
   );
@@ -76,6 +78,7 @@ const useFileSharingPage = () => {
     if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
       clearFilesOnShareChange();
       hasRestoredSession.current = false;
+      lastFetchedKey.current = '';
     }
     previousWebdavShare.current = webdavShare;
   }, [webdavShare, clearFilesOnShareChange]);
@@ -109,19 +112,30 @@ const useFileSharingPage = () => {
       return;
     }
 
-    void fetchFiles(webdavShare, path === '/' ? shareRootPath : path);
-    void fetchShares();
+    const fetchKey = `${webdavShare}:${path}`;
+    if (fetchKey !== lastFetchedKey.current) {
+      lastFetchedKey.current = fetchKey;
+      void fetchFiles(webdavShare, path);
+    }
     if (path !== '/') setPathToRestoreSession(path);
   }, [
+    isFileProcessing,
     path,
     pathToRestoreSession,
     shareRootPath,
     setPathToRestoreSession,
+    setSearchParams,
     fetchFiles,
     webdavShare,
     webdavShares.length,
     isWaitingForUserData,
+    isChildOfShareRoot,
   ]);
+
+  useEffect(() => {
+    if (webdavShares.length === 0) return;
+    void fetchShares();
+  }, [webdavShare, fetchShares, webdavShares.length]);
 
   useEffect(() => {
     if (previousWebdavShare.current !== webdavShare) {
@@ -141,7 +155,7 @@ const useFileSharingPage = () => {
     };
 
     void updateFilesAfterSuccess();
-  }, [fileOperationResult, isLoading, fetchFiles, currentPath, webdavShare]);
+  }, [fileOperationResult, isLoading, fetchFiles, fetchShares, currentPath, webdavShare]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
 };
