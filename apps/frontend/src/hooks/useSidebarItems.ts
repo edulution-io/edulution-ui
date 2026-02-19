@@ -30,6 +30,7 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useNotificationStore from '@/store/useNotificationStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import { SidebarMenuItem } from '@libs/ui/types/sidebar';
 
 const useSidebarItems = (): SidebarMenuItem[] => {
@@ -37,6 +38,7 @@ const useSidebarItems = (): SidebarMenuItem[] => {
   const { appConfigs } = useAppConfigsStore();
   const { isSuperAdmin } = useLdapGroups();
   const { language } = useLanguage();
+  const { isLmn } = useDeploymentTarget();
 
   const { mails } = useMailsStore();
   const { runningConferences } = useConferenceStore();
@@ -61,7 +63,7 @@ const useSidebarItems = (): SidebarMenuItem[] => {
   const sidebarItems: SidebarMenuItem[] = appConfigs
     .filter((cfg) => cfg.displayLocations?.includes(APP_DISPLAY_LOCATIONS.SIDEBAR))
     .map((cfg) => ({
-      title: getDisplayName(cfg, language),
+      title: getDisplayName(cfg, language, isLmn),
       link: `/${cfg.name}`,
       icon: cfg.icon,
       color: 'bg-ciGreenToBlue',
