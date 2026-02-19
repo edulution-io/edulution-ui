@@ -22,6 +22,7 @@ interface FilterOption {
   translationKey: string;
   checked: boolean;
   onChange: (enabled: boolean) => void;
+  isSeparator?: boolean;
 }
 
 export default FilterOption;

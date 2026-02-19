@@ -20,7 +20,7 @@
 'use client';
 
 import * as React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
 const Popover = PopoverPrimitive.Root;

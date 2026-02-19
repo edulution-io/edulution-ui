@@ -19,40 +19,38 @@
 
 import React from 'react';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import {
-  formatBytes,
-  getElapsedTime,
-  getFileCategorie,
-  parseDate,
-} from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { useSearchParams } from 'react-router-dom';
-import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableCell from '@/components/ui/Table/SelectableCell';
+import { useTranslation } from 'react-i18next';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '@edulution-io/ui-kit';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import { useTranslation } from 'react-i18next';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
+import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
+import FileActionType from '@libs/filesharing/types/fileActionType';
+import i18n from '@/i18n';
+import { formatBytes, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import getFileCategory from '@libs/filesharing/utils/getFileCategory';
+import SortableHeader from '@/components/ui/Table/SortableHeader';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
+import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import IconWithCount from '@/components/shared/IconWithCount';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import FileActionType from '@libs/filesharing/types/fileActionType';
-import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
 
-const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
-const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
+const SIZE_COLUMN_WIDTH = 'w-1/12 lg:w-3/12 md:w-1/12';
+const TYPE_COLUMN_WIDTH = 'w-1/12 lg:w-1/12 md:w-1/12';
 
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
@@ -134,7 +132,7 @@ const getFileSharingTableColumns = (
         const isSaving = currentlyDisabledFiles[row.original.filename];
 
         return (
-          <div className={`min-w-0 max-w-full overflow-hidden ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
+          <div className={cn('min-w-0 max-w-full overflow-hidden', isSaving && 'pointer-events-none opacity-50')}>
             <SelectableCell
               icon={
                 <FileEntryIcon
@@ -152,17 +150,24 @@ const getFileSharingTableColumns = (
       },
 
       sortingFn: (rowA, rowB) => {
-        const valueA = rowA.original.type + rowA.original.filePath;
-        const valueB = rowB.original.type + rowB.original.filePath;
-        return valueA.localeCompare(valueB);
+        const isDirectoryA = rowA.original.type === ContentType.DIRECTORY;
+        const isDirectoryB = rowB.original.type === ContentType.DIRECTORY;
+        if (isDirectoryA !== isDirectoryB) {
+          return isDirectoryA ? -1 : 1;
+        }
+        return rowA.original.filename.localeCompare(rowB.original.filename);
       },
     },
     {
-      accessorKey: FILE_SHARING_TABLE_COLUMNS.IS_SHARED,
+      id: FILE_SHARING_TABLE_COLUMNS.IS_SHARED,
       size: 50,
       header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
       meta: {
         translationId: 'fileSharingTable.isShared',
+      },
+      accessorFn: (row) => {
+        const { shares } = usePublicShareStore.getState();
+        return shares.some((share) => share.filePath === row.filePath);
       },
       cell: ({ row }) => {
         const { shares } = usePublicShareStore();
@@ -181,7 +186,8 @@ const getFileSharingTableColumns = (
                 icon={faCloud}
                 className="text-background"
                 count={matchCount}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setSelectedItems([row.original]);
                   openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
                 }}
@@ -204,49 +210,39 @@ const getFileSharingTableColumns = (
           return null;
         }
 
-        const directoryFile = row.original;
-        let formattedDate: string;
+        const formattedDate = row.original.lastmod
+          ? getElapsedTime(new Date(row.original.lastmod))
+          : 'Date not provided';
 
-        if (directoryFile.lastmod) {
-          const date = new Date(directoryFile.lastmod);
-          formattedDate = getElapsedTime(date);
-        } else {
-          formattedDate = 'Date not provided';
-        }
         return <span className="overflow-hidden text-ellipsis">{formattedDate}</span>;
       },
       sortingFn: (rowA, rowB) => {
-        const valueA = rowA.original.lastmod;
-        const valueB = rowB.original.lastmod;
+        const dateA = parseDate(rowA.original.lastmod);
+        const dateB = parseDate(rowB.original.lastmod);
 
-        const dateA = parseDate(valueA);
-        const dateB = parseDate(valueB);
-
-        if (!dateA || !dateB) {
-          return !dateA ? -1 : 1;
-        }
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return -1;
+        if (!dateB) return 1;
 
         return dateA.getTime() - dateB.getTime();
       },
     },
     {
-      accessorKey: FILE_SHARING_TABLE_COLUMNS.SIZE,
+      id: FILE_SHARING_TABLE_COLUMNS.SIZE,
       size: 130,
       header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
       meta: {
         translationId: 'fileSharingTable.size',
       },
+      accessorFn: (row) => row.size ?? 0,
       cell: ({ row }) => {
         if (row.original.filePath === PARENT_FOLDER_PATH) {
           return null;
         }
 
-        let fileSize = 0;
-        if (row.original.size !== undefined) {
-          fileSize = row.original.size;
-        }
+        const fileSize = row.original.size ?? 0;
         return (
-          <div className={sizeColumnWidth}>
+          <div className={SIZE_COLUMN_WIDTH}>
             <span className="text-right text-base text-span font-medium">{formatBytes(fileSize)}</span>
           </div>
         );
@@ -270,16 +266,25 @@ const getFileSharingTableColumns = (
 
         const renderFileCategorize = (item: DirectoryFileDTO) => {
           if (row.original.type === ContentType.FILE) {
-            return t(`fileCategory.${getFileCategorie(item.filePath)}`);
+            return t(`fileCategory.${getFileCategory(item.filePath)}`);
           }
           return t('fileCategory.folder');
         };
 
         return (
-          <div className={`hidden lg:flex ${typeColumnWidth}`}>
+          <div className={cn('hidden lg:flex', TYPE_COLUMN_WIDTH)}>
             <span className="text-right text-base font-medium">{renderFileCategorize(row.original)}</span>
           </div>
         );
+      },
+      sortingFn: (rowA, rowB) => {
+        const getTranslatedCategory = (row: DirectoryFileDTO) => {
+          if (row.type === ContentType.DIRECTORY) return i18n.t('fileCategory.folder');
+          return i18n.t(`fileCategory.${getFileCategory(row.filePath)}`);
+        };
+        const categoryA = getTranslatedCategory(rowA.original);
+        const categoryB = getTranslatedCategory(rowB.original);
+        return categoryA.localeCompare(categoryB);
       },
     },
     {
@@ -312,7 +317,7 @@ const getFileSharingTableColumns = (
   ];
 
   if (visibleColumns) {
-    return allColumns.filter((column) => visibleColumns?.includes(column.id as string));
+    return allColumns.filter((column) => visibleColumns.includes(column.id as string));
   }
 
   return allColumns;

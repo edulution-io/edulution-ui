@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { KeyboardEvent, MouseEvent } from 'react';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Row } from '@tanstack/react-table';
@@ -36,6 +36,10 @@ const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
     return null;
   }
 
+  const handleStopPropagation = (e: MouseEvent | KeyboardEvent) => {
+    e.stopPropagation();
+  };
+
   if (actions.length === 1) {
     const singleAction = actions[0];
     const { icon, onClick } = singleAction;
@@ -43,7 +47,10 @@ const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
       <button
         type="button"
         className="m-0 flex w-full items-center justify-center p-0"
-        onClick={() => onClick(row)}
+        onClick={(e) => {
+          handleStopPropagation(e);
+          void onClick(row);
+        }}
       >
         <FontAwesomeIcon
           icon={icon}
@@ -54,7 +61,12 @@ const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
   }
 
   return (
-    <div className="flex items-center justify-center">
+    <div
+      className="flex items-center justify-center"
+      onClick={handleStopPropagation}
+      onKeyDown={handleStopPropagation}
+      role="presentation"
+    >
       <TableActionMenu
         actions={actions}
         row={row}

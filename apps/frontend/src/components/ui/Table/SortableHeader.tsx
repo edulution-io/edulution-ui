@@ -22,8 +22,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpDown } from '@fortawesome/free-solid-svg-icons';
 import { Column, Table } from '@tanstack/react-table';
 import Checkbox from '@/components/ui/Checkbox';
-import cn from '@libs/common/utils/className';
-import i18n from '@/i18n';
+import { cn } from '@edulution-io/ui-kit';
+import { useTranslation } from 'react-i18next';
 
 interface SortableHeaderProps<TData, TValue> {
   table?: Table<TData>;
@@ -32,32 +32,41 @@ interface SortableHeaderProps<TData, TValue> {
   hidden?: boolean;
 }
 
-const SortableHeader = <TData, TValue>({ table, column, className, hidden }: SortableHeaderProps<TData, TValue>) => (
-  <div className={cn('flex items-center space-x-2', className)}>
-    {table ? (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
-        aria-label="Select all"
-      />
-    ) : null}
-    {!hidden ? (
-      <button
-        type="button"
-        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-      >
-        <div className="flex items-center">
-          {i18n.t(String(column.columnDef.meta?.translationId || column.id))}
-          {column.getIsSorted() && (
-            <FontAwesomeIcon
-              icon={faUpDown}
-              className="ml-2 h-3 w-3"
-            />
-          )}
-        </div>
-      </button>
-    ) : null}
-  </div>
-);
+const SortableHeader = <TData, TValue>({ table, column, className, hidden }: SortableHeaderProps<TData, TValue>) => {
+  const canSort = column.getCanSort();
+  const { t } = useTranslation();
+  const label = t(String(column.columnDef.meta?.translationId || column.id));
+
+  return (
+    <div className={cn('flex items-center space-x-2', className)}>
+      {table && (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+          aria-label="Select all"
+        />
+      )}
+      {!hidden &&
+        (canSort ? (
+          <button
+            type="button"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            <div className="flex items-center">
+              {label}
+              {column.getIsSorted() && (
+                <FontAwesomeIcon
+                  icon={faUpDown}
+                  className="ml-2 h-3 w-3"
+                />
+              )}
+            </div>
+          </button>
+        ) : (
+          <span>{label}</span>
+        ))}
+    </div>
+  );
+};
 
 export default SortableHeader;

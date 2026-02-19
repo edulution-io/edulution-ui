@@ -41,18 +41,6 @@
   padding: 1rem 0;
 }
 
-.sv-action__content {
-  display: flex;
-  justify-self: center;
-
-  .svc-element__add-new-question.svc-btn {
-    min-width: 12rem;
-    height: 3rem;
-    width: 14rem;
-    border-radius: var(--border-radius, 12px);
-  }
-}
-
 .svc-preview__test-again.svc-btn {
   display: flex;
   justify-content: center;
@@ -61,14 +49,44 @@
   border-radius: var(--border-radius, 12px);
 }
 
+.svc-surface-placeholder {
+  margin-top: 10rem;
+  justify-self: center;
+  align-self: center;
+}
+
 .sd-dropdown__value {
   color: var(--background);
   font-weight: 600;
 }
 
+/* Fix rating component */
+.sd-rating__item,
+.sd-rating__item-star,
+.sd-rating__item-smiley,
+.sd-rating__item--fixed-size {
+  margin-left: 1rem !important;
+}
+.sd-rating__item {
+  background-color: var(--muted-background) !important;
+}
+.sd-rating__item:hover {
+  background-color: var(--muted) !important;
+}
 .sd-rating__item--selected {
   background-color: var(--primary) !important;
-  .sv-string-viewer {
-    color: var(--foreground);
+}
+.sd-rating__item-star {
+  svg {
+    max-width: 3rem !important;
+    max-height: 3rem !important;
+    use {
+      stroke: var(--muted-background) !important;
+      fill: var(--muted-background) !important;
+    }
   }
+}
+.sd-rating__item-star--selected svg use {
+  stroke: var(--primary) !important;
+  fill: var(--primary) !important;
 }

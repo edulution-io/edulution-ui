@@ -24,7 +24,6 @@ import BulletinBoardController from './bulletinboard.controller';
 import BulletinBoardService from './bulletinboard.service';
 import { BulletinCategory, BulletinCategorySchema } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
-import GroupsModule from '../groups/groups.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
 
 @Module({
@@ -32,7 +31,6 @@ import UserPreferencesModule from '../user-preferences/user-preferences.module';
     MongooseModule.forFeature([{ name: Bulletin.name, schema: BulletinSchema }]),
     MongooseModule.forFeature([{ name: BulletinCategory.name, schema: BulletinCategorySchema }]),
     BulletinCategoryModule,
-    GroupsModule,
     UserPreferencesModule,
   ],
   controllers: [BulletinBoardController],

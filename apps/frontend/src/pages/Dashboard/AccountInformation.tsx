@@ -25,7 +25,7 @@ import {
   USER_SETTINGS_USER_DETAILS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import { Card, CardContent } from '@/components/shared/Card';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import Field from '@/components/shared/Field';
 

@@ -32,6 +32,7 @@ type EmbeddedPageContentProps = {
   htmlContent?: string;
   urlSyncEnabled?: boolean;
   preloadBasePage?: boolean;
+  onIframeLoad?: (iframe: HTMLIFrameElement) => void;
 };
 
 const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
@@ -42,6 +43,7 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
   htmlContent,
   urlSyncEnabled = false,
   preloadBasePage = false,
+  onIframeLoad,
 }) => {
   const { pathname, search, hash } = useLocation();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -79,6 +81,11 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
         className="h-full w-full border-0"
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
         allow={IFRAME_ALLOWED_CONFIG}
+        onLoad={() => {
+          if (iframeRef.current && onIframeLoad) {
+            onIframeLoad(iframeRef.current);
+          }
+        }}
       />
     );
   }

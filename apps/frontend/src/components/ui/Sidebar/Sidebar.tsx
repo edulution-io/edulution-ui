@@ -21,6 +21,7 @@ import React from 'react';
 import useMedia from '@/hooks/useMedia';
 import useSidebarItems from '@/hooks/useSidebarItems';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import NotificationPanel from '@/pages/NotificationsCenter/components/NotificationPanel';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -31,10 +32,15 @@ const Sidebar: React.FC = () => {
   const sidebarItems = useSidebarItems();
   const showMobileSidebar = isMobileView || isTabletView || isEdulutionApp;
 
-  return showMobileSidebar ? (
-    <MobileSidebar sidebarItems={sidebarItems} />
-  ) : (
-    <DesktopSidebar sidebarItems={sidebarItems} />
+  return (
+    <>
+      {showMobileSidebar ? (
+        <MobileSidebar sidebarItems={sidebarItems} />
+      ) : (
+        <DesktopSidebar sidebarItems={sidebarItems} />
+      )}
+      <NotificationPanel />
+    </>
   );
 };
 

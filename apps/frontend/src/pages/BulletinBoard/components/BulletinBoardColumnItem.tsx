@@ -19,7 +19,7 @@
 
 /* eslint-disable react/no-danger */
 import React, { useEffect } from 'react';
-import { Button } from '@/components/shared/Button';
+import { Button, cn } from '@edulution-io/ui-kit';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
@@ -31,11 +31,11 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
-import cn from '@libs/common/utils/className';
 import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/BulletinContent';
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
 import { AnimatePresence, motion } from 'framer-motion';
+import { HIGHLIGHT_DURATION_MS } from '@libs/ui/constants/animationTiming';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -124,7 +124,7 @@ const BulletinBoardColumnItem = ({
 
     const timer = setTimeout(() => {
       element.classList.remove('blinking');
-    }, 3000);
+    }, HIGHLIGHT_DURATION_MS);
 
     return () => clearTimeout(timer);
   }, [bulletinBoardNotifications, bulletin.id, setCollapsed]);

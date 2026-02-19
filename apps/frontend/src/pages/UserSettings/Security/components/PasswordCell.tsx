@@ -27,7 +27,7 @@ import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { decryptPassword } from '@libs/common/utils/encryptPassword';
 import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { decodeBase64 } from '@libs/common/utils/getBase64String';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import { zodResolver } from '@hookform/resolvers/zod';

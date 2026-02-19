@@ -19,7 +19,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
@@ -41,7 +41,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
 
   useEffect(() => {
     void fetchTemplates();
-  }, [fetchTemplates]);
+  }, []);
 
   const filteredTemplates = useMemo(() => {
     if (!templates || templates.length === 0) {
@@ -82,8 +82,9 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         variant="default"
         width="auto"
+        className="mt-1"
       />
-      <div className={cn('space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin')}>
+      <div className={cn('space-2 flex max-h-full w-full flex-wrap gap-2 overflow-y-auto p-2 scrollbar-thin')}>
         <SurveyEditorTemplateCard
           key="create-new-card"
           creator={surveyCreator}

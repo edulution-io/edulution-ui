@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/shared/Card';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
 import { TooltipProvider } from '@/components/ui/Tooltip';

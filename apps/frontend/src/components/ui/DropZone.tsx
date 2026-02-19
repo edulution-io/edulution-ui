@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface DropZoneProps {
   onDrop: DropzoneOptions['onDrop'];

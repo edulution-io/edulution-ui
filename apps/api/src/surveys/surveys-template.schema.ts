@@ -44,10 +44,13 @@ export class SurveysTemplate {
   schemaVersion: number;
 
   @Prop({ default: [] })
-  accessibleByRoles: MultipleSelectorGroup[] | Group[];
+  accessGroups: MultipleSelectorGroup[] | Group[];
 
   @Prop({ default: ['linuxmuster'] })
   deploymentTargets: string[];
+
+  @Prop({ default: Date.now, required: false })
+  createdAt?: Date;
 }
 
 const SurveysTemplateSchema = SchemaFactory.createForClass(SurveysTemplate);

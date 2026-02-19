@@ -20,7 +20,7 @@
 import React, { FC, useMemo } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Sizes } from '@libs/ui/types/sizes';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import CircleLoader from './Loading/CircleLoader';
 
 type QRSizeKey = Sizes | 'default';

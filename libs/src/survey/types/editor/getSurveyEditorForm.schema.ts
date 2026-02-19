@@ -23,35 +23,42 @@ const getSurveyEditorFormSchema = () =>
   z.object({
     id: z.number(),
     formula: z.object({
+      logo: z.string().nullable().optional(),
+      logoWidth: z.string().optional(),
+      logoPosition: z.enum(['left', 'right']).optional(),
       title: z.string(),
       description: z.string().optional(),
       pages: z.array(
         z.object({
           name: z.string(),
           description: z.string().optional(),
-          elements: z
-            .array(
-              z.object({
-                type: z.string(),
-                name: z.string(),
-                description: z.string().optional(),
-                isRequired: z.boolean().optional(),
-                choices: z
-                  .array(
+          elements: z.array(
+            z.object({
+              type: z.string(),
+              name: z.string(),
+              description: z.string().optional(),
+              isRequired: z.boolean().optional(),
+              choices: z
+                .union([
+                  z.array(z.string()),
+                  z.array(
                     z.object({
-                      value: z.string(),
-                      label: z.string(),
+                      value: z.string().optional(),
+                      imageLink: z.string().optional(),
+                      title: z.string().optional(),
+                      name: z.string().optional(),
                     }),
-                  )
-                  .optional(),
-                choicesByUrl: z
-                  .object({
-                    url: z.string(),
-                  })
-                  .optional(),
-              }),
-            )
-            .optional(),
+                  ),
+                ])
+                .optional(),
+              choicesByUrl: z
+                .object({
+                  url: z.string(),
+                })
+                .optional(),
+              showOtherItem: z.boolean().optional(),
+            }),
+          ),
         }),
       ),
       elements: z.array(
@@ -61,18 +68,24 @@ const getSurveyEditorFormSchema = () =>
           description: z.string().optional(),
           isRequired: z.boolean().optional(),
           choices: z
-            .array(
-              z.object({
-                value: z.string(),
-                label: z.string(),
-              }),
-            )
+            .union([
+              z.array(z.string()),
+              z.array(
+                z.object({
+                  value: z.string().optional(),
+                  imageLink: z.string().optional(),
+                  title: z.string().optional(),
+                  name: z.string().optional(),
+                }),
+              ),
+            ])
             .optional(),
           choicesByUrl: z
             .object({
               url: z.string(),
             })
             .optional(),
+          showOtherItem: z.boolean().optional(),
         }),
       ),
       calculatedValues: z
@@ -146,7 +159,7 @@ const getSurveyEditorFormSchema = () =>
     isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
     canUpdateFormerAnswer: z.boolean().optional(),
-    saveAsTemplate: z.boolean().optional(),
+    shouldSaveAsTemplate: z.boolean().optional(),
   });
 
 export default getSurveyEditorFormSchema;

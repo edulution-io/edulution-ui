@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { useForm } from 'react-hook-form';
@@ -28,7 +28,7 @@ import { QrCodeIcon } from '@/assets/icons';
 import { toast } from 'sonner';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
@@ -42,6 +42,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
@@ -83,6 +84,7 @@ const LoginPage: React.FC = () => {
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
   const [sessionID, setSessionID] = useState<string | null>(null);
+  const hasRegisteredRef = useRef(false);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -139,24 +141,33 @@ const LoginPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const isLoginPrevented = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
-    if (isLoginPrevented) {
+    const isLoginPrevented =
+      !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username || !webdavKey || !encryptKey;
+    if (isLoginPrevented || hasRegisteredRef.current) {
       return;
     }
+    hasRegisteredRef.current = true;
+
     const registerUser = async () => {
       await handleRegisterUser();
-
       setIsEnterTotpVisible(false);
     };
 
     void registerUser();
-  }, [auth.isAuthenticated, eduApiToken]);
+  }, [auth.isAuthenticated, eduApiToken, webdavKey, encryptKey]);
+
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      hasRegisteredRef.current = false;
+    }
+  }, [auth.isAuthenticated]);
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isGlobalSettingsReady = globalSettings !== null;
   const isDeploymentTargetReady = (isGeneric && !isLmn) || !!(isLmn && lmnApiToken && lmnUser);
   const isAuthenticatedAppReady =
     isAppConfigReady && isAuthenticated && isGlobalSettingsReady && isDeploymentTargetReady;
+  const isWaitingForRedirect = auth.isAuthenticated || !!eduApiToken;
 
   useEffect(() => {
     if (!isAuthenticatedAppReady) return;
@@ -360,49 +371,55 @@ const LoginPage: React.FC = () => {
           alt={t('logo')}
           className="mx-auto w-64"
         />
-        <Form
-          {...form}
-          data-testid="test-id-login-page-form"
-        >
-          <form
-            onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
-            className="space-y-4"
+        {isWaitingForRedirect ? (
+          <div className="flex flex-col items-center justify-center py-8">
+            <CircleLoader forceLightMode />
+          </div>
+        ) : (
+          <Form
+            {...form}
             data-testid="test-id-login-page-form"
           >
-            {getMainContent()}
-            {!showQrCode && !form.getFieldState('password').error && <p className="flex h-3" />}
-
-            {!showQrCode && (
-              <Button
-                className="mx-auto w-full justify-center text-white shadow-xl"
-                type="submit"
-                variant="btn-security"
-                size="lg"
-                data-testid="test-id-login-page-submit-button"
-                disabled={isLoading || totpIsLoading}
-              >
-                {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
-              </Button>
-            )}
-            <Button
-              className="mx-auto w-full justify-center border-none text-black shadow-xl hover:bg-ciGrey/10 hover:text-black"
-              type="button"
-              variant="btn-outline"
-              size="lg"
-              disabled={isLoading || totpIsLoading}
-              onClick={handleCancelOrToggleQrCode}
+            <form
+              onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
+              className="space-y-4"
+              data-testid="test-id-login-page-form"
             >
-              {isEnterTotpVisible || showQrCode ? (
-                t('common.cancel')
-              ) : (
-                <>
-                  {t('login.loginWithApp')}
-                  <QrCodeIcon className="h-6 w-6 text-black" />
-                </>
+              {getMainContent()}
+              {!showQrCode && !form.getFieldState('password').error && <p className="flex h-3" />}
+
+              {!showQrCode && (
+                <Button
+                  className="mx-auto w-full justify-center text-white shadow-xl"
+                  type="submit"
+                  variant="btn-security"
+                  size="lg"
+                  data-testid="test-id-login-page-submit-button"
+                  disabled={isLoading || totpIsLoading}
+                >
+                  {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+                </Button>
               )}
-            </Button>
-          </form>
-        </Form>
+              <Button
+                className="mx-auto w-full justify-center border-none text-black shadow-xl hover:bg-ciGrey/10 hover:text-black"
+                type="button"
+                variant="btn-outline"
+                size="lg"
+                disabled={isLoading || totpIsLoading}
+                onClick={handleCancelOrToggleQrCode}
+              >
+                {isEnterTotpVisible || showQrCode ? (
+                  t('common.cancel')
+                ) : (
+                  <>
+                    {t('login.loginWithApp')}
+                    <QrCodeIcon className="h-6 w-6 text-black" />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
       </Card>
     </PageLayout>
   );

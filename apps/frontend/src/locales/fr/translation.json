@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "illimité",
     "appTitle": "Tableau d'affichage",
     "description": "Ici, vous trouverez vos messages actuels",
+    "view": "Affichage",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Ligne",
+    "viewTwoRows": "2 Lignes",
+    "viewThreeRows": "3 Lignes",
     "filterPlaceHolderText": "Rechercher des noms de catégorie",
     "sidebar": "Tableau d'affichage",
     "newCategorie": "Nouvelle catégorie",
@@ -90,6 +95,35 @@
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
       "attachmentNotFound": "Pièce jointe introuvable",
       "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
+    }
+  },
+  "notificationscenter": {
+    "appTitle": "Notifications",
+    "description": "Ici tu peux trouver toutes tes notifications",
+    "sidebar": "Notifications",
+    "noNotifications": "Tu n'as pas de notifications",
+    "markAllAsRead": "Marquer tout comme lu",
+    "markAsRead": "Marquer comme lu",
+    "from": "de {{ author }}",
+    "systemNotification": "Notification système",
+    "messagesSection": "Messages",
+    "systemSection": "Notifications système",
+    "noMessages": "Pas de messages",
+    "noSystemNotifications": "Pas de notifications système",
+    "deleteAll": "Tout supprimer",
+    "deleteAllMessages": "Supprimer tous les messages",
+    "deleteAllSystem": "Supprimer toutes les notifications système",
+    "confirmDeleteAll": "Es-tu sûr de vouloir supprimer les {{count}} notifications ?",
+    "confirmDeleteMessages": "Es-tu sûr de vouloir supprimer les {{count}} messages ?",
+    "confirmDeleteSystem": "Es-tu sûr de vouloir supprimer les {{count}} notifications système ?",
+    "actionCannotBeUndone": "Cette action ne peut pas être annulée.",
+    "deletedNotifications": "{{count}} notification supprimée",
+    "deletedNotifications_other": "{{count}} notifications supprimées",
+    "loadMore": "Charger plus",
+    "menu": {
+      "all": "Tout",
+      "messages": "Messages",
+      "system": "Système"
     }
   },
   "appstore": {
@@ -172,6 +206,7 @@
       "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
       "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
       "GetUserFailed": "Échec de l'appel",
+      "GetUsersFailed": "L'appel des utilisateurs a échoué",
       "UpdateUserFailed": "La mise à jour a échoué",
       "GetCurrentUserRoomFailed": "Echec d'appel de la salle actuelle",
       "CreateProjectFailed": "La création du projet a échoué",
@@ -206,6 +241,7 @@
       "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
       "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
     },
+    "newMail": "{{count}} nouveau(x) e-mail(s) reçu(s)",
     "importer": {
       "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
       "title": "Importateur de courrier électronique",
@@ -423,7 +459,8 @@
     "webdavInfo": {
       "title": "Accès WebDAV",
       "description": "Utilisez cette URL pour vous connecter à vos fichiers via des clients WebDAV",
-      "url": "URL WebDAV",
+      "urlWindowsMac": "URL WebDAV (Windows / macOS)",
+      "urlLinux": "URL WebDAV (Linux)",
       "username": "Nom d'utilisateur",
       "passwordHint": "Utilisez votre mot de passe de connexion pour vous authentifier",
       "tutorialsTitle": "Tutoriels de configuration",
@@ -651,17 +688,30 @@
         "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
         "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
         "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
-        "pageTitlePlaceHolder": "Entrez le titre de la page"
+        "pageTitlePlaceHolder": "Entrez le titre de la page",
+        "previewTabTitle": "Aperçu"
       },
       "isLoadingSurvey": "Le sondage est en cours de chargement...",
       "template": {
         "title": "Modèle",
         "label": "Enregistrer le modèle",
-        "save": "Enregistrer le modèle",
         "noTemplates": "Aucun modèle disponible",
         "noSearchResults": "Aucun modèle trouvé",
         "searchPlaceholder": "Tapez pour filtrer les modèles par nom ...",
         "preview": "Aperçu du modèle",
+        "save": {
+          "title": "Enregistrer le modèle",
+          "submit": "Enregistrer le modèle de sondage",
+          "name": {
+            "label": "Nom du modèle",
+            "description": "Si ce champ est laissé vide, le titre du sondage sera utilisé.",
+            "placeholder": "Titre du sondage"
+          },
+          "accessGroups": {
+            "label": "Groupes d'accès",
+            "description": "Sélectionnez les groupes qui peuvent accéder à ce modèle. Si aucun groupe n'est sélectionné, le modèle est accessible à tous les utilisateurs."
+          }
+        },
         "upload": {
           "success": "Modèle enregistré avec succès",
           "error": "Échec de l'enregistrement du modèle"
@@ -689,6 +739,20 @@
         "upperLimit": "limite",
         "upperBackendLimiters": "Options de sélection avec limite supérieure",
         "addChoice": "Ajouter"
+      },
+      "surveyLogo": {
+        "title": "Logo de l'enquête",
+        "width": {
+          "label": "Largeur du logo en pixels (min. 150 px)",
+          "placeholder": "Entrez la largeur du logo en pixels"
+        },
+        "position": {
+          "label": "Position du logo",
+          "placeholder": "Choisissez la position du logo",
+          "left": "À gauche du titre",
+          "right": "À droite du titre",
+          "description": "La position du logo par rapport au titre de l'enquête est visible dans l'onglet 'Tester le sondage'."
+        }
       }
     },
     "participate": {
@@ -719,7 +783,8 @@
       "notAbleToFindSurveyAnswerError": "Aucune réponse disponible.",
       "notAbleToUpdateSurveyAnswerError": "La réponse n'a pas pu être mise à jour.",
       "notAbleToCreateSurveyAnswerError": "La réponse n'a pas pu être créée.",
-      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée."
+      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée.",
+      "alreadyParticipated": "Vous avez déjà participé."
     }
   },
   "surveys": {
@@ -764,6 +829,7 @@
     },
     "saveDialog": {
       "title": "Enregistrer et affecter les utilisateurs",
+      "surveySettings": "Paramètres du sondage",
       "settingsFlags": "Paramètres",
       "isAnonymous": "Le sondage doit-elle être anonyme?",
       "isPublic": "Le sondage doit-elle être publique?",
@@ -1268,7 +1334,8 @@
       "qrCodeDescription": "Scannez ce code QR avec l'application WireGuard sur votre appareil mobile pour configurer la connexion VPN.",
       "configDownload": "Fichier de configuration",
       "configDownloadDescription": "Téléchargez le fichier de configuration WireGuard pour l'importer dans l'application WireGuard sur votre ordinateur.",
-      "downloadButton": "Télécharger la configuration"
+      "downloadButton": "Télécharger la configuration",
+      "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
@@ -1338,6 +1405,8 @@
     "filter": "Filtrer",
     "showHiddenFiles": "Afficher les fichiers cachés",
     "showSystemFiles": "Afficher les fichiers système",
+    "expand": "Développer",
+    "collapse": "Réduire",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbInvalidId": "Invalid database ID",
@@ -1817,7 +1886,8 @@
   "users": {
     "errors": {
       "notFoundError": "L'utilisateur n'existe pas",
-      "updateError": "Les utilisateurs n'ont pas pu être mis à jour"
+      "updateError": "Les utilisateurs n'ont pas pu être mis à jour",
+      "passwordNotSetError": "Le mot de passe n'est pas défini pour cet utilisateur"
     }
   },
   "permission": {
@@ -2015,6 +2085,7 @@
       "short": "Root",
       "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
     },
+    "noSharesConfigured": "Aucun partage configuré. Veuillez contacter l'administrateur système.",
     "selectPlaceholder": "Sélectionner...",
     "authentication": {
       "title": "Authentification",

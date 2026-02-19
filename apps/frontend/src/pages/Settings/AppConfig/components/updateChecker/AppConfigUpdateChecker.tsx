@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import UPDATE_CHECKER_ENDPOINTS from '@libs/appconfig/constants/updateCheckerEndpoints';
 import useRequiredContainers from '@/pages/Settings/AppConfig/hooks/useRequiredContainers';

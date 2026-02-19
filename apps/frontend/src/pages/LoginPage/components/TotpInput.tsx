@@ -20,7 +20,7 @@
 import React, { FC, useState, Dispatch, SetStateAction } from 'react';
 import OtpInputFieldWithNumPad from '@/components/shared/OtpInputFieldWithNumPad';
 import NumberPad from '@/components/ui/NumberPad';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface TotpInputProps {
   totp: string;
