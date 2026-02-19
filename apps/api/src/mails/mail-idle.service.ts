@@ -29,6 +29,7 @@ import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import type MailFlagsChangedNotificationDto from '@libs/mail/types/mailFlagsChangedNotification.dto';
+import type { MailDto } from '@libs/mail/types';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
@@ -531,6 +532,44 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
           MailIdleService.name,
         );
       }
+    }
+  }
+
+  async fetchUnseenMails(username: string): Promise<MailDto[] | null> {
+    const connection = this.idleConnections.get(username);
+    if (!connection?.client?.usable) {
+      return null;
+    }
+
+    try {
+      const unseenMailUids = await connection.client.search({ seen: false }, { uid: true });
+
+      if (!unseenMailUids || unseenMailUids.length === 0) {
+        return [];
+      }
+
+      const newestMailUids = [...unseenMailUids]
+        .sort((a: number, b: number) => b - a)
+        .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
+
+      const uidRange = newestMailUids.join(',');
+      const messages = await connection.client.fetchAll({ uid: uidRange }, { envelope: true, flags: true, uid: true });
+
+      const mails: MailDto[] = messages
+        .map((mail) => ({
+          id: mail.uid,
+          subject: mail.envelope?.subject,
+          flags: mail.flags,
+        }))
+        .sort((a, b) => b.id - a.id);
+      Logger.verbose(`Feed: ${mails.length} unseen mails fetched via IDLE connection`, MailIdleService.name);
+      return mails;
+    } catch (error) {
+      Logger.error(
+        `Failed to fetch unseen mails via IDLE for ${username}: ${getErrorMessage(error)}`,
+        MailIdleService.name,
+      );
+      return null;
     }
   }
 
