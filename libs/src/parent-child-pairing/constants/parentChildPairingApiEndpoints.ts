@@ -17,7 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PARENT_CHILD_PAIRING_API_ENDPOINT = 'parent-child-pairing';
-const PARENT_CHILD_PAIRING_API_ENDPOINT_CODE = 'code';
+const PARENT_CHILD_PAIRING_API_ENDPOINTS = {
+  BASE: 'parent-child-pairing',
+  CODE: 'code',
+  ALL: 'all',
+  STATUS: 'status',
+} as const;
 
-export { PARENT_CHILD_PAIRING_API_ENDPOINT, PARENT_CHILD_PAIRING_API_ENDPOINT_CODE };
+export default PARENT_CHILD_PAIRING_API_ENDPOINTS;

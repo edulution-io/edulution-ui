@@ -22,8 +22,7 @@ import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
-import { PARENT_CHILD_PAIRING_API_ENDPOINT } from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoint';
-import PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingAdminEndpoints';
+import PARENT_CHILD_PAIRING_API_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoints';
 import PARENT_CHILD_PAIRING_QUERY_PARAMS from '@libs/parent-child-pairing/constants/parentChildPairingQueryParams';
 import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
 import PARENT_CHILD_PAIRING_STATUS_FILTER_ALL from '@libs/parent-child-pairing/constants/parentChildPairingStatusFilterAll';
@@ -59,7 +58,7 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
         params[PARENT_CHILD_PAIRING_QUERY_PARAMS.SCHOOL] = selectedSchool;
       }
       const { data } = await eduApi.get<ParentChildPairingDto[]>(
-        `${PARENT_CHILD_PAIRING_API_ENDPOINT}/${PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS.ALL}`,
+        `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.ALL}`,
         { params },
       );
       set({ pairings: data });
@@ -72,9 +71,12 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
 
   updateStatus: async (id: string, status: string) => {
     try {
-      await eduApi.patch(`${PARENT_CHILD_PAIRING_API_ENDPOINT}/${id}/${PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS.STATUS}`, {
-        status,
-      });
+      await eduApi.patch(
+        `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${id}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.STATUS}`,
+        {
+          status,
+        },
+      );
       toast.success(i18n.t('parentChildPairing.statusUpdated'));
       await get().fetchPairings();
     } catch (error) {

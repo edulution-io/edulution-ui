@@ -23,10 +23,7 @@ import { HttpStatusCode } from 'axios';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
-import {
-  PARENT_CHILD_PAIRING_API_ENDPOINT,
-  PARENT_CHILD_PAIRING_API_ENDPOINT_CODE,
-} from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoint';
+import PARENT_CHILD_PAIRING_API_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoints';
 import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 import type ParentChildPairingCodeResponseDto from '@libs/parent-child-pairing/types/parentChildPairingCodeResponseDto';
 
@@ -59,7 +56,7 @@ const useParentChildPairingStore = create<ParentChildPairingStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const { data } = await eduApi.get<ParentChildPairingCodeResponseDto>(
-        `${PARENT_CHILD_PAIRING_API_ENDPOINT}/${PARENT_CHILD_PAIRING_API_ENDPOINT_CODE}`,
+        `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.CODE}`,
       );
       set({ pairingCode: data.code });
     } catch (error) {
@@ -73,7 +70,7 @@ const useParentChildPairingStore = create<ParentChildPairingStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const { data } = await eduApi.put<ParentChildPairingCodeResponseDto>(
-        `${PARENT_CHILD_PAIRING_API_ENDPOINT}/${PARENT_CHILD_PAIRING_API_ENDPOINT_CODE}`,
+        `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.CODE}`,
       );
       set({ pairingCode: data.code });
       toast.success(i18n.t('usersettings.parentChildPairing.codeRefreshed'));
@@ -87,7 +84,7 @@ const useParentChildPairingStore = create<ParentChildPairingStore>((set) => ({
   submitPairingCode: async (code: string) => {
     set({ isSubmitting: true, error: null });
     try {
-      await eduApi.post(PARENT_CHILD_PAIRING_API_ENDPOINT, { code });
+      await eduApi.post(PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE, { code });
       toast.success(i18n.t('usersettings.parentChildPairing.pairingSuccess'));
       set({ isSubmitting: false });
       return true;
@@ -105,7 +102,7 @@ const useParentChildPairingStore = create<ParentChildPairingStore>((set) => ({
 
   fetchRelationships: async () => {
     try {
-      const { data } = await eduApi.get<ParentChildPairingDto[]>(PARENT_CHILD_PAIRING_API_ENDPOINT);
+      const { data } = await eduApi.get<ParentChildPairingDto[]>(PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE);
       set({ relationships: data });
     } catch (error) {
       handleApiError(error, set);

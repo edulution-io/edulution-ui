@@ -19,11 +19,7 @@
 
 import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import {
-  PARENT_CHILD_PAIRING_API_ENDPOINT,
-  PARENT_CHILD_PAIRING_API_ENDPOINT_CODE,
-} from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoint';
-import PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingAdminEndpoints';
+import PARENT_CHILD_PAIRING_API_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoints';
 import type SubmitParentChildPairingCodeDto from '@libs/parent-child-pairing/types/submitParentChildPairingCodeDto';
 import type UpdateParentChildPairingStatusDto from '@libs/parent-child-pairing/types/updateParentChildPairingStatusDto';
 import PARENT_CHILD_PAIRING_QUERY_PARAMS from '@libs/parent-child-pairing/constants/parentChildPairingQueryParams';
@@ -35,13 +31,13 @@ import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.deco
 import ParentChildPairingService from './parent-child-pairing.service';
 import DynamicAppAccessGuard from '../common/guards/dynamicAppAccess.guard';
 
-@Controller(PARENT_CHILD_PAIRING_API_ENDPOINT)
+@Controller(PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE)
 @ApiBearerAuth()
-@ApiTags(PARENT_CHILD_PAIRING_API_ENDPOINT)
+@ApiTags(PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE)
 class ParentChildPairingController {
   constructor(private readonly parentChildPairingService: ParentChildPairingService) {}
 
-  @Get(PARENT_CHILD_PAIRING_API_ENDPOINT_CODE)
+  @Get(PARENT_CHILD_PAIRING_API_ENDPOINTS.CODE)
   async getCode(
     @GetCurrentUsername() username: string,
     @GetCurrentUserGroups() groups: string[],
@@ -51,7 +47,7 @@ class ParentChildPairingController {
     return { code };
   }
 
-  @Put(PARENT_CHILD_PAIRING_API_ENDPOINT_CODE)
+  @Put(PARENT_CHILD_PAIRING_API_ENDPOINTS.CODE)
   async refreshCode(
     @GetCurrentUsername() username: string,
     @GetCurrentUserGroups() groups: string[],
@@ -76,7 +72,7 @@ class ParentChildPairingController {
     return this.parentChildPairingService.getRelationships(username, groups);
   }
 
-  @Get(PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS.ALL)
+  @Get(PARENT_CHILD_PAIRING_API_ENDPOINTS.ALL)
   @UseGuards(DynamicAppAccessGuard)
   async getAllParentChildPairings(
     @Query(PARENT_CHILD_PAIRING_QUERY_PARAMS.STATUS) status?: ParentChildPairingStatusType,
@@ -85,7 +81,7 @@ class ParentChildPairingController {
     return this.parentChildPairingService.getAllParentChildPairings(status, school);
   }
 
-  @Patch(`:id/${PARENT_CHILD_PAIRING_ADMIN_ENDPOINTS.STATUS}`)
+  @Patch(`:id/${PARENT_CHILD_PAIRING_API_ENDPOINTS.STATUS}`)
   @UseGuards(DynamicAppAccessGuard)
   async updateParentChildPairingStatus(@Param('id') id: string, @Body() body: UpdateParentChildPairingStatusDto) {
     return this.parentChildPairingService.updateParentChildPairingStatus(id, body.status);
