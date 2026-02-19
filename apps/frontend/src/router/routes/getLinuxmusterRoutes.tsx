@@ -21,18 +21,18 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import {
   LINUXMUSTER_PATH,
+  USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
+  USER_MANAGEMENT_GLOBALADMINS_LOCATION,
   USER_MANAGEMENT_LOCATION,
+  USER_MANAGEMENT_PARENTS_LOCATION,
+  USER_MANAGEMENT_SCHOOLADMINS_LOCATION,
+  USER_MANAGEMENT_STAFF_LOCATION,
   USER_MANAGEMENT_STUDENTS_LOCATION,
   USER_MANAGEMENT_TEACHERS_LOCATION,
-  USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
-  USER_MANAGEMENT_PARENTS_LOCATION,
-  USER_MANAGEMENT_STAFF_LOCATION,
-  USER_MANAGEMENT_SCHOOLADMINS_LOCATION,
-  USER_MANAGEMENT_GLOBALADMINS_LOCATION,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import LinuxmusterEntryPage from '@/pages/LinuxmusterPage/LinuxmusterEntryPage';
-import UserManagementPageExample from '@/pages/LinuxmusterPage/UserManagement/UserManagementPageExample';
+import UserManagementPage from '@/pages/LinuxmusterPage/UserManagement/UserManagementPage';
 
 const getLinuxmusterRoutes = () => [
   <Route
@@ -55,7 +55,7 @@ const getLinuxmusterRoutes = () => [
       />
       <Route
         path={`${USER_MANAGEMENT_STUDENTS_LOCATION}/:tabId`}
-        element={<UserManagementPageExample userType="students" />}
+        element={<UserManagementPage userType="students" />}
       />
       <Route
         path={USER_MANAGEMENT_TEACHERS_LOCATION}
@@ -68,7 +68,7 @@ const getLinuxmusterRoutes = () => [
       />
       <Route
         path={`${USER_MANAGEMENT_TEACHERS_LOCATION}/:tabId`}
-        element={<UserManagementPageExample userType="teachers" />}
+        element={<UserManagementPage userType="teachers" />}
       />
       <Route
         path={USER_MANAGEMENT_EXTRASTUDENTS_LOCATION}
@@ -81,7 +81,7 @@ const getLinuxmusterRoutes = () => [
       />
       <Route
         path={`${USER_MANAGEMENT_EXTRASTUDENTS_LOCATION}/:tabId`}
-        element={<UserManagementPageExample userType="extrastudents" />}
+        element={<UserManagementPage userType="extrastudents" />}
       />
       <Route
         path={USER_MANAGEMENT_PARENTS_LOCATION}
@@ -94,7 +94,7 @@ const getLinuxmusterRoutes = () => [
       />
       <Route
         path={`${USER_MANAGEMENT_PARENTS_LOCATION}/:tabId`}
-        element={<UserManagementPageExample userType="parents" />}
+        element={<UserManagementPage userType="parents" />}
       />
       <Route
         path={USER_MANAGEMENT_STAFF_LOCATION}
@@ -107,7 +107,7 @@ const getLinuxmusterRoutes = () => [
       />
       <Route
         path={`${USER_MANAGEMENT_STAFF_LOCATION}/:tabId`}
-        element={<UserManagementPageExample userType="staff" />}
+        element={<UserManagementPage userType="staff" />}
       />
       <Route
         path={USER_MANAGEMENT_SCHOOLADMINS_LOCATION}
@@ -120,7 +120,7 @@ const getLinuxmusterRoutes = () => [
       />
       <Route
         path={`${USER_MANAGEMENT_SCHOOLADMINS_LOCATION}/:tabId`}
-        element={<UserManagementPageExample userType="schooladmins" />}
+        element={<UserManagementPage userType="schooladmins" />}
       />
       <Route
         path={USER_MANAGEMENT_GLOBALADMINS_LOCATION}
@@ -133,7 +133,7 @@ const getLinuxmusterRoutes = () => [
       />
       <Route
         path={`${USER_MANAGEMENT_GLOBALADMINS_LOCATION}/:tabId`}
-        element={<UserManagementPageExample userType="globaladmins" />}
+        element={<UserManagementPage userType="globaladmins" />}
       />
     </Route>
   </Route>,

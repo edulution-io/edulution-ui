@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
@@ -28,30 +28,34 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import { USER_MANAGEMENT_PATH } from '@libs/userManagement/constants/userManagementPaths';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
+import USER_TYPE_ICONS from '@libs/userManagement/constants/userTypeIcons';
 import ADMIN_SUB_TABS from '@libs/userManagement/constants/adminSubTabs';
 import ALL_TAB_OPTIONS from '@libs/userManagement/constants/allTabOptions';
 import type UserType from '@libs/userManagement/types/userType';
-import { LinuxmusterIcon } from '@/assets/icons';
+import SchoolSelectorDropdown from '@/pages/ClassManagement/components/SchoolSelectorDropdown';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import UserTable from './components/UserTable/UserTable';
+import ListManagementTab from './components/ListManagement/ListManagementTab';
+import UserManagementFloatingButtons from './components/ListManagement/UserManagementFloatingButtons';
+import UserDetailsDialog from './components/UserTable/UserDetailsDialog';
+import useUserManagementStore from './useUserManagementStore';
 import useRegisterUserManagementSections from './useRegisterUserManagementSections';
 
-interface UserManagementPageExampleProps {
+interface UserManagementPageProps {
   userType: UserType;
 }
 
-const Placeholder: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex h-64 items-center justify-center text-muted-foreground">
-    <span>{label}</span>
-  </div>
-);
-
-const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ userType }) => {
+const UserManagementPage: React.FC<UserManagementPageProps> = ({ userType }) => {
   const { t } = useTranslation();
   const { isMobileView, isTabletView } = useMedia();
   const { tabId } = useParams();
   const navigate = useNavigate();
+  const { isSuperAdmin } = useLdapGroups();
+  const { selectedUserDetails, setSelectedUserDetails } = useUserManagementStore();
   useRegisterUserManagementSections();
 
   const adminSubTabs = ADMIN_SUB_TABS[userType];
+
   const managementList = USER_TYPE_TO_MANAGEMENT_LIST[userType];
   const hasList = managementList !== null;
 
@@ -74,10 +78,19 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
     navigate(`/${USER_MANAGEMENT_PATH}/${userType}/${id}`);
   };
 
+  const showFloatingButtons = !adminSubTabs && hasList && tabValue === USER_MANAGEMENT_TABS.LIST;
+
+  useEffect(
+    () => () => {
+      setSelectedUserDetails(null);
+    },
+    [userType],
+  );
+
   const nativeAppHeader = {
     title: t(`usermanagement.${userType}`),
     description: t('usermanagement.description'),
-    iconSrc: LinuxmusterIcon,
+    iconSrc: USER_TYPE_ICONS[userType],
   };
 
   if (adminSubTabs) {
@@ -105,6 +118,7 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
                     </TabsTrigger>
                   ))}
                 </TabsList>
+                {isSuperAdmin && <SchoolSelectorDropdown />}
               </div>
               <Separator className="my-2 bg-muted" />
             </div>
@@ -112,12 +126,13 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
               <TabsContent
                 key={tab.id}
                 value={tab.id}
-                className="flex-1 overflow-y-auto scrollbar-thin"
+                className="flex-1 overflow-hidden"
               >
-                <Placeholder label={t(tab.nameKey)} />
+                <UserTable userType={tab.subUserType} />
               </TabsContent>
             ))}
           </Tabs>
+          {selectedUserDetails && <UserDetailsDialog />}
         </PageLayout>
       );
     }
@@ -127,6 +142,7 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
         <div className="flex h-full flex-col">
           <div className="sticky top-0 z-20">
             <div className="mb-2 flex flex-col gap-2">
+              {isSuperAdmin && <SchoolSelectorDropdown />}
               <DropdownSelect
                 options={tabOptions}
                 selectedVal={tabValue}
@@ -138,13 +154,14 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
           <div className="flex-1 overflow-y-auto">
             {adminSubTabs.map((tab) =>
               tabValue === tab.id ? (
-                <Placeholder
+                <UserTable
                   key={tab.id}
-                  label={t(tab.nameKey)}
+                  userType={tab.subUserType}
                 />
               ) : null,
             )}
           </div>
+          {selectedUserDetails && <UserDetailsDialog />}
         </div>
       </PageLayout>
     );
@@ -174,24 +191,25 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
                   </TabsTrigger>
                 ))}
               </TabsList>
+              <div className="ml-auto">{isSuperAdmin && <SchoolSelectorDropdown />}</div>
             </div>
             <Separator className="my-2 bg-muted" />
           </div>
           <TabsContent
             value={USER_MANAGEMENT_TABS.TABLE}
-            className="flex-1 overflow-y-auto scrollbar-thin"
+            className="flex-1 overflow-hidden"
           >
-            <Placeholder label={t('usermanagement.tabs.table')} />
+            <UserTable userType={userType} />
           </TabsContent>
-          {hasList && (
-            <TabsContent
-              value={USER_MANAGEMENT_TABS.LIST}
-              className="flex-1 overflow-y-auto scrollbar-thin"
-            >
-              <Placeholder label={t('usermanagement.tabs.list')} />
-            </TabsContent>
-          )}
+          <TabsContent
+            value={USER_MANAGEMENT_TABS.LIST}
+            className="flex-1 overflow-hidden"
+          >
+            <ListManagementTab userType={userType} />
+          </TabsContent>
         </Tabs>
+        {showFloatingButtons && <UserManagementFloatingButtons userType={userType} />}
+        {selectedUserDetails && <UserDetailsDialog />}
       </PageLayout>
     );
   }
@@ -201,6 +219,7 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
       <div className="flex h-full flex-col">
         <div className="sticky top-0 z-20">
           <div className="mb-2 flex flex-col gap-2">
+            {isSuperAdmin && <SchoolSelectorDropdown />}
             <DropdownSelect
               options={tabOptions}
               selectedVal={tabValue}
@@ -210,11 +229,17 @@ const UserManagementPageExample: React.FC<UserManagementPageExampleProps> = ({ u
           <Separator className="my-2 bg-muted" />
         </div>
         <div className="flex-1 overflow-y-auto">
-          <Placeholder label={t(`usermanagement.tabs.${tabValue}`)} />
+          {tabValue === USER_MANAGEMENT_TABS.TABLE ? (
+            <UserTable userType={userType} />
+          ) : (
+            <ListManagementTab userType={userType} />
+          )}
         </div>
+        {showFloatingButtons && <UserManagementFloatingButtons userType={userType} />}
+        {selectedUserDetails && <UserDetailsDialog />}
       </div>
     </PageLayout>
   );
 };
 
-export default UserManagementPageExample;
+export default UserManagementPage;
