@@ -35,8 +35,6 @@ import type { ManagementListType } from '@libs/userManagement/constants/manageme
 import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
 import USER_MANAGEMENT_COLUMN_IDS from '@libs/userManagement/constants/userManagementColumnIds';
 
-const BIRTHDAY_COLUMN_KEY = 'birthday';
-
 interface ListManagementColumnsProps {
   managementList: ManagementListType;
   isNewRow: (rowId: string) => boolean;
@@ -56,15 +54,13 @@ const getListManagementColumns = ({
 }: ListManagementColumnsProps): ColumnDef<ListManagementRow>[] => {
   const columnConfigs = LIST_MANAGEMENT_COLUMNS[managementList];
 
-  const LOGIN_TOOLTIP_TRANSLATION_KEY = 'usermanagement.list.loginTooltip';
-
   const cols: ColumnDef<ListManagementRow>[] = columnConfigs.map((config: ColumnConfig) => ({
     id: config.key,
     accessorKey: config.key,
-    ...(config.key === BIRTHDAY_COLUMN_KEY && {
+    ...(config.key === USER_MANAGEMENT_COLUMN_IDS.BIRTHDAY && {
       sortingFn: (rowA, rowB) => {
-        const a = rowA.getValue<string>(BIRTHDAY_COLUMN_KEY) || '';
-        const b = rowB.getValue<string>(BIRTHDAY_COLUMN_KEY) || '';
+        const a = rowA.getValue<string>(USER_MANAGEMENT_COLUMN_IDS.BIRTHDAY) || '';
+        const b = rowB.getValue<string>(USER_MANAGEMENT_COLUMN_IDS.BIRTHDAY) || '';
         return parseDDMMYYYY(a) - parseDDMMYYYY(b);
       },
     }),
@@ -81,7 +77,7 @@ const getListManagementColumns = ({
                   className="h-3 w-3 text-muted-foreground"
                 />
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs">{t(LOGIN_TOOLTIP_TRANSLATION_KEY)}</TooltipContent>
+              <TooltipContent className="max-w-xs">{t('usermanagement.list.loginTooltip')}</TooltipContent>
             </Tooltip>
           </div>
         );
