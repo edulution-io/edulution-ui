@@ -27,7 +27,6 @@ import GroupRoles from '@libs/groups/types/group-roles.enum';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import PAIRING_ERROR_MESSAGES from '@libs/pairing/constants/pairingErrorMessages';
 import type PairingDto from '@libs/pairing/types/pairingDto';
-import type PaginatedPairingsDto from '@libs/pairing/types/paginatedPairingsDto';
 import PAIRING_CACHE_CONFIG from '@libs/pairing/constants/pairingCacheConfig';
 import CustomHttpException from '../common/CustomHttpException';
 import { Pairing, PairingDocument } from './pairing.schema';
@@ -119,26 +118,15 @@ class PairingService {
     return pairings.map((p) => PairingService.toPairingDto(p));
   }
 
-  async getAllPairings(status: string, page: number, limit: number): Promise<PaginatedPairingsDto> {
+  async getAllPairings(status: string): Promise<PairingDto[]> {
     const filter: Record<string, string> = {};
     if (status) {
       filter.status = status;
     }
 
-    const [pairings, total] = await Promise.all([
-      this.pairingModel
-        .find(filter)
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .exec(),
-      this.pairingModel.countDocuments(filter),
-    ]);
+    const pairings = await this.pairingModel.find(filter).sort({ createdAt: -1 }).exec();
 
-    return {
-      data: pairings.map((p) => PairingService.toPairingDto(p)),
-      total,
-    };
+    return pairings.map((p) => PairingService.toPairingDto(p));
   }
 
   async updatePairingStatus(pairingId: string, status: string): Promise<PairingDto> {

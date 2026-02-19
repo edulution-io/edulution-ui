@@ -26,45 +26,30 @@ import { PAIRING_API_ENDPOINT } from '@libs/pairing/constants/pairingApiEndpoint
 import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import type PairingDto from '@libs/pairing/types/pairingDto';
-import type PaginatedPairingsDto from '@libs/pairing/types/paginatedPairingsDto';
-
-const DEFAULT_PAGE_LIMIT = 50;
 
 interface PairingAssignmentStore {
   pairings: PairingDto[];
-  total: number;
   isLoading: boolean;
   statusFilter: string;
-  page: number;
 
   fetchPairings: () => Promise<void>;
   updateStatus: (id: string, status: string) => Promise<void>;
   setStatusFilter: (status: string) => void;
-  setPage: (page: number) => void;
 }
 
 const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => ({
   pairings: [],
-  total: 0,
   isLoading: false,
   statusFilter: PAIRING_STATUS.PENDING,
-  page: 1,
 
   fetchPairings: async () => {
     set({ isLoading: true });
     try {
-      const { statusFilter, page } = get();
-      const { data } = await eduApi.get<PaginatedPairingsDto>(
-        `${PAIRING_API_ENDPOINT}/${PAIRING_ADMIN_ENDPOINTS.ALL}`,
-        {
-          params: {
-            status: statusFilter,
-            page,
-            limit: DEFAULT_PAGE_LIMIT,
-          },
-        },
-      );
-      set({ pairings: data.data, total: data.total });
+      const { statusFilter } = get();
+      const { data } = await eduApi.get<PairingDto[]>(`${PAIRING_API_ENDPOINT}/${PAIRING_ADMIN_ENDPOINTS.ALL}`, {
+        params: { status: statusFilter },
+      });
+      set({ pairings: data });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -83,12 +68,7 @@ const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => (
   },
 
   setStatusFilter: (statusFilter: string) => {
-    set({ statusFilter, page: 1 });
-    void get().fetchPairings();
-  },
-
-  setPage: (page: number) => {
-    set({ page });
+    set({ statusFilter });
     void get().fetchPairings();
   },
 }));
