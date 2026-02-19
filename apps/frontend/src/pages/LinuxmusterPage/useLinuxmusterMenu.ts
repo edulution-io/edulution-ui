@@ -59,12 +59,16 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faListCheck,
           action: navigateToLinuxmuster,
         },
-        {
-          id: LINUXMUSTER_INFO_LOCATION,
-          label: 'linuxmuster.versionInfo',
-          icon: faCircleInfo,
-          action: navigateToInfo,
-        },
+        ...(isLmn
+          ? [
+              {
+                id: LINUXMUSTER_INFO_LOCATION,
+                label: 'linuxmuster.versionInfo',
+                icon: faCircleInfo,
+                action: navigateToInfo,
+              },
+            ]
+          : []),
       ],
     }),
     [isLmn, t, navigateToLinuxmuster, navigateToInfo],
