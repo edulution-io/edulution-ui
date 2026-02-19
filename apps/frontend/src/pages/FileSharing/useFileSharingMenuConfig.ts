@@ -34,7 +34,7 @@ import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
   const { pathname } = useLocation();
-  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
+  const { webdavShares, fetchWebdavShares, setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
@@ -98,12 +98,29 @@ const useFileSharingMenuConfig = () => {
     setMenuItems([...menuBarItems, sharedItem]);
   }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, webdavShares, navigate, handlePathChange]);
 
+  const onHeaderClick = useCallback(() => {
+    const currentPathParts = pathname.split('/').filter(Boolean);
+    const currentShare = webdavShares.find((s) => s.displayName === currentPathParts[1]) ?? webdavShares[0];
+
+    if (!currentShare || currentShare.isRootServer) return;
+
+    let currentSharePath = currentShare.pathname;
+    if (currentShare.pathVariables) {
+      currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
+    }
+
+    setCurrentPath(currentSharePath);
+    setPathToRestoreSession(currentSharePath);
+    handlePathChange(currentShare.displayName, currentSharePath);
+  }, [pathname, webdavShares, createVariableSharePathname, handlePathChange, setCurrentPath, setPathToRestoreSession]);
+
   return {
     title: 'filesharing.title',
     icon: FileSharingIcon,
     color: 'hover:bg-ciGreenToBlue',
     appName: APPS.FILE_SHARING,
     menuItems,
+    onHeaderClick,
   };
 };
 

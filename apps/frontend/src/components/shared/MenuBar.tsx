@@ -17,32 +17,28 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import { cn , Button } from '@edulution-io/ui-kit';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faArrowRightToBracket,
-  faArrowRightFromBracket,
-  IconDefinition,
-  faChevronDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { useOnClickOutside } from 'usehooks-ts';
-import useMedia from '@/hooks/useMedia';
-import { getFromPathName } from '@libs/common/utils';
-import APPS from '@libs/appconfig/constants/apps';
-import PageTitle from '@/components/PageTitle';
+import React, { useCallback, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
+import { cn } from '@edulution-io/ui-kit';
+import { useOnClickOutside } from 'usehooks-ts';
+import { getFromPathName } from '@libs/common/utils';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import useMenuBarConfig from '@/hooks/useMenuBarConfig';
+import useMedia from '@/hooks/useMedia';
+import useLanguage from '@/hooks/useLanguage';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useSubMenuStore from '@/store/useSubMenuStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import getDisplayName from '@/utils/getDisplayName';
+import PageTitle from '@/components/PageTitle';
 import useMenuBarStore from './useMenuBarStore';
+import useMenuBarSelection from './useMenuBarSelection';
+import MenuBarHeader from './MenuBarHeader';
+import MenuBarItemList from './MenuBarItemList';
+import MenuBarCollapseButton from './MenuBarCollapseButton';
 import MenuBarFooter from './MenuBarFooter';
-import IconWrapper from './IconWrapper';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -52,17 +48,19 @@ const MenuBar: React.FC = () => {
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const menuBarEntries = useMenuBarConfig();
-  const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
-  const webdavShares = useFileSharingStore((state) => state.webdavShares);
-  const { createVariableSharePathname } = useVariableSharePathname();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
-
-  const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const { appConfigs } = useAppConfigsStore();
+  const { language } = useLanguage();
+  const { isLmn } = useDeploymentTarget();
   const { isMobileView, isTabletView } = useMedia();
+
+  const { pathParts, isSelected, expandedItems, toggleExpanded, getActiveColorClass, activeItem } =
+    useMenuBarSelection(menuBarEntries);
+
+  const rootPathName = getFromPathName(pathname, 1);
+  const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
   const isDesktopView = !isMobileView && !isTabletView && !isEdulutionApp;
   const shouldCollapse = isDesktopView && isCollapsed;
-  const navigate = useNavigate();
 
   const handleClickOutside = useCallback(() => {
     if ((isMobileView || isTabletView) && isMobileMenuBarOpen) {
@@ -70,246 +68,43 @@ const MenuBar: React.FC = () => {
     }
   }, [isMobileView, isTabletView, isMobileMenuBarOpen, closeMobileMenuBar]);
 
+  const handleCloseMobileMenu = useCallback(() => {
+    if (isMobileView || isTabletView) toggleMobileMenuBar();
+  }, [isMobileView, isTabletView, toggleMobileMenuBar]);
+
   useOnClickOutside(menubarRef, handleClickOutside);
-
-  const renderIcon = useCallback(
-    (
-      icon: string | IconDefinition | React.ReactElement,
-      alt: string,
-      baseClassName?: string,
-      applyIconClassName = true,
-    ) => {
-      if (isValidElement(icon)) {
-        return icon;
-      }
-
-      if (typeof icon === 'string') {
-        return (
-          <IconWrapper
-            iconSrc={icon}
-            alt={alt}
-            className={cn(baseClassName, 'object-contain')}
-            applyLegacyFilter={applyIconClassName}
-          />
-        );
-      }
-      return (
-        <FontAwesomeIcon
-          icon={icon as IconDefinition}
-          className={cn(
-            baseClassName,
-            'scale-75',
-            applyIconClassName ? 'text-background dark:text-white' : 'text-white',
-          )}
-        />
-      );
-    },
-    [],
-  );
-
-  const toggleExpanded = useCallback((itemId: string) => {
-    setExpandedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemId)) {
-        next.delete(itemId);
-      } else {
-        next.add(itemId);
-      }
-      return next;
-    });
-  }, []);
-
-  const getActiveColorClass = useCallback((color: string) => color.split(':')[1] ?? color, []);
 
   if (menuBarEntries.disabled) {
     return null;
   }
 
-  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
+  const activeColorClass = getActiveColorClass(menuBarEntries.color);
 
-  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const pageTitle = currentAppConfig
+    ? getDisplayName(currentAppConfig, language, isLmn)
+    : t(`${menuBarEntries.appName}.sidebar`);
 
-  useEffect(() => {
-    if (pathParts[1]) {
-      setIsSelected(pathParts[1]);
-      setExpandedItems((prev) => new Set(prev).add(pathParts[1]));
-    }
-  }, [pathParts]);
-
-  const handleHeaderIconClick = () => {
-    switch (pathParts[0]) {
-      case APPS.FILE_SHARING: {
-        const currentShare = webdavShares.find((s) => s.displayName === pathParts[1]) ?? webdavShares[0];
-
-        if (!currentShare || currentShare.isRootServer) break;
-
-        let currentSharePath = currentShare.pathname;
-        if (currentShare.pathVariables) {
-          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
-        }
-
-        setCurrentPath(currentSharePath);
-        setPathToRestoreSession(currentSharePath);
-
-        navigate(
-          {
-            pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
-            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentSharePath)}`,
-          },
-          { replace: true },
-        );
-        break;
-      }
-      case APPS.SETTINGS: {
-        navigate(pathParts[0]);
-        setIsSelected('');
-        break;
-      }
-      default:
-        navigate(pathParts[0]);
-        setIsSelected(firstMenuBarItem);
-    }
-  };
-
-  const activeItem = useMemo(
-    () => menuBarEntries.menuItems.find((item) => item.id === isSelected),
-    [isSelected, menuBarEntries.menuItems],
-  );
-
-  const renderMenuBarContent = () => (
+  const menuBarContent = (
     <div className="flex h-full max-w-[var(--menubar-max-width)] flex-col">
-      <div className="flex flex-col items-center justify-center py-6">
-        <button
-          className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-muted-background"
-          type="button"
-          onClick={handleHeaderIconClick}
-        >
-          {renderIcon(
-            menuBarEntries.icon,
-            menuBarEntries.title,
-            cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20'),
-            true,
-          )}
-          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
-        </button>
-      </div>
+      <MenuBarHeader
+        icon={menuBarEntries.icon}
+        title={menuBarEntries.title}
+        pathParts={pathParts}
+        shouldCollapse={shouldCollapse}
+        onHeaderClick={menuBarEntries.onHeaderClick}
+      />
 
-      <div className="flex-1 overflow-y-auto pb-10">
-        {menuBarEntries.menuItems.map((item) => {
-          const hasChildren = item.children && item.children.length > 0;
-          const isExpanded = expandedItems.has(item.id);
-          const isActive = isSelected === item.id;
-
-          const handleItemClick = () => {
-            setIsSelected(item.id);
-            if (isMobileView || isTabletView) toggleMobileMenuBar();
-            item.action();
-
-            if (hasChildren && !isExpanded) {
-              setExpandedItems((prev) => new Set(prev).add(item.id));
-            }
-          };
-
-          const handleExpandClick = (e: React.MouseEvent) => {
-            e.stopPropagation();
-            toggleExpanded(item.id);
-          };
-
-          const childrenId = `${item.id}-children`;
-
-          const mainButton = (
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={handleItemClick}
-              onKeyDown={(e) => e.key === 'Enter' && handleItemClick()}
-              aria-expanded={hasChildren ? isExpanded : undefined}
-              aria-controls={hasChildren ? childrenId : undefined}
-              aria-label={item.label}
-              className={cn(
-                'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
-                isActive ? getActiveColorClass(menuBarEntries.color) : '',
-                shouldCollapse && 'justify-center',
-              )}
-            >
-              {renderIcon(item.icon, item.label, 'h-12 w-12 object-contain', !isActive)}
-              {!shouldCollapse && (
-                <>
-                  <span className={cn('flex-1 text-left', isActive ? 'text-white' : '')}>{item.label}</span>
-                  {hasChildren && (
-                    <Button
-                      type="button"
-                      variant="btn-ghost"
-                      onClick={handleExpandClick}
-                      aria-label={isExpanded ? t('common.collapse') : t('common.expand')}
-                      className="p-1"
-                    >
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
-                        className={cn(
-                          'h-4 w-4 shrink-0 text-white transition-transform duration-200',
-                          isExpanded && 'rotate-180',
-                        )}
-                      />
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-          );
-
-          const childrenContent = hasChildren && !shouldCollapse && (
-            <div
-              id={childrenId}
-              role="region"
-              aria-label={`${item.label} sections`}
-              className={cn(
-                'grid transition-all duration-200 ease-in-out',
-                isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
-              )}
-            >
-              <div className="overflow-hidden">
-                <div className="ml-2">
-                  {item.children!.map((child) => {
-                    const isChildActive = activeSection === child.id;
-                    return (
-                      <Button
-                        key={child.id}
-                        type="button"
-                        variant="btn-ghost"
-                        onClick={() => {
-                          if (isMobileView || isTabletView) toggleMobileMenuBar();
-                          child.action();
-                        }}
-                        className={cn(
-                          'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
-                          'transition-all duration-150',
-                          'hover:pl-5',
-                          isChildActive && 'bg-accent font-bold',
-                        )}
-                      >
-                        <span className="truncate">{child.label}</span>
-                      </Button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          );
-
-          return shouldCollapse ? (
-            <Tooltip key={item.id}>
-              <TooltipTrigger asChild>{mainButton}</TooltipTrigger>
-              <TooltipContent side="right">{item.label}</TooltipContent>
-            </Tooltip>
-          ) : (
-            <div key={item.id}>
-              {mainButton}
-              {childrenContent}
-            </div>
-          );
-        })}
-      </div>
+      <MenuBarItemList
+        menuItems={menuBarEntries.menuItems}
+        isSelected={isSelected}
+        expandedItems={expandedItems}
+        shouldCollapse={shouldCollapse}
+        activeColorClass={activeColorClass}
+        activeSection={activeSection}
+        pathParts={pathParts}
+        onToggleExpand={toggleExpanded}
+        onCloseMobileMenu={handleCloseMobileMenu}
+      />
 
       <MenuBarFooter
         appName={pathParts[0]}
@@ -322,7 +117,7 @@ const MenuBar: React.FC = () => {
     <>
       {activeItem && (
         <PageTitle
-          title={t(`${menuBarEntries.appName}.sidebar`)}
+          title={pageTitle}
           translationId={activeItem.label}
           disableTranslation={activeItem.disableTranslation}
         />
@@ -336,38 +131,25 @@ const MenuBar: React.FC = () => {
               shouldCollapse ? 'w-16' : 'w-64',
             )}
           >
-            {renderMenuBarContent()}
+            {menuBarContent}
           </div>
-          <Button
-            type="button"
-            variant="btn-outline"
-            size="sm"
-            onClick={toggleCollapsed}
-            className={cn(
-              'bg-glass absolute right-[-15px] top-2 z-10 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
-              shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
-            )}
-          >
-            {isCollapsed ? (
-              <FontAwesomeIcon icon={faArrowRightToBracket} />
-            ) : (
-              <FontAwesomeIcon
-                icon={faArrowRightFromBracket}
-                className="rotate-180"
-              />
-            )}
-          </Button>
+          <MenuBarCollapseButton
+            isCollapsed={isCollapsed}
+            onToggle={toggleCollapsed}
+          />
         </aside>
       ) : (
         <div
-          className="fixed left-0 top-0 z-50 h-full w-full transform transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(${isMobileMenuBarOpen ? '0%' : '-100%'})` }}
+          className={cn(
+            'fixed left-0 top-0 z-50 h-full w-full transform transition-transform duration-300 ease-in-out',
+            isMobileMenuBarOpen ? 'translate-x-0' : '-translate-x-full',
+          )}
         >
           <div
             ref={menubarRef}
             className="bg-glass fixed left-0 h-full w-64 overflow-x-hidden border-r-[1px] border-muted backdrop-blur-md"
           >
-            {renderMenuBarContent()}
+            {menuBarContent}
           </div>
         </div>
       )}

@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "unbegrenzt gültig",
     "appTitle": "Info Board",
     "description": "Hier findest du deine aktuellen Mitteilungen",
+    "view": "Ansicht",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Zeile",
+    "viewTwoRows": "2 Zeilen",
+    "viewThreeRows": "3 Zeilen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
@@ -219,7 +224,13 @@
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
       "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen.",
       "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen",
-      "GetLmnVersionFailed": "Abrufen der Linuxmuster-Version fehlgeschlagen."
+      "GetLmnVersionFailed": "Abrufen der Linuxmuster-Version fehlgeschlagen.",
+      "GetUsersByRoleFailed": "Abrufen der Benutzer nach Rolle fehlgeschlagen",
+      "GetManagementListFailed": "Abrufen der Verwaltungsliste fehlgeschlagen",
+      "SaveManagementListFailed": "Speichern der Verwaltungsliste fehlgeschlagen",
+      "SophomorixCheckFailed": "Sophomorix-Check fehlgeschlagen",
+      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen",
+      "GetSophomorixStatusFailed": "Abrufen des Sophomorix-Status fehlgeschlagen"
     }
   },
   "ticketsystem": {
@@ -727,6 +738,125 @@
       "placeholder": "Schule auswählen"
     }
   },
+  "usermanagement": {
+    "title": "BENUTZER",
+    "titleLmn": "SCHULSERVER",
+    "titleGeneric": "SERVER",
+    "menuTitle": "Benutzerverwaltung",
+    "description": "Benutzerkonten, Listen und Rollen anzeigen und verwalten.",
+    "students": "Schüler",
+    "teachers": "Lehrer",
+    "extrastudents": "Extra-Schüler",
+    "parents": "Eltern",
+    "staff": "Angestellte",
+    "schooladmins": "Schuladmins",
+    "schoolbindusers": "Schul Binduser",
+    "globaladmins": "Globaladmins",
+    "globalbindusers": "Globale Binduser",
+    "tabs": {
+      "table": "Tabelle",
+      "list": "Listenverwaltung"
+    },
+    "filterUsers": "Benutzer filtern...",
+    "loginClass": "Login / Klasse",
+    "name": "Name",
+    "status": "Status",
+    "passwordActions": "Passwort Aktionen",
+    "showFirstPassword": "Erstpasswort anzeigen",
+    "restoreFirstPassword": "Erstpasswort wiederherstellen",
+    "setRandomFirstPassword": "Erstpasswort zufällig festlegen",
+    "setCustomPassword": "Benutzerdefiniertes Passwort festlegen",
+    "setCurrentPassword": "Aktuelles Benutzerpasswort festlegen",
+    "userDetails": "Benutzerdetails",
+    "properties": "Eigenschaften",
+    "loginname": "Loginname",
+    "mailAlias": "Mailadresse Alias",
+    "class": "Klasse",
+    "sophomorixStatus": "Sophomorix-Status",
+    "role": "Rolle",
+    "schoolname": "Schulname",
+    "userId": "Benutzer-ID (optional)",
+    "birthdate": "Geburtsdatum",
+    "deactivationDate": "Deaktivierungsdatum",
+    "tolerationDate": "Duldungsdatum",
+    "creationDate": "Erstellungsdatum",
+    "groupMembership": "Gruppenmitgliedschaft",
+    "quota": "Quota",
+    "noQuotaInfo": "Keine Quota-Informationen verfügbar",
+    "noListAvailable": "Für diesen Benutzertyp ist keine Listenverwaltung verfügbar.",
+    "listDescription": "Listenverwaltung für {{school}}/{{list}}.csv",
+    "csvPlaceholder": "CSV-Inhalt wird hier angezeigt...",
+    "addUser": "Benutzer hinzufügen",
+    "check": "Prüfen",
+    "apply": "Anwenden",
+    "exportCsv": "CSV exportieren",
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Datei hier hin schieben um sie zu importieren",
+      "download": "CSV Herunterladen"
+    },
+    "validationFailed": "Bitte korrigieren Sie alle ungültigen Felder vor dem Speichern",
+    "listSaved": "Liste erfolgreich gespeichert. Verwende \"Prüfen\", um Änderungen zu überprüfen und anzuwenden.",
+    "checkCompleted": "Prüfung abgeschlossen",
+    "applyCompleted": "Anwendung abgeschlossen",
+    "checkResult": {
+      "title": "Prüfergebnis",
+      "checkFailed": "Prüfung fehlgeschlagen",
+      "overview": "Übersicht",
+      "add": "Hinzufügen",
+      "update": "Aktualisieren",
+      "delete": "Entfernen",
+      "usersToAdd": "Benutzer werden hinzugefügt",
+      "usersToUpdate": "Benutzer werden aktualisiert",
+      "usersToDelete": "Benutzer werden gelöscht",
+      "addNewUsers": "Neue Benutzer hinzufügen",
+      "updateUsers": "Benutzer versetzen",
+      "deleteUsers": "Benutzer entfernen",
+      "apply": "Übernehmen",
+      "noChanges": "Keine Änderungen erkannt. Die aktuellen Daten stimmen mit den vorhandenen Benutzerkonten überein.",
+      "columns": {
+        "class": "Klasse",
+        "login": "Login",
+        "name": "Name",
+        "role": "Rolle",
+        "school": "Schule",
+        "changes": "Änderungen",
+        "file": "Datei",
+        "reason": "Grund"
+      }
+    },
+    "details": "Details",
+    "login": "Login",
+    "list": {
+      "class": "Klasse",
+      "lastName": "Nachname",
+      "firstName": "Vorname",
+      "birthday": "Geburtsdatum",
+      "login": "Gewünschter Login",
+      "loginTooltip": "Dieser Eintrag wird direkt von der CSV-Datei gelesen und kann sich vom eigentlichen Login des Benutzers unterscheiden (in LDAP gespeichert)",
+      "category": "Kategorie",
+      "add": {
+        "students": "Schüler hinzufügen",
+        "teachers": "Lehrer hinzufügen",
+        "extrastudents": "Extra-Schüler hinzufügen",
+        "parents": "Eltern hinzufügen",
+        "staff": "Mitarbeiter hinzufügen"
+      }
+    },
+    "sophomorixStatusValues": {
+      "U": "Verwendbar",
+      "S": "Selbstaktiviert",
+      "E": "Aktiviert",
+      "P": "Permanent",
+      "A": "Reaktiviert",
+      "T": "Toleriert",
+      "D": "Deaktiviert",
+      "F": "Eingefroren",
+      "L": "Gesperrt",
+      "K": "Löschbar",
+      "R": "Entfernbar"
+    }
+  },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",
   "details": "Details",
@@ -1161,6 +1291,20 @@
     "info": {
       "title": "Info"
     },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API-Key",
+      "createdAt": "Erstellt am",
+      "select": "Auswahl",
+      "addClient": "Webhook-Client hinzufügen",
+      "deleteClient": "Webhook-Client löschen",
+      "deleteConfirmMessage": "Möchten Sie die ausgewählten Webhook-Clients wirklich löschen?",
+      "selectUserAgent": "User-Agent auswählen",
+      "createSuccess": "Webhook-Client erstellt",
+      "deleteSuccess": "Webhook-Client gelöscht",
+      "filterPlaceholder": "Webhook-Clients filtern..."
+    },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
       "position": {
@@ -1541,6 +1685,9 @@
     "showSystemFiles": "Systemdateien anzeigen",
     "expand": "Aufklappen",
     "collapse": "Zuklappen",
+    "hide": "Ausblenden",
+    "show": "Anzeigen",
+    "never": "Nie",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
@@ -1782,8 +1929,12 @@
     "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."
   },
   "linuxmuster": {
-    "title": "LINUXMUSTER",
-    "sidebar": "Linuxmuster"
+    "sidebarLmn": "Schulserver",
+    "sidebarGeneric": "Server",
+    "item": "{{count}} Benutzer",
+    "items": "{{count}} Benutzer",
+    "userManagement": "Benutzerverwaltung",
+    "description": "Verwalte deine Schulserver-Einstellungen und Benutzer."
   },
   "whiteboard": {
     "title": "WHITEBOARD",
