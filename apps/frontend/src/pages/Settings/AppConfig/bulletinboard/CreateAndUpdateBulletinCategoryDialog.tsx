@@ -23,7 +23,7 @@ import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinbo
 import { useTranslation } from 'react-i18next';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import CreateAndUpdateBulletinCategoryFooter from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryFooter';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
@@ -31,6 +31,8 @@ import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bull
 import DeleteBulletinCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
+import APPS from '@libs/appconfig/constants/apps';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface CreateAndUpdateBulletinCategoryDialogProps {
   tableId: ExtendedOptionKeysType;
@@ -49,6 +51,8 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
   } = useBulletinCategoryTableStore();
 
   const { t } = useTranslation();
+  const parentForm = useFormContext();
+  const accessGroups = (parentForm?.watch(`${APPS.BULLETIN_BOARD}.accessGroups`) ?? []) as MultipleSelectorGroup[];
 
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const isOpen = isDialogOpen === tableId;
@@ -136,6 +140,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
       handleFormSubmit={(e: React.FormEvent) => handleFormSubmit(e)}
       form={form}
       isCurrentNameEqualToSelected={isCurrentNameEqualToSelected}
+      accessGroups={accessGroups}
     />
   );
 
