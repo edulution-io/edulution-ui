@@ -24,7 +24,7 @@ import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 export type PairingDocument = Pairing & Document;
 
 @Schema({ timestamps: true })
-export class Pairing extends Document {
+export class Pairing {
   @Prop({ type: String, required: true })
   parent: string;
 
@@ -45,3 +45,7 @@ export class Pairing extends Document {
 }
 
 export const PairingSchema = SchemaFactory.createForClass(Pairing);
+
+PairingSchema.set('toJSON', {
+  virtuals: true,
+});

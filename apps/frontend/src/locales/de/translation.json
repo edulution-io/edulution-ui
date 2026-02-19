@@ -1619,6 +1619,7 @@
       "noRelationships": "Noch keine Verbindungen.",
       "statusPending": "Ausstehend",
       "statusAccepted": "Akzeptiert",
+      "statusRejected": "Abgelehnt",
       "pairingSuccess": "Verbindungsanfrage erfolgreich gesendet!",
       "codeRefreshed": "Neuer Pairing-Code generiert.",
       "codeExpired": "Der Code ist abgelaufen. Bitte einen neuen Code anfordern.",

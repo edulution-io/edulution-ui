@@ -17,6 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_CODE_TTL_MS = 300_000;
+const PAIRING_CACHE_CONFIG = {
+  CODE_KEY_PREFIX: 'pairing:code:',
+  USER_KEY_PREFIX: 'pairing:user:',
+  CODE_LENGTH: 8,
+  CODE_TTL_MS: 300_000,
+} as const;
 
-export default PAIRING_CODE_TTL_MS;
+export default PAIRING_CACHE_CONFIG;

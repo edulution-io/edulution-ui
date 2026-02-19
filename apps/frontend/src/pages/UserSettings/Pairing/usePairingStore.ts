@@ -23,7 +23,7 @@ import { HttpStatusCode } from 'axios';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
-import PAIRING_API_ENDPOINT from '@libs/pairing/constants/pairingApiEndpoint';
+import { PAIRING_API_ENDPOINT, PAIRING_API_ENDPOINT_CODE } from '@libs/pairing/constants/pairingApiEndpoint';
 import type PairingDto from '@libs/pairing/types/pairingDto';
 import type PairingCodeResponseDto from '@libs/pairing/types/pairingCodeResponseDto';
 
@@ -55,7 +55,7 @@ const usePairingStore = create<PairingStore>((set) => ({
   fetchPairingCode: async () => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await eduApi.get<PairingCodeResponseDto>(`${PAIRING_API_ENDPOINT}/code`);
+      const { data } = await eduApi.get<PairingCodeResponseDto>(`${PAIRING_API_ENDPOINT}/${PAIRING_API_ENDPOINT_CODE}`);
       set({ pairingCode: data.code });
     } catch (error) {
       handleApiError(error, set);
@@ -67,7 +67,7 @@ const usePairingStore = create<PairingStore>((set) => ({
   refreshPairingCode: async () => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await eduApi.put<PairingCodeResponseDto>(`${PAIRING_API_ENDPOINT}/code`);
+      const { data } = await eduApi.put<PairingCodeResponseDto>(`${PAIRING_API_ENDPOINT}/${PAIRING_API_ENDPOINT_CODE}`);
       set({ pairingCode: data.code });
       toast.success(i18n.t('usersettings.pairing.codeRefreshed'));
     } catch (error) {

@@ -19,7 +19,7 @@
 
 import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import PAIRING_API_ENDPOINT from '@libs/pairing/constants/pairingApiEndpoint';
+import { PAIRING_API_ENDPOINT, PAIRING_API_ENDPOINT_CODE } from '@libs/pairing/constants/pairingApiEndpoint';
 import type SubmitPairingCodeDto from '@libs/pairing/types/submitPairingCodeDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
@@ -27,17 +27,17 @@ import PairingService from './pairing.service';
 
 @Controller(PAIRING_API_ENDPOINT)
 @ApiBearerAuth()
-@ApiTags('Pairing')
+@ApiTags(PAIRING_API_ENDPOINT)
 class PairingController {
   constructor(private readonly pairingService: PairingService) {}
 
-  @Get('code')
+  @Get(PAIRING_API_ENDPOINT_CODE)
   async getCode(@GetCurrentUsername() username: string) {
     const code = await this.pairingService.getOrCreateCode(username);
     return { code };
   }
 
-  @Put('code')
+  @Put(PAIRING_API_ENDPOINT_CODE)
   async refreshCode(@GetCurrentUsername() username: string) {
     const code = await this.pairingService.refreshCode(username);
     return { code };

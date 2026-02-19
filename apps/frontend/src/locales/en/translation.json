@@ -1616,6 +1616,7 @@
       "noRelationships": "No connections yet.",
       "statusPending": "Pending",
       "statusAccepted": "Accepted",
+      "statusRejected": "Rejected",
       "pairingSuccess": "Connection request sent successfully!",
       "codeRefreshed": "New pairing code generated.",
       "codeExpired": "The code has expired. Please request a new code.",
