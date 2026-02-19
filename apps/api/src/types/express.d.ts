@@ -25,6 +25,5 @@ declare module 'express' {
   interface Request {
     user?: JWTUser;
     token?: string;
-    rawBody?: Buffer;
   }
 }

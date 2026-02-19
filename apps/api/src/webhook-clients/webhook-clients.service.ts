@@ -62,24 +62,18 @@ class WebhookClientsService implements OnModuleInit {
     return userAgent.startsWith(cachedAgent);
   }
 
-  getApiKeySecret(apiKey: string): string | undefined {
-    return this.webhookClientsMap.has(apiKey) ? apiKey : undefined;
-  }
-
   async getAll(): Promise<WebhookClientDto[]> {
     const clients = await this.webhookClientModel.find({});
     return clients.map((client) => ({
       id: client.id as string,
       userAgent: client.userAgent,
       apiKey: client.apiKey,
-      createdAt: (client as unknown as { createdAt?: Date }).createdAt?.toISOString(),
+      createdAt: client.createdAt?.toISOString(),
     }));
   }
 
   async create(userAgent: string): Promise<WebhookClientDto> {
-    const apiKey = randomBytes(WEBHOOK_CONSTANTS.API_KEY_LENGTH)
-      .toString('hex')
-      .slice(0, WEBHOOK_CONSTANTS.API_KEY_LENGTH);
+    const apiKey = randomBytes(WEBHOOK_CONSTANTS.API_KEY_LENGTH).toString('hex');
     const client = await this.webhookClientModel.create({ userAgent, apiKey });
     await this.loadCache();
     Logger.log(`Webhook client created for ${userAgent}`, WebhookClientsService.name);
@@ -87,7 +81,7 @@ class WebhookClientsService implements OnModuleInit {
       id: client.id as string,
       userAgent: client.userAgent,
       apiKey: client.apiKey,
-      createdAt: (client as unknown as { createdAt?: Date }).createdAt?.toISOString(),
+      createdAt: client.createdAt?.toISOString(),
     };
   }
 

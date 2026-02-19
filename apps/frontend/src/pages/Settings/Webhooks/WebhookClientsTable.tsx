@@ -66,11 +66,11 @@ const WebhookClientsTable: React.FC = () => {
   return (
     <>
       <div className="relative">
-        {isLoading ? (
+        {isLoading && (
           <div className="absolute right-0 top-0">
             <CircleLoader />
           </div>
-        ) : null}
+        )}
         <ScrollableTable
           columns={webhookClientsTableColumns}
           data={clients}

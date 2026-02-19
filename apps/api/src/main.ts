@@ -24,9 +24,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
-import { json, urlencoded, Request } from 'express';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import WEBHOOK_API_ENDPOINT from '@libs/webhook/constants/webhookApiEndpoint';
 import folderPaths from '@libs/common/constants/folderPaths';
 import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
@@ -50,7 +48,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.EDUI_CORS_URL },
     logger,
-    bodyParser: false,
   });
 
   const configService = app.get(ConfigService);
@@ -59,17 +56,6 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.EDUI_PORT || 3000;
   app.set('trust proxy', true);
-
-  app.use(
-    `/${globalPrefix}/${WEBHOOK_API_ENDPOINT}`,
-    json({
-      verify: (req: Request, _res, buf: Buffer) => {
-        req.rawBody = buf;
-      },
-    }),
-  );
-  app.use(json());
-  app.use(urlencoded({ extended: true }));
 
   app.use(helmet());
 

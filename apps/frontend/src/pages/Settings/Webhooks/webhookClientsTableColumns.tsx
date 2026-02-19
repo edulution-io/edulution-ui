@@ -23,6 +23,7 @@ import type WebhookClientDto from '@libs/webhook/types/webhookClientDto';
 import WEBHOOK_CLIENTS_TABLE_COLUMNS from '@libs/webhook/constants/webhookClientsTableColumns';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
+import MaskedCell from '@/pages/Settings/Webhooks/MaskedCell';
 
 const webhookClientsTableColumns: ColumnDef<WebhookClientDto>[] = [
   {
@@ -55,8 +56,8 @@ const webhookClientsTableColumns: ColumnDef<WebhookClientDto>[] = [
     meta: {
       translationId: 'settings.webhooks.apiKey',
     },
-    accessorKey: 'apiKey',
-    cell: ({ row }) => <SelectableCell text={row.original.apiKey} />,
+    accessorKey: WEBHOOK_CLIENTS_TABLE_COLUMNS.API_KEY,
+    cell: ({ row }) => <MaskedCell value={row.original.apiKey} />,
   },
   {
     id: WEBHOOK_CLIENTS_TABLE_COLUMNS.CREATED_AT,

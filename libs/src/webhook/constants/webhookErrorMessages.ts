@@ -21,7 +21,6 @@ const WEBHOOK_ERROR_MESSAGES = {
   MISSING_HEADERS: 'webhook.errors.missingHeaders',
   INVALID_KEY: 'webhook.errors.invalidKey',
   TIMESTAMP_EXPIRED: 'webhook.errors.timestampExpired',
-  INVALID_SIGNATURE: 'webhook.errors.invalidSignature',
   INVALID_USER_AGENT: 'webhook.errors.invalidUserAgent',
   DUPLICATE_EVENT: 'webhook.errors.duplicateEvent',
   WEBHOOK_CLIENTS: 'webhook-clients.error',

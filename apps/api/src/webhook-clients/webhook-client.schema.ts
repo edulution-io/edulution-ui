@@ -18,15 +18,17 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 
 @Schema({ timestamps: true, strict: true })
-export class WebhookClient extends Document {
+export class WebhookClient {
   @Prop({ required: true })
   userAgent: string;
 
   @Prop({ required: true, unique: true })
   apiKey: string;
+
+  @Prop()
+  createdAt: Date;
 }
 
 export const WebhookClientSchema = SchemaFactory.createForClass(WebhookClient);

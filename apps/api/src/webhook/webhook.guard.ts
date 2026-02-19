@@ -18,7 +18,6 @@
  */
 
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
-import { createHmac, timingSafeEqual } from 'crypto';
 import { Request } from 'express';
 import WEBHOOK_CONSTANTS from '@libs/webhook/constants/webhookConstants';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
@@ -36,11 +35,10 @@ class WebhookGuard implements CanActivate {
 
     const key = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_KEY] as string;
     const timestamp = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_TIMESTAMP] as string;
-    const signature = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_SIGNATURE] as string;
     const eventId = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_EVENT_ID] as string;
     const userAgent = (headers[HTTP_HEADERS.UserAgent] as string) ?? '';
 
-    if (!key || !timestamp || !signature || !eventId) {
+    if (!key || !timestamp || !eventId) {
       throw new CustomHttpException(
         WEBHOOK_ERROR_MESSAGES.MISSING_HEADERS,
         HttpStatus.BAD_REQUEST,
@@ -63,27 +61,6 @@ class WebhookGuard implements CanActivate {
     if (Number.isNaN(timestampMs) || age > WEBHOOK_CONSTANTS.TIMESTAMP_MAX_AGE_MS || age < 0) {
       throw new CustomHttpException(
         WEBHOOK_ERROR_MESSAGES.TIMESTAMP_EXPIRED,
-        HttpStatus.UNAUTHORIZED,
-        undefined,
-        WebhookGuard.name,
-      );
-    }
-
-    const rawBody = request.rawBody ?? Buffer.alloc(0);
-    const expectedSignature = createHmac('sha256', key)
-      .update(`${timestamp}.${rawBody.toString('utf8')}`)
-      .digest('hex');
-
-    const receivedHex = signature.startsWith(WEBHOOK_CONSTANTS.SIGNATURE_PREFIX)
-      ? signature.slice(WEBHOOK_CONSTANTS.SIGNATURE_PREFIX.length)
-      : signature;
-
-    const sigBuffer = Buffer.from(receivedHex, 'utf8');
-    const expectedBuffer = Buffer.from(expectedSignature, 'utf8');
-
-    if (sigBuffer.length !== expectedBuffer.length || !timingSafeEqual(sigBuffer, expectedBuffer)) {
-      throw new CustomHttpException(
-        WEBHOOK_ERROR_MESSAGES.INVALID_SIGNATURE,
         HttpStatus.UNAUTHORIZED,
         undefined,
         WebhookGuard.name,
