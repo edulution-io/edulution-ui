@@ -47,7 +47,7 @@ const webhookClientsTableColumns: ColumnDef<WebhookClientDto>[] = [
     meta: {
       translationId: 'settings.webhooks.userAgent',
     },
-    accessorKey: 'userAgent',
+    accessorKey: WEBHOOK_CLIENTS_TABLE_COLUMNS.USER_AGENT,
     cell: ({ row }) => <SelectableCell text={row.original.userAgent} />,
   },
   {
@@ -65,7 +65,7 @@ const webhookClientsTableColumns: ColumnDef<WebhookClientDto>[] = [
     meta: {
       translationId: 'settings.webhooks.createdAt',
     },
-    accessorKey: 'createdAt',
+    accessorKey: WEBHOOK_CLIENTS_TABLE_COLUMNS.CREATED_AT,
     cell: ({ row }) => {
       const date = row.original.createdAt ? new Date(row.original.createdAt).toLocaleString() : '';
       return <SelectableCell text={date} />;
