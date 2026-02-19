@@ -1473,7 +1473,6 @@
       "codeExpired": "Le code a expiré. Veuillez demander un nouveau code.",
       "parent": "Parent",
       "student": "Élève",
-      "statusRejected": "Rejeté",
       "statusColumn": "Statut",
       "createdAt": "Créé le",
       "accept": "Accepter",
@@ -1796,6 +1795,21 @@
     "items": "{{count}} utilisateurs",
     "userManagement": "Gestion des utilisateurs",
     "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
+  },
+  "pairing": {
+    "assignment": "Attribution parentale",
+    "assignmentDescription": "Gérer les demandes d'association parent-élève.",
+    "filterPlaceholder": "Rechercher par parent ou élève...",
+    "parent": "Parent",
+    "student": "Élève",
+    "statusColumn": "Statut",
+    "createdAt": "Créé le",
+    "accept": "Accepter",
+    "reject": "Rejeter",
+    "statusPending": "En attente",
+    "statusAccepted": "Accepté",
+    "statusRejected": "Rejeté",
+    "statusUpdated": "Statut mis à jour avec succès."
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",

@@ -1626,7 +1626,6 @@
       "codeExpired": "Der Code ist abgelaufen. Bitte einen neuen Code anfordern.",
       "parent": "Elternteil",
       "student": "Schüler",
-      "statusRejected": "Abgelehnt",
       "statusColumn": "Status",
       "createdAt": "Erstellt am",
       "accept": "Akzeptieren",
@@ -1965,6 +1964,21 @@
     "items": "{{count}} Benutzer",
     "userManagement": "Benutzerverwaltung",
     "description": "Verwalte deine Schulserver-Einstellungen und Benutzer."
+  },
+  "pairing": {
+    "assignment": "Elternzuweisung",
+    "assignmentDescription": "Eltern-Schüler-Zuweisungen verwalten.",
+    "filterPlaceholder": "Nach Elternteil oder Schüler suchen...",
+    "parent": "Elternteil",
+    "student": "Schüler",
+    "statusColumn": "Status",
+    "createdAt": "Erstellt am",
+    "accept": "Akzeptieren",
+    "reject": "Ablehnen",
+    "statusPending": "Ausstehend",
+    "statusAccepted": "Akzeptiert",
+    "statusRejected": "Abgelehnt",
+    "statusUpdated": "Status erfolgreich aktualisiert."
   },
   "whiteboard": {
     "title": "WHITEBOARD",

@@ -30,8 +30,8 @@ import TableActionCell from '@/components/ui/Table/TableActionCell';
 
 const PAIRING_STATUS_CLASS_MAP: Record<string, string> = {
   [PAIRING_STATUS.PENDING]: 'bg-yellow-500',
-  [PAIRING_STATUS.ACCEPTED]: 'bg-green-500',
-  [PAIRING_STATUS.REJECTED]: 'bg-red-500',
+  [PAIRING_STATUS.ACCEPTED]: 'bg-ciGreen',
+  [PAIRING_STATUS.REJECTED]: 'bg-ciRed',
 };
 
 const PAIRING_STATUS_TRANSLATION_MAP: Record<string, string> = {

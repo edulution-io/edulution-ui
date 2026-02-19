@@ -1623,7 +1623,6 @@
       "codeExpired": "The code has expired. Please request a new code.",
       "parent": "Parent",
       "student": "Student",
-      "statusRejected": "Rejected",
       "statusColumn": "Status",
       "createdAt": "Created at",
       "accept": "Accept",
@@ -1962,6 +1961,21 @@
     "items": "{{count}} users",
     "userManagement": "User Management",
     "description": "Manage your school server settings and users."
+  },
+  "pairing": {
+    "assignment": "Parent Assignment",
+    "assignmentDescription": "Manage parent-student pairing requests.",
+    "filterPlaceholder": "Search by parent or student...",
+    "parent": "Parent",
+    "student": "Student",
+    "statusColumn": "Status",
+    "createdAt": "Created at",
+    "accept": "Accept",
+    "reject": "Reject",
+    "statusPending": "Pending",
+    "statusAccepted": "Accepted",
+    "statusRejected": "Rejected",
+    "statusUpdated": "Status updated successfully."
   },
   "whiteboard": {
     "title": "WHITEBOARD",
