@@ -34,6 +34,7 @@ import getInitialSurveyFormBySurveys from '@/pages/Surveys/utils/getInitialSurve
 import getInitialSurveyFormByTemplate from '@/pages/Surveys/utils/getInitialSurveyFormByTemplate';
 
 interface SurveyEditorPageStore {
+  clearInitialSurvey: () => void;
   loadNewSurvey: (creator: AttendeeDto) => void;
   loadSurveyTemplate: (creator: AttendeeDto, template: SurveyTemplateDto) => void;
   fetchSelectedSurvey: (creator: AttendeeDto, surveyId?: string, isPublic?: boolean) => Promise<void>;
@@ -93,7 +94,10 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
   (persist as PersistedSurveyEditorPageStore)(
     (set) => ({
       ...initialState,
+
       reset: () => set(initialState),
+
+      clearInitialSurvey: () => set({ initialSurvey: undefined }),
 
       loadNewSurvey: (creator: AttendeeDto): void => {
         const newSurvey = getInitialSurveyFormBySurveys(creator, undefined, undefined);

@@ -73,6 +73,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     reset: resetEditorPage,
     updateStoredSurvey,
     resetStoredSurvey,
+    clearInitialSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
   const {
@@ -94,6 +95,12 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const { language } = useLanguage();
   const { isSuperAdmin } = useLdapGroups();
   const { getResolvedTheme } = useThemeStore();
+
+  const handleCancel = useCallback(() => {
+    clearInitialSurvey();
+    resetTemplateStore();
+    resetQuestionsContextMenu();
+  }, [clearInitialSurvey, resetTemplateStore, resetQuestionsContextMenu]);
 
   const handleReset = useCallback(() => {
     resetStoredSurvey();
@@ -244,20 +251,14 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     buttons: [
       {
         icon: faBackward,
-        text: t('common.back'),
-        onClick: () => resetSurveyEditorPage(),
+        text: t('common.cancel'),
+        onClick: () => handleCancel(),
       },
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: faRotateLeft,
         text: t('survey.editor.reset'),
-        onClick: () => {
-          form.reset(initialFormValues);
-          if (creator) {
-            creator.saveNo = initialFormValues.saveNo || 0;
-            creator.JSON = initialFormValues.formula;
-          }
-        },
+        onClick: () => resetSurveyEditorPage(),
       },
       {
         icon: faFilePdf,

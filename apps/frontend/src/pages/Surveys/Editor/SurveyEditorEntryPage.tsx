@@ -68,7 +68,6 @@ const SurveyEditorEntryPage = ({ isCreatingNew }: SurveyEditorEntryPageProps) =>
     }
   }, [
     surveyCreator,
-    initialSurvey,
     surveyId,
     lastEditedSurveyId,
     resetEditorPage,
