@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import getAppIconClassName from '@/utils/getAppIconClassName';
-import { cn , Button } from '@edulution-io/ui-kit';
+import { cn, Button } from '@edulution-io/ui-kit';
 import { EditIcon } from '@libs/common/constants/standardActionIcons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import IconWrapper from '@/components/shared/IconWrapper';
@@ -49,7 +49,7 @@ const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = fals
     }
 
     const iconClassName = getAppIconClassName(iconSrc);
-    const baseClassName = cn('h-20 w-20 object-contain text-foreground dark:text-white', iconClassName);
+    const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
     return (
       <FontAwesomeIcon
         icon={iconSrc}
