@@ -17,11 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import type PairingStatusType from './pairingStatusType';
+
 interface PairingDto {
   id: string;
   parent: string;
   student: string;
-  status: string;
+  status: PairingStatusType;
   createdAt: string;
   updatedAt: string;
 }

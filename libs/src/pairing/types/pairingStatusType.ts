@@ -17,13 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_ERROR_MESSAGES = {
-  CODE_NOT_FOUND: 'pairing.errors.codeNotFound',
-  CODE_EXPIRED: 'pairing.errors.codeExpired',
-  CANNOT_PAIR_WITH_SELF: 'pairing.errors.cannotPairWithSelf',
-  PAIRING_ALREADY_EXISTS: 'pairing.errors.pairingAlreadyExists',
-  INVALID_ROLE: 'pairing.errors.invalidRole',
-  INCOMPATIBLE_ROLES: 'pairing.errors.incompatibleRoles',
-} as const;
+import PAIRING_STATUS from '../constants/pairingStatus';
 
-export default PAIRING_ERROR_MESSAGES;
+type PairingStatusType = (typeof PAIRING_STATUS)[keyof typeof PAIRING_STATUS];
+
+export default PairingStatusType;

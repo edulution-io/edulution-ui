@@ -32,8 +32,15 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
+import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
 import usePairingStore from './usePairingStore';
 import PairingFloatingButtons from './PairingFloatingButtons';
+
+const STATUS_TRANSLATION_KEYS: Record<PairingStatusType, string> = {
+  [PAIRING_STATUS.PENDING]: 'usersettings.pairing.statusPending',
+  [PAIRING_STATUS.ACCEPTED]: 'usersettings.pairing.statusAccepted',
+  [PAIRING_STATUS.REJECTED]: 'usersettings.pairing.statusRejected',
+};
 
 const PairingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -69,13 +76,6 @@ const PairingPage: React.FC = () => {
       void fetchRelationships();
     }
   }, [codeInput, submitPairingCode, fetchRelationships]);
-
-  const getStatusLabel = (status: string) => {
-    if (status === PAIRING_STATUS.PENDING) return t('usersettings.pairing.statusPending');
-    if (status === PAIRING_STATUS.ACCEPTED) return t('usersettings.pairing.statusAccepted');
-    if (status === PAIRING_STATUS.REJECTED) return t('usersettings.pairing.statusRejected');
-    return status;
-  };
 
   if (isLoading && !pairingCode) {
     return (
@@ -182,7 +182,7 @@ const PairingPage: React.FC = () => {
               <div className="grid gap-2">
                 {relationships.map((rel) => (
                   <div
-                    key={`${rel.parent}-${rel.student}`}
+                    key={rel.id}
                     className="flex items-center justify-between rounded-lg bg-accent p-3"
                   >
                     <span>
@@ -190,7 +190,9 @@ const PairingPage: React.FC = () => {
                         ? `${t('usersettings.pairing.parent')}: ${rel.parent}`
                         : `${t('usersettings.pairing.student')}: ${rel.student}`}
                     </span>
-                    <span className="rounded-full bg-muted px-3 py-1 text-sm">{getStatusLabel(rel.status)}</span>
+                    <span className="rounded-full bg-muted px-3 py-1 text-sm">
+                      {t(STATUS_TRANSLATION_KEYS[rel.status])}
+                    </span>
                   </div>
                 ))}
               </div>

@@ -32,14 +32,14 @@ class PairingController {
   constructor(private readonly pairingService: PairingService) {}
 
   @Get(PAIRING_API_ENDPOINT_CODE)
-  async getCode(@GetCurrentUsername() username: string) {
-    const code = await this.pairingService.getOrCreateCode(username);
+  async getCode(@GetCurrentUsername() username: string, @GetCurrentUserGroups() groups: string[]) {
+    const code = await this.pairingService.getOrCreateCode(username, groups);
     return { code };
   }
 
   @Put(PAIRING_API_ENDPOINT_CODE)
-  async refreshCode(@GetCurrentUsername() username: string) {
-    const code = await this.pairingService.refreshCode(username);
+  async refreshCode(@GetCurrentUsername() username: string, @GetCurrentUserGroups() groups: string[]) {
+    const code = await this.pairingService.refreshCode(username, groups);
     return { code };
   }
 
