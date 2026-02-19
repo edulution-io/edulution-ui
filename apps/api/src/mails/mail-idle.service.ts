@@ -542,18 +542,21 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     }
 
     try {
-      const unseenMailUids = await connection.client.search({ seen: false }, { uid: true });
+      const unseenMailUniqueIds = await connection.client.search({ seen: false }, { uid: true });
 
-      if (!unseenMailUids || unseenMailUids.length === 0) {
+      if (!unseenMailUniqueIds || unseenMailUniqueIds.length === 0) {
         return [];
       }
 
-      const newestMailUids = [...unseenMailUids]
+      const newestMailUniqueIds = [...unseenMailUniqueIds]
         .sort((a: number, b: number) => b - a)
         .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
 
-      const uidRange = newestMailUids.join(',');
-      const messages = await connection.client.fetchAll({ uid: uidRange }, { envelope: true, flags: true, uid: true });
+      const uniqueIdRange = newestMailUniqueIds.join(',');
+      const messages = await connection.client.fetchAll(
+        { uid: uniqueIdRange },
+        { envelope: true, flags: true, uid: true },
+      );
 
       const mails: MailDto[] = messages
         .map((mail) => ({
