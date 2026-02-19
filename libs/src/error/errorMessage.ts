@@ -38,6 +38,7 @@ import TLDrawSyncErrorMessagesType from '@libs/tldraw-sync/types/tLDrawSyncError
 import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
 import PairingErrorMessagesType from '@libs/pairing/types/pairingErrorMessagesType';
 import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
+import WebhookErrorMessages from '@libs/webhook/types/webhookErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -60,6 +61,7 @@ type ErrorMessage =
   | TGlobalSettingsErrorMessages
   | PairingErrorMessagesType
   | PathValidationErrorMessages
-  | WireguardErrorMessages;
+  | WireguardErrorMessages
+  | WebhookErrorMessages;
 
 export default ErrorMessage;

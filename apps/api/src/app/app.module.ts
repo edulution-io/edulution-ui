@@ -69,6 +69,8 @@ import AccessGuard from '../auth/access.guard';
 import AuthGuard from '../auth/auth.guard';
 import PairingModule from '../pairing/pairing.module';
 import WireguardModule from '../wireguard/wireguard.module';
+import WebhookModule from '../webhook/webhook.module';
+import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
 
 @Module({
   imports: [
@@ -144,6 +146,8 @@ import WireguardModule from '../wireguard/wireguard.module';
     ScriptsModule,
     PairingModule,
     WireguardModule,
+    WebhookModule,
+    WebhookClientsModule,
   ],
   providers: [
     {
