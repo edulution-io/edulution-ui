@@ -18,9 +18,12 @@
  */
 
 interface PairingDto {
+  id: string;
   parent: string;
   student: string;
   status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default PairingDto;

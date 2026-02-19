@@ -20,6 +20,7 @@
 const PAIRING_STATUS = {
   PENDING: 'pending',
   ACCEPTED: 'accepted',
+  REJECTED: 'rejected',
 } as const;
 
 export default PAIRING_STATUS;

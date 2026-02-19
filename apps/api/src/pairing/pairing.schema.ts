@@ -36,6 +36,12 @@ export class Pairing extends Document {
 
   @Prop({ type: Number, default: 1 })
   schemaVersion: number;
+
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const PairingSchema = SchemaFactory.createForClass(Pairing);
