@@ -17,13 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+const MASKED_VALUE = '********';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
-
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-  }
-}
+export default MASKED_VALUE;

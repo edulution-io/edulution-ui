@@ -17,13 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+const WEBHOOK_CLIENTS_TABLE_COLUMNS = {
+  SELECT: 'select',
+  USER_AGENT: 'userAgent',
+  API_KEY: 'apiKey',
+  CREATED_AT: 'createdAt',
+} as const;
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
-
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-  }
-}
+export default WEBHOOK_CLIENTS_TABLE_COLUMNS;

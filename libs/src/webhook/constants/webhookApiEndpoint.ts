@@ -19,4 +19,6 @@
 
 const WEBHOOK_API_ENDPOINT = 'webhook';
 
+export const WEBHOOK_CLIENTS_ENDPOINT = 'webhook-clients';
+
 export default WEBHOOK_API_ENDPOINT;

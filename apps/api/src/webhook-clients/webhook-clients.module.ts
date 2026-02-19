@@ -17,13 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { WebhookClient, WebhookClientSchema } from './webhook-client.schema';
+import WebhookClientsService from './webhook-clients.service';
+import WebhookClientsController from './webhook-clients.controller';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
-
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-  }
-}
+@Module({
+  imports: [MongooseModule.forFeature([{ name: WebhookClient.name, schema: WebhookClientSchema }])],
+  controllers: [WebhookClientsController],
+  providers: [WebhookClientsService],
+  exports: [WebhookClientsService],
+})
+export default class WebhookClientsModule {}

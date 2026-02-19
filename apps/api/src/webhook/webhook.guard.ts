@@ -18,27 +18,27 @@
  */
 
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
-import { createHmac, timingSafeEqual } from 'crypto';
 import { Request } from 'express';
 import WEBHOOK_CONSTANTS from '@libs/webhook/constants/webhookConstants';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import WEBHOOK_ERROR_MESSAGES from '@libs/webhook/constants/webhookErrorMessages';
 import CustomHttpException from '../common/CustomHttpException';
+import WebhookClientsService from '../webhook-clients/webhook-clients.service';
 
 @Injectable()
 class WebhookGuard implements CanActivate {
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  constructor(private readonly webhookClientsService: WebhookClientsService) {}
+
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const { headers } = request;
 
     const key = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_KEY] as string;
     const timestamp = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_TIMESTAMP] as string;
-    const signature = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_SIGNATURE] as string;
     const eventId = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_EVENT_ID] as string;
     const userAgent = (headers[HTTP_HEADERS.UserAgent] as string) ?? '';
 
-    if (!key || !timestamp || !signature || !eventId) {
+    if (!key || !timestamp || !eventId) {
       throw new CustomHttpException(
         WEBHOOK_ERROR_MESSAGES.MISSING_HEADERS,
         HttpStatus.BAD_REQUEST,
@@ -47,7 +47,7 @@ class WebhookGuard implements CanActivate {
       );
     }
 
-    if (key !== process.env.WEBHOOK_SECRET_KEY) {
+    if (!this.webhookClientsService.isValidClient(key, userAgent)) {
       throw new CustomHttpException(
         WEBHOOK_ERROR_MESSAGES.INVALID_KEY,
         HttpStatus.UNAUTHORIZED,
@@ -62,37 +62,6 @@ class WebhookGuard implements CanActivate {
       throw new CustomHttpException(
         WEBHOOK_ERROR_MESSAGES.TIMESTAMP_EXPIRED,
         HttpStatus.UNAUTHORIZED,
-        undefined,
-        WebhookGuard.name,
-      );
-    }
-
-    const rawBody = request.rawBody ?? Buffer.alloc(0);
-    const expectedSignature = createHmac('sha256', process.env.WEBHOOK_SECRET_KEY ?? '')
-      .update(`${timestamp}.${rawBody.toString('utf8')}`)
-      .digest('hex');
-
-    const receivedHex = signature.startsWith(WEBHOOK_CONSTANTS.SIGNATURE_PREFIX)
-      ? signature.slice(WEBHOOK_CONSTANTS.SIGNATURE_PREFIX.length)
-      : signature;
-
-    const sigBuffer = Buffer.from(receivedHex, 'utf8');
-    const expectedBuffer = Buffer.from(expectedSignature, 'utf8');
-
-    if (sigBuffer.length !== expectedBuffer.length || !timingSafeEqual(sigBuffer, expectedBuffer)) {
-      throw new CustomHttpException(
-        WEBHOOK_ERROR_MESSAGES.INVALID_SIGNATURE,
-        HttpStatus.UNAUTHORIZED,
-        undefined,
-        WebhookGuard.name,
-      );
-    }
-
-    const isKnownAgent = Object.values(WEBHOOK_CONSTANTS.USER_AGENTS).some((agent) => userAgent.startsWith(agent));
-    if (!isKnownAgent) {
-      throw new CustomHttpException(
-        WEBHOOK_ERROR_MESSAGES.INVALID_USER_AGENT,
-        HttpStatus.BAD_REQUEST,
         undefined,
         WebhookGuard.name,
       );

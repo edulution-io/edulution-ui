@@ -17,13 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
+@Schema({ timestamps: true, strict: true })
+export class WebhookClient {
+  @Prop({ required: true })
+  userAgent: string;
 
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-  }
+  @Prop({ required: true, unique: true })
+  apiKey: string;
+
+  @Prop()
+  createdAt: Date;
 }
+
+export const WebhookClientSchema = SchemaFactory.createForClass(WebhookClient);
