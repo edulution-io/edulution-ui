@@ -19,10 +19,17 @@
 
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import APPS from '@libs/appconfig/constants/apps';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import type AppNameTranslations from '@libs/appconfig/types/appNameTranslations';
 import i18n from '@/i18n';
 
-const getDisplayName = (item: AppConfigDto, language: string, isLmn?: boolean) => {
+type DisplayNameItem = {
+  name: string;
+  appType?: AppIntegrationType;
+  translations?: AppNameTranslations;
+};
+
+const getDisplayName = (item: DisplayNameItem, language: string, isLmn?: boolean) => {
   let displayName;
 
   if (item.name === APPS.LINUXMUSTER && isLmn !== undefined) {
