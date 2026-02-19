@@ -17,16 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type PairingStatusType from './pairingStatusType';
+const PAIRING_QUERY_PARAMS = {
+  STATUS: 'status',
+  SCHOOL: 'school',
+} as const;
 
-interface PairingDto {
-  id: string;
-  parent: string;
-  student: string;
-  school: string;
-  status: PairingStatusType;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export default PairingDto;
+export default PAIRING_QUERY_PARAMS;

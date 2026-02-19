@@ -39,7 +39,7 @@ class PairingService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async getOrCreateCode(username: string, groups: string[]): Promise<string> {
+  async getOrCreateCode(username: string, groups: string[], school: string): Promise<string> {
     const codeKey = `${PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const existingCode = await this.cacheManager.get<string>(codeKey);
 
@@ -47,15 +47,15 @@ class PairingService {
       return existingCode;
     }
 
-    return this.generateAndStoreCode(username, groups);
+    return this.generateAndStoreCode(username, groups, school);
   }
 
-  async refreshCode(username: string, groups: string[]): Promise<string> {
+  async refreshCode(username: string, groups: string[], school: string): Promise<string> {
     await this.deleteExistingCode(username);
-    return this.generateAndStoreCode(username, groups);
+    return this.generateAndStoreCode(username, groups, school);
   }
 
-  async createPairing(username: string, groups: string[], code: string): Promise<PairingDto> {
+  async createPairing(username: string, groups: string[], callerSchool: string, code: string): Promise<PairingDto> {
     const target = await this.resolveCode(code);
 
     if (username === target.username) {
@@ -105,6 +105,7 @@ class PairingService {
 
     const parent = callerIsParent ? username : target.username;
     const student = callerIsStudent ? username : target.username;
+    const school = callerIsStudent ? callerSchool : target.school;
 
     const existingPairing = await this.pairingModel.findOne({ parent, student }).exec();
     if (existingPairing) {
@@ -119,10 +120,11 @@ class PairingService {
     const pairing = await this.pairingModel.create({
       parent,
       student,
+      school,
       status: PAIRING_STATUS.PENDING,
     });
 
-    Logger.log(`Pairing created: ${parent} <-> ${student}`, PairingService.name);
+    Logger.log(`Pairing created: ${parent} <-> ${student} (school: ${school})`, PairingService.name);
 
     return PairingService.toPairingDto(pairing);
   }
@@ -143,10 +145,13 @@ class PairingService {
     return pairings.map((p) => PairingService.toPairingDto(p));
   }
 
-  async getAllPairings(status?: PairingStatusType): Promise<PairingDto[]> {
+  async getAllPairings(status?: PairingStatusType, school?: string): Promise<PairingDto[]> {
     const filter: Record<string, string> = {};
     if (status) {
       filter.status = status;
+    }
+    if (school) {
+      filter.school = school;
     }
 
     const pairings = await this.pairingModel.find(filter).sort({ createdAt: -1 }).exec();
@@ -175,6 +180,7 @@ class PairingService {
     id?: unknown;
     parent: string;
     student: string;
+    school: string;
     status: PairingStatusType;
     createdAt?: Date;
     updatedAt?: Date;
@@ -183,15 +189,16 @@ class PairingService {
       id: String(p.id),
       parent: p.parent,
       student: p.student,
+      school: p.school,
       status: p.status,
       createdAt: p.createdAt?.toISOString() ?? '',
       updatedAt: p.updatedAt?.toISOString() ?? '',
     };
   }
 
-  private async resolveCode(code: string): Promise<{ username: string; groups: string[] }> {
+  private async resolveCode(code: string): Promise<{ username: string; groups: string[]; school: string }> {
     const userKey = `${PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
-    const userData = await this.cacheManager.get<{ username: string; groups: string[] }>(userKey);
+    const userData = await this.cacheManager.get<{ username: string; groups: string[]; school: string }>(userKey);
 
     if (!userData) {
       throw new CustomHttpException(
@@ -215,13 +222,13 @@ class PairingService {
     }
   }
 
-  private async generateAndStoreCode(username: string, groups: string[]): Promise<string> {
+  private async generateAndStoreCode(username: string, groups: string[], school: string): Promise<string> {
     const code = randomUUID().slice(0, PAIRING_CACHE_CONFIG.CODE_LENGTH).toUpperCase();
     const codeKey = `${PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const userKey = `${PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
 
     await this.cacheManager.set(codeKey, code, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
-    await this.cacheManager.set(userKey, { username, groups }, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
+    await this.cacheManager.set(userKey, { username, groups, school }, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
 
     Logger.log(`Pairing code generated for ${username}`, PairingService.name);
 

@@ -31,6 +31,7 @@ import PairingStatusBadge from '@/components/shared/PairingStatusBadge';
 const COLUMN_IDS = {
   PARENT: 'parent',
   STUDENT: 'student',
+  SCHOOL: 'school',
   STATUS: 'status',
   CREATED_AT: 'createdAt',
   ACTIONS: 'actions',
@@ -62,6 +63,15 @@ const getPairingAssignmentColumns = ({
     cell: ({ row }) => row.original.student,
     enableSorting: true,
     sortingFn: (rowA, rowB) => sortString(rowA.original.student, rowB.original.student),
+  },
+  {
+    id: COLUMN_IDS.SCHOOL,
+    meta: { translationId: 'pairing.school' },
+    header: ({ column }) => <SortableHeader<PairingDto, unknown> column={column} />,
+    accessorFn: (row) => row.school,
+    cell: ({ row }) => row.original.school,
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => sortString(rowA.original.school, rowB.original.school),
   },
   {
     id: COLUMN_IDS.STATUS,

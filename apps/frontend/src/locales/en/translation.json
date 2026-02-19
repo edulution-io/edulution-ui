@@ -1969,6 +1969,7 @@
     "filterPlaceholder": "Search by parent or student...",
     "parent": "Parent",
     "student": "Student",
+    "school": "School",
     "statusColumn": "Status",
     "createdAt": "Created at",
     "accept": "Accept",

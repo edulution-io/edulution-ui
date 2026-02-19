@@ -32,6 +32,9 @@ export class Pairing {
   @Prop({ type: String, required: true })
   student: string;
 
+  @Prop({ type: String, required: true })
+  school: string;
+
   @Prop({ type: String, required: true, default: PAIRING_STATUS.PENDING })
   status: PairingStatusType;
 

@@ -1972,6 +1972,7 @@
     "filterPlaceholder": "Nach Elternteil oder Schüler suchen...",
     "parent": "Elternteil",
     "student": "Schüler",
+    "school": "Schule",
     "statusColumn": "Status",
     "createdAt": "Erstellt am",
     "accept": "Akzeptieren",

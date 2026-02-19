@@ -24,6 +24,7 @@ import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
 import { PAIRING_API_ENDPOINT } from '@libs/pairing/constants/pairingApiEndpoint';
 import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
+import PAIRING_QUERY_PARAMS from '@libs/pairing/constants/pairingQueryParams';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import PAIRING_STATUS_FILTER_ALL from '@libs/pairing/constants/pairingStatusFilterAll';
 import type PairingDto from '@libs/pairing/types/pairingDto';
@@ -32,22 +33,31 @@ interface PairingAssignmentStore {
   pairings: PairingDto[];
   isLoading: boolean;
   statusFilter: string;
+  selectedSchool: string;
 
   fetchPairings: () => Promise<void>;
   updateStatus: (id: string, status: string) => Promise<void>;
   setStatusFilter: (status: string) => void;
+  setSelectedSchool: (school: string) => void;
 }
 
 const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => ({
   pairings: [],
   isLoading: false,
   statusFilter: PAIRING_STATUS.PENDING,
+  selectedSchool: '',
 
   fetchPairings: async () => {
     set({ isLoading: true });
     try {
-      const { statusFilter } = get();
-      const params = statusFilter !== PAIRING_STATUS_FILTER_ALL ? { status: statusFilter } : {};
+      const { statusFilter, selectedSchool } = get();
+      const params: Record<string, string> = {};
+      if (statusFilter !== PAIRING_STATUS_FILTER_ALL) {
+        params.status = statusFilter;
+      }
+      if (selectedSchool) {
+        params[PAIRING_QUERY_PARAMS.SCHOOL] = selectedSchool;
+      }
       const { data } = await eduApi.get<PairingDto[]>(`${PAIRING_API_ENDPOINT}/${PAIRING_ADMIN_ENDPOINTS.ALL}`, {
         params,
       });
@@ -71,6 +81,11 @@ const usePairingAssignmentStore = create<PairingAssignmentStore>((set, get) => (
 
   setStatusFilter: (statusFilter: string) => {
     set({ statusFilter });
+    void get().fetchPairings();
+  },
+
+  setSelectedSchool: (selectedSchool: string) => {
+    set({ selectedSchool });
     void get().fetchPairings();
   },
 }));

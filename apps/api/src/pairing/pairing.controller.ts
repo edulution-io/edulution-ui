@@ -23,11 +23,14 @@ import { PAIRING_API_ENDPOINT, PAIRING_API_ENDPOINT_CODE } from '@libs/pairing/c
 import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
 import type SubmitPairingCodeDto from '@libs/pairing/types/submitPairingCodeDto';
 import type UpdatePairingStatusDto from '@libs/pairing/types/updatePairingStatusDto';
+import PAIRING_QUERY_PARAMS from '@libs/pairing/constants/pairingQueryParams';
 import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
+import type JwtUser from '@libs/user/types/jwt/jwtUser';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
-import AdminGuard from '../common/guards/admin.guard';
 import PairingService from './pairing.service';
+import DynamicAppAccessGuard from '../common/guards/dynamicAppAccess.guard';
 
 @Controller(PAIRING_API_ENDPOINT)
 @ApiBearerAuth()
@@ -36,14 +39,22 @@ class PairingController {
   constructor(private readonly pairingService: PairingService) {}
 
   @Get(PAIRING_API_ENDPOINT_CODE)
-  async getCode(@GetCurrentUsername() username: string, @GetCurrentUserGroups() groups: string[]) {
-    const code = await this.pairingService.getOrCreateCode(username, groups);
+  async getCode(
+    @GetCurrentUsername() username: string,
+    @GetCurrentUserGroups() groups: string[],
+    @GetCurrentUser() user: JwtUser,
+  ) {
+    const code = await this.pairingService.getOrCreateCode(username, groups, user.school);
     return { code };
   }
 
   @Put(PAIRING_API_ENDPOINT_CODE)
-  async refreshCode(@GetCurrentUsername() username: string, @GetCurrentUserGroups() groups: string[]) {
-    const code = await this.pairingService.refreshCode(username, groups);
+  async refreshCode(
+    @GetCurrentUsername() username: string,
+    @GetCurrentUserGroups() groups: string[],
+    @GetCurrentUser() user: JwtUser,
+  ) {
+    const code = await this.pairingService.refreshCode(username, groups, user.school);
     return { code };
   }
 
@@ -51,9 +62,10 @@ class PairingController {
   async createPairing(
     @GetCurrentUsername() username: string,
     @GetCurrentUserGroups() groups: string[],
+    @GetCurrentUser() user: JwtUser,
     @Body() body: SubmitPairingCodeDto,
   ) {
-    return this.pairingService.createPairing(username, groups, body.code);
+    return this.pairingService.createPairing(username, groups, user.school, body.code);
   }
 
   @Get()
@@ -62,13 +74,16 @@ class PairingController {
   }
 
   @Get(PAIRING_ADMIN_ENDPOINTS.ALL)
-  @UseGuards(AdminGuard)
-  async getAllPairings(@Query('status') status?: PairingStatusType) {
-    return this.pairingService.getAllPairings(status);
+  @UseGuards(DynamicAppAccessGuard)
+  async getAllPairings(
+    @Query(PAIRING_QUERY_PARAMS.STATUS) status?: PairingStatusType,
+    @Query(PAIRING_QUERY_PARAMS.SCHOOL) school?: string,
+  ) {
+    return this.pairingService.getAllPairings(status, school);
   }
 
   @Patch(`:id/${PAIRING_ADMIN_ENDPOINTS.STATUS}`)
-  @UseGuards(AdminGuard)
+  @UseGuards(DynamicAppAccessGuard)
   async updatePairingStatus(@Param('id') id: string, @Body() body: UpdatePairingStatusDto) {
     return this.pairingService.updatePairingStatus(id, body.status);
   }

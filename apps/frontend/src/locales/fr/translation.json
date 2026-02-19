@@ -1803,6 +1803,7 @@
     "filterPlaceholder": "Rechercher par parent ou élève...",
     "parent": "Parent",
     "student": "Élève",
+    "school": "École",
     "statusColumn": "Statut",
     "createdAt": "Créé le",
     "accept": "Accepter",
