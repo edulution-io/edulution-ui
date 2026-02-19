@@ -1986,7 +1986,7 @@
       "cannotPairWithSelf": "Du kannst dich nicht mit dir selbst verbinden.",
       "pairingAlreadyExists": "Diese Verbindung existiert bereits.",
       "invalidRole": "Deine Rolle erlaubt kein Pairing.",
-      "incompatibleRoles": "Du kannst keinen anderen Schüler verbinden."
+      "incompatibleRoles": "Du kannst dich mit keinem anderen Schüler verbinden."
     }
   },
   "whiteboard": {
