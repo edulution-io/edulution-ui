@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
-import PAIRING_API_ENDPOINT from '@libs/pairing/constants/pairingApiEndpoint';
+import { PAIRING_API_ENDPOINT } from '@libs/pairing/constants/pairingApiEndpoint';
 import PAIRING_ADMIN_ENDPOINTS from '@libs/pairing/constants/pairingAdminEndpoints';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
 import type PairingDto from '@libs/pairing/types/pairingDto';
