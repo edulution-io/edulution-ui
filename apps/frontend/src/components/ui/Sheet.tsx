@@ -75,12 +75,16 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   showCloseButton?: boolean;
+  overlayClassName?: string;
 }
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
-  ({ side = 'right', variant = 'secondary', showCloseButton = true, className, children, ...props }, ref) => (
+  (
+    { side = 'right', variant = 'secondary', showCloseButton = true, overlayClassName, className, children, ...props },
+    ref,
+  ) => (
     <SheetPortal>
-      <SheetOverlay />
+      <SheetOverlay className={overlayClassName} />
       <SheetPrimitive.Content
         ref={ref}
         className={cn(

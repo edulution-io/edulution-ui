@@ -20,6 +20,7 @@
 interface UserPreferencesDto {
   username: string;
   collapsedBulletins: Record<string, boolean>;
+  bulletinBoardGridRows?: string;
 }
 
 export default UserPreferencesDto;

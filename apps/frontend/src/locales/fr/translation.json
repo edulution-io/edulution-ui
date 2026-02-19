@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "illimité",
     "appTitle": "Tableau d'affichage",
     "description": "Ici, vous trouverez vos messages actuels",
+    "view": "Affichage",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Ligne",
+    "viewTwoRows": "2 Lignes",
+    "viewThreeRows": "3 Lignes",
     "filterPlaceHolderText": "Rechercher des noms de catégorie",
     "sidebar": "Tableau d'affichage",
     "newCategorie": "Nouvelle catégorie",
@@ -90,6 +95,35 @@
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
       "attachmentNotFound": "Pièce jointe introuvable",
       "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
+    }
+  },
+  "notificationscenter": {
+    "appTitle": "Notifications",
+    "description": "Ici tu peux trouver toutes tes notifications",
+    "sidebar": "Notifications",
+    "noNotifications": "Tu n'as pas de notifications",
+    "markAllAsRead": "Marquer tout comme lu",
+    "markAsRead": "Marquer comme lu",
+    "from": "de {{ author }}",
+    "systemNotification": "Notification système",
+    "messagesSection": "Messages",
+    "systemSection": "Notifications système",
+    "noMessages": "Pas de messages",
+    "noSystemNotifications": "Pas de notifications système",
+    "deleteAll": "Tout supprimer",
+    "deleteAllMessages": "Supprimer tous les messages",
+    "deleteAllSystem": "Supprimer toutes les notifications système",
+    "confirmDeleteAll": "Es-tu sûr de vouloir supprimer les {{count}} notifications ?",
+    "confirmDeleteMessages": "Es-tu sûr de vouloir supprimer les {{count}} messages ?",
+    "confirmDeleteSystem": "Es-tu sûr de vouloir supprimer les {{count}} notifications système ?",
+    "actionCannotBeUndone": "Cette action ne peut pas être annulée.",
+    "deletedNotifications": "{{count}} notification supprimée",
+    "deletedNotifications_other": "{{count}} notifications supprimées",
+    "loadMore": "Charger plus",
+    "menu": {
+      "all": "Tout",
+      "messages": "Messages",
+      "system": "Système"
     }
   },
   "appstore": {

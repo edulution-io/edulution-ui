@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "unlimited",
     "appTitle": "Info Board",
     "description": "Here you can find your latest bulletins",
+    "view": "View",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Row",
+    "viewTwoRows": "2 Rows",
+    "viewThreeRows": "3 Rows",
     "sidebar": "Info Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -95,6 +100,35 @@
       "unauthorizedUpdateCategory": "No permission to update this category",
       "attachmentNotFound": "Attachment not found",
       "attachmentDeletionFailed": "Failed to delete an attachment"
+    }
+  },
+  "notificationscenter": {
+    "appTitle": "Notifications",
+    "description": "Here you can find all your notifications",
+    "sidebar": "Notifications",
+    "noNotifications": "You have no notifications",
+    "markAllAsRead": "Mark all as read",
+    "markAsRead": "Mark as read",
+    "from": "from {{ author }}",
+    "systemNotification": "System notification",
+    "messagesSection": "Messages",
+    "systemSection": "System Notifications",
+    "noMessages": "No messages",
+    "noSystemNotifications": "No system notifications",
+    "deleteAll": "Delete all",
+    "deleteAllMessages": "Delete all messages",
+    "deleteAllSystem": "Delete all system notifications",
+    "confirmDeleteAll": "Are you sure you want to delete all {{count}} notifications?",
+    "confirmDeleteMessages": "Are you sure you want to delete all {{count}} messages?",
+    "confirmDeleteSystem": "Are you sure you want to delete all {{count}} system notifications?",
+    "actionCannotBeUndone": "This action cannot be undone.",
+    "deletedNotifications": "{{count}} notification deleted",
+    "deletedNotifications_other": "{{count}} notifications deleted",
+    "loadMore": "Load more",
+    "menu": {
+      "all": "All",
+      "messages": "Messages",
+      "system": "System"
     }
   },
   "mountpoints": {

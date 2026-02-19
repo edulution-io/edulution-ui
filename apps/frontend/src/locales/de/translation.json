@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "unbegrenzt gültig",
     "appTitle": "Info Board",
     "description": "Hier findest du deine aktuellen Mitteilungen",
+    "view": "Ansicht",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Zeile",
+    "viewTwoRows": "2 Zeilen",
+    "viewThreeRows": "3 Zeilen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
@@ -95,6 +100,35 @@
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
       "attachmentNotFound": "Anhang nicht gefunden",
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
+    }
+  },
+  "notificationscenter": {
+    "appTitle": "Benachrichtigungen",
+    "description": "Hier findest du alle deine Benachrichtigungen",
+    "sidebar": "Benachrichtigungen",
+    "noNotifications": "Du hast keine Benachrichtigungen",
+    "markAllAsRead": "Alle als gelesen markieren",
+    "markAsRead": "Als gelesen markieren",
+    "from": "von {{ author }}",
+    "systemNotification": "Systembenachrichtigung",
+    "messagesSection": "Nachrichten",
+    "systemSection": "Systembenachrichtigungen",
+    "noMessages": "Keine Nachrichten",
+    "noSystemNotifications": "Keine Systembenachrichtigungen",
+    "deleteAll": "Alle löschen",
+    "deleteAllMessages": "Alle Nachrichten löschen",
+    "deleteAllSystem": "Alle Systembenachrichtigungen löschen",
+    "confirmDeleteAll": "Möchtest du wirklich alle {{count}} Benachrichtigungen löschen?",
+    "confirmDeleteMessages": "Möchtest du wirklich alle {{count}} Nachrichten löschen?",
+    "confirmDeleteSystem": "Möchtest du wirklich alle {{count}} Systembenachrichtigungen löschen?",
+    "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deletedNotifications": "{{count}} Benachrichtigung gelöscht",
+    "deletedNotifications_other": "{{count}} Benachrichtigungen gelöscht",
+    "loadMore": "Mehr laden",
+    "menu": {
+      "all": "Alle",
+      "messages": "Nachrichten",
+      "system": "System"
     }
   },
   "appstore": {
