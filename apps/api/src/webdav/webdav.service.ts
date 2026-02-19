@@ -45,6 +45,7 @@ import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import buildNormalizedWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -163,7 +164,9 @@ class WebdavService {
     try {
       const cleanedPath = (path || '').replace(/^\/+/, '').replace(/\/+$/, '');
 
-      const finalPath = cleanedPath ? `${cleanedPath}/` : '';
+      const encodedPath = cleanedPath.split('/').filter(Boolean).map(encodeURIComponent).join('/');
+
+      const finalPath = encodedPath ? `${encodedPath}/` : '';
 
       return new URL(finalPath, base).href;
     } catch (err) {
@@ -300,13 +303,17 @@ class WebdavService {
     }
   }
 
-  async deletePath(username: string, fullPath: string, share: string): Promise<WebdavStatusResponse> {
+  async deletePath(username: string, relativePath: string, share: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const encodedPath = buildNormalizedWebdavPath(relativePath);
+    const url = `${webdavShare.url.replace(/\/+$/, '')}/${encodedPath.replace(/^\/+/, '')}`;
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.DELETE,
-        url: encodeURI(fullPath),
+        url,
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.DeletionFailed,
@@ -325,17 +332,18 @@ class WebdavService {
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-    let destinationUrl = destFullPath;
+    const encodedDest = buildNormalizedWebdavPath(destFullPath);
+    let destinationUrl = encodedDest;
     if (webdavShare.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${encodedDest.replace(/^\/+/, '')}`;
     }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
-        url: encodeURI(originFullPath),
+        url: buildNormalizedWebdavPath(originFullPath),
         headers: {
-          Destination: encodeURI(destinationUrl),
+          Destination: destinationUrl,
           Overwrite: 'T',
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
@@ -356,17 +364,18 @@ class WebdavService {
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-    let destinationUrl = destFullPath;
+    const encodedDest = buildNormalizedWebdavPath(destFullPath);
+    let destinationUrl = encodedDest;
     if (webdavShare.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${encodedDest.replace(/^\/+/, '')}`;
     }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
-        url: encodeURI(originFullPath),
+        url: buildNormalizedWebdavPath(originFullPath),
         headers: {
-          Destination: encodeURI(destinationUrl),
+          Destination: destinationUrl,
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
