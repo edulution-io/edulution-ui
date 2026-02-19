@@ -163,10 +163,8 @@ export default defineConfig(({ mode }) => {
       reportCompressedSize: true,
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes('/node_modules/@sentry/react/')) {
-              return 'sentry';
-            }
+          manualChunks: {
+            sentry: ['@sentry/react'],
           },
         },
       },
