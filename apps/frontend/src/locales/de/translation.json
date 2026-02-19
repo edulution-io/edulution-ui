@@ -1979,7 +1979,15 @@
     "statusPending": "Ausstehend",
     "statusAccepted": "Akzeptiert",
     "statusRejected": "Abgelehnt",
-    "statusUpdated": "Status erfolgreich aktualisiert."
+    "statusUpdated": "Status erfolgreich aktualisiert.",
+    "errors": {
+      "codeNotFound": "Der Pairing-Code wurde nicht gefunden.",
+      "codeExpired": "Der Pairing-Code ist abgelaufen.",
+      "cannotPairWithSelf": "Du kannst dich nicht mit dir selbst verbinden.",
+      "pairingAlreadyExists": "Diese Verbindung existiert bereits.",
+      "invalidRole": "Deine Rolle erlaubt kein Pairing.",
+      "incompatibleRoles": "Du kannst keinen anderen Schüler verbinden."
+    }
   },
   "whiteboard": {
     "title": "WHITEBOARD",

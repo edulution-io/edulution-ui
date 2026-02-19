@@ -1810,7 +1810,15 @@
     "statusPending": "En attente",
     "statusAccepted": "Accepté",
     "statusRejected": "Rejeté",
-    "statusUpdated": "Statut mis à jour avec succès."
+    "statusUpdated": "Statut mis à jour avec succès.",
+    "errors": {
+      "codeNotFound": "Le code d’appariement n’a pas été trouvé.",
+      "codeExpired": "Le code d’appariement a expiré.",
+      "cannotPairWithSelf": "Vous ne pouvez pas vous associer avec vous-même.",
+      "pairingAlreadyExists": "Cet appariement existe déjà.",
+      "invalidRole": "Votre rôle ne permet pas l’appariement.",
+      "incompatibleRoles": "Vous ne pouvez pas appairer un autre élève."
+    }
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",

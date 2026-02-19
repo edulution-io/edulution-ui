@@ -1976,7 +1976,15 @@
     "statusPending": "Pending",
     "statusAccepted": "Accepted",
     "statusRejected": "Rejected",
-    "statusUpdated": "Status updated successfully."
+    "statusUpdated": "Status updated successfully.",
+    "errors": {
+      "codeNotFound": "The pairing code was not found.",
+      "codeExpired": "The pairing code has expired.",
+      "cannotPairWithSelf": "You cannot pair with yourself.",
+      "pairingAlreadyExists": "This pairing already exists.",
+      "invalidRole": "Your role does not allow pairing.",
+      "incompatibleRoles": "You cannot pair another student."
+    }
   },
   "whiteboard": {
     "title": "WHITEBOARD",
