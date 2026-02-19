@@ -100,14 +100,7 @@ class PairingService {
 
     Logger.log(`Pairing created: ${parent} <-> ${student}`, PairingService.name);
 
-    return {
-      id: String(pairing.id),
-      parent: pairing.parent,
-      student: pairing.student,
-      status: pairing.status,
-      createdAt: pairing.createdAt.toISOString(),
-      updatedAt: pairing.updatedAt.toISOString(),
-    };
+    return PairingService.toPairingDto(pairing);
   }
 
   async getRelationships(username: string, groups: string[]): Promise<PairingDto[]> {
@@ -138,7 +131,7 @@ class PairingService {
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean(),
+        .lean({ virtuals: true }),
       this.pairingModel.countDocuments(filter),
     ]);
 
@@ -149,7 +142,9 @@ class PairingService {
   }
 
   async updatePairingStatus(pairingId: string, status: string): Promise<PairingDto> {
-    const pairing = await this.pairingModel.findByIdAndUpdate(pairingId, { status }, { new: true }).lean();
+    const pairing = await this.pairingModel
+      .findByIdAndUpdate(pairingId, { status }, { new: true })
+      .lean({ virtuals: true });
 
     if (!pairing) {
       throw new CustomHttpException(
@@ -165,9 +160,8 @@ class PairingService {
     return PairingService.toPairingDto(pairing);
   }
 
-  // eslint-disable-next-line no-underscore-dangle
   private static toPairingDto(p: {
-    _id: unknown;
+    id?: unknown;
     parent: string;
     student: string;
     status: string;
@@ -175,8 +169,7 @@ class PairingService {
     updatedAt?: Date;
   }): PairingDto {
     return {
-      // eslint-disable-next-line no-underscore-dangle
-      id: String(p._id),
+      id: String(p.id),
       parent: p.parent,
       student: p.student,
       status: p.status,
