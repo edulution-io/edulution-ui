@@ -261,7 +261,13 @@
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
       "GetSchoolsFailed": "Failed to get schools",
-      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version.",
+      "GetUsersByRoleFailed": "Failed to get users by role",
+      "GetManagementListFailed": "Failed to get management list",
+      "SaveManagementListFailed": "Failed to save management list",
+      "SophomorixCheckFailed": "Sophomorix check failed",
+      "SophomorixApplyFailed": "Sophomorix apply failed",
+      "GetSophomorixStatusFailed": "Failed to get sophomorix status"
     }
   },
   "ticketsystem": {
@@ -759,6 +765,125 @@
     "filesSharingStarted": "Sharing files started",
     "filesCollectingStarted": "Collecting files started"
   },
+  "usermanagement": {
+    "title": "USERS",
+    "titleLmn": "SCHOOL SERVER",
+    "titleGeneric": "SERVER",
+    "menuTitle": "User management",
+    "description": "View and manage user accounts, lists, and roles.",
+    "students": "Students",
+    "teachers": "Teachers",
+    "extrastudents": "Extra Students",
+    "parents": "Parents",
+    "staff": "Staff",
+    "schooladmins": "School Admins",
+    "schoolbindusers": "School Bind Users",
+    "globaladmins": "Global Admins",
+    "globalbindusers": "Global Bind Users",
+    "tabs": {
+      "table": "Table",
+      "list": "List Management"
+    },
+    "filterUsers": "Filter users...",
+    "loginClass": "Login / Class",
+    "name": "Name",
+    "status": "Status",
+    "passwordActions": "Password Actions",
+    "showFirstPassword": "Show first password",
+    "restoreFirstPassword": "Restore first password",
+    "setRandomFirstPassword": "Set random first password",
+    "setCustomPassword": "Set custom password",
+    "setCurrentPassword": "Set current user password",
+    "userDetails": "User Details",
+    "properties": "Properties",
+    "loginname": "Login name",
+    "mailAlias": "Mail Alias",
+    "class": "Class",
+    "sophomorixStatus": "Sophomorix Status",
+    "role": "Role",
+    "schoolname": "School name",
+    "userId": "User ID (optional)",
+    "birthdate": "Date of birth",
+    "deactivationDate": "Deactivation date",
+    "tolerationDate": "Toleration date",
+    "creationDate": "Creation date",
+    "groupMembership": "Group membership",
+    "quota": "Quota",
+    "noQuotaInfo": "No quota information available",
+    "noListAvailable": "No list management available for this user type.",
+    "listDescription": "List management for {{school}}/{{list}}.csv",
+    "csvPlaceholder": "CSV content will be displayed here...",
+    "addUser": "Add user",
+    "check": "Check",
+    "apply": "Apply",
+    "exportCsv": "Export CSV",
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Drop file here to import",
+      "download": "CSV Download"
+    },
+    "validationFailed": "Please fix all invalid fields before saving",
+    "listSaved": "List saved successfully. Use \"Check\" to review and apply changes.",
+    "checkCompleted": "Check completed",
+    "applyCompleted": "Apply completed",
+    "checkResult": {
+      "title": "Check Result",
+      "checkFailed": "Check failed",
+      "overview": "Overview",
+      "add": "Add",
+      "update": "Update",
+      "delete": "Remove",
+      "usersToAdd": "Users to be added",
+      "usersToUpdate": "Users to be updated",
+      "usersToDelete": "Users to be removed",
+      "addNewUsers": "Add new users",
+      "updateUsers": "Update users",
+      "deleteUsers": "Remove users",
+      "apply": "Apply",
+      "noChanges": "No changes detected. The current data matches the existing user accounts.",
+      "columns": {
+        "class": "Class",
+        "login": "Login",
+        "name": "Name",
+        "role": "Role",
+        "school": "School",
+        "changes": "Changes",
+        "file": "File",
+        "reason": "Reason"
+      }
+    },
+    "details": "Details",
+    "login": "Login",
+    "list": {
+      "class": "Class",
+      "lastName": "Last Name",
+      "firstName": "First Name",
+      "birthday": "Birthday",
+      "login": "Desired Login",
+      "loginTooltip": "This entry is read directly from the CSV file and may differ from the actual login of the user (stored in LDAP)",
+      "category": "Category",
+      "add": {
+        "students": "Add Student",
+        "teachers": "Add Teacher",
+        "extrastudents": "Add Extra Student",
+        "parents": "Add Parent",
+        "staff": "Add Staff"
+      }
+    },
+    "sophomorixStatusValues": {
+      "U": "Usable",
+      "S": "Self-activated",
+      "E": "Enabled",
+      "P": "Permanent",
+      "A": "Activated",
+      "T": "Tolerated",
+      "D": "Deactivated",
+      "F": "Frozen",
+      "L": "Locked",
+      "K": "Killable",
+      "R": "Removable"
+    }
+  },
   "select": "Select",
   "selectAll": "Select all",
   "details": "Details",
@@ -1191,6 +1316,20 @@
     "info": {
       "title": "Info"
     },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API Key",
+      "createdAt": "Created at",
+      "select": "Select",
+      "addClient": "Add Webhook Client",
+      "deleteClient": "Delete Webhook Client",
+      "deleteConfirmMessage": "Are you sure you want to delete the selected webhook clients?",
+      "selectUserAgent": "Select User-Agent",
+      "createSuccess": "Webhook client created",
+      "deleteSuccess": "Webhook client deleted",
+      "filterPlaceholder": "Filter webhook clients..."
+    },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
@@ -1572,6 +1711,9 @@
     "showSystemFiles": "Show system files",
     "expand": "Expand",
     "collapse": "Collapse",
+    "hide": "Hide",
+    "show": "Show",
+    "never": "Never",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
@@ -1812,8 +1954,12 @@
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
   },
   "linuxmuster": {
-    "title": "LINUXMUSTER",
-    "sidebar": "Linuxmuster"
+    "sidebarLmn": "School server",
+    "sidebarGeneric": "Server",
+    "item": "{{count}} user",
+    "items": "{{count}} users",
+    "userManagement": "User Management",
+    "description": "Manage your school server settings and users."
   },
   "whiteboard": {
     "title": "WHITEBOARD",
