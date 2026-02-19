@@ -163,15 +163,10 @@ export default defineConfig(({ mode }) => {
       reportCompressedSize: true,
       rollupOptions: {
         output: {
-          manualChunks: {
-            surveyjs: [
-              'survey-analytics',
-              'survey-core',
-              'survey-creator-core',
-              'survey-creator-react',
-              'survey-react-ui',
-            ],
-            sentry: ['@sentry/react'],
+          manualChunks(id) {
+            if (id.includes('/node_modules/@sentry/react/')) {
+              return 'sentry';
+            }
           },
         },
       },

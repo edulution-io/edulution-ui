@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IHeader, ITheme } from 'survey-core';
+import type { IHeader, ITheme } from 'survey-core';
 
 const surveyTheme: ITheme = {
   cssVariables: {
