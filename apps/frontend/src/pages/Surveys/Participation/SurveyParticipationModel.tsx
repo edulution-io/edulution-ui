@@ -22,11 +22,11 @@ import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
-import THEME from '@libs/common/constants/theme';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import { SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
+import updateSignaturePadTheme from '@libs/survey/utils/updateSignaturePadTheme';
 import useLanguage from '@/hooks/useLanguage';
 import useThemeStore from '@/store/useThemeStore';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -64,16 +64,6 @@ Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
   const { theme, getResolvedTheme } = useThemeStore();
-
-  useEffect(() => {
-    Serializer.getProperty('signaturepad', 'penColor').defaultValue =
-      getResolvedTheme() === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
-
-    Serializer.getProperty('survey', 'logo').defaultValue =
-      getResolvedTheme() === THEME.dark
-        ? `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-dark.webp`
-        : `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-light.webp`;
-  }, [theme, getResolvedTheme]);
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveysTablesPageStore();
 
@@ -255,6 +245,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   useEffect(() => {
     if (!surveyParticipationModel) return;
+
+    updateSignaturePadTheme(surveyParticipationModel, getResolvedTheme);
+
     if (surveyParticipationModel.logo !== `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`) return;
     if (!surveyParticipationModel.calculatedValues) {
       surveyParticipationModel.calculatedValues = [];
