@@ -33,6 +33,10 @@ const getSurveyRoutes = () => [
       element={<SurveyApp surveysPageView={SurveysPageView.OPEN} />}
     />
     <Route
+      path={SurveysPageView.OPEN}
+      element={<SurveyApp surveysPageView={SurveysPageView.OPEN} />}
+    />
+    <Route
       path={SurveysPageView.ANSWERED}
       element={<SurveyApp surveysPageView={SurveysPageView.ANSWERED} />}
     />
