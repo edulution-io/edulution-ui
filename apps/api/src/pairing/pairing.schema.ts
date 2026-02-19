@@ -20,6 +20,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
+import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
 
 export type PairingDocument = Pairing & Document;
 
@@ -32,7 +33,7 @@ export class Pairing {
   student: string;
 
   @Prop({ type: String, required: true, default: PAIRING_STATUS.PENDING })
-  status: string;
+  status: PairingStatusType;
 
   @Prop({ type: Number, default: 1 })
   schemaVersion: number;
@@ -45,6 +46,8 @@ export class Pairing {
 }
 
 export const PairingSchema = SchemaFactory.createForClass(Pairing);
+
+PairingSchema.index({ parent: 1, student: 1 }, { unique: true });
 
 PairingSchema.set('toJSON', {
   virtuals: true,

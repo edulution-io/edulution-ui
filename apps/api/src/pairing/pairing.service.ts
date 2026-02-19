@@ -38,7 +38,7 @@ class PairingService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async getOrCreateCode(username: string): Promise<string> {
+  async getOrCreateCode(username: string, groups: string[]): Promise<string> {
     const codeKey = `${PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const existingCode = await this.cacheManager.get<string>(codeKey);
 
@@ -46,18 +46,18 @@ class PairingService {
       return existingCode;
     }
 
-    return this.generateAndStoreCode(username);
+    return this.generateAndStoreCode(username, groups);
   }
 
-  async refreshCode(username: string): Promise<string> {
+  async refreshCode(username: string, groups: string[]): Promise<string> {
     await this.deleteExistingCode(username);
-    return this.generateAndStoreCode(username);
+    return this.generateAndStoreCode(username, groups);
   }
 
   async createPairing(username: string, groups: string[], code: string): Promise<PairingDto> {
-    const targetUsername = await this.resolveCode(code);
+    const target = await this.resolveCode(code);
 
-    if (username === targetUsername) {
+    if (username === target.username) {
       throw new CustomHttpException(
         PAIRING_ERROR_MESSAGES.CANNOT_PAIR_WITH_SELF,
         HttpStatus.BAD_REQUEST,
@@ -66,10 +66,10 @@ class PairingService {
       );
     }
 
-    const isParent = groups.includes(GroupRoles.PARENT);
-    const isStudent = groups.includes(GroupRoles.STUDENT);
+    const callerIsParent = groups.includes(GroupRoles.PARENT);
+    const callerIsStudent = groups.includes(GroupRoles.STUDENT);
 
-    if (!isParent && !isStudent) {
+    if (!callerIsParent && !callerIsStudent) {
       throw new CustomHttpException(
         PAIRING_ERROR_MESSAGES.INVALID_ROLE,
         HttpStatus.FORBIDDEN,
@@ -78,8 +78,32 @@ class PairingService {
       );
     }
 
-    const parent = isParent ? username : targetUsername;
-    const student = isStudent ? username : targetUsername;
+    const targetIsParent = target.groups.includes(GroupRoles.PARENT);
+    const targetIsStudent = target.groups.includes(GroupRoles.STUDENT);
+
+    if (!targetIsParent && !targetIsStudent) {
+      throw new CustomHttpException(
+        PAIRING_ERROR_MESSAGES.INVALID_ROLE,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        PairingService.name,
+      );
+    }
+
+    const hasParent = callerIsParent || targetIsParent;
+    const hasStudent = callerIsStudent || targetIsStudent;
+
+    if (!hasParent || !hasStudent) {
+      throw new CustomHttpException(
+        PAIRING_ERROR_MESSAGES.INCOMPATIBLE_ROLES,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        PairingService.name,
+      );
+    }
+
+    const parent = callerIsParent ? username : target.username;
+    const student = callerIsStudent ? username : target.username;
 
     const existingPairing = await this.pairingModel.findOne({ parent, student }).exec();
     if (existingPairing) {
@@ -164,11 +188,11 @@ class PairingService {
     };
   }
 
-  private async resolveCode(code: string): Promise<string> {
+  private async resolveCode(code: string): Promise<{ username: string; groups: string[] }> {
     const userKey = `${PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
-    const username = await this.cacheManager.get<string>(userKey);
+    const userData = await this.cacheManager.get<{ username: string; groups: string[] }>(userKey);
 
-    if (!username) {
+    if (!userData) {
       throw new CustomHttpException(
         PAIRING_ERROR_MESSAGES.CODE_EXPIRED,
         HttpStatus.GONE,
@@ -177,7 +201,7 @@ class PairingService {
       );
     }
 
-    return username;
+    return userData;
   }
 
   private async deleteExistingCode(username: string): Promise<void> {
@@ -190,13 +214,13 @@ class PairingService {
     }
   }
 
-  private async generateAndStoreCode(username: string): Promise<string> {
+  private async generateAndStoreCode(username: string, groups: string[]): Promise<string> {
     const code = randomUUID().slice(0, PAIRING_CACHE_CONFIG.CODE_LENGTH).toUpperCase();
     const codeKey = `${PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const userKey = `${PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
 
     await this.cacheManager.set(codeKey, code, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
-    await this.cacheManager.set(userKey, username, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
+    await this.cacheManager.set(userKey, { username, groups }, PAIRING_CACHE_CONFIG.CODE_TTL_MS);
 
     Logger.log(`Pairing code generated for ${username}`, PairingService.name);
 

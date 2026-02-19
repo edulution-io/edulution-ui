@@ -175,7 +175,7 @@ const PairingPage: React.FC = () => {
               <div className="grid gap-2">
                 {relationships.map((rel) => (
                   <div
-                    key={`${rel.parent}-${rel.student}`}
+                    key={rel.id}
                     className="flex items-center justify-between rounded-lg bg-accent p-3"
                   >
                     <span>
