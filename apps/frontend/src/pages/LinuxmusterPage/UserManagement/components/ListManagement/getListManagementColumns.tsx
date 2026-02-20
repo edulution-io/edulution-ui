@@ -97,7 +97,7 @@ const getListManagementColumns = ({
           onChange={(e) => onCellChange(row.index, config.key, e.target.value)}
           onBlur={() => onCellBlur(row.index, config.key)}
           className={cn(
-            'h-8 border',
+            'h-8 border bg-transparent hover:bg-white focus:bg-white dark:bg-transparent dark:hover:bg-accent dark:focus:bg-accent',
             !isValid && 'border-red-400',
             isValid && isNew && 'border-green-300',
             isValid && !isNew && isChanged && 'border-blue-300',

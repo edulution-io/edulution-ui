@@ -29,6 +29,8 @@ import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTyp
 import { createEmptyEntry, entriesToRows } from '@libs/userManagement/utils/csvUtils';
 import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import validateListRows from '@libs/userManagement/utils/validateListRows';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useUserManagementStore from '../../useUserManagementStore';
 import CsvDialog from './CsvDialog';
 import CheckResultDialog from './CheckResultDialog/CheckResultDialog';
@@ -50,6 +52,7 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     runSophomorixApply,
   } = useUserManagementStore();
   const [isCsvDialogOpen, setIsCsvDialogOpen] = useState(false);
+  const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const [isCheckDialogOpen, setIsCheckDialogOpen] = useState(false);
   const [checkResult, setCheckResult] = useState<SophomorixCheckResponse | null>(null);
 
@@ -80,8 +83,13 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     }
   };
 
-  const handleCheck = async () => {
+  const handleCheckClick = () => {
     if (!validateEntries()) return;
+    setIsSaveConfirmOpen(true);
+  };
+
+  const handleConfirmSaveAndCheck = async () => {
+    setIsSaveConfirmOpen(false);
     setCheckResult(null);
     setIsCheckDialogOpen(true);
     if (selectedSchool && managementList) {
@@ -147,9 +155,7 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
       {
         icon: faCheck,
         text: t('usermanagement.check'),
-        onClick: () => {
-          void handleCheck();
-        },
+        onClick: handleCheckClick,
         isVisible: !isSaving,
       },
       {
@@ -173,6 +179,21 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
           school={selectedSchool}
         />
       ) : null}
+      <AdaptiveDialog
+        isOpen={isSaveConfirmOpen}
+        handleOpenChange={() => setIsSaveConfirmOpen(false)}
+        title={t('usermanagement.saveConfirmTitle')}
+        body={<p>{t('usermanagement.saveConfirmMessage')}</p>}
+        footer={
+          <DialogFooterButtons
+            handleClose={() => setIsSaveConfirmOpen(false)}
+            handleSubmit={() => {
+              void handleConfirmSaveAndCheck();
+            }}
+            submitButtonText="usermanagement.check"
+          />
+        }
+      />
       <CheckResultDialog
         isOpen={isCheckDialogOpen}
         onClose={() => setIsCheckDialogOpen(false)}

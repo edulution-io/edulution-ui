@@ -188,7 +188,10 @@ const ListManagementTable: React.FC<ListManagementTableProps> = ({
               table.getRowModel().rows.map((row) => {
                 if (deletedRowIds.has(row.id)) return null;
                 return (
-                  <TableRow key={row.id}>
+                  <TableRow
+                    key={row.id}
+                    className="[&:focus-within_input]:bg-white dark:[&:focus-within_input]:bg-accent"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}

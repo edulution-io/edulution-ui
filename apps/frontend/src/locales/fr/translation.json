@@ -671,7 +671,7 @@
     "globaladmins": "Admins globaux",
     "globalbindusers": "Utilisateurs Bind globaux",
     "tabs": {
-      "table": "Tableau",
+      "table": "Utilisateurs",
       "list": "Gestion des listes"
     },
     "filterUsers": "Filtrer les utilisateurs...",
@@ -705,6 +705,8 @@
     "csvPlaceholder": "Le contenu CSV sera affiché ici...",
     "addUser": "Ajouter un utilisateur",
     "check": "Vérifier",
+    "saveConfirmTitle": "Sauvegarder la liste",
+    "saveConfirmMessage": "La liste doit être sauvegardée avant la vérification. Voulez-vous sauvegarder la liste maintenant et continuer ?",
     "apply": "Appliquer",
     "exportCsv": "Exporter CSV",
     "csv": {
