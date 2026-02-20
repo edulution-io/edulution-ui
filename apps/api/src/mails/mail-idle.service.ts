@@ -212,8 +212,8 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       }
     });
 
-    client.on('exists', (data: { path: string; count: number; prevCount: number }) => {
-      this.handleExistsEvent(username, data.count, data.prevCount);
+    client.on('exists', (data: { path: string; count: number }) => {
+      this.handleExistsEvent(username, data.count);
     });
 
     (client as NodeJS.EventEmitter).on(
@@ -247,24 +247,24 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private handleExistsEvent(username: string, count: number, prevCount: number): void {
+  private handleExistsEvent(username: string, count: number): void {
     const connection = this.idleConnections.get(username);
     if (!connection) {
       return;
     }
 
-    if (count > prevCount) {
-      const newMailCount = count - prevCount;
+    if (count > connection.previousMailCount) {
+      const newMailCount = count - connection.previousMailCount;
       Logger.log(`New mail detected for ${username}: ${newMailCount} new mail(s)`, MailIdleService.name);
 
       const notification: MailNewMailNotificationDto = {
         count,
-        previousCount: prevCount,
+        previousCount: connection.previousMailCount,
         newMailCount,
       };
 
       this.sseService.sendEventToUser(username, notification, SSE_MESSAGE_TYPE.MAIL_NEW_MAIL);
-      void this.fetchNewMailsAndNotify(username, prevCount, count);
+      void this.fetchNewMailsAndNotify(username, connection.previousMailCount, count);
     }
 
     connection.previousMailCount = count;
