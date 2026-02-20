@@ -79,7 +79,7 @@ const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, managementList, 
     link.href = url;
     link.download = `${managementList}.csv`;
     link.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   const lineCount = csvText.split('\n').length;

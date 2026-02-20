@@ -17,14 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
-import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
-import validateCell from '@libs/userManagement/utils/validateCell';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { WebhookClient, WebhookClientSchema } from './webhook-client.schema';
+import WebhookClientsService from './webhook-clients.service';
+import WebhookClientsController from './webhook-clients.controller';
 
-const validateListRows = (rows: ListManagementRow[], managementList: ManagementListType): boolean => {
-  const columnConfigs = LIST_MANAGEMENT_COLUMNS[managementList];
-  return rows.every((row) => columnConfigs.every((config) => validateCell(config.key, row[config.key] ?? '')));
-};
-
-export default validateListRows;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: WebhookClient.name, schema: WebhookClientSchema }])],
+  controllers: [WebhookClientsController],
+  providers: [WebhookClientsService],
+  exports: [WebhookClientsService],
+})
+export default class WebhookClientsModule {}

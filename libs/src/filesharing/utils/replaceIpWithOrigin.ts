@@ -17,14 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
-import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
-import validateCell from '@libs/userManagement/utils/validateCell';
+const IP_REGEX = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
 
-const validateListRows = (rows: ListManagementRow[], managementList: ManagementListType): boolean => {
-  const columnConfigs = LIST_MANAGEMENT_COLUMNS[managementList];
-  return rows.every((row) => columnConfigs.every((config) => validateCell(config.key, row[config.key] ?? '')));
+const replaceIpWithOrigin = (url: string): string => {
+  if (!url) return '';
+  try {
+    const parsed = new URL(url);
+    if (!IP_REGEX.test(parsed.hostname)) return url;
+    return `${window.origin}${parsed.pathname}`;
+  } catch {
+    return url;
+  }
 };
 
-export default validateListRows;
+export default replaceIpWithOrigin;

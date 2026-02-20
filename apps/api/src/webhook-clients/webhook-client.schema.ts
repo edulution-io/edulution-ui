@@ -17,14 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
-import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
-import validateCell from '@libs/userManagement/utils/validateCell';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-const validateListRows = (rows: ListManagementRow[], managementList: ManagementListType): boolean => {
-  const columnConfigs = LIST_MANAGEMENT_COLUMNS[managementList];
-  return rows.every((row) => columnConfigs.every((config) => validateCell(config.key, row[config.key] ?? '')));
-};
+@Schema({ timestamps: true, strict: true })
+export class WebhookClient {
+  @Prop({ required: true })
+  userAgent: string;
 
-export default validateListRows;
+  @Prop({ required: true, unique: true })
+  apiKey: string;
+
+  @Prop()
+  createdAt: Date;
+}
+
+export const WebhookClientSchema = SchemaFactory.createForClass(WebhookClient);

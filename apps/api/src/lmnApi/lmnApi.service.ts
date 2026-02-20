@@ -54,6 +54,8 @@ import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
+import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
+import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
@@ -888,9 +890,13 @@ class LmnApiService {
     }
   }
 
-  public async getManagementList(lmnApiToken: string, school: string, managementList: string): Promise<unknown[]> {
+  public async getManagementList(
+    lmnApiToken: string,
+    school: string,
+    managementList: string,
+  ): Promise<ListManagementEntry[]> {
     try {
-      const response = await this.request<unknown[]>(
+      const response = await this.request<ListManagementEntry[]>(
         HttpMethods.GET,
         `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
         undefined,
@@ -914,10 +920,10 @@ class LmnApiService {
     lmnApiToken: string,
     school: string,
     managementList: string,
-    data: unknown[],
-  ): Promise<unknown> {
+    data: ListManagementEntry[],
+  ): Promise<ListManagementEntry[]> {
     try {
-      const response = await this.request<unknown>(
+      const response = await this.request<ListManagementEntry[]>(
         HttpMethods.POST,
         `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
         { data },
@@ -937,9 +943,9 @@ class LmnApiService {
     }
   }
 
-  public async runSophomorixCheck(lmnApiToken: string): Promise<unknown> {
+  public async runSophomorixCheck(lmnApiToken: string): Promise<SophomorixCheckResponse> {
     try {
-      const response = await this.request<unknown>(
+      const response = await this.request<SophomorixCheckResponse>(
         HttpMethods.GET,
         `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-check`,
         undefined,
@@ -965,20 +971,21 @@ class LmnApiService {
     add: boolean,
     update: boolean,
     kill: boolean,
-  ): Promise<unknown> {
+  ): Promise<SophomorixCheckResponse> {
     try {
-      const params = new URLSearchParams({ [SOPHOMORIX_QUERY_PARAMS.SCHOOL]: school });
-      if (add) params.append(SOPHOMORIX_QUERY_PARAMS.ADD, 'true');
-      if (update) params.append(SOPHOMORIX_QUERY_PARAMS.UPDATE, 'true');
-      if (kill) params.append(SOPHOMORIX_QUERY_PARAMS.KILL, 'true');
-
-      const response = await this.request<unknown>(
+      const response = await this.request<SophomorixCheckResponse>(
         HttpMethods.GET,
-        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-apply?${params.toString()}`,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-apply`,
         undefined,
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           timeout: 120000,
+          params: {
+            [SOPHOMORIX_QUERY_PARAMS.SCHOOL]: school,
+            ...(add && { [SOPHOMORIX_QUERY_PARAMS.ADD]: 'true' }),
+            ...(update && { [SOPHOMORIX_QUERY_PARAMS.UPDATE]: 'true' }),
+            ...(kill && { [SOPHOMORIX_QUERY_PARAMS.KILL]: 'true' }),
+          },
         },
       );
 
@@ -986,28 +993,6 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.SophomorixApplyFailed,
-        HttpStatus.BAD_GATEWAY,
-        undefined,
-        LmnApiService.name,
-      );
-    }
-  }
-
-  public async getSophomorixApplyStatus(lmnApiToken: string, logname: string): Promise<unknown> {
-    try {
-      const response = await this.request<unknown>(
-        HttpMethods.GET,
-        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-apply/status/${logname}`,
-        undefined,
-        {
-          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-        },
-      );
-
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        LmnApiErrorMessage.GetSophomorixStatusFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
         LmnApiService.name,

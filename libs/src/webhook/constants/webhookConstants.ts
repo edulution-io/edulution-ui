@@ -17,14 +17,29 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
-import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
-import validateCell from '@libs/userManagement/utils/validateCell';
+const FIVE_MINUTES_MS = 5 * 60 * 1000;
+const TWENTY_FOUR_HOURS_SECONDS = 86400;
 
-const validateListRows = (rows: ListManagementRow[], managementList: ManagementListType): boolean => {
-  const columnConfigs = LIST_MANAGEMENT_COLUMNS[managementList];
-  return rows.every((row) => columnConfigs.every((config) => validateCell(config.key, row[config.key] ?? '')));
+const USER_AGENTS = {
+  EVENTHANDLER: 'edulution-eventhandler',
+  LINUXMUSTER_API: 'linuxmuster-api',
 };
 
-export default validateListRows;
+const WEBHOOK_CONSTANTS = {
+  HEADERS: {
+    WEBHOOK_KEY: 'x-webhook-key',
+    WEBHOOK_TIMESTAMP: 'x-webhook-timestamp',
+    WEBHOOK_EVENT_ID: 'x-webhook-event-id',
+  },
+  USER_AGENTS,
+  USER_AGENT_OPTIONS: Object.values(USER_AGENTS),
+  API_KEY_LENGTH: 16,
+  REDIS_KEYS: {
+    EVENTHANDLER_PREFIX: 'webhook:eventhandler',
+  },
+  TIMESTAMP_MAX_AGE_MS: FIVE_MINUTES_MS,
+  MAX_PROCESSED_EVENTS: 100,
+  EVENT_TTL_SECONDS: TWENTY_FOUR_HOURS_SECONDS,
+} as const;
+
+export default WEBHOOK_CONSTANTS;
