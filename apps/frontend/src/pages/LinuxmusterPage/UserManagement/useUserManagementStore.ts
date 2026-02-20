@@ -31,6 +31,7 @@ import type ListManagementEntry from '@libs/userManagement/types/listManagementE
 import type ListData from '@libs/userManagement/types/listData';
 import EMPTY_LIST_DATA from '@libs/userManagement/constants/emptyListData';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
 import { isCommentEntry } from '@libs/userManagement/utils/csvUtils';
 
@@ -46,6 +47,8 @@ type UserManagementStore = {
   isBackgroundFetchingList: boolean;
   isLoadingUserDetails: boolean;
   isSaving: boolean;
+  isCheckLoading: boolean;
+  isApplying: boolean;
   selectedUserDetails: LmnUserInfo | null;
   selectedUserQuota: QuotaResponse | null;
   error: string | null;
@@ -58,6 +61,13 @@ type UserManagementStore = {
     data: ListManagementEntry[],
     silent?: boolean,
   ) => Promise<void>;
+  runSophomorixCheck: () => Promise<SophomorixCheckResponse | null>;
+  runSophomorixApply: (
+    school: string,
+    add: boolean,
+    update: boolean,
+    kill: boolean,
+  ) => Promise<SophomorixCheckResponse | null>;
   fetchSelectedUserDetails: (username: string) => Promise<void>;
   setSelectedUserDetails: (user: LmnUserInfo | null) => void;
   getListData: (managementList: string) => ListData;
@@ -75,6 +85,8 @@ const initialState = {
   isBackgroundFetchingList: false,
   isLoadingUserDetails: false,
   isSaving: false,
+  isCheckLoading: false,
+  isApplying: false,
   selectedUserDetails: null as LmnUserInfo | null,
   selectedUserQuota: null as QuotaResponse | null,
   error: null as string | null,
@@ -209,6 +221,48 @@ const useUserManagementStore = create<UserManagementStore>()(
           handleApiError(error, set);
         } finally {
           set({ isSaving: false });
+        }
+      },
+
+      runSophomorixCheck: async (): Promise<SophomorixCheckResponse | null> => {
+        set({ isCheckLoading: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.get<SophomorixCheckResponse>(`${LIST_MANAGEMENT}/sophomorix-check`, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return null;
+        } finally {
+          set({ isCheckLoading: false });
+        }
+      },
+
+      runSophomorixApply: async (
+        school: string,
+        add: boolean,
+        update: boolean,
+        kill: boolean,
+      ): Promise<SophomorixCheckResponse | null> => {
+        set({ isApplying: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.post<SophomorixCheckResponse>(
+            `${LIST_MANAGEMENT}/sophomorix-apply`,
+            { school, add, update, kill },
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            },
+          );
+          toast.success(i18n.t('usermanagement.applyCompleted'));
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return null;
+        } finally {
+          set({ isApplying: false });
         }
       },
 

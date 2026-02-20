@@ -51,6 +51,8 @@ enum LmnApiErrorMessage {
   GetUsersByRoleFailed = 'lmnApi.errors.GetUsersByRoleFailed',
   GetManagementListFailed = 'lmnApi.errors.GetManagementListFailed',
   SaveManagementListFailed = 'lmnApi.errors.SaveManagementListFailed',
+  SophomorixCheckFailed = 'lmnApi.errors.SophomorixCheckFailed',
+  SophomorixApplyFailed = 'lmnApi.errors.SophomorixApplyFailed',
 }
 
 export default LmnApiErrorMessage;
