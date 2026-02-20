@@ -22,9 +22,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import ParentChildPairingService from './parent-child-pairing.service';
 import ParentChildPairingController from './parent-child-pairing.controller';
 import { ParentChildPairing, ParentChildPairingSchema } from './parent-child-pairing.schema';
+import LmnApiModule from '../lmnApi/lmnApi.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: ParentChildPairing.name, schema: ParentChildPairingSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: ParentChildPairing.name, schema: ParentChildPairingSchema }]),
+    LmnApiModule,
+  ],
   providers: [ParentChildPairingService],
   controllers: [ParentChildPairingController],
   exports: [ParentChildPairingService],

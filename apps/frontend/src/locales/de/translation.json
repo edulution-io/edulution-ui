@@ -230,7 +230,8 @@
       "SaveManagementListFailed": "Speichern der Verwaltungsliste fehlgeschlagen",
       "SophomorixCheckFailed": "Sophomorix-Check fehlgeschlagen",
       "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen",
-      "GetSophomorixStatusFailed": "Abrufen des Sophomorix-Status fehlgeschlagen"
+      "GetSophomorixStatusFailed": "Abrufen des Sophomorix-Status fehlgeschlagen",
+      "AddParentToStudentFailed": "Registrierung des Elternteils für den Schüler fehlgeschlagen"
     }
   },
   "ticketsystem": {

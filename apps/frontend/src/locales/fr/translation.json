@@ -219,7 +219,8 @@
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
       "GetSchoolsFailed": "L'appel des écoles a échoué",
-      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué.",
+      "AddParentToStudentFailed": "Échec de l'enregistrement du parent pour l'élève"
     }
   },
   "ticketsystem": {

@@ -33,6 +33,7 @@ import type ParentChildPairingCodeResponseDto from '@libs/parent-child-pairing/t
 import type ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
 import type ParentChildPairingLogActionType from '@libs/parent-child-pairing/types/parentChildPairingLogActionType';
 import CustomHttpException from '../common/CustomHttpException';
+import LmnApiService from '../lmnApi/lmnApi.service';
 import { ParentChildPairing, ParentChildPairingDocument } from './parent-child-pairing.schema';
 
 interface CachedPairingUserData {
@@ -48,6 +49,7 @@ class ParentChildPairingService {
     @InjectModel(ParentChildPairing.name)
     private readonly parentChildPairingModel: Model<ParentChildPairingDocument>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly lmnApiService: LmnApiService,
   ) {}
 
   async getOrCreateCode(
@@ -232,7 +234,31 @@ class ParentChildPairingService {
 
     Logger.log(`Parent-child pairing ${pairingId} status updated to ${status}`, ParentChildPairingService.name);
 
+    if (status === PARENT_CHILD_PAIRING_STATUS.ACCEPTED) {
+      void this.registerParentInLmnApi(performedBy, parentChildPairing.student, parentChildPairing.parent);
+    }
+
     return ParentChildPairingService.toParentChildPairingDto(parentChildPairing);
+  }
+
+  private async registerParentInLmnApi(
+    performedBy: string,
+    studentUsername: string,
+    parentUsername: string,
+  ): Promise<void> {
+    try {
+      const lmnApiToken = await this.lmnApiService.getLmnApiToken(performedBy);
+      await this.lmnApiService.addParentToStudent(lmnApiToken, studentUsername, parentUsername);
+      Logger.log(
+        `Registered parent ${parentUsername} for student ${studentUsername} in lmn-api`,
+        ParentChildPairingService.name,
+      );
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to register parent ${parentUsername} for student ${studentUsername} in lmn-api: ${String(error)}`,
+        ParentChildPairingService.name,
+      );
+    }
   }
 
   private static toParentChildPairingDto(p: {

@@ -239,7 +239,8 @@
       "SaveManagementListFailed": "Failed to save management list",
       "SophomorixCheckFailed": "Sophomorix check failed",
       "SophomorixApplyFailed": "Sophomorix apply failed",
-      "GetSophomorixStatusFailed": "Failed to get sophomorix status"
+      "GetSophomorixStatusFailed": "Failed to get sophomorix status",
+      "AddParentToStudentFailed": "Failed to register parent for student"
     }
   },
   "ticketsystem": {
