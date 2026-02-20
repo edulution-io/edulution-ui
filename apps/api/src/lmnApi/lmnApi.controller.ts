@@ -44,6 +44,7 @@ import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
+import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
 import type JwtUser from '@libs/user/types/jwt/jwtUser';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
@@ -325,6 +326,19 @@ export class LmnApiController {
     return this.lmnApiService.getUsersByRole(lmnApiToken, role, school ?? user.school, managementList);
   }
 
+  @Get('listmanagement/sophomorix-check')
+  async runSophomorixCheck(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.runSophomorixCheck(lmnApiToken);
+  }
+
+  @Post('listmanagement/sophomorix-apply')
+  async runSophomorixApply(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { school: string; add: boolean; update: boolean; kill: boolean },
+  ) {
+    return this.lmnApiService.runSophomorixApply(lmnApiToken, body.school, body.add, body.update, body.kill);
+  }
+
   @Get('listmanagement/:school/:managementList')
   async getManagementList(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
@@ -337,7 +351,7 @@ export class LmnApiController {
   async saveManagementList(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Param() params: { school: string; managementList: string },
-    @Body() body: { data: unknown[] },
+    @Body() body: { data: ListManagementEntry[] },
   ) {
     return this.lmnApiService.saveManagementList(lmnApiToken, params.school, params.managementList, body.data);
   }

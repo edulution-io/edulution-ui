@@ -47,6 +47,11 @@ class MailsController {
     @GetCurrentUsername() username: string,
     @GetUsersEmailAddress() emailAddress: string,
   ): Promise<MailDto[]> {
+    const idleMails = await this.mailIdleService.fetchUnseenMails(username);
+    if (idleMails !== null) {
+      return idleMails;
+    }
+
     const password = await this.userService.getPassword(username);
     const mails = await this.mailsService.getMails(emailAddress, password);
 

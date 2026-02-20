@@ -85,7 +85,8 @@
       "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
       "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
-      "editableByUsersAndGroupsTitle": "Manage Bulletins"
+      "editableByUsersAndGroupsTitle": "Manage Bulletins",
+      "accessGroupsOnlyHint": "Only access groups can be assigned."
     },
     "errors": {
       "categoryNotFound": "Category not found",
@@ -259,8 +260,7 @@
       "GetManagementListFailed": "Failed to get management list",
       "SaveManagementListFailed": "Failed to save management list",
       "SophomorixCheckFailed": "Sophomorix check failed",
-      "SophomorixApplyFailed": "Sophomorix apply failed",
-      "GetSophomorixStatusFailed": "Failed to get sophomorix status"
+      "SophomorixApplyFailed": "Sophomorix apply failed"
     }
   },
   "ticketsystem": {

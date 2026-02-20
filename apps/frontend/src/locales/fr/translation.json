@@ -80,7 +80,8 @@
       "visibleByUsersAndGroups": "Cette catégorie avec ses messages est visible pour les utilisateurs et les groupes sur la page d'accueil",
       "visibleByUsersAndGroupsTitle": "Page d'accueil",
       "editableByUsersAndGroups": "Cette catégorie est éditable par les utilisateurs et les groupes de l'application Bulletin Board",
-      "editableByUsersAndGroupsTitle": "Gérer les messages"
+      "editableByUsersAndGroupsTitle": "Gérer les messages",
+      "accessGroupsOnlyHint": "Seuls les groupes d'accès peuvent être attribués."
     },
     "errors": {
       "categoryNotFound": "Catégorie introuvable",
