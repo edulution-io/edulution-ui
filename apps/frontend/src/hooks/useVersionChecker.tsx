@@ -28,7 +28,7 @@ import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
 const useVersionChecker = () => {
   const currentVersion = useRef<string>(String(APP_VERSION));
-  const [hasNewVersion, setHasNewVersion] = useState(false);
+  const [hasNewVersion, setHasNewVersion] = useState(true);
   const { eventSource } = useSseStore();
   const { t } = useTranslation();
 

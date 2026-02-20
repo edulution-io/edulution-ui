@@ -37,10 +37,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
         duration: SHOW_TOASTER_DURATION,
         classNames: {
           toast:
-            'group toast group-[.toaster]:bg-accent-light group-[.toaster]:border-border group-[.toaster]:shadow-lg [&:has([data-button])]:flex-col [&:has([data-button])]:items-stretch [&_[data-button]]:justify-center [&_[data-action]]:!bg-primary',
+            'group toast group-[.toaster]:bg-accent-light group-[.toaster]:border-border group-[.toaster]:shadow-lg',
           content: 'whitespace-pre-line group-[.toaster]:text-background',
-          actionButton: 'w-full',
-          cancelButton: 'w-full',
         },
       }}
       richColors
