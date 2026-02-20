@@ -17,8 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import PARENT_CHILD_PAIRING_API_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoints';
 import type SubmitParentChildPairingCodeDto from '@libs/parent-child-pairing/types/submitParentChildPairingCodeDto';
 import type UpdateParentChildPairingStatusDto from '@libs/parent-child-pairing/types/updateParentChildPairingStatusDto';
@@ -85,8 +86,9 @@ class ParentChildPairingController {
     @Param('id') id: string,
     @Body() body: UpdateParentChildPairingStatusDto,
     @GetCurrentUsername() username: string,
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
   ) {
-    return this.parentChildPairingService.updateParentChildPairingStatus(id, body.status, username);
+    return this.parentChildPairingService.updateParentChildPairingStatus(id, body.status, username, lmnApiToken);
   }
 }
 

@@ -240,7 +240,8 @@
       "SophomorixCheckFailed": "Sophomorix check failed",
       "SophomorixApplyFailed": "Sophomorix apply failed",
       "GetSophomorixStatusFailed": "Failed to get sophomorix status",
-      "AddParentToStudentFailed": "Failed to register parent for student"
+      "AddParentToStudentFailed": "Failed to register parent for student",
+      "DeleteParentFromStudentFailed": "Failed to remove parent from student group"
     }
   },
   "ticketsystem": {

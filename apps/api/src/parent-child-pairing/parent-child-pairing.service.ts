@@ -204,6 +204,7 @@ class ParentChildPairingService {
     pairingId: string,
     status: string,
     performedBy: string,
+    lmnApiToken: string,
   ): Promise<ParentChildPairingDto> {
     const parentChildPairing = await this.parentChildPairingModel
       .findByIdAndUpdate(
@@ -235,19 +236,22 @@ class ParentChildPairingService {
     Logger.log(`Parent-child pairing ${pairingId} status updated to ${status}`, ParentChildPairingService.name);
 
     if (status === PARENT_CHILD_PAIRING_STATUS.ACCEPTED) {
-      void this.registerParentInLmnApi(performedBy, parentChildPairing.student, parentChildPairing.parent);
+      void this.registerParentInLmnApi(lmnApiToken, parentChildPairing.student, parentChildPairing.parent);
+    }
+
+    if (status === PARENT_CHILD_PAIRING_STATUS.REJECTED) {
+      void this.unregisterParentInLmnApi(lmnApiToken, parentChildPairing.student, parentChildPairing.parent);
     }
 
     return ParentChildPairingService.toParentChildPairingDto(parentChildPairing);
   }
 
   private async registerParentInLmnApi(
-    performedBy: string,
+    lmnApiToken: string,
     studentUsername: string,
     parentUsername: string,
   ): Promise<void> {
     try {
-      const lmnApiToken = await this.lmnApiService.getLmnApiToken(performedBy);
       await this.lmnApiService.addParentToStudent(lmnApiToken, studentUsername, parentUsername);
       Logger.log(
         `Registered parent ${parentUsername} for student ${studentUsername} in lmn-api`,
@@ -256,6 +260,25 @@ class ParentChildPairingService {
     } catch (error: unknown) {
       Logger.error(
         `Failed to register parent ${parentUsername} for student ${studentUsername} in lmn-api: ${String(error)}`,
+        ParentChildPairingService.name,
+      );
+    }
+  }
+
+  private async unregisterParentInLmnApi(
+    lmnApiToken: string,
+    studentUsername: string,
+    parentUsername: string,
+  ): Promise<void> {
+    try {
+      await this.lmnApiService.deleteParentFromStudent(lmnApiToken, studentUsername, parentUsername);
+      Logger.log(
+        `Unregistered parent ${parentUsername} for student ${studentUsername} in lmn-api`,
+        ParentChildPairingService.name,
+      );
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to unregister parent ${parentUsername} for student ${studentUsername} in lmn-api: ${String(error)}`,
         ParentChildPairingService.name,
       );
     }
