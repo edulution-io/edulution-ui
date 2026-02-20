@@ -23,9 +23,9 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  Headers,
   HttpStatus,
   Param,
-  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -77,9 +77,10 @@ class FilesharingController {
     @Query('type') type: string,
     @Query('path') path: string,
     @Query('share') share: string,
-    @Query('forceCleanupCache', new DefaultValuePipe(false), ParseBoolPipe) forceCleanupCache: boolean,
+    @Headers('x-force-cleanup-cache') forceCleanupCacheHeader: string | undefined,
     @GetCurrentUsername() username: string,
   ) {
+    const forceCleanupCache = forceCleanupCacheHeader === 'true';
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
       return this.webdavService.getFilesAtPath(username, path, share, forceCleanupCache);
     }

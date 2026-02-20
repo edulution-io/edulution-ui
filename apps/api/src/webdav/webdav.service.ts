@@ -191,7 +191,7 @@ class WebdavService {
     };
 
     if (forceCleanupCache) {
-      headers['X-Force-Cleanup-Cache'] = 'true';
+      headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
     }
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
@@ -223,26 +223,20 @@ class WebdavService {
     };
 
     if (forceCleanupCache) {
-      headers['X-Force-Cleanup-Cache'] = 'true';
+      headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
     }
 
-    try {
-      return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
-        client,
-        {
-          method: HttpMethodsWebDav.PROPFIND,
-          url,
-          data: DEFAULT_PROPFIND_XML,
-          headers: {
-            [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
-          },
-        },
-        FileSharingErrorMessage.FolderNotFound,
-        mapToDirectories,
-      )) as DirectoryFileDTO[];
-    } catch (error) {
-      return [];
-    }
+    return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
+      client,
+      {
+        method: HttpMethodsWebDav.PROPFIND,
+        url,
+        data: DEFAULT_PROPFIND_XML,
+        headers,
+      },
+      FileSharingErrorMessage.FolderNotFound,
+      mapToDirectories,
+    )) as DirectoryFileDTO[];
   }
 
   async createFolder(username: string, path: string, folderName: string, share: string): Promise<WebdavStatusResponse> {

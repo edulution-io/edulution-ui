@@ -61,6 +61,7 @@ const useFileSharingPage = () => {
 
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || shareRootPath;
 
+  const isInitialEntry = useRef(true);
   const previousWebdavShare = useRef<string | undefined>(webdavShare);
 
   useEffect(() => {
@@ -88,10 +89,12 @@ const useFileSharingPage = () => {
           newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
           setSearchParams(newSearchParams);
         } else {
-          void fetchFiles(webdavShare, shareRootPath);
+          void fetchFiles(webdavShare, shareRootPath, isInitialEntry.current);
+          isInitialEntry.current = false;
         }
       } else {
-        void fetchFiles(webdavShare, path);
+        void fetchFiles(webdavShare, path, isInitialEntry.current);
+        isInitialEntry.current = false;
         void fetchShares();
         setPathToRestoreSession(path);
       }

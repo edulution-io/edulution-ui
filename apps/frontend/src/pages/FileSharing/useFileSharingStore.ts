@@ -29,6 +29,7 @@ import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
 
 type UseFileSharingStore = {
@@ -44,7 +45,7 @@ type UseFileSharingStore = {
   setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
-  fetchFiles: (shareName: string | undefined, path?: string) => Promise<void>;
+  fetchFiles: (shareName: string | undefined, path?: string, forceCleanupCache?: boolean) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
@@ -62,8 +63,6 @@ type UseFileSharingStore = {
   fetchWebdavShares: () => Promise<WebdavShareDto[]>;
   selectedWebdavShare: string;
   setSelectedWebdavShare: (webdavShare: string) => void;
-  forceCleanupCache: boolean;
-  setForceCleanupCache: (forceCleanupCache: boolean) => void;
 };
 
 const initialState = {
@@ -82,7 +81,6 @@ const initialState = {
   fileOperationProgress: null,
   webdavShares: [],
   selectedWebdavShare: '',
-  forceCleanupCache: false,
 };
 
 type PersistedFileManagerStore = (
@@ -145,12 +143,16 @@ const useFileSharingStore = create<UseFileSharingStore>(
         });
       },
 
-      fetchFiles: async (shareName, path: string = '/') => {
+      fetchFiles: async (shareName, path: string = '/', forceCleanupCache: boolean = false) => {
         try {
           set({ isLoading: true });
-          const { forceCleanupCache } = get();
+          const headers: Record<string, string> = {};
+          if (forceCleanupCache) {
+            headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
+          }
           const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
-            params: { type: ContentType.FILE, path, share: shareName, forceCleanupCache },
+            params: { type: ContentType.FILE, path, share: shareName },
+            headers,
           });
 
           const files = processWebdavResponse(data, path);
@@ -207,10 +209,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setSelectedWebdavShare: (webdavShare) => {
         set({ selectedWebdavShare: webdavShare });
-      },
-
-      setForceCleanupCache: (forceCleanupCache) => {
-        set({ forceCleanupCache });
       },
 
       reset: () => set(initialState),

@@ -45,15 +45,13 @@ import useBreadcrumbNavigation from '@/pages/FileSharing/hooks/useBreadcrumbNavi
 import useFileUploadWithReplace from '@/pages/FileSharing/hooks/useFileUploadWithReplace';
 import useMedia from '@/hooks/useMedia';
 import useRefreshOnFileOperationComplete from './hooks/useRefreshOnFileOperationComplete';
-import Checkbox from '@/components/ui/Checkbox';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
   const { isMobileView } = useMedia();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { fileOperationProgress, fetchFiles, webdavShares, forceCleanupCache, setForceCleanupCache } =
-    useFileSharingStore();
+  const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
 
   useRefreshOnFileOperationComplete({
@@ -90,14 +88,7 @@ const FileSharingPage = () => {
           style={{ color: 'white' }}
           hiddenSegments={hiddenSegments}
         />
-        <div className="flex items-center space-x-4">
-          <Checkbox
-            checked={forceCleanupCache}
-            onCheckedChange={(checked) => setForceCleanupCache(checked === true)}
-            label="Force Cache Cleanup"
-          />
-          <QuotaLimitInfo percentageUsed={percentageUsed} />
-        </div>
+        <QuotaLimitInfo percentageUsed={percentageUsed} />
       </div>
 
       <div className="flex h-full w-full flex-row overflow-hidden">
