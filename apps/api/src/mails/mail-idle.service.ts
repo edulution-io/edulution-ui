@@ -537,7 +537,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
 
   async fetchUnseenMails(username: string): Promise<MailDto[] | null> {
     const connection = this.idleConnections.get(username);
-    if (!connection?.client?.usable) {
+    if (!connection?.client?.usable || connection.isFetching) {
       return null;
     }
 
