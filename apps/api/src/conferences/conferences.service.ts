@@ -42,6 +42,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
+import MASKED_VALUE from '@libs/common/constants/maskedValue';
 import CustomHttpException from '../common/CustomHttpException';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -364,7 +365,7 @@ class ConferencesService implements OnModuleInit {
       if (user && conference.creator?.username === user.preferred_username) return conference;
       return {
         ...conference,
-        password: conference.password ? '*******' : '',
+        password: conference.password ? MASKED_VALUE : '',
       };
     });
   }

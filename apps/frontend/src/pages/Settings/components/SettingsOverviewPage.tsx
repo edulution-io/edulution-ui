@@ -33,6 +33,7 @@ import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettings
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import { toast } from 'sonner';
 import APPS from '@libs/appconfig/constants/apps';
+import type TabOption from '@libs/userManagement/types/tabOption';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
@@ -40,16 +41,14 @@ import useGlobalSettingsApiStore from '../GlobalSettings/useGlobalSettingsApiSto
 import GlobalSettingsFloatingButtons from '../GlobalSettings/GlobalSettingsFloatingButtons';
 import InfoPage from '../Info/InfoPage';
 
-interface TabOption {
-  id: string;
-  nameKey: string;
+interface SettingsTabOption extends TabOption {
   component: (props: {
     form: UseFormReturn<GlobalSettingsFormValues>;
     onSubmit: SubmitHandler<GlobalSettingsDto>;
   }) => React.ReactNode;
 }
 
-const TAB_OPTIONS: TabOption[] = [
+const TAB_OPTIONS: SettingsTabOption[] = [
   {
     id: GLOBAL_SETTINGS_TABS.CONTAINER,
     nameKey: 'dockerOverview.container-view',

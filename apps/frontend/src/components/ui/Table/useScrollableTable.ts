@@ -31,6 +31,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
+import EMPTY_COLUMN_VISIBILITY from '@libs/common/constants/emptyColumnVisibility';
 
 interface UseScrollableTableOptions<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,7 +52,7 @@ const useScrollableTable = <TData, TValue>({
   getRowId,
   enableRowSelection,
   initialSorting,
-  initialColumnVisibility = {},
+  initialColumnVisibility = EMPTY_COLUMN_VISIBILITY,
 }: UseScrollableTableOptions<TData, TValue>) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
 

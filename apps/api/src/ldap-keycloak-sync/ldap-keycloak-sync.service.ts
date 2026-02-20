@@ -21,7 +21,7 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Interval, Timeout } from '@nestjs/schedule';
-import { Client, SearchOptions } from 'ldapts';
+import { Client, Entry, SearchOptions } from 'ldapts';
 import {
   ALL_GROUPS_CACHE_KEY,
   ALL_USERS_CACHE_KEY,
@@ -39,6 +39,7 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import LDAP_ATTRIBUTE from '@libs/ldapKeycloakSync/constants/ldapAttribute';
+import REQUIRED_GROUP_ATTRIBUTES from '@libs/ldapKeycloakSync/constants/requiredGroupAttributes';
 import LDAP_MEMBER_TYPES from '@libs/ldapKeycloakSync/constants/ldapMemberTypes';
 import LdapMemberType from '@libs/ldapKeycloakSync/types/ldapMemberType';
 import keycloakUserStorageProvider from '@libs/ldapKeycloakSync/constants/keycloakUserStorageProvider';
@@ -165,6 +166,12 @@ class LdapKeycloakSyncService implements OnModuleInit {
       const ldapEntries = await this.searchAllGroups(client);
       const ldapDns = new Set(ldapEntries.map((e) => extractDn(e.distinguishedName)));
 
+      const attributesByDn = new Map<string, Record<string, string[]>>();
+      ldapEntries.forEach((entry) => {
+        const dn = extractDn(entry.distinguishedName);
+        attributesByDn.set(dn, LdapKeycloakSyncService.extractGroupAttributes(entry));
+      });
+
       const cachedGroupsFlat = (await this.cache.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
       if (!cachedGroupsFlat.length) {
         return;
@@ -193,6 +200,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       });
 
       const updates: Array<{ userId: string; add: string[]; remove: string[] }> = [];
+      const attributesByPath = new Map<string, Record<string, string[]>>();
 
       const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
       const adminGroupNames = adminGroups.map((group) => group.substring(1));
@@ -201,6 +209,13 @@ class LdapKeycloakSyncService implements OnModuleInit {
         Array.from(ldapDns).map(async (dn) => {
           const { groupPath } = parseGroupDn(dn);
           const existingGroup = await this.ensureKeycloakGroupUsingCache(groupPath, groupsByPath);
+
+          const ldapAttributes = attributesByDn.get(dn);
+          if (ldapAttributes) {
+            await this.groupsService.updateGroupAttributes(existingGroup.id, existingGroup.name, ldapAttributes);
+            await this.groupsService.updateGroupAttributesInCache(existingGroup.path, ldapAttributes);
+            attributesByPath.set(existingGroup.path, ldapAttributes);
+          }
 
           const desiredRaw = await this.fetchMembers(client, dn, groupsByName);
 
@@ -240,6 +255,10 @@ class LdapKeycloakSyncService implements OnModuleInit {
           }
         }),
       );
+
+      if (attributesByPath.size > 0) {
+        await this.groupsService.updateAllGroupsAttributesInCache(attributesByPath);
+      }
 
       Logger.verbose(`Built ${updates.length} raw updates`, LdapKeycloakSyncService.name);
 
@@ -520,7 +539,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     const ldapSearchOptions: SearchOptions = {
       scope: 'sub',
       filter,
-      attributes: [LDAP_ATTRIBUTE.DN],
+      attributes: [LDAP_ATTRIBUTE.DN, ...REQUIRED_GROUP_ATTRIBUTES],
     };
 
     if ((await this.getDeploymentTarget()) === DEPLOYMENT_TARGET.LINUXMUSTER) {
@@ -784,6 +803,24 @@ class LdapKeycloakSyncService implements OnModuleInit {
       lastName: user.lastName,
       email: user.email,
     };
+  }
+
+  private static extractGroupAttributes(entry: Entry): Record<string, string[]> {
+    const attributes: Record<string, string[]> = {};
+
+    REQUIRED_GROUP_ATTRIBUTES.forEach((attr) => {
+      const value = entry[attr];
+      if (!value) {
+        return;
+      }
+      if (Array.isArray(value)) {
+        attributes[attr] = value.map((v) => (typeof v === 'string' ? v : v.toString()));
+      } else {
+        attributes[attr] = [typeof value === 'string' ? value : value.toString()];
+      }
+    });
+
+    return attributes;
   }
 
   private async resolveMembersToGroupMemberDto(
