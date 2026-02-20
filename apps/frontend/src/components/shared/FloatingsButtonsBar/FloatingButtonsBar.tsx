@@ -34,7 +34,7 @@ import {
   WIDTH_TOLERANCE_PX,
 } from '@libs/ui/constants/floatingButtonsConfig';
 import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
-import { cn, Button } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import usePortalRoot from '@/hooks/usePortalRoot';
 import useFooterColors from '@/hooks/useFooterColors';
@@ -171,7 +171,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
       {hasOverflow && (
         <div
           ref={moreButtonRef}
-          className="relative flex flex-shrink-0 flex-col items-center justify-center pr-1 duration-200 animate-in fade-in slide-in-from-bottom-2 md:pt-1"
+          className="relative mt-1 flex flex-shrink-0 flex-col items-center justify-center pr-1 duration-200 animate-in fade-in slide-in-from-bottom-2"
         >
           <Button
             type="button"
