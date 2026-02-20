@@ -34,7 +34,7 @@ const useInitLmnApi = () => {
       void setLmnApiToken();
     } else {
       void getOwnUser();
-      void getLmnVersion();
+      void getLmnVersion(true);
     }
   }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion]);
 };

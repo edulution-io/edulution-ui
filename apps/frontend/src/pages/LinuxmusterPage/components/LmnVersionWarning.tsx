@@ -27,7 +27,7 @@ const LmnVersionWarning: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-yellow-400 bg-yellow-50 p-4 dark:bg-yellow-900/20">
+    <div className="flex items-center gap-3 border border-yellow-400 bg-yellow-50 p-4 dark:bg-yellow-900/20">
       <FontAwesomeIcon
         icon={faTriangleExclamation}
         className="h-6 w-6 text-yellow-600 dark:text-yellow-400"

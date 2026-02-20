@@ -59,14 +59,14 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faGrip,
           action: navigateToLinuxmuster,
         },
-        {
-          id: USER_MANAGEMENT_LOCATION,
-          label: 'usermanagement.menuTitle',
-          icon: faListCheck,
-          action: navigateToUserManagement,
-        },
         ...(isLmn
           ? [
+              {
+                id: USER_MANAGEMENT_LOCATION,
+                label: 'usermanagement.menuTitle',
+                icon: faListCheck,
+                action: navigateToUserManagement,
+              },
               {
                 id: LINUXMUSTER_INFO_LOCATION,
                 label: 'linuxmuster.versionInfo',
