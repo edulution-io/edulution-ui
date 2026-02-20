@@ -47,6 +47,8 @@ type UserManagementStore = {
   isBackgroundFetchingList: boolean;
   isLoadingUserDetails: boolean;
   isSaving: boolean;
+  isCheckLoading: boolean;
+  isApplying: boolean;
   selectedUserDetails: LmnUserInfo | null;
   selectedUserQuota: QuotaResponse | null;
   error: string | null;
@@ -83,6 +85,8 @@ const initialState = {
   isBackgroundFetchingList: false,
   isLoadingUserDetails: false,
   isSaving: false,
+  isCheckLoading: false,
+  isApplying: false,
   selectedUserDetails: null as LmnUserInfo | null,
   selectedUserQuota: null as QuotaResponse | null,
   error: null as string | null,
@@ -221,7 +225,7 @@ const useUserManagementStore = create<UserManagementStore>()(
       },
 
       runSophomorixCheck: async (): Promise<SophomorixCheckResponse | null> => {
-        set({ isSaving: true, error: null });
+        set({ isCheckLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<SophomorixCheckResponse>(`${LIST_MANAGEMENT}/sophomorix-check`, {
@@ -232,7 +236,7 @@ const useUserManagementStore = create<UserManagementStore>()(
           handleApiError(error, set);
           return null;
         } finally {
-          set({ isSaving: false });
+          set({ isCheckLoading: false });
         }
       },
 
@@ -242,16 +246,12 @@ const useUserManagementStore = create<UserManagementStore>()(
         update: boolean,
         kill: boolean,
       ): Promise<SophomorixCheckResponse | null> => {
-        set({ isSaving: true, error: null });
+        set({ isApplying: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const params = new URLSearchParams({ [SOPHOMORIX_QUERY_PARAMS.SCHOOL]: school });
-          if (add) params.append(SOPHOMORIX_QUERY_PARAMS.ADD, 'true');
-          if (update) params.append(SOPHOMORIX_QUERY_PARAMS.UPDATE, 'true');
-          if (kill) params.append(SOPHOMORIX_QUERY_PARAMS.KILL, 'true');
-
-          const response = await eduApi.get<SophomorixCheckResponse>(
-            `${LIST_MANAGEMENT}/sophomorix-apply?${params.toString()}`,
+          const response = await eduApi.post<SophomorixCheckResponse>(
+            `${LIST_MANAGEMENT}/sophomorix-apply`,
+            { school, add, update, kill },
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
@@ -262,7 +262,7 @@ const useUserManagementStore = create<UserManagementStore>()(
           handleApiError(error, set);
           return null;
         } finally {
-          set({ isSaving: false });
+          set({ isApplying: false });
         }
       },
 

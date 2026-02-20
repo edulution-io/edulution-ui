@@ -17,14 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
-import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
-import validateCell from '@libs/userManagement/utils/validateCell';
+const WEBHOOK_ERROR_MESSAGES = {
+  MISSING_HEADERS: 'webhook.errors.missingHeaders',
+  INVALID_KEY: 'webhook.errors.invalidKey',
+  TIMESTAMP_EXPIRED: 'webhook.errors.timestampExpired',
+  INVALID_USER_AGENT: 'webhook.errors.invalidUserAgent',
+  DUPLICATE_EVENT: 'webhook.errors.duplicateEvent',
+  WEBHOOK_CLIENTS: 'webhook-clients.error',
+} as const;
 
-const validateListRows = (rows: ListManagementRow[], managementList: ManagementListType): boolean => {
-  const columnConfigs = LIST_MANAGEMENT_COLUMNS[managementList];
-  return rows.every((row) => columnConfigs.every((config) => validateCell(config.key, row[config.key] ?? '')));
-};
-
-export default validateListRows;
+export default WEBHOOK_ERROR_MESSAGES;

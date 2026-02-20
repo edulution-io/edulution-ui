@@ -42,14 +42,19 @@ interface UserManagementFloatingButtonsProps {
 const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps> = ({ userType }) => {
   const { t } = useTranslation();
   const { selectedSchool } = useClassManagementStore();
-  const { isSaving, saveManagementList, fetchManagementList, runSophomorixCheck, runSophomorixApply } =
-    useUserManagementStore();
+  const {
+    isSaving,
+    isCheckLoading,
+    isApplying,
+    saveManagementList,
+    fetchManagementList,
+    runSophomorixCheck,
+    runSophomorixApply,
+  } = useUserManagementStore();
   const [isCsvDialogOpen, setIsCsvDialogOpen] = useState(false);
   const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const [isCheckDialogOpen, setIsCheckDialogOpen] = useState(false);
   const [checkResult, setCheckResult] = useState<SophomorixCheckResponse | null>(null);
-  const [isCheckLoading, setIsCheckLoading] = useState(false);
-  const [isApplying, setIsApplying] = useState(false);
 
   const managementList = USER_TYPE_TO_MANAGEMENT_LIST[userType];
 
@@ -87,17 +92,14 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     setIsSaveConfirmOpen(false);
     setCheckResult(null);
     setIsCheckDialogOpen(true);
-    setIsCheckLoading(true);
     if (selectedSchool && managementList) {
       await saveManagementList(selectedSchool, managementList, getFilteredEntries(), true);
       if (useUserManagementStore.getState().error) {
         setIsCheckDialogOpen(false);
-        setIsCheckLoading(false);
         return;
       }
     }
     const result = await runSophomorixCheck();
-    setIsCheckLoading(false);
     if (result) {
       setCheckResult(result);
     } else {
@@ -113,9 +115,7 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
 
   const handleApplyFromDialog = async (add: boolean, update: boolean, kill: boolean) => {
     if (selectedSchool) {
-      setIsApplying(true);
       await runSophomorixApply(selectedSchool, add, update, kill);
-      setIsApplying(false);
       setIsCheckDialogOpen(false);
       if (managementList) {
         await fetchManagementList(selectedSchool, managementList, true);
@@ -202,7 +202,7 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
           void handleApplyFromDialog(add, update, kill);
         }}
         isApplying={isApplying}
-        isLoading={isCheckLoading}
+        isLoading={isSaving || isCheckLoading}
       />
     </>
   );

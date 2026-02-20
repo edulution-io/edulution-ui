@@ -27,7 +27,9 @@ import {
   LINUXMUSTER_INFO_PATH,
   LINUXMUSTER_PATH,
   USER_MANAGEMENT_LOCATION,
+  USER_MANAGEMENT_STUDENTS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
+import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -39,6 +41,10 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
   const navigateToInfo = useCallback(() => navigate(`/${LINUXMUSTER_INFO_PATH}`), [navigate]);
+  const navigateToUserManagement = useCallback(
+    () => navigate(`/${USER_MANAGEMENT_STUDENTS_PATH}/${USER_MANAGEMENT_TABS.TABLE}`),
+    [navigate],
+  );
 
   return useMemo(
     () => ({
@@ -57,7 +63,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           id: USER_MANAGEMENT_LOCATION,
           label: 'usermanagement.menuTitle',
           icon: faListCheck,
-          action: navigateToLinuxmuster,
+          action: navigateToUserManagement,
         },
         ...(isLmn
           ? [
@@ -71,7 +77,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           : []),
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster, navigateToInfo],
+    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToInfo],
   );
 };
 
