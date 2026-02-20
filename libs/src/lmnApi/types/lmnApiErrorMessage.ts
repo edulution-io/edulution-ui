@@ -53,7 +53,6 @@ enum LmnApiErrorMessage {
   SaveManagementListFailed = 'lmnApi.errors.SaveManagementListFailed',
   SophomorixCheckFailed = 'lmnApi.errors.SophomorixCheckFailed',
   SophomorixApplyFailed = 'lmnApi.errors.SophomorixApplyFailed',
-  GetSophomorixStatusFailed = 'lmnApi.errors.GetSophomorixStatusFailed',
 }
 
 export default LmnApiErrorMessage;

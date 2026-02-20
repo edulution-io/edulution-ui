@@ -20,6 +20,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '@edulution-io/ui-kit';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/AccordionSH';
 
 interface AccordionSectionProps {
@@ -32,7 +33,7 @@ interface AccordionSectionProps {
 
 const AccordionSection: React.FC<AccordionSectionProps> = ({ value, label, count, headerClassName, children }) => (
   <AccordionItem value={value}>
-    <AccordionTrigger className={`rounded-md px-4 ${headerClassName}`}>
+    <AccordionTrigger className={cn('rounded-md px-4', headerClassName)}>
       <div className="flex items-center gap-2">
         <FontAwesomeIcon
           icon={faCircleInfo}

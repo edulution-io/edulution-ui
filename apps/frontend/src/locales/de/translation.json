@@ -228,8 +228,7 @@
       "GetManagementListFailed": "Abrufen der Verwaltungsliste fehlgeschlagen",
       "SaveManagementListFailed": "Speichern der Verwaltungsliste fehlgeschlagen",
       "SophomorixCheckFailed": "Sophomorix-Check fehlgeschlagen",
-      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen",
-      "GetSophomorixStatusFailed": "Abrufen des Sophomorix-Status fehlgeschlagen"
+      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen"
     }
   },
   "ticketsystem": {

@@ -24,11 +24,7 @@ import validateCell from '@libs/userManagement/utils/validateCell';
 
 const validateListRows = (rows: ListManagementRow[], managementList: ManagementListType): boolean => {
   const columnConfigs = LIST_MANAGEMENT_COLUMNS[managementList];
-  return rows.every((row) =>
-    columnConfigs.every((config) =>
-      validateCell(config.key, (row as unknown as Record<string, string>)[config.key] ?? ''),
-    ),
-  );
+  return rows.every((row) => columnConfigs.every((config) => validateCell(config.key, row[config.key] ?? '')));
 };
 
 export default validateListRows;

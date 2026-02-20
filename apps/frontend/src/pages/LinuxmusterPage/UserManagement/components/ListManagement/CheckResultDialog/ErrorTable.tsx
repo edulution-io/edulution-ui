@@ -19,6 +19,7 @@
 
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import parseCheckErrorKey, { type ParsedCheckError } from '@libs/userManagement/utils/parseCheckErrorKey';
 import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
 import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
@@ -56,43 +57,28 @@ const ErrorTable: React.FC<ErrorTableProps> = ({ errorEntries, errorDetails }) =
         const columns = listType !== 'unknown' ? LIST_MANAGEMENT_COLUMNS[listType] : [];
 
         return (
-          <div key={listType}>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="px-2 py-1 text-left font-medium">{t('usermanagement.checkResult.columns.file')}</th>
-                  {columns.map((col) => (
-                    <th
-                      key={col.key}
-                      className="px-2 py-1 text-left font-medium"
-                    >
-                      {t(col.translationKey)}
-                    </th>
-                  ))}
-                  <th className="px-2 py-1 text-left font-medium">{t('usermanagement.checkResult.columns.reason')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {errors.map(({ key, parsed, reason }) => (
-                  <tr
-                    key={key}
-                    className="border-b border-white/5"
-                  >
-                    <td className="px-2 py-1">{parsed.filename}</td>
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        className="px-2 py-1"
-                      >
-                        {parsed.fields[col.apiKey] ?? ''}
-                      </td>
-                    ))}
-                    <td className="px-2 py-1 text-red-400">{reason}</td>
-                  </tr>
+          <Table key={listType}>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('usermanagement.checkResult.columns.file')}</TableHead>
+                {columns.map((col) => (
+                  <TableHead key={col.key}>{t(col.translationKey)}</TableHead>
                 ))}
-              </tbody>
-            </table>
-          </div>
+                <TableHead>{t('usermanagement.checkResult.columns.reason')}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {errors.map(({ key, parsed, reason }) => (
+                <TableRow key={key}>
+                  <TableCell>{parsed.filename}</TableCell>
+                  {columns.map((col) => (
+                    <TableCell key={col.key}>{parsed.fields[col.apiKey] ?? ''}</TableCell>
+                  ))}
+                  <TableCell className="text-red-400">{reason}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         );
       })}
     </div>
