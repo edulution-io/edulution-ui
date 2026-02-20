@@ -84,7 +84,8 @@
       "visibleByUsersAndGroups": "Diese Kategorie mit deinen Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
       "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
-      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
+      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten",
+      "accessGroupsOnlyHint": "Es können nur Zugriffsgruppen zugewiesen werden."
     },
     "errors": {
       "categoryNotFound": "Kategorie nicht gefunden",
@@ -1288,6 +1289,20 @@
     },
     "info": {
       "title": "Info"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API-Key",
+      "createdAt": "Erstellt am",
+      "select": "Auswahl",
+      "addClient": "Webhook-Client hinzufügen",
+      "deleteClient": "Webhook-Client löschen",
+      "deleteConfirmMessage": "Möchten Sie die ausgewählten Webhook-Clients wirklich löschen?",
+      "selectUserAgent": "User-Agent auswählen",
+      "createSuccess": "Webhook-Client erstellt",
+      "deleteSuccess": "Webhook-Client gelöscht",
+      "filterPlaceholder": "Webhook-Clients filtern..."
     },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {

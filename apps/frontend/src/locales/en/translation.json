@@ -84,7 +84,8 @@
       "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
       "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
-      "editableByUsersAndGroupsTitle": "Manage Bulletins"
+      "editableByUsersAndGroupsTitle": "Manage Bulletins",
+      "accessGroupsOnlyHint": "Only access groups can be assigned."
     },
     "errors": {
       "categoryNotFound": "Category not found",
@@ -1285,6 +1286,20 @@
     },
     "info": {
       "title": "Info"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API Key",
+      "createdAt": "Created at",
+      "select": "Select",
+      "addClient": "Add Webhook Client",
+      "deleteClient": "Delete Webhook Client",
+      "deleteConfirmMessage": "Are you sure you want to delete the selected webhook clients?",
+      "selectUserAgent": "Select User-Agent",
+      "createSuccess": "Webhook client created",
+      "deleteSuccess": "Webhook client deleted",
+      "filterPlaceholder": "Filter webhook clients..."
     },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
