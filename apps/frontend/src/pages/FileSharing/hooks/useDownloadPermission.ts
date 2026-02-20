@@ -40,15 +40,27 @@ const useDownloadPermission = () => {
     window.open(getBrowserDownloadHelpUrl(), '_blank', 'noopener,noreferrer');
   }, []);
 
-  const handleSingleAcknowledge = useCallback(() => {
-    setSingleDownloadAcknowledged(true);
-    toast.dismiss(SINGLE_DOWNLOAD_TOAST_ID);
-  }, [setSingleDownloadAcknowledged]);
-
-  const handleMultipleAcknowledge = useCallback(() => {
-    setMultipleDownloadAcknowledged(true);
-    toast.dismiss(MULTIPLE_DOWNLOAD_TOAST_ID);
-  }, [setMultipleDownloadAcknowledged]);
+  const showDownloadToast = useCallback(
+    (toastId: string, translationPrefix: string, onAcknowledge: (value: boolean) => void) => {
+      toast.info(`${t(`${translationPrefix}.promptInfo`)}\n\n${t(`${translationPrefix}.downloadSucceeded`)}`, {
+        id: toastId,
+        position: 'top-right',
+        duration: LIVE_TOAST_DURATION_MS,
+        action: {
+          label: t('common.yes'),
+          onClick: () => {
+            onAcknowledge(true);
+            toast.dismiss(toastId);
+          },
+        },
+        cancel: {
+          label: t(`${translationPrefix}.help`),
+          onClick: handleHelpClick,
+        },
+      });
+    },
+    [t, handleHelpClick],
+  );
 
   const checkDownloadAllowed = useCallback(
     (fileCount: number): boolean => {
@@ -57,52 +69,21 @@ const useDownloadPermission = () => {
       }
 
       if (fileCount === 1 && !isSingleDownloadAcknowledged) {
-        toast.info(
-          `${t('filesharing.singleDownload.promptInfo')}\n\n${t('filesharing.singleDownload.downloadSucceeded')}`,
-          {
-            id: SINGLE_DOWNLOAD_TOAST_ID,
-            position: 'top-right',
-            duration: LIVE_TOAST_DURATION_MS,
-            action: {
-              label: t('common.yes'),
-              onClick: handleSingleAcknowledge,
-            },
-            cancel: {
-              label: t('filesharing.singleDownload.help'),
-              onClick: handleHelpClick,
-            },
-          },
-        );
+        showDownloadToast(SINGLE_DOWNLOAD_TOAST_ID, 'filesharing.singleDownload', setSingleDownloadAcknowledged);
       }
 
       if (fileCount > 1 && !isMultipleDownloadAcknowledged) {
-        toast.info(
-          `${t('filesharing.multipleDownload.promptInfo')}\n\n${t('filesharing.multipleDownload.downloadSucceeded')}`,
-          {
-            id: MULTIPLE_DOWNLOAD_TOAST_ID,
-            position: 'top-right',
-            duration: LIVE_TOAST_DURATION_MS,
-            action: {
-              label: t('common.yes'),
-              onClick: handleMultipleAcknowledge,
-            },
-            cancel: {
-              label: t('filesharing.multipleDownload.help'),
-              onClick: handleHelpClick,
-            },
-          },
-        );
+        showDownloadToast(MULTIPLE_DOWNLOAD_TOAST_ID, 'filesharing.multipleDownload', setMultipleDownloadAcknowledged);
       }
 
       return true;
     },
     [
-      t,
       isSingleDownloadAcknowledged,
       isMultipleDownloadAcknowledged,
-      handleSingleAcknowledge,
-      handleMultipleAcknowledge,
-      handleHelpClick,
+      setSingleDownloadAcknowledged,
+      setMultipleDownloadAcknowledged,
+      showDownloadToast,
     ],
   );
 
