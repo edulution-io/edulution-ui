@@ -108,14 +108,7 @@
     "customPushTitle": "Titre push",
     "customPushTitlePlaceholder": "Bulletin prêt : {{title}}",
     "customPushBody": "Message push",
-    "customPushBodyPlaceholder": "Nouveau bulletin dans {{category}}",
-    "interruptionLevel": "Niveau d'interruption",
-    "interruptionLevels": {
-      "active": "Actif",
-      "passive": "Passif",
-      "timeSensitive": "Urgent",
-      "critical": "Critique"
-    }
+    "customPushBodyPlaceholder": "Nouveau bulletin dans {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Notifications",

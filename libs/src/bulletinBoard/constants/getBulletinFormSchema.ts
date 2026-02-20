@@ -45,7 +45,9 @@ const getBulletinFormSchema = (t: TFunction<'translation', undefined>) =>
 
       customPushTitle: z.string().max(255).optional().or(z.literal('')),
       customPushBody: z.string().max(CUSTOM_PUSH_BODY_MAX_LENGTH).optional().or(z.literal('')),
-      saveMode: z.string().optional(),
+      saveMode: z
+        .enum([BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN, BULLETIN_SAVE_MODE.BULLETIN_ONLY, BULLETIN_SAVE_MODE.PUSH_ONLY])
+        .optional(),
     })
     .superRefine((data, ctx) => {
       if (data.saveMode === BULLETIN_SAVE_MODE.PUSH_ONLY) {

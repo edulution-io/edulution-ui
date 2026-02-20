@@ -33,7 +33,7 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { toast } from 'sonner';
-import i18n from '@/i18n';
+import { t } from 'i18next';
 
 interface BulletinBoardEditorialStore {
   selectedRows: RowSelectionState;
@@ -107,7 +107,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
         bulletins: get().bulletins.filter((item) => !bulletins.some((b) => b.id === item.id)),
         selectedRows: {},
       });
-      toast.success(i18n.t('bulletinboard.bulletinsDeletedSuccessfully'));
+      toast.success(t('bulletinboard.bulletinsDeletedSuccessfully'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -125,7 +125,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
         set({ bulletins: [...get().bulletins, data], selectedRows: {} });
       }
       toast.success(
-        i18n.t(data ? 'bulletinboard.bulletinCreatedSuccessfully' : 'bulletinboard.pushNotificationSentSuccessfully'),
+        t(data ? 'bulletinboard.bulletinCreatedSuccessfully' : 'bulletinboard.pushNotificationSentSuccessfully'),
       );
       return true;
     } catch (error) {
@@ -142,7 +142,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       const { data } = await eduApi.patch<BulletinResponseDto>(`${BULLETIN_BOARD_EDU_API_ENDPOINT}/${id}`, bulletin);
 
       set({ bulletins: [...get().bulletins.filter((item) => item.id !== id), data], selectedRows: {} });
-      toast.success(i18n.t('bulletinboard.bulletinUpdatedSuccessfully'));
+      toast.success(t('bulletinboard.bulletinUpdatedSuccessfully'));
       return true;
     } catch (error) {
       handleApiError(error, set);

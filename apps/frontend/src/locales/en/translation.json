@@ -113,14 +113,7 @@
     "customPushTitle": "Push Title",
     "customPushTitlePlaceholder": "Bulletin ready: {{title}}",
     "customPushBody": "Push Message",
-    "customPushBodyPlaceholder": "New bulletin in {{category}}",
-    "interruptionLevel": "Interruption Level",
-    "interruptionLevels": {
-      "active": "Active",
-      "passive": "Passive",
-      "timeSensitive": "Time-Sensitive",
-      "critical": "Critical"
-    }
+    "customPushBodyPlaceholder": "New bulletin in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Notifications",

@@ -113,14 +113,7 @@
     "customPushTitle": "Push-Titel",
     "customPushTitlePlaceholder": "Aushang bereit: {{title}}",
     "customPushBody": "Push-Nachricht",
-    "customPushBodyPlaceholder": "Neuer Aushang in {{category}}",
-    "interruptionLevel": "Unterbrechungsstufe",
-    "interruptionLevels": {
-      "active": "Aktiv",
-      "passive": "Passiv",
-      "timeSensitive": "Zeitkritisch",
-      "critical": "Kritisch"
-    }
+    "customPushBodyPlaceholder": "Neuer Aushang in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Benachrichtigungen",

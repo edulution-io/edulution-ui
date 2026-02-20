@@ -72,10 +72,16 @@ const NotificationPanel = () => {
   }, [isSheetOpen, fetchNotifications, fetchUnreadCount, fetchSentNotifications]);
 
   useEffect(() => {
+    if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT) {
+      void fetchSentNotifications();
+    }
+  }, [activeFilter, fetchSentNotifications]);
+
+  useEffect(() => {
     if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT && sentTotal === 0 && !isSentLoading) {
       setActiveFilter(NOTIFICATION_FILTER_TYPE.ALL);
     }
-  }, [activeFilter, sentTotal, isSentLoading]);
+  }, [activeFilter, sentTotal, isSentLoading, setActiveFilter]);
 
   const filteredNotifications = useMemo(() => {
     if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT) {
@@ -92,7 +98,9 @@ const NotificationPanel = () => {
   const handleRefresh = () => {
     void fetchNotifications();
     void fetchUnreadCount();
-    void fetchSentNotifications();
+    if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT) {
+      void fetchSentNotifications();
+    }
   };
 
   const handleMarkAllAsRead = () => {

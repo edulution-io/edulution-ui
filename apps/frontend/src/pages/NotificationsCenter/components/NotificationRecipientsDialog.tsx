@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -47,7 +47,7 @@ const NotificationRecipientsDialog = ({
     }
   }, [isOpen, notificationId, fetchRecipients]);
 
-  const readCount = recipients.filter((r) => r.readAt !== null).length;
+  const readCount = useMemo(() => recipients.filter((r) => r.readAt !== null).length, [recipients]);
 
   const getDialogBody = () => {
     if (isLoadingRecipients) {
