@@ -26,10 +26,12 @@ import { randomUUID } from 'crypto';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
 import PARENT_CHILD_PAIRING_ERROR_MESSAGES from '@libs/parent-child-pairing/constants/parentChildPairingErrorMessages';
+import PARENT_CHILD_PAIRING_LOG_ACTION from '@libs/parent-child-pairing/constants/parentChildPairingLogAction';
 import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 import PARENT_CHILD_PAIRING_CACHE_CONFIG from '@libs/parent-child-pairing/constants/parentChildPairingCacheConfig';
 import type ParentChildPairingCodeResponseDto from '@libs/parent-child-pairing/types/parentChildPairingCodeResponseDto';
 import type ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
+import type ParentChildPairingLogActionType from '@libs/parent-child-pairing/types/parentChildPairingLogActionType';
 import CustomHttpException from '../common/CustomHttpException';
 import { ParentChildPairing, ParentChildPairingDocument } from './parent-child-pairing.schema';
 
@@ -146,6 +148,13 @@ class ParentChildPairingService {
       student,
       school,
       status: PARENT_CHILD_PAIRING_STATUS.PENDING,
+      logs: [
+        {
+          action: PARENT_CHILD_PAIRING_LOG_ACTION.PAIRING_REQUESTED,
+          performedBy: username,
+          timestamp: new Date(),
+        },
+      ],
     });
 
     Logger.log(
@@ -189,9 +198,27 @@ class ParentChildPairingService {
     return pairings.map((p) => ParentChildPairingService.toParentChildPairingDto(p));
   }
 
-  async updateParentChildPairingStatus(pairingId: string, status: string): Promise<ParentChildPairingDto> {
+  async updateParentChildPairingStatus(
+    pairingId: string,
+    status: string,
+    performedBy: string,
+  ): Promise<ParentChildPairingDto> {
     const parentChildPairing = await this.parentChildPairingModel
-      .findByIdAndUpdate(pairingId, { status }, { new: true })
+      .findByIdAndUpdate(
+        pairingId,
+        {
+          status,
+          $push: {
+            logs: {
+              action: PARENT_CHILD_PAIRING_LOG_ACTION.STATUS_CHANGED,
+              performedBy,
+              timestamp: new Date(),
+              details: status,
+            },
+          },
+        },
+        { new: true },
+      )
       .exec();
 
     if (!parentChildPairing) {
@@ -214,6 +241,7 @@ class ParentChildPairingService {
     student: string;
     school: string;
     status: ParentChildPairingStatusType;
+    logs?: { action: ParentChildPairingLogActionType; performedBy: string; timestamp: Date; details?: string }[];
     createdAt?: Date;
     updatedAt?: Date;
   }): ParentChildPairingDto {
@@ -223,6 +251,12 @@ class ParentChildPairingService {
       student: p.student,
       school: p.school,
       status: p.status,
+      logs: (p.logs ?? []).map((log) => ({
+        action: log.action,
+        performedBy: log.performedBy,
+        timestamp: log.timestamp.toISOString(),
+        details: log.details,
+      })),
       createdAt: p.createdAt?.toISOString() ?? '',
       updatedAt: p.updatedAt?.toISOString() ?? '',
     };

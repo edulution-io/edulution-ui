@@ -21,6 +21,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
 import type ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
+import ParentChildPairingLogEntry from './parent-child-pairing-log-entry.schema';
 
 export type ParentChildPairingDocument = ParentChildPairing & Document;
 
@@ -37,6 +38,9 @@ export class ParentChildPairing {
 
   @Prop({ type: String, required: true, default: PARENT_CHILD_PAIRING_STATUS.PENDING })
   status: ParentChildPairingStatusType;
+
+  @Prop({ type: [ParentChildPairingLogEntry], default: [] })
+  logs: ParentChildPairingLogEntry[];
 
   @Prop({ type: Number, default: 1 })
   schemaVersion: number;

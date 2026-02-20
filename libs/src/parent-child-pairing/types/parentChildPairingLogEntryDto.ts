@@ -17,18 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type ParentChildPairingStatusType from './parentChildPairingStatusType';
-import type ParentChildPairingLogEntryDto from './parentChildPairingLogEntryDto';
+import type ParentChildPairingLogActionType from './parentChildPairingLogActionType';
 
-interface ParentChildPairingDto {
-  id: string;
-  parent: string;
-  student: string;
-  school: string;
-  status: ParentChildPairingStatusType;
-  logs: ParentChildPairingLogEntryDto[];
-  createdAt: string;
-  updatedAt: string;
+interface ParentChildPairingLogEntryDto {
+  action: ParentChildPairingLogActionType;
+  performedBy: string;
+  timestamp: string;
+  details?: string;
 }
 
-export default ParentChildPairingDto;
+export default ParentChildPairingLogEntryDto;

@@ -81,8 +81,12 @@ class ParentChildPairingController {
 
   @Patch(`:id/${PARENT_CHILD_PAIRING_API_ENDPOINTS.STATUS}`)
   @UseGuards(DynamicAppAccessGuard)
-  async updateParentChildPairingStatus(@Param('id') id: string, @Body() body: UpdateParentChildPairingStatusDto) {
-    return this.parentChildPairingService.updateParentChildPairingStatus(id, body.status);
+  async updateParentChildPairingStatus(
+    @Param('id') id: string,
+    @Body() body: UpdateParentChildPairingStatusDto,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.parentChildPairingService.updateParentChildPairingStatus(id, body.status, username);
   }
 }
 

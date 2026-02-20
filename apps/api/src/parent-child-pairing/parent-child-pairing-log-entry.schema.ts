@@ -17,18 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type ParentChildPairingStatusType from './parentChildPairingStatusType';
-import type ParentChildPairingLogEntryDto from './parentChildPairingLogEntryDto';
+import { Prop, Schema } from '@nestjs/mongoose';
+import PARENT_CHILD_PAIRING_LOG_ACTION from '@libs/parent-child-pairing/constants/parentChildPairingLogAction';
+import type ParentChildPairingLogActionType from '@libs/parent-child-pairing/types/parentChildPairingLogActionType';
 
-interface ParentChildPairingDto {
-  id: string;
-  parent: string;
-  student: string;
-  school: string;
-  status: ParentChildPairingStatusType;
-  logs: ParentChildPairingLogEntryDto[];
-  createdAt: string;
-  updatedAt: string;
+@Schema()
+class ParentChildPairingLogEntry {
+  @Prop({ type: String, required: true, enum: Object.values(PARENT_CHILD_PAIRING_LOG_ACTION) })
+  action: ParentChildPairingLogActionType;
+
+  @Prop({ type: String, required: true })
+  performedBy: string;
+
+  @Prop({ type: Date, required: true, default: () => new Date() })
+  timestamp: Date;
+
+  @Prop({ type: String })
+  details?: string;
 }
 
-export default ParentChildPairingDto;
+export default ParentChildPairingLogEntry;
