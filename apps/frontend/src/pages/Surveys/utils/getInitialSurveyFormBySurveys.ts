@@ -24,7 +24,7 @@ import ThemeType from '@libs/common/types/themeType';
 import getFirstValidDateOfArray from '@libs/common/utils/Date/getFirstValidDateOfArray';
 import getSurveysDefaultValues from './getSurveysDefaultValues';
 
-const getInitialSurveyFormValues = (
+const getInitialSurveyFormBySurveys = (
   creator: AttendeeDto,
   selectedSurvey?: SurveyDto,
   storedSurvey?: SurveyDto,
@@ -54,7 +54,8 @@ const getInitialSurveyFormValues = (
       storedSurvey?.canUpdateFormerAnswer ??
       selectedSurvey?.canUpdateFormerAnswer ??
       surveysDefaultValues.canUpdateFormerAnswer,
+    shouldSaveAsTemplate: false,
   };
 };
 
-export default getInitialSurveyFormValues;
+export default getInitialSurveyFormBySurveys;

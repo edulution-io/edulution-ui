@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback } from 'react';
-import { cn , Button } from '@edulution-io/ui-kit';
+import { cn, Button } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 
 interface MinuteButtonProps {

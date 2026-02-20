@@ -23,13 +23,13 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 
 const SubmittedAnswersDialog = () => {
-  const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
+  const { selectedSurvey: selectedSurveyFromPage } = useSurveysTablesPageStore();
   const {
     selectSurvey,
     selectedSurvey,

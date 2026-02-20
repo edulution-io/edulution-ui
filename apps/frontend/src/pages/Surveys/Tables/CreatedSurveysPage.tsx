@@ -21,7 +21,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { SurveysViewOwnIcon } from '@/assets/icons';
 
@@ -34,7 +34,7 @@ const CreatedSurveysPage = () => {
     updateCreatedSurveys,
     hasAnswers,
     canParticipate,
-  } = useSurveyTablesPageStore();
+  } = useSurveysTablesPageStore();
 
   const { t } = useTranslation();
 

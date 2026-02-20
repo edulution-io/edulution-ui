@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AccessAndParticipateSurvey from '@/pages/Surveys/Participation/AccessAndParticipateSurvey';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -34,7 +34,7 @@ interface SurveyParticipationPageProps {
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
   const { surveyId } = useParams();
-  const { reset: resetSurvey, selectedSurvey, fetchSelectedSurvey, isFetching } = useSurveyTablesPageStore();
+  const { reset: resetSurvey, selectedSurvey, fetchSelectedSurvey, isFetching } = useSurveysTablesPageStore();
   const { reset: resetParticipation } = useParticipateSurveyStore();
 
   const { t } = useTranslation();

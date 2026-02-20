@@ -893,7 +893,6 @@
     },
     "editor": {
       "inputFieldTitle": "Input field",
-      "new": "New (blank)",
       "fileUploadSuccess": "Saved the file successfully.",
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",
@@ -910,13 +909,27 @@
         "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
         "previewTabTitle": "Preview"
       },
-      "templates": "Templates",
-      "templateMenu": {
-        "submit": "Save Survey as template.",
-        "title": "Templates:",
-        "userMessage": "Here you can load a template that is available to you.",
-        "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
-        "emptyMessage": "There are no templates available yet",
+      "isLoadingSurvey": "Survey is loading...",
+      "template": {
+        "title": "Templates",
+        "label": "Save as template",
+        "noTemplates": "No templates available",
+        "noSearchResults": "No templates found",
+        "searchPlaceholder": "Type to filter templates by name ...",
+        "preview": "Preview",
+        "save": {
+          "title": "Save template",
+          "submit": "Save template",
+          "name": {
+            "label": "Template name",
+            "description": "If this field is left empty, the survey title will be used.",
+            "placeholder": "Survey title"
+          },
+          "accessGroups": {
+            "label": "Access groups",
+            "description": "Select the groups that can access this template. If no group is selected, the template is accessible to all users."
+          }
+        },
         "upload": {
           "success": "Template saved successfully",
           "error": "Failed to save template"
@@ -989,6 +1002,7 @@
       "submitAnswerError": "The answer could not be submitted.",
       "updateOrCreateError": "Unable to update or create the survey.",
       "deleteError": "The surveys could not be deleted.",
+      "noTemplateNameError": "The template name is required.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
@@ -998,7 +1012,8 @@
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
       "missingIdError": "Missing survey ID.",
-      "missingAnswerError": "Please provide an answer before submitting."
+      "missingAnswerError": "Please provide an answer before submitting.",
+      "duplicateNameError": "Adjust the title of the template. A template document with this name already exists."
     }
   },
   "survey-answer": {
@@ -1056,6 +1071,7 @@
     },
     "saveDialog": {
       "title": "Save and assign to participants",
+      "surveySettings": "Survey settings",
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "isPublic": "Should the survey be public?",
@@ -1688,6 +1704,7 @@
     "never": "Never",
     "errors": {
       "dbAccessFailed": "Database access failed",
+      "dbInvalidId": "Invalid database ID",
       "directoryNotCreated": "Failed to create directory",
       "fileNotCreated": "Failed to create file",
       "fileUploadFailed": "Failed to upload the file",

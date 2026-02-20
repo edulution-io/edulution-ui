@@ -18,6 +18,7 @@
  */
 
 import { create } from 'zustand';
+import { HttpStatusCode } from 'axios';
 import { RowSelectionState } from '@tanstack/react-table';
 import {
   PUBLIC_SURVEYS,
@@ -30,13 +31,12 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { HttpStatusCode } from 'axios';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
-  fetchSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<void>;
+  fetchSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<SurveyDto | undefined>;
   isFetching: boolean;
 
   canParticipateSelectedSurvey: (surveyId?: string, isPublic?: boolean) => Promise<void>;
@@ -83,29 +83,31 @@ const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
   selectedRows: {},
 };
 
-const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
+const useSurveysTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
   reset: () => set(SurveysTablesPageStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
+  fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<SurveyDto | undefined> => {
+    set({ selectedSurvey: undefined });
     if (!surveyId) {
-      set({ selectedSurvey: undefined });
-      return;
+      return undefined;
     }
     set({ isFetching: true });
     try {
       if (isPublic) {
         const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS}/${surveyId}`);
         set({ selectedSurvey: response.data });
-      } else {
-        const response = await eduApi.get<SurveyDto>(`${SURVEY_FIND_ONE_ENDPOINT}/${surveyId}`);
-        set({ selectedSurvey: response.data });
+        return response.data;
       }
+      const response = await eduApi.get<SurveyDto>(`${SURVEY_FIND_ONE_ENDPOINT}/${surveyId}`);
+      set({ selectedSurvey: response.data });
+      return response.data;
     } catch (error) {
       set({ selectedSurvey: undefined });
       handleApiError(error, set);
+      return undefined;
     } finally {
       set({ isFetching: false });
     }
@@ -200,4 +202,4 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 }));
 
-export default useSurveyTablesPageStore;
+export default useSurveysTablesPageStore;

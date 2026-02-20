@@ -17,31 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import UserDto from '@libs/user/types/user.dto';
 
-interface SurveyDto {
-  id?: string;
-  formula: SurveyFormula;
-  backendLimiters?: {
-    questionName: string;
-    choices: ChoiceDto[];
-  }[];
-  saveNo: number;
-  creator: AttendeeDto;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  participatedAttendees: AttendeeDto[];
-  answers: string[];
-  createdAt?: Date;
-  expires: Date | null;
-  isAnonymous?: boolean;
-  isPublic?: boolean;
-  canSubmitMultipleAnswers?: boolean;
-  canUpdateFormerAnswer?: boolean;
-  shouldSaveAsTemplate?: boolean;
-}
+const getCreatorFromUserDto = (user: UserDto | null): AttendeeDto => ({
+  firstName: user?.firstName || '',
+  lastName: user?.lastName || '',
+  username: user?.username || '',
+  value: user?.username || '',
+  label: user ? `${user.firstName} ${user.lastName}` : '',
+});
 
-export default SurveyDto;
+export default getCreatorFromUserDto;

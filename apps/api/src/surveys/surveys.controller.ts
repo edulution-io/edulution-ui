@@ -157,7 +157,7 @@ class SurveysController {
   }
 
   @Get(TEMPLATES)
-  getTemplate(@Res() res: Response, @GetCurrentUserGroups() ldapGroups: string[]) {
+  getTemplates(@Res() res: Response, @GetCurrentUserGroups() ldapGroups: string[]) {
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
     return this.surveysTemplateService.getTemplates(ldapGroups, res);
   }
@@ -337,17 +337,17 @@ class SurveysController {
   }
 
   @UseGuards(AdminGuard)
-  @Delete(`${TEMPLATES}/:name`)
-  async deleteTemplate(@Param() params: { name: string }) {
-    const { name } = params;
-    return this.surveysTemplateService.deleteTemplate(name);
+  @Delete(`${TEMPLATES}/:id`)
+  async deleteTemplate(@Param() params: { id: string }) {
+    const { id } = params;
+    return this.surveysTemplateService.deleteTemplate(id);
   }
 
   @UseGuards(AdminGuard)
-  @Patch(`${TEMPLATES}/:name/:isActive`)
-  async setIsTemplateActive(@Param() params: { name: string; isActive: boolean }) {
-    const { name, isActive } = params;
-    return this.surveysTemplateService.setIsTemplateActive(name, isActive);
+  @Patch(`${TEMPLATES}/:id/:isActive`)
+  async setIsTemplateActive(@Param() params: { id: string; isActive: boolean }) {
+    const { id, isActive } = params;
+    return this.surveysTemplateService.setIsTemplateActive(id, isActive);
   }
 }
 
