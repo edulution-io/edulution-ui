@@ -165,7 +165,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
                         maxLength={CUSTOM_PUSH_BODY_MAX_LENGTH}
                         className="min-h-20 bg-white text-background dark:border-none dark:bg-accent"
                         placeholder={t('bulletinboard.customPushBodyPlaceholder', {
-                          category: watchedCategory?.name || '{category}',
+                          category: watchedCategory?.name || '...',
                         })}
                       />
                     </FormControl>

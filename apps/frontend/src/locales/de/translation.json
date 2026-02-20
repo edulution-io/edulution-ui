@@ -104,14 +104,14 @@
       "pushOnlyMissingFields": "Push-Titel und Push-Nachricht sind für den Modus 'Nur Push' erforderlich"
     },
     "pushNotification": "Push-Benachrichtigung",
-    "saveMode": "Speichermodus",
+    "saveMode": "Veröffentlichungsart",
     "saveModes": {
       "pushAndBulletin": "Push & Aushang",
       "bulletinOnly": "Nur Aushang",
       "pushOnly": "Nur Push"
     },
-    "customPushTitle": "Push-Titel",
-    "customPushTitlePlaceholder": "Aushang bereit: {{title}}",
+    "customPushTitle": "Titel der Pushbenachrichtigung",
+    "customPushTitlePlaceholder": "Aushang bereit",
     "customPushBody": "Push-Nachricht",
     "customPushBodyPlaceholder": "Neuer Aushang in {{category}}"
   },

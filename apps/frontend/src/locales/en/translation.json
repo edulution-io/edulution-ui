@@ -104,14 +104,14 @@
       "pushOnlyMissingFields": "Push title and push message are required for 'Push Only' mode"
     },
     "pushNotification": "Push Notification",
-    "saveMode": "Save Mode",
+    "saveMode": "Publication Type",
     "saveModes": {
       "pushAndBulletin": "Push & Bulletin",
       "bulletinOnly": "Bulletin Only",
       "pushOnly": "Push Only"
     },
-    "customPushTitle": "Push Title",
-    "customPushTitlePlaceholder": "Bulletin ready: {{title}}",
+    "customPushTitle": "Push Notification Title",
+    "customPushTitlePlaceholder": "Bulletin ready",
     "customPushBody": "Push Message",
     "customPushBodyPlaceholder": "New bulletin in {{category}}"
   },
