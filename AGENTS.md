@@ -23,6 +23,9 @@
 
 - Stack: TypeScript, React 18, NestJS 11, Nx workspace.
 - Linting: ESLint (Airbnb + TypeScript, a11y, import rules). Run `npm run lint`.
+- When linting, prefer linting only the changed files instead of the full project:
+  - `npx eslint path/to/changed/file.ts --quiet`
+  - Only run `npm run lint` for final verification before commits
 - Formatting: Prettier (2 spaces, 120 cols, single quotes, trailing commas). Run `npm run format`.
 - React: Function components as arrow functions; allow prop spreading; avoid `console` except `info|warn|error`.
 - Shared code lives under `libs/`, move utility functions, types, and constants always there (in separate files). Do not move UI components there.

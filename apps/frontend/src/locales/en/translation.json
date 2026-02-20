@@ -432,6 +432,16 @@
       "CopyFailed": "Copy failed",
       "FileFormatNotSupported": "File format is not supported"
     },
+    "singleDownload": {
+      "promptInfo": "Your file download has started.",
+      "downloadSucceeded": "Did the file download successfully?",
+      "help": "Help"
+    },
+    "multipleDownload": {
+      "promptInfo": "Your browser may ask for permission to download multiple files.",
+      "downloadSucceeded": "Did all files download successfully?",
+      "help": "Help"
+    },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",

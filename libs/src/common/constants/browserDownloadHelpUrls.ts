@@ -17,9 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const DEBOUNCE_MS = 50;
-export const WIDTH_TOLERANCE_PX = 1;
-export const DEFAULT_BUTTON_WIDTH = 108;
-export const DECREASE_DELAY_MS = 100;
-export const FLOATING_BUTTON_CLASS_NAME =
-  'w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center leading-tight md:leading-[inherit]';
+const BROWSER_DOWNLOAD_HELP_BASE_URL =
+  'https://docs.edulution.io/docs/edulution-ui/features/dateien/browser-download-einstellungen';
+
+export const BROWSER_USER_AGENT_IDENTIFIERS = {
+  edge: 'edg',
+  chrome: 'chrome',
+  firefox: 'firefox',
+  safari: 'safari',
+} as const;
+
+const BROWSER_DOWNLOAD_HELP_URLS = {
+  chrome: `${BROWSER_DOWNLOAD_HELP_BASE_URL}#google-chrome`,
+  firefox: `${BROWSER_DOWNLOAD_HELP_BASE_URL}#mozilla-firefox`,
+  edg: `${BROWSER_DOWNLOAD_HELP_BASE_URL}#microsoft-edge`,
+  safari: `${BROWSER_DOWNLOAD_HELP_BASE_URL}#apple-safari`,
+  default: `${BROWSER_DOWNLOAD_HELP_BASE_URL}#google-chrome`,
+} as const;
+
+export default BROWSER_DOWNLOAD_HELP_URLS;
