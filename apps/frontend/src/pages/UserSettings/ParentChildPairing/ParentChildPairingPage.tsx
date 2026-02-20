@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@edulution-io/ui-kit';
@@ -30,7 +30,10 @@ import Input from '@/components/shared/Input';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import copyToClipboard from '@/utils/copyToClipboard';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useUserStore from '@/store/UserStore/useUserStore';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import PARENT_CHILD_PAIRING_QR_CONFIG from '@libs/parent-child-pairing/constants/parentChildPairingQrConfig';
+import type ParentChildPairingQrPayload from '@libs/parent-child-pairing/types/parentChildPairingQrPayload';
 import ParentChildPairingStatusBadge from '@/components/shared/ParentChildPairingStatusBadge';
 import useParentChildPairingStore from './useParentChildPairingStore';
 import ParentChildPairingFloatingButtons from './ParentChildPairingFloatingButtons';
@@ -38,9 +41,10 @@ import ParentChildPairingFloatingButtons from './ParentChildPairingFloatingButto
 const ParentChildPairingPage: React.FC = () => {
   const { t } = useTranslation();
   const { ldapGroups } = useLdapGroups();
+  const user = useUserStore((s) => s.user);
   const [codeInput, setCodeInput] = useState('');
   const {
-    pairingCode,
+    pairingCodeResponse,
     relationships,
     isLoading,
     isSubmitting,
@@ -51,11 +55,31 @@ const ParentChildPairingPage: React.FC = () => {
   } = useParentChildPairingStore();
 
   const isStudent = ldapGroups.includes(GroupRoles.STUDENT);
+  const isParent = ldapGroups.includes(GroupRoles.PARENT);
 
   const title = isStudent
     ? t('usersettings.parentChildPairing.myParents')
     : t('usersettings.parentChildPairing.myChildren');
   const description = t('usersettings.parentChildPairing.description');
+
+  const pairingCode: string = pairingCodeResponse?.code ?? '';
+
+  const qrValue = useMemo(() => {
+    if (!pairingCodeResponse) return null;
+
+    const role = isStudent ? GroupRoles.STUDENT : GroupRoles.PARENT;
+
+    const payload: ParentChildPairingQrPayload = {
+      type: PARENT_CHILD_PAIRING_QR_CONFIG.TYPE,
+      version: PARENT_CHILD_PAIRING_QR_CONFIG.VERSION,
+      code: pairingCodeResponse.code,
+      username: user?.username ?? '',
+      role,
+      expiresAt: pairingCodeResponse.expiresAt,
+    };
+
+    return JSON.stringify(payload);
+  }, [pairingCodeResponse, isStudent, isParent, user]);
 
   useEffect(() => {
     void fetchPairingCode();
@@ -72,7 +96,7 @@ const ParentChildPairingPage: React.FC = () => {
     }
   }, [codeInput, submitPairingCode, fetchRelationships]);
 
-  if (isLoading && !pairingCode) {
+  if (isLoading && !pairingCodeResponse) {
     return (
       <PageLayout
         nativeAppHeader={{
@@ -103,10 +127,10 @@ const ParentChildPairingPage: React.FC = () => {
         >
           <div className="space-y-4">
             <p className="text-muted-foreground">{t('usersettings.parentChildPairing.myCodeDescription')}</p>
-            {pairingCode ? (
+            {pairingCode && qrValue ? (
               <div className="flex flex-col items-center justify-center gap-4">
                 <QRCodeDisplay
-                  value={pairingCode}
+                  value={qrValue}
                   size="lg"
                   className="m-4"
                 />

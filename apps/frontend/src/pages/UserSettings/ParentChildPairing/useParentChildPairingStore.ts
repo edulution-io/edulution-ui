@@ -28,7 +28,7 @@ import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentC
 import type ParentChildPairingCodeResponseDto from '@libs/parent-child-pairing/types/parentChildPairingCodeResponseDto';
 
 interface ParentChildPairingStore {
-  pairingCode: string | null;
+  pairingCodeResponse: ParentChildPairingCodeResponseDto | null;
   relationships: ParentChildPairingDto[];
   isLoading: boolean;
   isSubmitting: boolean;
@@ -42,7 +42,7 @@ interface ParentChildPairingStore {
 }
 
 const initialState = {
-  pairingCode: null,
+  pairingCodeResponse: null,
   relationships: [],
   isLoading: false,
   isSubmitting: false,
@@ -58,7 +58,7 @@ const useParentChildPairingStore = create<ParentChildPairingStore>((set) => ({
       const { data } = await eduApi.get<ParentChildPairingCodeResponseDto>(
         `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.CODE}`,
       );
-      set({ pairingCode: data.code });
+      set({ pairingCodeResponse: data });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -72,7 +72,7 @@ const useParentChildPairingStore = create<ParentChildPairingStore>((set) => ({
       const { data } = await eduApi.put<ParentChildPairingCodeResponseDto>(
         `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.CODE}`,
       );
-      set({ pairingCode: data.code });
+      set({ pairingCodeResponse: data });
       toast.success(i18n.t('usersettings.parentChildPairing.codeRefreshed'));
     } catch (error) {
       handleApiError(error, set);

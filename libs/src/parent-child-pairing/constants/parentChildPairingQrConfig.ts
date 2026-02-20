@@ -17,9 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface ParentChildPairingCodeResponseDto {
-  code: string;
-  expiresAt: string;
-}
+const PARENT_CHILD_PAIRING_QR_CONFIG = {
+  TYPE: 'parent-child-pairing',
+  VERSION: 1,
+} as const;
 
-export default ParentChildPairingCodeResponseDto;
+export default PARENT_CHILD_PAIRING_QR_CONFIG;

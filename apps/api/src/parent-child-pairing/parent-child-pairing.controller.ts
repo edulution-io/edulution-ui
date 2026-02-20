@@ -43,8 +43,7 @@ class ParentChildPairingController {
     @GetCurrentUserGroups() groups: string[],
     @GetCurrentUser() user: JwtUser,
   ) {
-    const code = await this.parentChildPairingService.getOrCreateCode(username, groups, user.school);
-    return { code };
+    return this.parentChildPairingService.getOrCreateCode(username, groups, user.school);
   }
 
   @Put(PARENT_CHILD_PAIRING_API_ENDPOINTS.CODE)
@@ -53,8 +52,7 @@ class ParentChildPairingController {
     @GetCurrentUserGroups() groups: string[],
     @GetCurrentUser() user: JwtUser,
   ) {
-    const code = await this.parentChildPairingService.refreshCode(username, groups, user.school);
-    return { code };
+    return this.parentChildPairingService.refreshCode(username, groups, user.school);
   }
 
   @Post()

@@ -28,9 +28,17 @@ import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/pa
 import PARENT_CHILD_PAIRING_ERROR_MESSAGES from '@libs/parent-child-pairing/constants/parentChildPairingErrorMessages';
 import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 import PARENT_CHILD_PAIRING_CACHE_CONFIG from '@libs/parent-child-pairing/constants/parentChildPairingCacheConfig';
+import type ParentChildPairingCodeResponseDto from '@libs/parent-child-pairing/types/parentChildPairingCodeResponseDto';
 import type ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
 import CustomHttpException from '../common/CustomHttpException';
 import { ParentChildPairing, ParentChildPairingDocument } from './parent-child-pairing.schema';
+
+interface CachedPairingUserData {
+  username: string;
+  groups: string[];
+  school: string;
+  expiresAt: string;
+}
 
 @Injectable()
 class ParentChildPairingService {
@@ -40,18 +48,28 @@ class ParentChildPairingService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async getOrCreateCode(username: string, groups: string[], school: string): Promise<string> {
+  async getOrCreateCode(
+    username: string,
+    groups: string[],
+    school: string,
+  ): Promise<ParentChildPairingCodeResponseDto> {
     const codeKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const existingCode = await this.cacheManager.get<string>(codeKey);
 
     if (existingCode) {
-      return existingCode;
+      const userKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${existingCode}`;
+      const userData = await this.cacheManager.get<CachedPairingUserData>(userKey);
+
+      return {
+        code: existingCode,
+        expiresAt: userData?.expiresAt ?? new Date().toISOString(),
+      };
     }
 
     return this.generateAndStoreCode(username, groups, school);
   }
 
-  async refreshCode(username: string, groups: string[], school: string): Promise<string> {
+  async refreshCode(username: string, groups: string[], school: string): Promise<ParentChildPairingCodeResponseDto> {
     await this.deleteExistingCode(username);
     return this.generateAndStoreCode(username, groups, school);
   }
@@ -236,17 +254,26 @@ class ParentChildPairingService {
     }
   }
 
-  private async generateAndStoreCode(username: string, groups: string[], school: string): Promise<string> {
+  private async generateAndStoreCode(
+    username: string,
+    groups: string[],
+    school: string,
+  ): Promise<ParentChildPairingCodeResponseDto> {
     const code = randomUUID().slice(0, PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_LENGTH).toUpperCase();
     const codeKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_KEY_PREFIX}${username}`;
     const userKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${code}`;
+    const expiresAt = new Date(Date.now() + PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_TTL_MS).toISOString();
 
     await this.cacheManager.set(codeKey, code, PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_TTL_MS);
-    await this.cacheManager.set(userKey, { username, groups, school }, PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_TTL_MS);
+    await this.cacheManager.set(
+      userKey,
+      { username, groups, school, expiresAt } satisfies CachedPairingUserData,
+      PARENT_CHILD_PAIRING_CACHE_CONFIG.CODE_TTL_MS,
+    );
 
     Logger.log(`Parent-child pairing code generated for ${username}`, ParentChildPairingService.name);
 
-    return code;
+    return { code, expiresAt };
   }
 }
 

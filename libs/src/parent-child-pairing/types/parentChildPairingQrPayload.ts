@@ -17,9 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface ParentChildPairingCodeResponseDto {
+interface ParentChildPairingQrPayload {
+  type: string;
+  version: number;
   code: string;
+  username: string;
+  role: string;
   expiresAt: string;
 }
 
-export default ParentChildPairingCodeResponseDto;
+export default ParentChildPairingQrPayload;
