@@ -775,7 +775,7 @@
     "globalbindusers": "Global Bind Users",
     "tabs": {
       "table": "Table",
-      "list": "List Management"
+      "list": "Import"
     },
     "filterUsers": "Filter users...",
     "loginClass": "Login / Class",
@@ -803,8 +803,8 @@
     "groupMembership": "Group membership",
     "quota": "Quota",
     "noQuotaInfo": "No quota information available",
-    "noListAvailable": "No list management available for this user type.",
-    "listDescription": "List management for {{school}}/{{list}}.csv",
+    "noListAvailable": "No import available for this user type.",
+    "listDescription": "Import for {{school}}/{{list}}.csv",
     "csvPlaceholder": "CSV content will be displayed here...",
     "addUser": "Add user",
     "check": "Check",

@@ -776,7 +776,7 @@
     "globalbindusers": "Globale Binduser",
     "tabs": {
       "table": "Tabelle",
-      "list": "Listenverwaltung"
+      "list": "Import"
     },
     "filterUsers": "Benutzer filtern...",
     "loginClass": "Login / Klasse",
@@ -804,8 +804,8 @@
     "groupMembership": "Gruppenmitgliedschaft",
     "quota": "Quota",
     "noQuotaInfo": "Keine Quota-Informationen verfügbar",
-    "noListAvailable": "Für diesen Benutzertyp ist keine Listenverwaltung verfügbar.",
-    "listDescription": "Listenverwaltung für {{school}}/{{list}}.csv",
+    "noListAvailable": "Für diesen Benutzertyp ist kein Import verfügbar.",
+    "listDescription": "Import für {{school}}/{{list}}.csv",
     "csvPlaceholder": "CSV-Inhalt wird hier angezeigt...",
     "addUser": "Benutzer hinzufügen",
     "check": "Prüfen",

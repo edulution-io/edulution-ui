@@ -683,7 +683,7 @@
     "globalbindusers": "Utilisateurs Bind globaux",
     "tabs": {
       "table": "Tableau",
-      "list": "Gestion des listes"
+      "list": "Import"
     },
     "filterUsers": "Filtrer les utilisateurs...",
     "loginClass": "Login / Classe",
@@ -711,8 +711,8 @@
     "groupMembership": "Appartenance au groupe",
     "quota": "Quota",
     "noQuotaInfo": "Aucune information de quota disponible",
-    "noListAvailable": "Aucune gestion de liste disponible pour ce type d'utilisateur.",
-    "listDescription": "Gestion des listes pour {{school}}/{{list}}.csv",
+    "noListAvailable": "Aucun import disponible pour ce type d'utilisateur.",
+    "listDescription": "Import pour {{school}}/{{list}}.csv",
     "csvPlaceholder": "Le contenu CSV sera affiché ici...",
     "addUser": "Ajouter un utilisateur",
     "check": "Vérifier",
