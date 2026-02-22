@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
 import { useParams } from 'react-router-dom';
@@ -63,7 +63,7 @@ const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
-  const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath, webdavShares } =
+  const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading, currentPath, webdavShares } =
     useFileSharingStore();
 
   const { t } = useTranslation();
@@ -104,10 +104,6 @@ const FileSharingTable = () => {
   const { handleFileOpen } = useFileOpen({ isDocumentServerConfigured });
   const { openDialog } = useFileSharingDialogStore();
   const startDownload = useStartWebdavFileDownload();
-
-  useEffect(() => {
-    if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
-  }, []);
 
   const columns = useMemo(
     () => getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured),
