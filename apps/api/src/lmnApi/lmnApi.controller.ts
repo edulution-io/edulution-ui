@@ -339,6 +339,25 @@ export class LmnApiController {
     return this.lmnApiService.runSophomorixApply(lmnApiToken, body.school, body.add, body.update, body.kill);
   }
 
+  @Get('devices/:school')
+  async getDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getDevices(lmnApiToken, school);
+  }
+
+  @Post('devices/:school')
+  async saveDevices(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param('school') school: string,
+    @Body() body: { data: ListManagementEntry[] },
+  ) {
+    return this.lmnApiService.saveDevices(lmnApiToken, school, body.data);
+  }
+
+  @Get('devices/:school/import-devices')
+  async importDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.importDevices(lmnApiToken, school);
+  }
+
   @Get('listmanagement/:school/:managementList')
   async getManagementList(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,

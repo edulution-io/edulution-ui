@@ -31,8 +31,10 @@ import {
   USER_MANAGEMENT_TEACHERS_LOCATION,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import { DEVICE_MANAGEMENT_LOCATION } from '@libs/deviceManagement/constants/deviceManagementPaths';
 import LinuxmusterEntryPage from '@/pages/LinuxmusterPage/LinuxmusterEntryPage';
 import UserManagementPage from '@/pages/LinuxmusterPage/UserManagement/UserManagementPage';
+import DeviceManagementPage from '@/pages/LinuxmusterPage/DeviceManagement/DeviceManagementPage';
 
 const getLinuxmusterRoutes = () => [
   <Route
@@ -136,6 +138,10 @@ const getLinuxmusterRoutes = () => [
         element={<UserManagementPage userType="globaladmins" />}
       />
     </Route>
+    <Route
+      path={DEVICE_MANAGEMENT_LOCATION}
+      element={<DeviceManagementPage />}
+    />
   </Route>,
 ];
 

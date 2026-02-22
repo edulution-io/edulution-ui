@@ -20,7 +20,7 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faDesktop, faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
 import {
   LINUXMUSTER_PATH,
@@ -28,6 +28,10 @@ import {
   USER_MANAGEMENT_STUDENTS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import {
+  DEVICE_MANAGEMENT_LOCATION,
+  DEVICE_MANAGEMENT_PATH,
+} from '@libs/deviceManagement/constants/deviceManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -42,6 +46,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
     () => navigate(`/${USER_MANAGEMENT_STUDENTS_PATH}/${USER_MANAGEMENT_TABS.TABLE}`),
     [navigate],
   );
+  const navigateToDevices = useCallback(() => navigate(`/${DEVICE_MANAGEMENT_PATH}`), [navigate]);
 
   return useMemo(
     () => ({
@@ -62,9 +67,15 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faListCheck,
           action: navigateToUserManagement,
         },
+        {
+          id: DEVICE_MANAGEMENT_LOCATION,
+          label: 'deviceManagement.menuTitle',
+          icon: faDesktop,
+          action: navigateToDevices,
+        },
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement],
+    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToDevices],
   );
 };
 
