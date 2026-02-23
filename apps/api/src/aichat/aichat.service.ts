@@ -20,9 +20,11 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { streamText, UIMessage } from 'ai';
+import { streamText, stepCountIs, UIMessage } from 'ai';
 import type { LanguageModelV3 } from '@ai-sdk/provider';
 import type { ModelMessage, UserModelMessage, AssistantModelMessage } from '@ai-sdk/provider-utils';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import extractTextFromParts from '@libs/chat/utils/extractTextFromParts';
 import { AICHAT_ERROR_MESSAGES } from '@libs/chat/types/aiChatErrorMessages';
@@ -30,16 +32,19 @@ import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 import AiProviderType from '@libs/aiService/types/aiProviderType';
 import AI_CHAT_MODEL_ERROR_MESSAGES from '@libs/aiChatModel/constants/aiChatModelErrorMessages';
 import CustomHttpException from '../common/CustomHttpException';
+import AppConfigService from '../appconfig/appconfig.service';
 import AiServiceService from '../ai-service/ai-service.service';
 import AiChatModelService from '../ai-chat-model/ai-chat-model.service';
 import { AiConversation, AiConversationDocument } from './schemas/aiConversation.schema';
 import { AiChatMessage, AiChatMessageDocument } from './schemas/aiChatMessage.schema';
+import createWebSearchTool from './tools/webSearchTool';
 
 @Injectable()
 class AiChatService {
   constructor(
     @InjectModel(AiConversation.name) private aiConversationModel: Model<AiConversationDocument>,
     @InjectModel(AiChatMessage.name) private aiChatMessageModel: Model<AiChatMessageDocument>,
+    private readonly appConfigService: AppConfigService,
     private readonly aiServiceService: AiServiceService,
     private readonly aiChatModelService: AiChatModelService,
   ) {}
@@ -112,14 +117,18 @@ class AiChatService {
       }));
 
     const { model, systemPrompt } = await this.resolveLanguageModel(ldapGroups, modelConfigId);
+    const searxngUrl = await this.getSearxngUrl();
+
+    const tools = searxngUrl ? { webSearch: createWebSearchTool(searxngUrl) } : undefined;
 
     const result = streamText({
       model,
       messages: modelMessages,
       ...(systemPrompt ? { system: systemPrompt } : {}),
+      ...(tools ? { tools, stopWhen: stepCountIs(3) } : {}),
     });
 
-    return { result: result as ReturnType<typeof streamText>, conversationId, username };
+    return { result: result as unknown as ReturnType<typeof streamText>, conversationId, username };
   }
 
   async saveMessage(
@@ -215,6 +224,13 @@ class AiChatService {
       apiKey: service.apiKey,
       model: service.model,
     });
+  }
+
+  private async getSearxngUrl(): Promise<string | undefined> {
+    const chatConfig = await this.appConfigService.getAppConfigByName(APPS.CHAT);
+    const extendedOptions = (chatConfig?.extendedOptions ?? {}) as Record<string, unknown>;
+    const url = extendedOptions[ExtendedOptionKeys.CHAT_SEARXNG_URL];
+    return typeof url === 'string' && url.length > 0 ? url : undefined;
   }
 
   private async getOwnedConversation(id: string, username: string): Promise<AiConversationDocument> {
