@@ -15,12 +15,17 @@ jobs:
       frontend-docker-tags: ${{ steps.generate_frontend_tags.outputs.docker_tags }}
       api-docker-tags: ${{ steps.generate_api_tags.outputs.docker_tags }}
       cache-key: ${{ steps.cache-key.outputs.key }}
+      app-version: ${{ steps.app_version.outputs.version }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
           token: ${{ github.token }}
+
+      - name: Extract app version
+        id: app_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
       - name: Generate cache key
         id: cache-key
@@ -107,8 +112,10 @@ jobs:
         uses: docker/build-push-action@v6.10.0
         with:
           build-args: |
-            buildId=${{ github.sha }}
-            version=${{ needs.prepare.outputs.frontend-docker-tags }}
+            APP_VERSION=${{ needs.prepare.outputs.app-version }}
+            COMMIT_SHA=${{ github.sha }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            BUILD_NUMBER=${{ github.run_number }}
           context: .
           file: apps/frontend/Dockerfile
           push: true
@@ -157,8 +164,10 @@ jobs:
         uses: docker/build-push-action@v6.10.0
         with:
           build-args: |
-            buildId=${{ github.sha }}
-            version=${{ needs.prepare.outputs.api-docker-tags }}
+            APP_VERSION=${{ needs.prepare.outputs.app-version }}
+            COMMIT_SHA=${{ github.sha }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            BUILD_NUMBER=${{ github.run_number }}
           context: .
           file: apps/api/Dockerfile
           push: true

@@ -25,6 +25,7 @@ import {
   MongooseHealthIndicator,
   HealthIndicatorResult,
 } from '@nestjs/terminus';
+import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { Interval } from '@nestjs/schedule';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
@@ -40,23 +41,36 @@ class HealthService {
     private disk: DiskHealthIndicator,
     private httpService: HttpService,
     private webdavSharesService: WebdavSharesService,
+    private configService: ConfigService,
   ) {}
 
+  private getBuildInfo() {
+    return {
+      version: this.configService.get<string>('version'),
+      commitSha: this.configService.get<string>('commitSha'),
+      buildDate: this.configService.get<string>('buildDate'),
+      buildNumber: this.configService.get<string>('buildNumber'),
+    };
+  }
+
   async checkEduApiResponding() {
-    return this.health.check([() => this.checkMongo()]);
+    const result = await this.health.check([() => this.checkMongo()]);
+    return { ...result, ...this.getBuildInfo() };
   }
 
   async checkEduApiHealth() {
-    return this.health.check([() => this.checkMongo(), () => this.checkDiskStorage()]);
+    const result = await this.health.check([() => this.checkMongo(), () => this.checkDiskStorage()]);
+    return { ...result, ...this.getBuildInfo() };
   }
 
   async getEduApiStats() {
-    return this.health.check([
+    const result = await this.health.check([
       () => this.checkMongo(),
       () => this.checkAuthServer(),
       () => this.checkWebDavServer(),
       () => this.checkDiskStorage(),
     ]);
+    return { ...result, ...this.getBuildInfo() };
   }
 
   private checkMongo(): Promise<HealthIndicatorResult> {

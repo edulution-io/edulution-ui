@@ -13,8 +13,18 @@ jobs:
 
     outputs:
       docker-tags: ${{ steps.generate_docker_tags.outputs.docker_tags }}
+      app-version: ${{ steps.app_version.outputs.version }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ github.token }}
+
+      - name: Extract app version
+        id: app_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       - id: generate_docker_tags
         run: |
           docker_registry_path="ghcr.io/edulution-io/edulution-api"
@@ -69,8 +79,10 @@ jobs:
         uses: docker/build-push-action@v6.10.0
         with:
           build-args: |
-            buildId=${{ github.sha }}
-            version=${{ needs.prepare.outputs.docker-tags }}
+            APP_VERSION=${{ needs.prepare.outputs.app-version }}
+            COMMIT_SHA=${{ github.sha }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            BUILD_NUMBER=${{ github.run_number }}
           context: .
           file: apps/api/Dockerfile
           push: true
