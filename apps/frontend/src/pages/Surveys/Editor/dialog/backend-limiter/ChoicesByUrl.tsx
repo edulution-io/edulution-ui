@@ -72,8 +72,9 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
         setInitialChoices(limiters[questionName] || []);
       }
     } else if (limiters[questionName] && limiters[questionName].length > 0) {
-      delete limiters[questionName];
-      form.setValue('backendLimiters', limiters);
+      const updatedLimiters = { ...limiters };
+      delete updatedLimiters[questionName];
+      form.setValue('backendLimiters', updatedLimiters);
       if (surveyId) {
         void deleteBackendLimiters(surveyId, questionName);
       }
@@ -85,8 +86,8 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     const questionName = selectedQuestion.name;
 
     const limiters = form.watch('backendLimiters') || {};
-    limiters[questionName] = currentChoices;
-    form.setValue('backendLimiters', limiters);
+    const updatedLimiters = { ...limiters, [questionName]: currentChoices };
+    form.setValue('backendLimiters', updatedLimiters);
 
     const surveyId = form.watch('id');
     if (surveyId && currentChoices.length > 0) {

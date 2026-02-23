@@ -50,7 +50,6 @@ import {
   openSurvey01,
   openSurvey02,
   publicSurvey01,
-  secondMockJWTUser,
   secondMockUser,
   secondUsername,
   secondUsersSurveyAnswerAnsweredSurvey01,
@@ -119,7 +118,6 @@ describe(SurveysController.name, () => {
           useValue: {
             onSurveyRemoval: jest.fn(),
             updateOrCreateSurveysBackendLimiters: jest.fn().mockResolvedValue(undefined),
-            appendChoicesToBackendLimiter: jest.fn().mockResolvedValue(undefined),
             throwErrorIfUserIsNotAllowedToAppendBackendLimiters: jest.fn(),
             deleteBackendLimiter: jest.fn().mockResolvedValue(undefined),
           },
@@ -430,45 +428,6 @@ describe(SurveysController.name, () => {
       );
       expect(status).toHaveBeenCalledWith(HttpStatus.OK);
       expect(json).toHaveBeenCalledWith({ message: 'success' });
-    });
-
-    it('should call appendChoicesToBackendLimiter when user is not creator', async () => {
-      const { res, status, json } = mockRes();
-      surveyService.getSurvey = jest.fn().mockResolvedValue(publicSurvey01);
-
-      await controller.updateChoices({ surveyId, questionId }, secondMockJWTUser, choices, res);
-
-      expect(surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledWith(
-        publicSurvey01,
-        questionId,
-        secondMockJWTUser,
-      );
-      expect(surveysBackendLimiterService.appendChoicesToBackendLimiter).toHaveBeenCalledWith(
-        surveyId,
-        questionId,
-        choices,
-      );
-      expect(status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(json).toHaveBeenCalledWith({ message: 'success' });
-    });
-
-    it('should call appendChoicesToBackendLimiter when creator sets append=true', async () => {
-      const { res, status } = mockRes();
-      surveyService.getSurvey = jest.fn().mockResolvedValue(publicSurvey01);
-
-      await controller.updateChoices({ surveyId, questionId }, firstMockJWTUser, choices, res, 'true');
-
-      expect(surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledWith(
-        publicSurvey01,
-        questionId,
-        firstMockJWTUser,
-      );
-      expect(surveysBackendLimiterService.appendChoicesToBackendLimiter).toHaveBeenCalledWith(
-        surveyId,
-        questionId,
-        choices,
-      );
-      expect(status).toHaveBeenCalledWith(HttpStatus.OK);
     });
   });
 

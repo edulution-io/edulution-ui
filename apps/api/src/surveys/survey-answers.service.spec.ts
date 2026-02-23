@@ -147,18 +147,24 @@ describe('SurveyAnswersService', () => {
   });
 
   describe('getSelectableChoices', () => {
-    it('Should return those choices that are still selectable (backend limit was not reached)', async () => {
+    it('Should return those choices that are still selectable (limit was not reached yet)', async () => {
       jest.spyOn(service, 'getSelectableChoices');
 
       service.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
         .mockReturnValueOnce(0)
-        .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters]),
+        exec: jest
+          .fn()
+          .mockResolvedValue({
+            surveyId: idOfPublicSurvey02,
+            questionName: publicSurvey02QuestionNameWithLimiters,
+            choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
+            schemaVersion: 1,
+          }),
       });
 
       const result = await service.getSelectableChoices(
@@ -184,7 +190,14 @@ describe('SurveyAnswersService', () => {
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters]),
+        exec: jest
+          .fn()
+          .mockResolvedValue({
+            surveyId: idOfPublicSurvey02,
+            questionName: publicSurvey02QuestionNameWithLimiters,
+            choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
+            schemaVersion: 1,
+          }),
       });
 
       const result = await service.getSelectableChoices(

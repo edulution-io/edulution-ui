@@ -21,16 +21,12 @@ import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import { SurveysBackendLimiter } from './surveys-backend-limiter.schema';
 import SurveysBackendLimiterService from './surveys-backend-limiter.service';
 import {
   targetQuestionName,
-  newChoiceName,
-  newChoiceTitle,
-  showOtherItemChoiceLimit,
   dropdownQuestionWithShowOtherItemName,
   dropdownQuestionWithoutShowOtherItemName,
   mockSurveyId,
@@ -46,10 +42,6 @@ import {
   surveyWithoutShowOtherItem,
   surveyWithEmptyElements,
   mockChoices,
-  existingChoicesWithShowOtherItem,
-  existingChoicesWithoutShowOtherItem,
-  newChoices,
-  duplicateChoices,
 } from './mocks';
 
 describe(SurveysBackendLimiterService.name, () => {
@@ -205,90 +197,6 @@ describe(SurveysBackendLimiterService.name, () => {
         expect(e).toBeInstanceOf(CustomHttpException);
         expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
       }
-    });
-  });
-
-  describe('appendChoicesToBackendLimiter', () => {
-    it('should throw NOT_FOUND when no backend limiter exists', async () => {
-      mockModel.findOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
-      });
-
-      try {
-        await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, []);
-        fail('Expected CustomHttpException to be thrown');
-      } catch (e) {
-        expect(e).toBeInstanceOf(CustomHttpException);
-        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.NOT_FOUND);
-      }
-    });
-
-    it('should append new choices with isCustomUserEntry and inherited limit', async () => {
-      const backendLimiter = { choices: [...existingChoicesWithShowOtherItem] };
-
-      mockModel.findOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(backendLimiter),
-      });
-      mockModel.updateOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ modifiedCount: 1 }),
-      });
-
-      await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, newChoices);
-
-      expect(mockModel.updateOne).toHaveBeenCalledWith(
-        {
-          surveyId: new Types.ObjectId(mockSurveyId),
-          questionName: mockQuestionName,
-          'choices.title': { $ne: newChoiceTitle },
-        },
-        {
-          $push: {
-            choices: {
-              name: newChoiceName,
-              title: newChoiceTitle,
-              limit: showOtherItemChoiceLimit,
-              isCustomUserEntry: true,
-            },
-          },
-        },
-      );
-      expect(mockSseService.informAllUsers).toHaveBeenCalledWith(
-        { surveyId: mockSurveyId, questionName: mockQuestionName },
-        SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED,
-      );
-    });
-
-    it('should throw CONFLICT for duplicate choices matched by title', async () => {
-      const backendLimiter = { choices: [...existingChoicesWithoutShowOtherItem] };
-
-      mockModel.findOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(backendLimiter),
-      });
-      mockModel.updateOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ modifiedCount: 0 }),
-      });
-
-      try {
-        await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, duplicateChoices);
-        fail('Expected CustomHttpException to be thrown');
-      } catch (e) {
-        expect(e).toBeInstanceOf(CustomHttpException);
-        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.CONFLICT);
-      }
-      expect(mockSseService.informAllUsers).not.toHaveBeenCalled();
-    });
-
-    it('should not update when no choices are provided', async () => {
-      const backendLimiter = { choices: [...existingChoicesWithoutShowOtherItem] };
-
-      mockModel.findOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(backendLimiter),
-      });
-
-      await service.appendChoicesToBackendLimiter(mockSurveyId, mockQuestionName, []);
-
-      expect(mockModel.updateOne).not.toHaveBeenCalled();
-      expect(mockSseService.informAllUsers).not.toHaveBeenCalled();
     });
   });
 

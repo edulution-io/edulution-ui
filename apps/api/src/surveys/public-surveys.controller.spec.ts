@@ -96,7 +96,6 @@ describe(PublicSurveysController.name, () => {
           provide: SurveyBackendLimiterService,
           useValue: {
             throwErrorIfUserIsNotAllowedToAppendBackendLimiters: jest.fn(),
-            appendChoicesToBackendLimiter: jest.fn().mockResolvedValue(undefined),
           },
         },
         {
@@ -227,7 +226,9 @@ describe(PublicSurveysController.name, () => {
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters]),
+        exec: jest
+          .fn()
+          .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
       });
 
       surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
@@ -255,7 +256,9 @@ describe(PublicSurveysController.name, () => {
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters]),
+        exec: jest
+          .fn()
+          .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
       });
 
       surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
@@ -283,18 +286,33 @@ describe(PublicSurveysController.name, () => {
 
     it('should call getSurvey, validate permissions, and append choices', async () => {
       surveysService.getSurvey = jest.fn().mockResolvedValue(publicSurvey02);
+      jest.spyOn(surveyAnswerService, 'validateAndAppendBulkChoices').mockResolvedValue(undefined);
+
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
+      });
+
+      const questionNames = Object.keys(choicesMap);
 
       await controller.validateAndAppendBulkChoices({ surveyId }, choicesMap, mockRes);
 
       expect(surveysService.getSurvey).toHaveBeenCalledWith(surveyId);
-      expect(surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledWith(
-        publicSurvey02,
-        choicesMap,
+      expect(surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledTimes(
+        questionNames.length,
       );
-      expect(surveyAnswerService.validateAndAppendBulkChoices).toHaveBeenCalledWith(surveyId, choicesMap);
+      questionNames.forEach((questionName, index) => {
+        expect(surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenNthCalledWith(
+          index + 1,
+          publicSurvey02,
+          questionName,
+        );
+      });
     });
 
     it('should throw FORBIDDEN when a question does not allow custom choices', async () => {
+      jest.spyOn(surveyAnswerService, 'validateAndAppendBulkChoices');
       surveysService.getSurvey = jest.fn().mockResolvedValue(publicSurvey02);
       (surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters as jest.Mock).mockImplementation(
         () => {
