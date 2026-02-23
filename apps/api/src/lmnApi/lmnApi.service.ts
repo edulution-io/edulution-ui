@@ -21,6 +21,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import {
   EXAM_MODE_LMN_API_ENDPOINT,
+  LIST_MANAGEMENT_LMN_API_ENDPOINT,
   MANAGEMENT_GROUPS_LMN_API_ENDPOINT,
   PRINT_PASSWORDS_LMN_API_ENDPOINT,
   PRINTERS_LMN_API_ENDPOINT,
@@ -52,6 +53,9 @@ import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
+import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
+import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
+import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
@@ -849,6 +853,146 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetLmnVersionFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getUsersByRole(
+    lmnApiToken: string,
+    role: string,
+    school: string,
+    managementList?: string,
+  ): Promise<LmnUserInfo[]> {
+    try {
+      const schoolParam = `?${SOPHOMORIX_QUERY_PARAMS.SCHOOL}=${school}`;
+      const response = await this.request<LmnUserInfo[]>(HttpMethods.GET, `roles/${role}${schoolParam}`, undefined, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+
+      if (managementList) {
+        const filename = `${managementList}.csv`;
+        return response.data.filter(
+          (user) => user.sophomorixAdminFile === filename || user.sophomorixAdminFile?.endsWith(`.${filename}`),
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUsersByRoleFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getManagementList(
+    lmnApiToken: string,
+    school: string,
+    managementList: string,
+  ): Promise<ListManagementEntry[]> {
+    try {
+      const response = await this.request<ListManagementEntry[]>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetManagementListFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async saveManagementList(
+    lmnApiToken: string,
+    school: string,
+    managementList: string,
+    data: ListManagementEntry[],
+  ): Promise<ListManagementEntry[]> {
+    try {
+      const response = await this.request<ListManagementEntry[]>(
+        HttpMethods.POST,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
+        { data },
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SaveManagementListFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async runSophomorixCheck(lmnApiToken: string): Promise<SophomorixCheckResponse> {
+    try {
+      const response = await this.request<SophomorixCheckResponse>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-check`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SophomorixCheckFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async runSophomorixApply(
+    lmnApiToken: string,
+    school: string,
+    add: boolean,
+    update: boolean,
+    kill: boolean,
+  ): Promise<SophomorixCheckResponse> {
+    try {
+      const response = await this.request<SophomorixCheckResponse>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-apply`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          timeout: 120000,
+          params: {
+            [SOPHOMORIX_QUERY_PARAMS.SCHOOL]: school,
+            ...(add && { [SOPHOMORIX_QUERY_PARAMS.ADD]: 'true' }),
+            ...(update && { [SOPHOMORIX_QUERY_PARAMS.UPDATE]: 'true' }),
+            ...(kill && { [SOPHOMORIX_QUERY_PARAMS.KILL]: 'true' }),
+          },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SophomorixApplyFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
         LmnApiService.name,

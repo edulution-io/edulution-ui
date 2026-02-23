@@ -23,6 +23,9 @@
 
 - Stack: TypeScript, React 18, NestJS 11, Nx workspace.
 - Linting: ESLint (Airbnb + TypeScript, a11y, import rules). Run `npm run lint`.
+- When linting, prefer linting only the changed files instead of the full project:
+  - `npx eslint path/to/changed/file.ts --quiet`
+  - Only run `npm run lint` for final verification before commits
 - Formatting: Prettier (2 spaces, 120 cols, single quotes, trailing commas). Run `npm run format`.
 - React: Function components as arrow functions; allow prop spreading; avoid `console` except `info|warn|error`.
 - Shared code lives under `libs/`, move utility functions, types, and constants always there (in separate files). Do not move UI components there.
@@ -41,6 +44,7 @@
 - Migrations MUST always increase the schema version number so later migrations are triggered.
 - Only use @fortawesome/free-solid-svg-icons for icons
 - Many UI components are wrappers for shadcn/@radix-ui components (component/filename postfix with "SH"). We use our custom wrappers instead.
+- Instead of using manual URLSearchParams, build it with axios's built-in params option
 
 ## Testing Guidelines
 

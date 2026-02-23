@@ -17,10 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import APPS from '@libs/appconfig/constants/apps';
-import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
+import WEBHOOK_ERROR_MESSAGES from '../constants/webhookErrorMessages';
 
-const LinuxmusterPage: React.FC = () => <NativeFrame appName={APPS.LINUXMUSTER} />;
+type WebhookErrorMessages = (typeof WEBHOOK_ERROR_MESSAGES)[keyof typeof WEBHOOK_ERROR_MESSAGES];
 
-export default LinuxmusterPage;
+export default WebhookErrorMessages;
