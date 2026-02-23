@@ -1220,7 +1220,10 @@
       "confirmDelete": "Möchten Sie diesen KI-Dienst wirklich löschen?",
       "createdSuccessfully": "KI-Dienst erfolgreich erstellt",
       "updatedSuccessfully": "KI-Dienst erfolgreich aktualisiert",
-      "deletedSuccessfully": "KI-Dienst erfolgreich gelöscht"
+      "deletedSuccessfully": "KI-Dienst erfolgreich gelöscht",
+      "isDataPrivacyCompliant": "Datenschutzkonform",
+      "dataPrivacyCompliant": "Datenschutzkonform",
+      "dataPrivacyNotCompliant": "Nicht datenschutzkonform"
     },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
@@ -2203,7 +2206,11 @@
     "chatAiChatModelTableTitle": "AI-Chat-Modelle",
     "chatAiChatModelTableDescription": "Konfigurieren Sie AI-Chat-Modelle mit bestimmten AI-Diensten und Zugriffsgruppen.",
     "chatSearxngUrlTitle": "SearXNG URL",
-    "chatSearxngUrlDescription": "URL der SearXNG-Instanz für die KI-Websuche."
+    "chatSearxngUrlDescription": "URL der SearXNG-Instanz für die KI-Websuche.",
+    "chatTikaUrlTitle": "Tika URL",
+    "chatTikaUrlDescription": "URL der Apache Tika-Instanz für die Dokumentenverarbeitung.",
+    "chatCodeSandboxUrlTitle": "Code-Sandbox URL",
+    "chatCodeSandboxUrlDescription": "URL der Code-Sandbox-Instanz für die Codeausführung."
   },
   "preview": {
     "image": "Bildvorschau",

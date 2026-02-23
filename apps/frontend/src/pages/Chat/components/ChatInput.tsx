@@ -17,17 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useRef, useEffect, KeyboardEvent, FormEvent } from 'react';
+import React, { useRef, useEffect, useCallback, ChangeEvent, KeyboardEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faPaperclip, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
 import { DropdownSelect } from '@/components';
 import { Button, cn } from '@edulution-io/ui-kit';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
-
-const TEXTAREA_MAX_HEIGHT_PX = 120;
+import TEXTAREA_MAX_HEIGHT_PX from '@libs/chat/constants/textareaMaxHeightPx';
 
 interface ChatInputProps {
   value: string;
@@ -38,6 +37,8 @@ interface ChatInputProps {
   models?: AiChatModelUserDto[];
   selectedModelId?: string | null;
   onModelChange?: (id: string | null) => void;
+  selectedFile?: File | null;
+  onFileSelect?: (file: File | null) => void;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
@@ -49,11 +50,25 @@ const ChatInput: React.FC<ChatInputProps> = ({
   models,
   selectedModelId,
   onModelChange,
+  selectedFile,
+  onFileSelect,
 }) => {
   const { t } = useTranslation();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const hasModels = models && models.length > 0;
   const modelOptions = hasModels ? models.map((model) => ({ id: model.id, name: model.name })) : [];
+
+  const handleFileChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0] ?? null;
+      onFileSelect?.(file);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    },
+    [onFileSelect],
+  );
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -62,10 +77,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
     }
   }, [value]);
 
+  const canSubmit = (value.trim() || selectedFile) && !isLoading;
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (value.trim() && !isLoading) {
+      if (canSubmit) {
         void onSubmit();
       }
     }
@@ -73,12 +90,10 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (value.trim() && !isLoading) {
+    if (canSubmit) {
       void onSubmit(e);
     }
   };
-
-  const isDisabled = !value.trim() || isLoading;
 
   return (
     <form
@@ -86,6 +101,21 @@ const ChatInput: React.FC<ChatInputProps> = ({
       className="bg-background/80 p-4 backdrop-blur-sm"
     >
       <div className="rounded-2xl border border-border bg-white shadow-sm dark:bg-accent">
+        {selectedFile && (
+          <div className="flex items-center gap-2 px-4 pt-3">
+            <span className="truncate rounded-lg bg-muted px-3 py-1 text-xs">{selectedFile.name}</span>
+            <button
+              type="button"
+              onClick={() => onFileSelect?.(null)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <FontAwesomeIcon
+                icon={faXmark}
+                className="h-3.5 w-3.5"
+              />
+            </button>
+          </div>
+        )}
         <Textarea
           ref={textareaRef}
           value={value}
@@ -111,12 +141,35 @@ const ChatInput: React.FC<ChatInputProps> = ({
               classname="w-44"
             />
           )}
+          {onFileSelect && (
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="btn-ghost"
+                size="icon"
+                disabled={isLoading}
+                className={cn('h-8 w-8 shrink-0 rounded-lg', isLoading && 'opacity-50')}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <FontAwesomeIcon
+                  icon={faPaperclip}
+                  className="h-3.5 w-3.5"
+                />
+              </Button>
+            </>
+          )}
           <Button
             type="submit"
             variant="btn-collaboration"
             size="icon"
-            disabled={isDisabled}
-            className={cn('h-8 w-8 shrink-0 rounded-lg', isDisabled && 'opacity-50')}
+            disabled={!canSubmit}
+            className={cn('h-8 w-8 shrink-0 rounded-lg', !canSubmit && 'opacity-50')}
           >
             <FontAwesomeIcon
               icon={faPaperPlane}

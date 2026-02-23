@@ -28,6 +28,7 @@ interface CreateAiServiceDto {
   model: string;
   purpose: AiServicePurposeType;
   isActive: boolean;
+  isDataPrivacyCompliant: boolean;
 }
 
 export default CreateAiServiceDto;

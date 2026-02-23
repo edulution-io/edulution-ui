@@ -27,6 +27,7 @@ interface ChatMessage {
   createdBy?: string;
   createdByUserFirstName?: string;
   createdByUserLastName?: string;
+  fileName?: string;
 }
 
 export default ChatMessage;

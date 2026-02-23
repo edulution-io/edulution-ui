@@ -17,18 +17,34 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { FormEvent } from 'react';
-import ChatMessage from '@libs/chat/types/chatMessage';
+import { Logger } from '@nestjs/common';
+import axios from 'axios';
 
-interface ChatAdapter {
-  messages: ChatMessage[];
-  input: string;
-  setInput: (input: string) => void;
-  handleSubmit: (e?: FormEvent) => Promise<void>;
-  isLoading: boolean;
-  error?: Error | null;
-  selectedFile: File | null;
-  setSelectedFile: (file: File | null) => void;
-}
+const extractFileContent = async (
+  tikaUrl: string,
+  fileBase64: string,
+  mimeType: string,
+  fileName?: string,
+): Promise<string> => {
+  try {
+    const buffer = Buffer.from(fileBase64, 'base64');
+    const url = tikaUrl.replace(/\/+$/, '');
+    const headers: Record<string, string> = {
+      'Content-Type': mimeType,
+      Accept: 'text/plain',
+    };
+    if (fileName) {
+      headers['Content-Disposition'] = `attachment; filename="${fileName}"`;
+    }
+    const response = await axios.put<string>(url, buffer, {
+      headers,
+      responseType: 'text',
+    });
+    return response.data;
+  } catch (error) {
+    Logger.error(`Tika extraction failed: ${error}`);
+  }
+  return '';
+};
 
-export default ChatAdapter;
+export default extractFileContent;

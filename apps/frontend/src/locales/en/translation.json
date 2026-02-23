@@ -1217,7 +1217,10 @@
       "confirmDelete": "Do you really want to delete this AI service?",
       "createdSuccessfully": "AI service created successfully",
       "updatedSuccessfully": "AI service updated successfully",
-      "deletedSuccessfully": "AI service deleted successfully"
+      "deletedSuccessfully": "AI service deleted successfully",
+      "isDataPrivacyCompliant": "Data Privacy Compliant",
+      "dataPrivacyCompliant": "Data privacy compliant",
+      "dataPrivacyNotCompliant": "Not data privacy compliant"
     },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
@@ -2182,7 +2185,11 @@
     "chatAiChatModelTableTitle": "AI Chat Models",
     "chatAiChatModelTableDescription": "Configure AI chat models with specific AI services and access groups.",
     "chatSearxngUrlTitle": "SearXNG URL",
-    "chatSearxngUrlDescription": "URL of the SearXNG instance used for AI web search."
+    "chatSearxngUrlDescription": "URL of the SearXNG instance used for AI web search.",
+    "chatTikaUrlTitle": "Tika URL",
+    "chatTikaUrlDescription": "URL of the Apache Tika instance used for document processing.",
+    "chatCodeSandboxUrlTitle": "Code Sandbox URL",
+    "chatCodeSandboxUrlDescription": "URL of the code sandbox instance used for code execution."
   },
   "mails": {
     "errors": {

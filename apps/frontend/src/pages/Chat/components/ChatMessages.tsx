@@ -31,14 +31,26 @@ interface ChatMessagesProps {
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const prevIsLoadingRef = useRef(false);
+  const prevMessageCountRef = useRef(0);
   const { user } = useUserStore();
 
   useEffect(() => {
     const container = containerRef.current;
-    if (container) {
+    if (!container) return;
+
+    const wasLoading = prevIsLoadingRef.current;
+    const prevCount = prevMessageCountRef.current;
+    prevIsLoadingRef.current = isLoading;
+    prevMessageCountRef.current = messages.length;
+
+    const streamingFinished = wasLoading && !isLoading;
+    const newMessageAdded = messages.length > prevCount && !isLoading;
+
+    if (streamingFinished || newMessageAdded) {
       container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   if (messages.length === 0 && !isLoading) {
     return <ChatEmptyState />;

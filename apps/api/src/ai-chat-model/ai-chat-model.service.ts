@@ -78,12 +78,21 @@ class AiChatModelService {
   async findAccessibleModels(ldapGroups: string[]): Promise<AiChatModelUserDto[]> {
     const models = await this.aiChatModelModel.find({ isActive: true }).exec();
 
-    return models
-      .filter((model) => model.accessGroups.some((group) => ldapGroups.includes(group.path)))
-      .map((model) => ({
-        id: model.id as string,
-        name: model.name,
-      }));
+    const accessibleModels = models.filter((model) =>
+      model.accessGroups.some((group) => ldapGroups.includes(group.path)),
+    );
+
+    const aiServiceIds = [...new Set(accessibleModels.map((model) => model.aiServiceId))];
+    const services = aiServiceIds.length > 0 ? await this.aiServiceService.findByIds(aiServiceIds) : [];
+    const servicePrivacyMap = new Map(
+      services.map((service) => [service.id as string, service.isDataPrivacyCompliant ?? false]),
+    );
+
+    return accessibleModels.map((model) => ({
+      id: model.id as string,
+      name: model.name,
+      isDataPrivacyCompliant: servicePrivacyMap.get(model.aiServiceId) ?? false,
+    }));
   }
 
   private async validateAiServiceExists(aiServiceId: string): Promise<void> {

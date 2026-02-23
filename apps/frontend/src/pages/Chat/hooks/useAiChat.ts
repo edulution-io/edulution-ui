@@ -36,6 +36,7 @@ const VALID_CHAT_ROLES = new Set<string>([CHAT_ROLES.USER, CHAT_ROLES.ASSISTANT]
 
 const useAiChat = (chatId: string): ChatAdapter => {
   const [input, setInput] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const titleSetRef = useRef(false);
   const createdAtMapRef = useRef(new Map<string, string>());
   const updateConversationTitle = useAiChatStore((state) => state.updateConversationTitle);
@@ -87,6 +88,8 @@ const useAiChat = (chatId: string): ChatAdapter => {
         .filter((message) => VALID_CHAT_ROLES.has(message.role))
         .map((message) => {
           const textContent = extractTextFromParts(message.parts);
+          const filePart = message.parts.find((part) => part.type === 'file');
+          const fileName = filePart && 'filename' in filePart ? (filePart.filename as string) : undefined;
 
           if (!createdAtMapRef.current.has(message.id)) {
             createdAtMapRef.current.set(message.id, new Date().toISOString());
@@ -98,6 +101,7 @@ const useAiChat = (chatId: string): ChatAdapter => {
             content: textContent,
             createdAt: createdAtMapRef.current.get(message.id)!,
             createdBy: message.role === CHAT_ROLES.ASSISTANT ? CHAT_ROLES.ASSISTANT : username,
+            fileName,
           };
         }),
     [uiMessages, username],
@@ -122,14 +126,24 @@ const useAiChat = (chatId: string): ChatAdapter => {
     async (e?: FormEvent): Promise<void> => {
       e?.preventDefault();
 
-      if (!input.trim() || isLoading) return;
+      if ((!input.trim() && !selectedFile) || isLoading) return;
 
       const messageContent = input.trim();
       setInput('');
 
-      await sendMessage({ text: messageContent });
+      const dataTransfer = new DataTransfer();
+      if (selectedFile) {
+        dataTransfer.items.add(selectedFile);
+      }
+      const files = selectedFile ? dataTransfer.files : undefined;
+      setSelectedFile(null);
+
+      await sendMessage({
+        text: messageContent || (selectedFile ? selectedFile.name : ''),
+        ...(files ? { files } : {}),
+      });
     },
-    [input, isLoading, sendMessage],
+    [input, isLoading, selectedFile, sendMessage],
   );
 
   return {
@@ -139,6 +153,8 @@ const useAiChat = (chatId: string): ChatAdapter => {
     handleSubmit,
     isLoading,
     error: error ?? null,
+    selectedFile,
+    setSelectedFile,
   };
 };
 

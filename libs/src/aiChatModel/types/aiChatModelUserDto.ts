@@ -20,6 +20,7 @@
 interface AiChatModelUserDto {
   id: string;
   name: string;
+  isDataPrivacyCompliant: boolean;
 }
 
 export default AiChatModelUserDto;

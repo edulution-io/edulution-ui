@@ -52,6 +52,7 @@ const CreateAndUpdateAiServiceDialog = () => {
     model: '',
     purpose: AI_SERVICE_PURPOSES.CHAT,
     isActive: true,
+    isDataPrivacyCompliant: false,
   };
 
   const form = useForm<CreateAiServiceDto>({

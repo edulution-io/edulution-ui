@@ -22,7 +22,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faShieldHalved } from '@fortawesome/free-solid-svg-icons';
 import AiServiceResponseDto from '@libs/aiService/types/aiServiceResponseDto';
 import AI_SERVICE_TABLE_COLUMNS from '@libs/aiService/constants/aiServiceTableColumns';
 import useAiServiceTableStore from '@/pages/Settings/AIService/useAiServiceTableStore';
@@ -98,7 +98,7 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
   },
   {
     id: AI_SERVICE_TABLE_COLUMNS.MODEL,
-    size: 150,
+    size: 100,
     header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'settings.aiServices.model',
@@ -140,6 +140,34 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
             <FontAwesomeIcon
               icon={row.original.isActive ? faEye : faEyeSlash}
               className={row.original.isActive ? 'text-green-500' : 'text-ciLightGrey'}
+            />
+          }
+          onClick={handleRowClick}
+        />
+      );
+    },
+  },
+  {
+    id: AI_SERVICE_TABLE_COLUMNS.IS_DATA_PRIVACY_COMPLIANT,
+    size: 60,
+    header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'settings.aiServices.isDataPrivacyCompliant',
+    },
+    accessorFn: (row) => row.isDataPrivacyCompliant,
+    cell: ({ row }) => {
+      const { setSelectedAiService, setIsDialogOpen } = useAiServiceTableStore();
+      const handleRowClick = () => {
+        setSelectedAiService(row.original);
+        setIsDialogOpen(true);
+      };
+
+      return (
+        <SelectableCell
+          icon={
+            <FontAwesomeIcon
+              icon={faShieldHalved}
+              className={row.original.isDataPrivacyCompliant ? 'text-green-500' : 'text-ciLightGrey'}
             />
           }
           onClick={handleRowClick}

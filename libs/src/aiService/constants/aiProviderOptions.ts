@@ -17,18 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { FormEvent } from 'react';
-import ChatMessage from '@libs/chat/types/chatMessage';
+import AI_PROVIDERS from '@libs/aiService/constants/aiProviders';
 
-interface ChatAdapter {
-  messages: ChatMessage[];
-  input: string;
-  setInput: (input: string) => void;
-  handleSubmit: (e?: FormEvent) => Promise<void>;
-  isLoading: boolean;
-  error?: Error | null;
-  selectedFile: File | null;
-  setSelectedFile: (file: File | null) => void;
-}
+const AI_PROVIDER_OPTIONS = Object.entries(AI_PROVIDERS).map(([key, value]) => ({
+  id: value,
+  name: key.charAt(0) + key.slice(1).toLowerCase(),
+}));
 
-export default ChatAdapter;
+export default AI_PROVIDER_OPTIONS;

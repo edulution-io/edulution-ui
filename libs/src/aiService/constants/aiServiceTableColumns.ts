@@ -22,6 +22,7 @@ const AI_SERVICE_TABLE_COLUMNS = {
   PROVIDER: 'provider',
   MODEL: 'model',
   IS_ACTIVE: 'isActive',
+  IS_DATA_PRIVACY_COMPLIANT: 'isDataPrivacyCompliant',
   CREATED_AT: 'createdAt',
   PURPOSE: 'purpose',
 } as const;

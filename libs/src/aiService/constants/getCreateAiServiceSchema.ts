@@ -40,6 +40,7 @@ const getCreateAiServiceSchema = (t: TFunction<'translation', undefined>) =>
     model: z.string().min(1, { message: t('common.required') }),
     purpose: z.enum([AI_SERVICE_PURPOSES.CHAT]),
     isActive: z.boolean().default(true),
+    isDataPrivacyCompliant: z.boolean().default(false),
   });
 
 export default getCreateAiServiceSchema;

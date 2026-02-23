@@ -23,8 +23,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
+import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import APPS from '@libs/appconfig/constants/apps';
 import folderPaths from '@libs/common/constants/folderPaths';
 import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
@@ -48,6 +50,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.EDUI_CORS_URL },
     logger,
+    bodyParser: false,
   });
 
   const configService = app.get(ConfigService);
@@ -56,6 +59,12 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.EDUI_PORT || 3000;
   app.set('trust proxy', true);
+
+  const AI_CHAT_BODY_LIMIT = '50mb';
+  const DEFAULT_BODY_LIMIT = '100kb';
+  app.use(`/${globalPrefix}/${APPS.AICHAT}/chat`, json({ limit: AI_CHAT_BODY_LIMIT }));
+  app.use(json({ limit: DEFAULT_BODY_LIMIT }));
+  app.use(urlencoded({ extended: true, limit: DEFAULT_BODY_LIMIT }));
 
   app.use(helmet());
 

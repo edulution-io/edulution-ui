@@ -20,6 +20,8 @@
 import React from 'react';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import { cn } from '@edulution-io/ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFile } from '@fortawesome/free-solid-svg-icons';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
 import MarkdownRenderer from '@/components/ui/Renderer/MarkdownRenderer';
 
@@ -36,6 +38,15 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
         isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
       )}
     >
+      {isOwnMessage && message.fileName && (
+        <div className="mb-1 flex items-center gap-1.5 rounded-lg bg-white/20 px-2.5 py-1.5 text-xs">
+          <FontAwesomeIcon
+            icon={faFile}
+            className="h-3 w-3 shrink-0"
+          />
+          <span className="truncate">{message.fileName}</span>
+        </div>
+      )}
       {isOwnMessage ? (
         <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
       ) : (

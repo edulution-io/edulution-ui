@@ -37,7 +37,9 @@ import AiServiceService from '../ai-service/ai-service.service';
 import AiChatModelService from '../ai-chat-model/ai-chat-model.service';
 import { AiConversation, AiConversationDocument } from './schemas/aiConversation.schema';
 import { AiChatMessage, AiChatMessageDocument } from './schemas/aiChatMessage.schema';
-import createWebSearchTool from './tools/webSearchTool';
+import createWebSearchTool from './tools/createWebSearchTool';
+import createExecuteCodeTool from './tools/createExecuteCodeTool';
+import extractFileContent from './tools/extractFileContent';
 
 @Injectable()
 class AiChatService {
@@ -109,23 +111,20 @@ class AiChatService {
       }
     }
 
-    const modelMessages: ModelMessage[] = messages
-      .filter((message) => message.role === CHAT_ROLES.USER || message.role === CHAT_ROLES.ASSISTANT)
-      .map((message): UserModelMessage | AssistantModelMessage => ({
-        role: message.role as 'user' | 'assistant',
-        content: [{ type: 'text', text: extractTextFromParts(message.parts) }],
-      }));
-
     const { model, systemPrompt } = await this.resolveLanguageModel(ldapGroups, modelConfigId);
-    const searxngUrl = await this.getSearxngUrl();
+    const chatConfig = await this.appConfigService.getAppConfigByName(APPS.CHAT);
+    const extendedOptions = (chatConfig?.extendedOptions ?? {}) as Record<string, unknown>;
+    const tikaUrl = AiChatService.getStringOption(extendedOptions, ExtendedOptionKeys.CHAT_TIKA_URL);
 
-    const tools = searxngUrl ? { webSearch: createWebSearchTool(searxngUrl) } : undefined;
+    const modelMessages = await AiChatService.buildModelMessages(messages, tikaUrl);
+
+    const tools = this.buildTools(extendedOptions);
 
     const result = streamText({
       model,
       messages: modelMessages,
       ...(systemPrompt ? { system: systemPrompt } : {}),
-      ...(tools ? { tools, stopWhen: stepCountIs(3) } : {}),
+      ...(tools ? { tools, stopWhen: stepCountIs(5) } : {}),
     });
 
     return { result: result as unknown as ReturnType<typeof streamText>, conversationId, username };
@@ -226,11 +225,64 @@ class AiChatService {
     });
   }
 
-  private async getSearxngUrl(): Promise<string | undefined> {
-    const chatConfig = await this.appConfigService.getAppConfigByName(APPS.CHAT);
-    const extendedOptions = (chatConfig?.extendedOptions ?? {}) as Record<string, unknown>;
-    const url = extendedOptions[ExtendedOptionKeys.CHAT_SEARXNG_URL];
-    return typeof url === 'string' && url.length > 0 ? url : undefined;
+  private static async buildModelMessages(messages: UIMessage[], tikaUrl?: string): Promise<ModelMessage[]> {
+    const filtered = messages.filter(
+      (message) => message.role === CHAT_ROLES.USER || message.role === CHAT_ROLES.ASSISTANT,
+    );
+
+    return Promise.all(
+      filtered.map(async (message): Promise<UserModelMessage | AssistantModelMessage> => {
+        const textContent = extractTextFromParts(message.parts);
+
+        if (message.role !== CHAT_ROLES.USER || !tikaUrl) {
+          return {
+            role: message.role as 'user' | 'assistant',
+            content: [{ type: 'text', text: textContent }],
+          };
+        }
+
+        const fileParts = message.parts.filter(
+          (part): part is Extract<typeof part, { type: 'file' }> => part.type === 'file',
+        );
+
+        const fileTexts = await Promise.all(
+          fileParts.map(async (filePart) => {
+            const dataUrlMatch = filePart.url.match(/^data:([^;]+);base64,(.+)$/);
+            if (!dataUrlMatch) return '';
+            const mimeType = dataUrlMatch[1];
+            const base64Data = dataUrlMatch[2];
+            const extracted = await extractFileContent(tikaUrl, base64Data, mimeType, filePart.filename);
+            if (!extracted) return '';
+            const label = filePart.filename ?? 'document';
+            return `[Content of "${label}"]\n${extracted}\n[End of "${label}"]`;
+          }),
+        );
+
+        const combinedContent = [textContent, ...fileTexts].filter(Boolean).join('\n\n');
+
+        return {
+          role: 'user' as const,
+          content: [{ type: 'text', text: combinedContent }],
+        };
+      }),
+    );
+  }
+
+  private buildTools(extendedOptions: Record<string, unknown>) {
+    const searxngUrl = AiChatService.getStringOption(extendedOptions, ExtendedOptionKeys.CHAT_SEARXNG_URL);
+    const codeSandboxUrl = AiChatService.getStringOption(extendedOptions, ExtendedOptionKeys.CHAT_CODE_SANDBOX_URL);
+
+    const tools = {
+      ...(searxngUrl ? { webSearch: createWebSearchTool(searxngUrl) } : {}),
+      ...(codeSandboxUrl ? { executeCode: createExecuteCodeTool(codeSandboxUrl) } : {}),
+    };
+
+    return Object.keys(tools).length > 0 ? tools : undefined;
+  }
+
+  private static getStringOption(extendedOptions: Record<string, unknown>, key: string): string | undefined {
+    const value = extendedOptions[key];
+    return typeof value === 'string' && value.length > 0 ? value : undefined;
   }
 
   private async getOwnedConversation(id: string, username: string): Promise<AiConversationDocument> {

@@ -47,6 +47,9 @@ export class AiService {
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  isDataPrivacyCompliant: boolean;
+
   @Prop({ default: 1 })
   schemaVersion: number;
 }

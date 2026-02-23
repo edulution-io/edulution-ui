@@ -17,18 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { FormEvent } from 'react';
-import ChatMessage from '@libs/chat/types/chatMessage';
-
-interface ChatAdapter {
-  messages: ChatMessage[];
-  input: string;
-  setInput: (input: string) => void;
-  handleSubmit: (e?: FormEvent) => Promise<void>;
-  isLoading: boolean;
-  error?: Error | null;
-  selectedFile: File | null;
-  setSelectedFile: (file: File | null) => void;
+interface SearxngSearchResult {
+  url: string;
+  title: string;
+  content: string;
 }
 
-export default ChatAdapter;
+export default SearxngSearchResult;

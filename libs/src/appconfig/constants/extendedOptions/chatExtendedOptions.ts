@@ -74,6 +74,24 @@ const CHAT_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     width: 'full',
     linkedTo: ExtendedOptionKeys.CHAT_AI_CHAT_ENABLED,
   },
+  {
+    name: ExtendedOptionKeys.CHAT_TIKA_URL,
+    title: 'appExtendedOptions.chatTikaUrlTitle',
+    description: 'appExtendedOptions.chatTikaUrlDescription',
+    type: ExtendedOptionField.input,
+    value: '',
+    width: 'full',
+    linkedTo: ExtendedOptionKeys.CHAT_AI_CHAT_ENABLED,
+  },
+  {
+    name: ExtendedOptionKeys.CHAT_CODE_SANDBOX_URL,
+    title: 'appExtendedOptions.chatCodeSandboxUrlTitle',
+    description: 'appExtendedOptions.chatCodeSandboxUrlDescription',
+    type: ExtendedOptionField.input,
+    value: '',
+    width: 'full',
+    linkedTo: ExtendedOptionKeys.CHAT_AI_CHAT_ENABLED,
+  },
 ];
 
 export default CHAT_EXTENDED_OPTIONS;

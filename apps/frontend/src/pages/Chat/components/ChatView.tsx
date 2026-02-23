@@ -19,6 +19,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '@edulution-io/ui-kit';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import ChatMessages from './ChatMessages';
@@ -34,13 +37,38 @@ interface ChatViewProps {
 
 const ChatView: React.FC<ChatViewProps> = ({ adapter, title, models, selectedModelId, onModelChange }) => {
   const { t } = useTranslation();
-  const { messages, input, setInput, handleSubmit, isLoading, error } = adapter;
+  const { messages, input, setInput, handleSubmit, isLoading, error, selectedFile, setSelectedFile } = adapter;
+  const selectedModel = models?.find((model) => model.id === selectedModelId);
+  const isPrivacyCompliant = selectedModel?.isDataPrivacyCompliant ?? true;
 
   return (
-    <div className="bg-glass flex h-full flex-col">
+    <div
+      className={cn(
+        'bg-glass flex h-full flex-col',
+        !isPrivacyCompliant && selectedModel && 'rounded-lg border-2 border-red-500',
+      )}
+    >
       {title && (
         <div className="flex items-center gap-4 border-b border-muted px-4 py-3">
           <h3 className="font-semibold text-background">{title}</h3>
+          {selectedModel && (
+            <div
+              className={cn(
+                'flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium',
+                isPrivacyCompliant ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700',
+              )}
+            >
+              <FontAwesomeIcon
+                icon={faShieldHalved}
+                className="h-3 w-3"
+              />
+              <span>
+                {isPrivacyCompliant
+                  ? t('settings.aiServices.dataPrivacyCompliant')
+                  : t('settings.aiServices.dataPrivacyNotCompliant')}
+              </span>
+            </div>
+          )}
         </div>
       )}
 
@@ -63,6 +91,8 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title, models, selectedMod
         models={models}
         selectedModelId={selectedModelId}
         onModelChange={onModelChange}
+        selectedFile={selectedFile}
+        onFileSelect={setSelectedFile}
       />
     </div>
   );
