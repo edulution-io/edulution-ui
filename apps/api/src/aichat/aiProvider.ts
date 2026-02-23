@@ -36,7 +36,7 @@ const createAiProvider = () => {
 
   return customProvider({
     languageModels: {
-      chat: ollama(modelId),
+      chat: ollama.chat(modelId),
     },
   });
 };

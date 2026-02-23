@@ -97,7 +97,11 @@ class AiChatService {
     return this.aiChatMessageModel.find({ conversationId }).sort({ createdAt: -1 }).skip(offset).limit(limit).exec();
   }
 
-  async streamChat(conversationId: string, messages: UIMessage[], username: string) {
+  async streamChat(
+    conversationId: string,
+    messages: UIMessage[],
+    username: string,
+  ): Promise<{ result: ReturnType<typeof streamText>; conversationId: string; username: string }> {
     await this.getOwnedConversation(conversationId, username);
 
     const lastUserMessage = [...messages].reverse().find((m) => m.role === CHAT_ROLES.USER);
