@@ -1799,6 +1799,12 @@
     "userManagement": "Gestion des utilisateurs",
     "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
   },
+  "parentAssignment": {
+    "item": "{{count}} appariement",
+    "items": "{{count}} appariements",
+    "rowSelected": "{{selected}} sur {{total}} appariement sélectionné",
+    "rowsSelected": "{{selected}} sur {{total}} appariements sélectionnés"
+  },
   "parentChildPairing": {
     "assignment": "Attribution parentale",
     "assignmentDescription": "Gérer les demandes d’association parent-élève.",

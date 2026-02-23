@@ -26,13 +26,12 @@ import PARENT_CHILD_PAIRING_STATUS_FILTER_ALL from '@libs/parent-child-pairing/c
 import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 import type FilterOption from '@libs/ui/types/filterOption';
 import { cn } from '@edulution-io/ui-kit';
-import APPS from '@libs/appconfig/constants/apps';
 import { LinuxmusterIcon } from '@/assets/icons';
 import { DropdownSelect } from '@/components';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import TableFilterDropdown from '@/components/ui/Table/TableFilterDropdown';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -155,18 +154,14 @@ const ParentAssignmentPage: React.FC = () => {
 
   return (
     <PageLayout nativeAppHeader={nativeAppHeader}>
-      <div className="relative flex h-full flex-col">
-        {isLoading && (
-          <div className="absolute right-0 top-0 z-10">
-            <CircleLoader />
-          </div>
-        )}
+      <div className="flex h-full flex-col">
+        {isLoading ? <HorizontalLoader /> : <div className="h-1" />}
         <ScrollableTable
           columns={columns}
           data={pairings}
           filterKey="parent"
           filterPlaceHolderText="parentChildPairing.filterPlaceholder"
-          applicationName={APPS.LINUXMUSTER}
+          applicationName="parentAssignment"
           getRowId={(row) => row.id}
           enableRowSelection
           selectedRows={selectedRows}

@@ -1965,6 +1965,12 @@
     "userManagement": "User Management",
     "description": "Manage your school server settings and users."
   },
+  "parentAssignment": {
+    "item": "{{count}} pairing",
+    "items": "{{count}} pairings",
+    "rowSelected": "{{selected}} of {{total}} pairing selected",
+    "rowsSelected": "{{selected}} of {{total}} pairings selected"
+  },
   "parentChildPairing": {
     "assignment": "Parent Assignment",
     "assignmentDescription": "Manage parent-student pairing requests.",

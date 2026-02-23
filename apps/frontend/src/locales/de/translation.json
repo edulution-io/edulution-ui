@@ -1968,6 +1968,12 @@
     "userManagement": "Benutzerverwaltung",
     "description": "Verwalte deine Schulserver-Einstellungen und Benutzer."
   },
+  "parentAssignment": {
+    "item": "{{count}} Zuordnung",
+    "items": "{{count}} Zuordnungen",
+    "rowSelected": "{{selected}} von {{total}} Zuordnung ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Zuordnungen ausgewählt"
+  },
   "parentChildPairing": {
     "assignment": "Elternzuweisung",
     "assignmentDescription": "Eltern-Schüler-Zuweisungen verwalten.",

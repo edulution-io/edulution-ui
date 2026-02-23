@@ -44,6 +44,7 @@ interface ParentAssignmentStore {
   setStatusFilter: (status: string) => void;
   setSelectedSchool: (school: string) => void;
   setSelectedRows: (rows: RowSelectionState) => void;
+  reset: () => void;
 }
 
 const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
@@ -77,6 +78,7 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
   },
 
   updateStatus: async (id: string, status: string) => {
+    set({ isLoading: true });
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
       await eduApi.patch(
@@ -88,10 +90,12 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
       await get().fetchPairings();
     } catch (error) {
       handleApiError(error, set);
+      set({ isLoading: false });
     }
   },
 
   updateStatusBulk: async (ids: string[], status: string) => {
+    set({ isLoading: true });
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
       await Promise.all(
@@ -108,6 +112,7 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
       await get().fetchPairings();
     } catch (error) {
       handleApiError(error, set);
+      set({ isLoading: false });
     }
   },
 
@@ -123,6 +128,16 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => {
     set({ selectedRows });
+  },
+
+  reset: () => {
+    set({
+      pairings: [],
+      isLoading: false,
+      statusFilter: PARENT_CHILD_PAIRING_STATUS.PENDING,
+      selectedSchool: '',
+      selectedRows: {},
+    });
   },
 }));
 
