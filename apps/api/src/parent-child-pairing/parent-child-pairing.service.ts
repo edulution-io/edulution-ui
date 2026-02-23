@@ -371,8 +371,8 @@ class ParentChildPairingService {
       await this.lmnApiService.addParentToStudent(lmnApiToken, pairing.student, pairing.parent);
     }
 
-    if (status === PARENT_CHILD_PAIRING_STATUS.REJECTED) {
-      void this.unregisterParentInLmnApi(lmnApiToken, pairing.student, pairing.parent);
+    if (status === PARENT_CHILD_PAIRING_STATUS.REJECTED && pairing.status === PARENT_CHILD_PAIRING_STATUS.ACCEPTED) {
+      await this.lmnApiService.deleteParentFromStudent(lmnApiToken, pairing.student, pairing.parent);
     }
 
     pairing.status = status as ParentChildPairingStatusType;
@@ -387,25 +387,6 @@ class ParentChildPairingService {
     Logger.log(`Parent-child pairing ${pairingId} status updated to ${status}`, ParentChildPairingService.name);
 
     return ParentChildPairingService.toParentChildPairingDto(pairing);
-  }
-
-  private async unregisterParentInLmnApi(
-    lmnApiToken: string,
-    studentUsername: string,
-    parentUsername: string,
-  ): Promise<void> {
-    try {
-      await this.lmnApiService.deleteParentFromStudent(lmnApiToken, studentUsername, parentUsername);
-      Logger.log(
-        `Unregistered parent ${parentUsername} for student ${studentUsername} in lmn-api`,
-        ParentChildPairingService.name,
-      );
-    } catch (error: unknown) {
-      Logger.error(
-        `Failed to unregister parent ${parentUsername} for student ${studentUsername} in lmn-api: ${String(error)}`,
-        ParentChildPairingService.name,
-      );
-    }
   }
 
   private static toParentChildPairingDto(p: {
