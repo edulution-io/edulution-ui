@@ -229,7 +229,10 @@
       "GetManagementListFailed": "Abrufen der Verwaltungsliste fehlgeschlagen",
       "SaveManagementListFailed": "Speichern der Verwaltungsliste fehlgeschlagen",
       "SophomorixCheckFailed": "Sophomorix-Check fehlgeschlagen",
-      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen"
+      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen",
+      "GetDevicesFailed": "Geräteliste konnte nicht geladen werden",
+      "SaveDevicesFailed": "Geräteliste konnte nicht gespeichert werden",
+      "ImportDevicesFailed": "Geräte-Import fehlgeschlagen"
     }
   },
   "ticketsystem": {
@@ -764,7 +767,7 @@
     "globalbindusers": "Globale Binduser",
     "tabs": {
       "table": "Benutzer",
-      "list": "Listenverwaltung"
+      "list": "Import"
     },
     "filterUsers": "Benutzer filtern...",
     "loginClass": "Login / Klasse",
@@ -866,6 +869,58 @@
       "L": "Gesperrt",
       "K": "Löschbar",
       "R": "Entfernbar"
+    }
+  },
+  "deviceManagement": {
+    "menuTitle": "Geräteverwaltung",
+    "title": "Geräte",
+    "description": "Geräte anzeigen und verwalten.",
+    "addDevice": "Gerät hinzufügen",
+    "duplicateDevice": "Gerät duplizieren",
+    "apply": "Anwenden",
+    "applyConfirmTitle": "Geräteliste anwenden",
+    "applyConfirmMessage": "Die Geräteliste wird gespeichert und sofort importiert. Möchten Sie fortfahren?",
+    "applyStarted": "Geräteliste wird angewendet...",
+    "applyCompleted": "Geräteliste erfolgreich angewendet",
+    "listSaved": "Geräteliste erfolgreich gespeichert",
+    "validationFailed": "Bitte korrigieren Sie alle ungültigen Felder vor dem Speichern",
+    "duplicateFound": "Doppelte Einträge für Rechnername, MAC oder IP gefunden",
+    "columns": {
+      "room": "Raum",
+      "hostname": "Rechnername",
+      "group": "Gruppe",
+      "mac": "MAC",
+      "ip": "IP",
+      "sophomorixRole": "Sophomorix-Rolle",
+      "pxeFlag": "PXE"
+    },
+    "roles": {
+      "addc": "Domaincontroller",
+      "byod": "BYOD",
+      "classroom-studentcomputer": "Schüler-PC im Klassenzimmer",
+      "classroom-teachercomputer": "Lehrer-PC im Klassenzimmer",
+      "faculty-teachercomputer": "Fachbereich-Lehrer-PC",
+      "iponly": "IP-Only",
+      "mobile": "Handy",
+      "printer": "Drucker",
+      "router": "Router",
+      "server": "Server",
+      "staffcomputer": "Lehrer-PC",
+      "switch": "Switch",
+      "thinclient": "Thinclient",
+      "voip": "VOIP",
+      "wlan": "WLan"
+    },
+    "pxeFlags": {
+      "0": "Kein PXE",
+      "1": "Linbo-PXE",
+      "2": "Linbo-PXE + OPSI-PXE",
+      "3": "OPSI-PXE"
+    },
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Datei hier hin schieben um sie zu importieren",
+      "download": "CSV Herunterladen"
     }
   },
   "select": "Auswählen",
@@ -1822,6 +1877,7 @@
     "date": "Datum",
     "time": "Uhrzeit",
     "revert": "Zurücksetzen",
+    "duplicate": "Duplizieren",
     "restart": "Neu starten",
     "kill": "Beenden",
     "install": "Installieren",

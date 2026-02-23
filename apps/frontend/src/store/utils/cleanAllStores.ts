@@ -65,6 +65,8 @@ import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import useAppConfigUpdateCheckerStore from '@/pages/Settings/AppConfig/components/updateChecker/useAppConfigUpdateCheckerStore';
 import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
+import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
+import useUserManagementStore from '@/pages/LinuxmusterPage/UserManagement/useUserManagementStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -85,6 +87,7 @@ const cleanAllStores = async () => {
   useCreateConferenceDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useDeviceManagementStore.getState().reset();
   useEduApiStore.getState().reset();
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
@@ -106,7 +109,6 @@ const cleanAllStores = async () => {
   usePublicShareStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
-  useResultDialogStore.getState().reset();
   useSelectCreateDockerContainerDialogStore.getState().reset();
   useSidebarStore.getState().reset();
   useSseStore.getState().reset();
@@ -114,6 +116,7 @@ const cleanAllStores = async () => {
   useSurveyTablesPageStore.getState().reset();
   useTLDRawHistoryStore.getState().reset();
   useTemplateMenuStore.getState().reset();
+  useUserManagementStore.getState().reset();
   useVeyonApiStore.getState().reset();
   useVeyonConfigTableStore.getState().reset();
   useWebdavShareConfigTableStore.getState().reset();

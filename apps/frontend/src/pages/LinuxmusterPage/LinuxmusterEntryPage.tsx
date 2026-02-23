@@ -25,6 +25,7 @@ import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import {
   faChalkboardTeacher,
   faCircleInfo,
+  faDesktop,
   faGlobe,
   faUserGraduate,
   faUserPlus,
@@ -45,6 +46,7 @@ import {
   USER_MANAGEMENT_TEACHERS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import { DEVICE_MANAGEMENT_PATH } from '@libs/deviceManagement/constants/deviceManagementPaths';
 import isLmnVersionSupported from '@libs/lmnApi/utils/isLmnVersionSupported';
 import { LinuxmusterIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -145,10 +147,10 @@ const LinuxmusterEntryPage: React.FC = () => {
                   onClick={() => navigate(`/${card.path}/${card.defaultTab}`)}
                 >
                   <Card variant="tile">
-                    <div className="m-4 flex flex-col items-center">
+                    <div className="flex h-full flex-col items-center justify-center gap-2">
                       <FontAwesomeIcon
                         icon={card.icon}
-                        className="h-12 w-12 md:h-14 md:w-14"
+                        className="h-8 w-8 md:h-10 md:w-10"
                       />
                       <p>{t(card.labelKey)}</p>
                     </div>
@@ -158,27 +160,40 @@ const LinuxmusterEntryPage: React.FC = () => {
             </div>
           </>
         )}
-        {isLmn && (
-          <>
-            <h2 className="mb-4 mt-8 text-xl font-semibold">{t('linuxmuster.system')}</h2>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => navigate(`/${LINUXMUSTER_INFO_PATH}`)}
-              >
-                <Card variant="tile">
-                  <div className="m-4 flex flex-col items-center">
-                    <FontAwesomeIcon
-                      icon={faCircleInfo}
-                      className="h-12 w-12 md:h-14 md:w-14"
-                    />
-                    <p>{t('linuxmuster.versionInfo')}</p>
-                  </div>
-                </Card>
-              </button>
-            </div>
-          </>
-        )}
+        <h2 className="mb-4 mt-8 text-xl font-semibold">{t('deviceManagement.menuTitle')}</h2>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/${DEVICE_MANAGEMENT_PATH}`)}
+          >
+            <Card variant="tile">
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <FontAwesomeIcon
+                  icon={faDesktop}
+                  className="h-8 w-8 md:h-10 md:w-10"
+                />
+                <p>{t('deviceManagement.title')}</p>
+              </div>
+            </Card>
+          </button>
+        </div>
+        <h2 className="mb-4 mt-8 text-xl font-semibold">{t('linuxmuster.system')}</h2>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/${LINUXMUSTER_INFO_PATH}`)}
+          >
+            <Card variant="tile">
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <FontAwesomeIcon
+                  icon={faCircleInfo}
+                  className="h-8 w-8 md:h-10 md:w-10"
+                />
+                <p>{t('linuxmuster.versionInfo')}</p>
+              </div>
+            </Card>
+          </button>
+        </div>
       </div>
     </PageLayout>
   );

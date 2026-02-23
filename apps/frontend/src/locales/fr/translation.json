@@ -672,7 +672,7 @@
     "globalbindusers": "Utilisateurs Bind globaux",
     "tabs": {
       "table": "Utilisateurs",
-      "list": "Gestion des listes"
+      "list": "Import"
     },
     "filterUsers": "Filtrer les utilisateurs...",
     "loginClass": "Login / Classe",
