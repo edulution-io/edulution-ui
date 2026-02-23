@@ -20,7 +20,10 @@
 import React, { useMemo } from 'react';
 import MDEditor, { PreviewType } from '@uiw/react-md-editor';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 import rehypeHighlight from 'rehype-highlight';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import useThemeStore from '@/store/useThemeStore';
 import markdownComponents from '@/components/ui/Renderer/markdownComponents';
 import '@/components/ui/Renderer/MarkdownRenderer.css';
@@ -48,8 +51,8 @@ const MarkdownRenderer = ({
 
   const previewOptions = useMemo(
     () => ({
-      remarkPlugins: [remarkGfm],
-      rehypePlugins: [rehypeHighlight],
+      remarkPlugins: [remarkGfm, remarkMath],
+      rehypePlugins: [rehypeHighlight, rehypeKatex],
       components: markdownComponents,
     }),
     [],
