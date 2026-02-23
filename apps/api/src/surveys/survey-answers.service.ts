@@ -219,8 +219,7 @@ class SurveyAnswersService implements OnModuleInit {
     );
 
     const limitReachedQuestionNames: string[] = [];
-    const creationOperations: Array<() => Promise<void>> = [];
-    const affectedQuestionNames: string[] = [];
+    const creationOperations: Array<{ questionName: string; fn: () => Promise<{ modifiedCount: number }> }> = [];
 
     await Promise.all(
       questionNames.map(async (questionName, index) => {
@@ -259,16 +258,16 @@ class SurveyAnswersService implements OnModuleInit {
                 limitReachedQuestionNames.push(questionName);
               }
             } else {
-              affectedQuestionNames.push(questionName);
-              creationOperations.push(() =>
-                this.surveysBackendLimiterModel
-                  .updateOne(
-                    { surveyId: objectId, questionName, 'choices.title': { $ne: newChoice.title } },
-                    { $push: { choices: { ...newChoice, limit: otherItemLimit, isCustomUserEntry: true } } },
-                  )
-                  .exec()
-                  .then(() => undefined),
-              );
+              creationOperations.push({
+                questionName,
+                fn: () =>
+                  this.surveysBackendLimiterModel
+                    .updateOne(
+                      { surveyId: objectId, questionName, 'choices.title': { $ne: newChoice.title } },
+                      { $push: { choices: { ...newChoice, limit: otherItemLimit, isCustomUserEntry: true } } },
+                    )
+                    .exec(),
+              });
             }
           }),
         );
@@ -285,9 +284,11 @@ class SurveyAnswersService implements OnModuleInit {
     }
 
     if (creationOperations.length > 0) {
-      await Promise.all(creationOperations.map((operation) => operation()));
-      const uniqueAffectedQuestionNames = [...new Set(affectedQuestionNames)];
-      uniqueAffectedQuestionNames.forEach((questionName) => {
+      const results = await Promise.all(creationOperations.map(({ fn }) => fn()));
+      const modifiedQuestionNames = new Set(
+        creationOperations.filter((_, i) => results[i].modifiedCount > 0).map(({ questionName }) => questionName),
+      );
+      modifiedQuestionNames.forEach((questionName) => {
         this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
       });
     }
