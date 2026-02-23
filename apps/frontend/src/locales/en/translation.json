@@ -432,6 +432,16 @@
       "CopyFailed": "Copy failed",
       "FileFormatNotSupported": "File format is not supported"
     },
+    "singleDownload": {
+      "promptInfo": "Your file download has started.",
+      "downloadSucceeded": "Did the file download successfully?",
+      "help": "Help"
+    },
+    "multipleDownload": {
+      "promptInfo": "Your browser may ask for permission to download multiple files.",
+      "downloadSucceeded": "Did all files download successfully?",
+      "help": "Help"
+    },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
@@ -752,7 +762,7 @@
     "globaladmins": "Global Admins",
     "globalbindusers": "Global Bind Users",
     "tabs": {
-      "table": "Table",
+      "table": "Users",
       "list": "List Management"
     },
     "filterUsers": "Filter users...",
@@ -786,6 +796,8 @@
     "csvPlaceholder": "CSV content will be displayed here...",
     "addUser": "Add user",
     "check": "Check",
+    "saveConfirmTitle": "Save list",
+    "saveConfirmMessage": "The list must be saved before checking. Do you want to save the list now and continue?",
     "apply": "Apply",
     "exportCsv": "Export CSV",
     "csv": {
@@ -1285,7 +1297,7 @@
       "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
-      "title": "Info"
+      "title": "License"
     },
     "webhooks": {
       "title": "Webhooks",
@@ -1930,7 +1942,10 @@
     "item": "{{count}} user",
     "items": "{{count}} users",
     "userManagement": "User Management",
-    "description": "Manage your school server settings and users."
+    "description": "Manage your school server settings and users.",
+    "versionInfo": "Version overview",
+    "system": "System",
+    "versionMismatch": "The Linuxmuster API version is too old. At least version {{version}} is required."
   },
   "whiteboard": {
     "title": "WHITEBOARD",

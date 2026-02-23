@@ -431,6 +431,16 @@
       "CopyFailed": "Kopieren fehlgeschlagen",
       "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
     },
+    "singleDownload": {
+      "promptInfo": "Dein Dateidownload wurde gestartet.",
+      "downloadSucceeded": "Wurde die Datei erfolgreich heruntergeladen?",
+      "help": "Hilfe"
+    },
+    "multipleDownload": {
+      "promptInfo": "Dein Browser wird möglicherweise um Erlaubnis zum Herunterladen mehrerer Dateien bitten.",
+      "downloadSucceeded": "Wurden alle Dateien erfolgreich heruntergeladen?",
+      "help": "Hilfe"
+    },
     "publicShareFilesPage": {
       "title": "Geteilte Dateien",
       "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
@@ -747,13 +757,13 @@
     "teachers": "Lehrer",
     "extrastudents": "Extra-Schüler",
     "parents": "Eltern",
-    "staff": "Angestellte",
+    "staff": "Mitarbeiter",
     "schooladmins": "Schuladmins",
     "schoolbindusers": "Schul Binduser",
     "globaladmins": "Globaladmins",
     "globalbindusers": "Globale Binduser",
     "tabs": {
-      "table": "Tabelle",
+      "table": "Benutzer",
       "list": "Listenverwaltung"
     },
     "filterUsers": "Benutzer filtern...",
@@ -787,6 +797,8 @@
     "csvPlaceholder": "CSV-Inhalt wird hier angezeigt...",
     "addUser": "Benutzer hinzufügen",
     "check": "Prüfen",
+    "saveConfirmTitle": "Liste speichern",
+    "saveConfirmMessage": "Die Liste muss vor der Prüfung gespeichert werden. Möchten Sie die Liste jetzt speichern und fortfahren?",
     "apply": "Anwenden",
     "exportCsv": "CSV exportieren",
     "csv": {
@@ -1288,7 +1300,7 @@
       "setAdminGroupWarning": "Es muss mindestens eine Administratorengruppe ausgewählt sein."
     },
     "info": {
-      "title": "Info"
+      "title": "Lizenz"
     },
     "webhooks": {
       "title": "Webhooks",
@@ -1933,7 +1945,10 @@
     "item": "{{count}} Benutzer",
     "items": "{{count}} Benutzer",
     "userManagement": "Benutzerverwaltung",
-    "description": "Verwalte deine Schulserver-Einstellungen und Benutzer."
+    "description": "Verwalte deine Schulserver-Einstellungen und Benutzer.",
+    "versionInfo": "Versionsübersicht",
+    "system": "System",
+    "versionMismatch": "Die Linuxmuster API-Version ist zu alt. Mindestens Version {{version}} wird benötigt."
   },
   "whiteboard": {
     "title": "WHITEBOARD",

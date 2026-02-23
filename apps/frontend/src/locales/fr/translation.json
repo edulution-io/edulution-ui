@@ -423,6 +423,16 @@
       "CopyFailed": "La copie a échoué",
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
+    "singleDownload": {
+      "promptInfo": "Le téléchargement de votre fichier a commencé.",
+      "downloadSucceeded": "Le fichier a-t-il été téléchargé avec succès ?",
+      "help": "Aide"
+    },
+    "multipleDownload": {
+      "promptInfo": "Votre navigateur peut demander l'autorisation de télécharger plusieurs fichiers.",
+      "downloadSucceeded": "Tous les fichiers ont-ils été téléchargés avec succès?",
+      "help": "Aide"
+    },
     "publicFileSharing": {
       "sharedBy": "Partagé par",
       "errors": {
@@ -661,7 +671,7 @@
     "globaladmins": "Admins globaux",
     "globalbindusers": "Utilisateurs Bind globaux",
     "tabs": {
-      "table": "Tableau",
+      "table": "Utilisateurs",
       "list": "Gestion des listes"
     },
     "filterUsers": "Filtrer les utilisateurs...",
@@ -695,6 +705,8 @@
     "csvPlaceholder": "Le contenu CSV sera affiché ici...",
     "addUser": "Ajouter un utilisateur",
     "check": "Vérifier",
+    "saveConfirmTitle": "Sauvegarder la liste",
+    "saveConfirmMessage": "La liste doit être sauvegardée avant la vérification. Voulez-vous sauvegarder la liste maintenant et continuer ?",
     "apply": "Appliquer",
     "exportCsv": "Exporter CSV",
     "csv": {
@@ -1143,7 +1155,7 @@
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
-      "title": "Informations"
+      "title": "Licence"
     },
     "webhooks": {
       "title": "Webhooks",
@@ -1765,7 +1777,10 @@
     "item": "{{count}} utilisateur",
     "items": "{{count}} utilisateurs",
     "userManagement": "Gestion des utilisateurs",
-    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
+    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs.",
+    "versionInfo": "Aperçu des versions",
+    "system": "Système",
+    "versionMismatch": "La version de l'API Linuxmuster est trop ancienne. La version {{version}} ou ultérieure est requise."
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",

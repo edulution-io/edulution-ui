@@ -17,9 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const DEBOUNCE_MS = 50;
-export const WIDTH_TOLERANCE_PX = 1;
-export const DEFAULT_BUTTON_WIDTH = 108;
-export const DECREASE_DELAY_MS = 100;
-export const FLOATING_BUTTON_CLASS_NAME =
-  'w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center leading-tight md:leading-[inherit]';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { MIN_LMN_VERSION } from '@libs/lmnApi/utils/isLmnVersionSupported';
+
+const LmnVersionWarning: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-yellow-400 bg-yellow-50 p-4 dark:bg-yellow-900/20">
+      <FontAwesomeIcon
+        icon={faTriangleExclamation}
+        className="h-6 w-6 text-yellow-600 dark:text-yellow-400"
+      />
+      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+        {t('linuxmuster.versionMismatch', { version: MIN_LMN_VERSION })}
+      </p>
+    </div>
+  );
+};
+
+export default LmnVersionWarning;

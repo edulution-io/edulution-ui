@@ -20,9 +20,16 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
-import { LINUXMUSTER_PATH, USER_MANAGEMENT_LOCATION } from '@libs/userManagement/constants/userManagementPaths';
+import {
+  LINUXMUSTER_INFO_LOCATION,
+  LINUXMUSTER_INFO_PATH,
+  LINUXMUSTER_PATH,
+  USER_MANAGEMENT_LOCATION,
+  USER_MANAGEMENT_STUDENTS_PATH,
+} from '@libs/userManagement/constants/userManagementPaths';
+import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -33,6 +40,11 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
   const { isLmn } = useDeploymentTarget();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
+  const navigateToInfo = useCallback(() => navigate(`/${LINUXMUSTER_INFO_PATH}`), [navigate]);
+  const navigateToUserManagement = useCallback(
+    () => navigate(`/${USER_MANAGEMENT_STUDENTS_PATH}/${USER_MANAGEMENT_TABS.TABLE}`),
+    [navigate],
+  );
 
   return useMemo(
     () => ({
@@ -42,14 +54,30 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
       color: 'hover:bg-ciGreenToBlue',
       menuItems: [
         {
-          id: USER_MANAGEMENT_LOCATION,
-          label: 'usermanagement.menuTitle',
-          icon: faListCheck,
+          id: LINUXMUSTER_PATH,
+          label: 'common.overview',
+          icon: faGrip,
           action: navigateToLinuxmuster,
         },
+        ...(isLmn
+          ? [
+              {
+                id: USER_MANAGEMENT_LOCATION,
+                label: 'usermanagement.menuTitle',
+                icon: faListCheck,
+                action: navigateToUserManagement,
+              },
+              {
+                id: LINUXMUSTER_INFO_LOCATION,
+                label: 'linuxmuster.versionInfo',
+                icon: faCircleInfo,
+                action: navigateToInfo,
+              },
+            ]
+          : []),
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster],
+    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToInfo],
   );
 };
 
