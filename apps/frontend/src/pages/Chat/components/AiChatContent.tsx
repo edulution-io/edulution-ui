@@ -18,36 +18,36 @@
  */
 
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import ChatView from '@/pages/Chat/components/ChatView';
 import useAiChat from '@/pages/Chat/hooks/useAiChat';
 import useAiChatStore from '@/store/useAiChatStore';
-
-const AI_CHAT_TITLE = 'AI Chat';
 
 interface AiChatContentProps {
   chatId: string;
 }
 
 const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
+  const { t } = useTranslation();
   const adapter = useAiChat(chatId);
   const conversations = useAiChatStore((state) => state.conversations);
-  const assistants = useAiChatStore((state) => state.assistants);
-  const selectedAssistantId = useAiChatStore((state) => state.selectedAssistantId);
-  const fetchAssistants = useAiChatStore((state) => state.fetchAssistants);
-  const setSelectedAssistantId = useAiChatStore((state) => state.setSelectedAssistantId);
-  const title = conversations.find((c) => c.id === chatId)?.title ?? AI_CHAT_TITLE;
+  const availableModels = useAiChatStore((state) => state.availableModels);
+  const selectedModelId = useAiChatStore((state) => state.selectedModelId);
+  const setSelectedModelId = useAiChatStore((state) => state.setSelectedModelId);
+  const fetchAvailableModels = useAiChatStore((state) => state.fetchAvailableModels);
+  const title = conversations.find((conversation) => conversation.id === chatId)?.title ?? t('chat.newChat');
 
   useEffect(() => {
-    void fetchAssistants();
-  }, [fetchAssistants]);
+    void fetchAvailableModels();
+  }, [fetchAvailableModels]);
 
   return (
     <ChatView
       adapter={adapter}
       title={title}
-      assistants={assistants}
-      selectedAssistantId={selectedAssistantId}
-      onAssistantChange={setSelectedAssistantId}
+      models={availableModels}
+      selectedModelId={selectedModelId}
+      onModelChange={setSelectedModelId}
     />
   );
 };

@@ -17,53 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import AiAssistantOption from '@libs/chat/types/aiAssistantOption';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
-import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
+import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 
 interface ChatViewProps {
   adapter: ChatAdapter;
   title?: string;
-  assistants?: AiAssistantOption[];
-  selectedAssistantId?: string | null;
-  onAssistantChange?: (id: string | null) => void;
+  models?: AiChatModelUserDto[];
+  selectedModelId?: string | null;
+  onModelChange?: (id: string | null) => void;
 }
 
-const ChatView: React.FC<ChatViewProps> = ({ adapter, title, assistants, selectedAssistantId, onAssistantChange }) => {
+const ChatView: React.FC<ChatViewProps> = ({ adapter, title, models, selectedModelId, onModelChange }) => {
   const { t } = useTranslation();
   const { messages, input, setInput, handleSubmit, isLoading, error } = adapter;
-
-  const dropdownOptions = useMemo(() => {
-    if (!assistants || assistants.length === 0) return [];
-    return [{ id: '', name: t('chat.selectAssistant') }, ...assistants];
-  }, [assistants, t]);
-
-  const handleAssistantChange = useCallback(
-    (id: string) => {
-      onAssistantChange?.(id === '' ? null : id);
-    },
-    [onAssistantChange],
-  );
 
   return (
     <div className="bg-glass flex h-full flex-col">
       {title && (
         <div className="flex items-center gap-4 border-b border-muted px-4 py-3">
           <h3 className="font-semibold text-background">{title}</h3>
-          {dropdownOptions.length > 0 && (
-            <DropdownSelect
-              options={dropdownOptions}
-              selectedVal={selectedAssistantId ?? ''}
-              handleChange={handleAssistantChange}
-              placeholder="chat.selectAssistant"
-              classname="w-48"
-              translate={false}
-            />
-          )}
         </div>
       )}
 
@@ -83,6 +60,9 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title, assistants, selecte
         onChange={setInput}
         onSubmit={handleSubmit}
         isLoading={isLoading}
+        models={models}
+        selectedModelId={selectedModelId}
+        onModelChange={onModelChange}
       />
     </div>
   );

@@ -29,7 +29,6 @@ import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import type AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
@@ -39,6 +38,7 @@ import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
+import type AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
 import DeleteAppConfigTableDialog from './DeleteAppConfigTableDialog';
 
 interface AppConfigTableProps {
@@ -183,12 +183,12 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
     type TableDataType =
       | BulletinCategoryResponseDto
-      | AiAssistantResponseDto
       | ContainerInfo
       | FileInfoDto
       | VeyonProxyItem
       | WebdavShareDto
-      | WireguardPeer;
+      | WireguardPeer
+      | AiChatModelResponseDto;
 
     const selectedRowsArray = useMemo(
       () =>
@@ -225,20 +225,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
     const getScrollableTable = () => {
       switch (type) {
-        case ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE: {
-          return (
-            <ScrollableTable
-              columns={columns}
-              data={tableContentData as AiAssistantResponseDto[]}
-              filterKey={filterKey}
-              filterPlaceHolderText={filterPlaceHolderText}
-              applicationName={applicationName}
-              enableRowSelection={false}
-              initialColumnVisibility={initialColumnVisibility}
-              actions={tableActions as TableAction<AiAssistantResponseDto>[]}
-            />
-          );
-        }
         case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
           return (
             <ScrollableTable
@@ -344,6 +330,20 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
               selectedRows={selectedRows}
               onRowSelectionChange={handleRowSelectionChange}
               actions={tableActions as TableAction<WireguardPeer>[]}
+            />
+          );
+        }
+        case ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as AiChatModelResponseDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              initialColumnVisibility={initialColumnVisibility}
+              actions={tableActions as TableAction<AiChatModelResponseDto>[]}
             />
           );
         }

@@ -77,7 +77,7 @@ class AiServiceService {
     Logger.log(`Deleted AI service: ${id}`, AiServiceService.name);
   }
 
-  async fetchAvailableModels(request: FetchAiModelsDto): Promise<string[]> {
+  static async fetchAvailableModels(request: FetchAiModelsDto): Promise<string[]> {
     const { provider, apiKey } = request;
     const baseUrl = request.baseUrl.replace(/\/+$/, '');
 
@@ -87,7 +87,7 @@ class AiServiceService {
         const { data } = await axios.get<{ data: { id: string }[] }>(modelsUrl, {
           headers: { 'x-api-key': apiKey, 'anthropic-version': ANTHROPIC_API_VERSION },
         });
-        return data.data.map((m) => m.id);
+        return data.data.map((model) => model.id);
       }
 
       if (provider === AI_PROVIDERS.GOOGLE) {
@@ -95,18 +95,18 @@ class AiServiceService {
         const { data } = await axios.get<{ models: { name: string }[] }>(`${googleBaseUrl}/models`, {
           params: { key: apiKey },
         });
-        return data.models.map((m) => m.name.replace('models/', ''));
+        return data.models.map((model) => model.name.replace('models/', ''));
       }
 
       if (provider === AI_PROVIDERS.OLLAMA) {
         const { data } = await axios.get<{ models: { name: string }[] }>(`${baseUrl}/api/tags`);
-        return data.models.map((m) => m.name);
+        return data.models.map((model) => model.name);
       }
 
       const { data } = await axios.get<{ data: { id: string }[] }>(`${baseUrl}/models`, {
         headers: { Authorization: `Bearer ${apiKey}` },
       });
-      return data.data.map((m) => m.id);
+      return data.data.map((model) => model.id);
     } catch (error) {
       Logger.error(`Failed to fetch models for provider ${provider}: ${error}`, AiServiceService.name);
       throw new CustomHttpException(
@@ -126,12 +126,13 @@ class AiServiceService {
     return this.aiServiceModel.findOne({ purpose, isActive: true }).exec();
   }
 
-  createLanguageModel(config: { provider: AiProviderType; baseUrl: string; apiKey: string; model: string }) {
+  static createLanguageModel(config: { provider: AiProviderType; baseUrl: string; apiKey: string; model: string }) {
     const { provider, apiKey, model } = config;
     const baseUrl = config.baseUrl.replace(/\/+$/, '');
 
     if (provider === AI_PROVIDERS.ANTHROPIC) {
-      const anthropic = createAnthropic({ baseURL: baseUrl, apiKey });
+      const anthropicBaseUrl = baseUrl.endsWith('/v1') ? baseUrl : `${baseUrl}/v1`;
+      const anthropic = createAnthropic({ baseURL: anthropicBaseUrl, apiKey });
       return anthropic(model);
     }
 
