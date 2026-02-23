@@ -2006,7 +2006,9 @@
     "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
     "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA.",
     "chatAiChatModelTableTitle": "Modèles de chat IA",
-    "chatAiChatModelTableDescription": "Configurez les modèles de chat IA avec des services IA spécifiques et des groupes d'accès."
+    "chatAiChatModelTableDescription": "Configurez les modèles de chat IA avec des services IA spécifiques et des groupes d'accès.",
+    "chatSearxngUrlTitle": "SearXNG URL",
+    "chatSearxngUrlDescription": "URL de l'instance SearXNG utilisée pour la recherche web IA."
   },
   "preview": {
     "image": "Aperçu de l'image",

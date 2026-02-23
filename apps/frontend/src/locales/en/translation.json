@@ -2180,7 +2180,9 @@
     "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
     "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat.",
     "chatAiChatModelTableTitle": "AI Chat Models",
-    "chatAiChatModelTableDescription": "Configure AI chat models with specific AI services and access groups."
+    "chatAiChatModelTableDescription": "Configure AI chat models with specific AI services and access groups.",
+    "chatSearxngUrlTitle": "SearXNG URL",
+    "chatSearxngUrlDescription": "URL of the SearXNG instance used for AI web search."
   },
   "mails": {
     "errors": {

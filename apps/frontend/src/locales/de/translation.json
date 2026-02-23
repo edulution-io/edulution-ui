@@ -2201,7 +2201,9 @@
     "chatAiChatGroupsTitle": "Berechtigte Gruppen (AI Chat)",
     "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben.",
     "chatAiChatModelTableTitle": "AI-Chat-Modelle",
-    "chatAiChatModelTableDescription": "Konfigurieren Sie AI-Chat-Modelle mit bestimmten AI-Diensten und Zugriffsgruppen."
+    "chatAiChatModelTableDescription": "Konfigurieren Sie AI-Chat-Modelle mit bestimmten AI-Diensten und Zugriffsgruppen.",
+    "chatSearxngUrlTitle": "SearXNG URL",
+    "chatSearxngUrlDescription": "URL der SearXNG-Instanz für die KI-Websuche."
   },
   "preview": {
     "image": "Bildvorschau",
