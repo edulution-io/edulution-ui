@@ -77,7 +77,7 @@ class FilesharingController {
     @Query('type') type: string,
     @Query('path') path: string,
     @Query('share') share: string,
-    @Headers('x-force-cleanup-cache') forceCleanupCacheHeader: string | undefined,
+    @Headers(HTTP_HEADERS.XForceCleanupCache) forceCleanupCacheHeader: string | undefined,
     @GetCurrentUsername() username: string,
   ) {
     const forceCleanupCache = forceCleanupCacheHeader === 'true';
