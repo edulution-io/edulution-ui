@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
-import getBulletinFormSchema from '@libs/bulletinBoard/constants/getBulletinFormSchema';
+import getBulletinFormSchema from '@/pages/BulletinBoard/getBulletinFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import BULLETIN_SAVE_MODE from '@libs/bulletinBoard/constants/bulletinSaveMode';
@@ -80,7 +80,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     category: selectedBulletinToEdit?.category || categoriesWithEditPermission[0],
     attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
     content: selectedBulletinToEdit?.content || '',
-    isActive: selectedBulletinToEdit?.isActive || true,
+    isActive: selectedBulletinToEdit?.isActive ?? true,
     isVisibleEndDate: getInitialEndDate(),
     isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate
       ? new Date(selectedBulletinToEdit.isVisibleStartDate)
@@ -98,7 +98,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   useEffect(() => {
     form.reset(initialFormValues);
-  }, [selectedBulletinToEdit, form]);
+  }, [selectedBulletinToEdit]);
 
   const handleSubmit = async () => {
     let success: boolean;

@@ -435,28 +435,29 @@ class NotificationsService {
       {
         $lookup: {
           from: this.userNotificationModel.collection.name,
-          localField: '_id',
-          foreignField: 'notificationId',
-          as: 'recipients',
+          let: { notificationId: '$_id' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$notificationId', '$$notificationId'] } } },
+            {
+              $group: {
+                _id: null,
+                recipientCount: { $sum: 1 },
+                readCount: { $sum: { $cond: [{ $ne: ['$readAt', null] }, 1, 0] } },
+              },
+            },
+          ],
+          as: 'stats',
         },
       },
       {
         $addFields: {
           sentStats: {
-            recipientCount: { $size: '$recipients' },
-            readCount: {
-              $size: {
-                $filter: {
-                  input: '$recipients',
-                  as: 'recipient',
-                  cond: { $ne: ['$$recipient.readAt', null] },
-                },
-              },
-            },
+            recipientCount: { $ifNull: [{ $arrayElemAt: ['$stats.recipientCount', 0] }, 0] },
+            readCount: { $ifNull: [{ $arrayElemAt: ['$stats.readCount', 0] }, 0] },
           },
         },
       },
-      { $project: { recipients: 0 } },
+      { $project: { stats: 0 } },
       {
         $facet: {
           data: [{ $skip: offset }, { $limit: limit }],

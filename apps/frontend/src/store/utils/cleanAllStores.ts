@@ -65,6 +65,7 @@ import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import useAppConfigUpdateCheckerStore from '@/pages/Settings/AppConfig/components/updateChecker/useAppConfigUpdateCheckerStore';
 import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
+import useNotificationStore from '@/store/useNotificationStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -119,6 +120,7 @@ const cleanAllStores = async () => {
   useWebdavShareConfigTableStore.getState().reset();
   useOpenFileDialogStore.getState().reset();
   useFilesystemStore.getState().reset();
+  useNotificationStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };

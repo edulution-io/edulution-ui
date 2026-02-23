@@ -434,7 +434,7 @@ class BulletinBoardService implements OnModuleInit {
           createdBy: NOTIFICATION_CREATOR_SYSTEM,
         };
 
-        await this.notificationService.notifyUsernames(
+        await this.notificationService.upsertNotificationForSource(
           invitedMembersList,
           {
             title,
