@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { Card } from '@/components/shared/Card';
-import { Button , cn } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import DropZone from '@/components/ui/DropZone';
 import { loadFontAwesomeIcon } from '@/utils/fontAwesomeIcons';
 import IconWrapper from '@/components/shared/IconWrapper';

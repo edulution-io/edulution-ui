@@ -25,7 +25,7 @@ import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui
 import Switch from '@/components/ui/Switch';
 import YamlEditor from '@/components/shared/YamlEditor';
 import FormField from '@/components/shared/FormField';
-import { Button , cn } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import type YamlDokument from '@libs/appconfig/types/yamlDokument';
 import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
