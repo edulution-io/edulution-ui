@@ -25,14 +25,13 @@ import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/pa
 import PARENT_CHILD_PAIRING_STATUS_FILTER_ALL from '@libs/parent-child-pairing/constants/parentChildPairingStatusFilterAll';
 import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
 import type FilterOption from '@libs/ui/types/filterOption';
-import { cn } from '@edulution-io/ui-kit';
-import { LinuxmusterIcon } from '@/assets/icons';
-import { DropdownSelect } from '@/components';
+import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import TableFilterDropdown from '@/components/ui/Table/TableFilterDropdown';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import SchoolSelectorDropdown from '@/pages/ClassManagement/components/SchoolSelectorDropdown';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useParentAssignmentStore from './useParentAssignmentStore';
@@ -46,14 +45,13 @@ const ParentAssignmentPage: React.FC = () => {
     isLoading,
     statusFilter,
     selectedRows,
-    fetchPairings,
     updateStatus,
     setStatusFilter,
     setSelectedSchool,
     setSelectedRows,
   } = useParentAssignmentStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
-  const { selectedSchool: classManagementSchool, schools, getSchools } = useClassManagementStore();
+  const classManagementSchool = useClassManagementStore((s) => s.selectedSchool);
   const eduApiToken = useUserStore((s) => s.eduApiToken);
 
   const userSchool = useMemo(() => {
@@ -64,27 +62,13 @@ const ParentAssignmentPage: React.FC = () => {
   useEffect(() => {
     if (!isAuthReady) return;
     if (isSuperAdmin) {
-      void getSchools();
       if (classManagementSchool) {
         setSelectedSchool(classManagementSchool);
       }
     } else if (userSchool) {
       setSelectedSchool(userSchool);
     }
-  }, [isSuperAdmin, isAuthReady, classManagementSchool, userSchool, setSelectedSchool, getSchools]);
-
-  const schoolOptions = useMemo(() => {
-    if (isSuperAdmin) {
-      return schools
-        .map((s) => ({ id: s.ou, name: s.displayName || s.ou }))
-        .sort((a, b) => a.name.localeCompare(b.name));
-    }
-    return userSchool ? [{ id: userSchool, name: userSchool }] : [];
-  }, [isSuperAdmin, schools, userSchool]);
-
-  useEffect(() => {
-    void fetchPairings();
-  }, [fetchPairings]);
+  }, [isSuperAdmin, isAuthReady, classManagementSchool, userSchool, setSelectedSchool]);
 
   const handleAccept = useCallback(
     (pairing: ParentChildPairingDto) => {
@@ -131,8 +115,7 @@ const ParentAssignmentPage: React.FC = () => {
     [statusFilter, setStatusFilter],
   );
 
-  const statusFilterCount = statusFilter !== PARENT_CHILD_PAIRING_STATUS_FILTER_ALL ? 1 : 0;
-  const activeFilterCount = statusFilterCount + 1;
+  const activeFilterCount = statusFilter !== PARENT_CHILD_PAIRING_STATUS_FILTER_ALL ? 1 : 0;
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
     (updaterOrValue: RowSelectionState | ((old: RowSelectionState) => RowSelectionState)) => {
@@ -149,7 +132,7 @@ const ParentAssignmentPage: React.FC = () => {
   const nativeAppHeader = {
     title: t('parentChildPairing.assignment'),
     description: t('parentChildPairing.assignmentDescription'),
-    iconSrc: LinuxmusterIcon,
+    iconSrc: faUserGroup,
   };
 
   return (
@@ -173,19 +156,7 @@ const ParentAssignmentPage: React.FC = () => {
                 activeFilterCount={activeFilterCount}
                 onResetFilters={handleResetFilters}
               />
-              <div className={cn('min-w-48', !isSuperAdmin && 'pointer-events-none opacity-70')}>
-                <DropdownSelect
-                  placeholder={t('classmanagement.selectSchool.placeholder')}
-                  options={schoolOptions}
-                  selectedVal={isSuperAdmin ? classManagementSchool : userSchool}
-                  handleChange={(value) => {
-                    if (isSuperAdmin) {
-                      useClassManagementStore.getState().setSelectedSchool(value);
-                    }
-                  }}
-                  translate={false}
-                />
-              </div>
+              {isSuperAdmin && <SchoolSelectorDropdown />}
             </>
           }
           activeFilterCount={activeFilterCount}

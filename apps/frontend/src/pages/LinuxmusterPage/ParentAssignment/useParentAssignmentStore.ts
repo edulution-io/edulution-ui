@@ -30,6 +30,7 @@ import PARENT_CHILD_PAIRING_QUERY_PARAMS from '@libs/parent-child-pairing/consta
 import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
 import PARENT_CHILD_PAIRING_STATUS_FILTER_ALL from '@libs/parent-child-pairing/constants/parentChildPairingStatusFilterAll';
 import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
+import ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
 
 interface ParentAssignmentStore {
   pairings: ParentChildPairingDto[];
@@ -41,18 +42,22 @@ interface ParentAssignmentStore {
   fetchPairings: () => Promise<void>;
   updateStatus: (id: string, status: string) => Promise<void>;
   updateStatusBulk: (ids: string[], status: string) => Promise<void>;
-  setStatusFilter: (status: string) => void;
+  setStatusFilter: (status: ParentChildPairingStatusType | '') => void;
   setSelectedSchool: (school: string) => void;
   setSelectedRows: (rows: RowSelectionState) => void;
   reset: () => void;
 }
 
-const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
-  pairings: [],
+const initialState = {
+  pairings: [] as ParentChildPairingDto[],
   isLoading: false,
   statusFilter: PARENT_CHILD_PAIRING_STATUS.PENDING,
   selectedSchool: '',
-  selectedRows: {},
+  selectedRows: {} as RowSelectionState,
+};
+
+const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
+  ...initialState,
 
   fetchPairings: async () => {
     set({ isLoading: true });
@@ -60,7 +65,7 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
       const { statusFilter, selectedSchool } = get();
       const params: Record<string, string> = {};
       if (statusFilter !== PARENT_CHILD_PAIRING_STATUS_FILTER_ALL) {
-        params.status = statusFilter;
+        params[PARENT_CHILD_PAIRING_QUERY_PARAMS.STATUS] = statusFilter;
       }
       if (selectedSchool) {
         params[PARENT_CHILD_PAIRING_QUERY_PARAMS.SCHOOL] = selectedSchool;
@@ -96,24 +101,24 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
 
   updateStatusBulk: async (ids: string[], status: string) => {
     set({ isLoading: true });
-    try {
-      const { lmnApiToken } = useLmnApiStore.getState();
-      await Promise.all(
-        ids.map((id) =>
-          eduApi.patch(
-            `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${id}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.STATUS}`,
-            { status },
-            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
-          ),
+    const { lmnApiToken } = useLmnApiStore.getState();
+    const results = await Promise.allSettled(
+      ids.map((id) =>
+        eduApi.patch(
+          `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${id}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.STATUS}`,
+          { status },
+          { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
         ),
-      );
+      ),
+    );
+    const failures = results.filter((r) => r.status === 'rejected');
+    if (failures.length > 0) {
+      toast.error(i18n.t('parentChildPairing.bulkUpdatePartialFailure', { count: failures.length }));
+    } else {
       toast.success(i18n.t('parentChildPairing.statusUpdated'));
-      set({ selectedRows: {} });
-      await get().fetchPairings();
-    } catch (error) {
-      handleApiError(error, set);
-      set({ isLoading: false });
     }
+    set({ selectedRows: {} });
+    await get().fetchPairings();
   },
 
   setStatusFilter: (statusFilter: string) => {
@@ -131,13 +136,7 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
   },
 
   reset: () => {
-    set({
-      pairings: [],
-      isLoading: false,
-      statusFilter: PARENT_CHILD_PAIRING_STATUS.PENDING,
-      selectedSchool: '',
-      selectedRows: {},
-    });
+    set(initialState);
   },
 }));
 

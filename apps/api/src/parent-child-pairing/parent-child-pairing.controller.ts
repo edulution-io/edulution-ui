@@ -75,11 +75,6 @@ class ParentChildPairingController {
     return this.parentChildPairingService.getEnrichedRelationships(username, groups, user.school);
   }
 
-  @Get()
-  async getRelationships(@GetCurrentUsername() username: string, @GetCurrentUserGroups() groups: string[]) {
-    return this.parentChildPairingService.getRelationships(username, groups);
-  }
-
   @Get(PARENT_CHILD_PAIRING_API_ENDPOINTS.ALL)
   @UseGuards(DynamicAppAccessGuard)
   async getAllParentChildPairings(

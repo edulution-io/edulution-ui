@@ -72,10 +72,9 @@ class ParentChildPairingService {
       const userKey = `${PARENT_CHILD_PAIRING_CACHE_CONFIG.USER_KEY_PREFIX}${existingCode}`;
       const userData = await this.cacheManager.get<CachedPairingUserData>(userKey);
 
-      return {
-        code: existingCode,
-        expiresAt: userData?.expiresAt ?? new Date().toISOString(),
-      };
+      if (userData) {
+        return { code: existingCode, expiresAt: userData.expiresAt };
+      }
     }
 
     return this.generateAndStoreCode(username, groups, school);
@@ -173,22 +172,6 @@ class ParentChildPairingService {
     );
 
     return ParentChildPairingService.toParentChildPairingDto(parentChildPairing);
-  }
-
-  async getRelationships(username: string, groups: string[]): Promise<ParentChildPairingDto[]> {
-    const isParent = getIsParent(groups);
-    const isStudent = groups.includes(GroupRoles.STUDENT);
-
-    const filter: Record<string, string> = {};
-    if (isParent) {
-      filter.parent = username;
-    } else if (isStudent) {
-      filter.student = username;
-    }
-
-    const pairings = await this.parentChildPairingModel.find(filter).exec();
-
-    return pairings.map((p) => ParentChildPairingService.toParentChildPairingDto(p));
   }
 
   async getEnrichedRelationships(
@@ -352,7 +335,7 @@ class ParentChildPairingService {
 
   async updateParentChildPairingStatus(
     pairingId: string,
-    status: string,
+    status: ParentChildPairingStatusType,
     performedBy: string,
     lmnApiToken: string,
   ): Promise<ParentChildPairingDto> {
@@ -360,7 +343,7 @@ class ParentChildPairingService {
 
     if (!pairing) {
       throw new CustomHttpException(
-        PARENT_CHILD_PAIRING_ERROR_MESSAGES.CODE_NOT_FOUND,
+        PARENT_CHILD_PAIRING_ERROR_MESSAGES.PAIRING_NOT_FOUND,
         HttpStatus.NOT_FOUND,
         undefined,
         ParentChildPairingService.name,
@@ -375,7 +358,7 @@ class ParentChildPairingService {
       await this.lmnApiService.deleteParentFromStudent(lmnApiToken, pairing.student, pairing.parent);
     }
 
-    pairing.status = status as ParentChildPairingStatusType;
+    pairing.status = status;
     pairing.logs.push({
       action: PARENT_CHILD_PAIRING_LOG_ACTION.STATUS_CHANGED,
       performedBy,

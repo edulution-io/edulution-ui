@@ -1612,20 +1612,24 @@
     "parentChildPairing": {
       "myParents": "Meine Eltern",
       "myChildren": "Meine Kinder",
-      "description": "Verbinde dein Konto mit deinen Eltern oder Kindern.",
-      "myCode": "Mein Pairing-Code",
-      "myCodeDescription": "Teile diesen Code mit der Person, mit der du dich verbinden möchtest. Der Code ist 5 Minuten gültig.",
+      "descriptionStudent": "Hier kannst du eine Verknüpfung mit deinen Eltern herstellen.",
+      "descriptionParent": "Hier kannst du eine Verknüpfung mit deinen Kindern herstellen.",
+      "myCode": "Mein Zuweisungs-Code",
+      "myCodeDescriptionStudent": "Teile diesen Code mit deinem Elternteil. Der Code ist 5 Minuten gültig.",
+      "myCodeDescriptionParent": "Teile diesen Code mit deinem Kind. Der Code ist 5 Minuten gültig.",
       "enterCode": "Code eingeben",
-      "enterCodeDescription": "Gib den Pairing-Code ein, den du von deinem Elternteil oder Kind erhalten hast.",
-      "enterCodePlaceholder": "Pairing-Code eingeben",
-      "submitCode": "Verbinden",
-      "relationships": "Verbindungen",
-      "noRelationships": "Noch keine Verbindungen.",
+      "enterCodeDescriptionStudent": "Gib den Zuweisungs-Code ein, den du von deinem Elternteil erhalten hast.",
+      "enterCodeDescriptionParent": "Gib den Zuweisungs-Code ein, den du von deinem Kind erhalten hast.",
+      "enterCodePlaceholder": "Zuweisungs-Code eingeben",
+      "submitCode": "Zuweisen",
+      "relationships": "Zuweisungen",
+      "noRelationships": "Noch keine Zuweisungen.",
       "statusPending": "Ausstehend",
       "statusAccepted": "Akzeptiert",
       "statusRejected": "Abgelehnt",
-      "pairingSuccess": "Verbindungsanfrage erfolgreich gesendet!",
-      "codeRefreshed": "Neuer Pairing-Code generiert.",
+      "pairingSuccess": "Zuweisungsanfrage erfolgreich gesendet!",
+      "regenerateCode": "Neu generieren",
+      "codeRefreshed": "Neuer Zuweisungs-Code generiert.",
       "codeExpired": "Der Code ist abgelaufen. Bitte einen neuen Code anfordern.",
       "parent": "Elternteil",
       "student": "Schüler",
@@ -1969,10 +1973,10 @@
     "description": "Verwalte deine Schulserver-Einstellungen und Benutzer."
   },
   "parentAssignment": {
-    "item": "{{count}} Zuordnung",
-    "items": "{{count}} Zuordnungen",
-    "rowSelected": "{{selected}} von {{total}} Zuordnung ausgewählt",
-    "rowsSelected": "{{selected}} von {{total}} Zuordnungen ausgewählt"
+    "item": "{{count}} Zuweisung",
+    "items": "{{count}} Zuweisungen",
+    "rowSelected": "{{selected}} von {{total}} Zuweisung ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Zuweisungen ausgewählt"
   },
   "parentChildPairing": {
     "assignment": "Elternzuweisung",
@@ -1991,12 +1995,13 @@
     "statusRejected": "Abgelehnt",
     "statusUpdated": "Status erfolgreich aktualisiert.",
     "errors": {
-      "codeNotFound": "Der Pairing-Code wurde nicht gefunden.",
-      "codeExpired": "Der Pairing-Code ist abgelaufen.",
-      "cannotPairWithSelf": "Du kannst dich nicht mit dir selbst verbinden.",
-      "pairingAlreadyExists": "Diese Verbindung existiert bereits.",
-      "invalidRole": "Deine Rolle erlaubt kein Pairing.",
-      "incompatibleRoles": "Du kannst dich mit keinem anderen Schüler verbinden."
+      "codeNotFound": "Der Zuweisungs-Code wurde nicht gefunden.",
+      "codeExpired": "Der Zuweisungs-Code ist abgelaufen.",
+      "cannotPairWithSelf": "Du kannst dich nicht dir selbst zuweisen.",
+      "pairingAlreadyExists": "Diese Zuweisung existiert bereits.",
+      "pairingNotFound": "Die Zuweisung wurde nicht gefunden.",
+      "invalidRole": "Deine Rolle erlaubt keine Zuweisung.",
+      "incompatibleRoles": "Du kannst keinem anderen Schüler zugewiesen werden."
     }
   },
   "whiteboard": {

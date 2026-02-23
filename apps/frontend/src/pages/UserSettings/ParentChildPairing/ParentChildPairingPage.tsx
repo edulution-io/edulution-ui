@@ -61,7 +61,9 @@ const ParentChildPairingPage: React.FC = () => {
   const title = isStudent
     ? t('usersettings.parentChildPairing.myParents')
     : t('usersettings.parentChildPairing.myChildren');
-  const description = t('usersettings.parentChildPairing.description');
+  const description = isStudent
+    ? t('usersettings.parentChildPairing.descriptionStudent')
+    : t('usersettings.parentChildPairing.descriptionParent');
 
   const pairingCode: string = pairingCodeResponse?.code ?? '';
 
@@ -127,7 +129,13 @@ const ParentChildPairingPage: React.FC = () => {
           label={t('usersettings.parentChildPairing.myCode')}
         >
           <div className="space-y-4">
-            <p className="text-muted-foreground">{t('usersettings.parentChildPairing.myCodeDescription')}</p>
+            <p className="text-muted-foreground">
+              {t(
+                isStudent
+                  ? 'usersettings.parentChildPairing.myCodeDescriptionStudent'
+                  : 'usersettings.parentChildPairing.myCodeDescriptionParent',
+              )}
+            </p>
             {pairingCode && qrValue ? (
               <div className="flex flex-col items-center justify-center gap-4">
                 <QRCodeDisplay
@@ -166,7 +174,13 @@ const ParentChildPairingPage: React.FC = () => {
           label={t('usersettings.parentChildPairing.enterCode')}
         >
           <div className="space-y-4">
-            <p className="text-muted-foreground">{t('usersettings.parentChildPairing.enterCodeDescription')}</p>
+            <p className="text-muted-foreground">
+              {t(
+                isStudent
+                  ? 'usersettings.parentChildPairing.enterCodeDescriptionStudent'
+                  : 'usersettings.parentChildPairing.enterCodeDescriptionParent',
+              )}
+            </p>
             <div className="flex items-center gap-3">
               <Input
                 type="text"

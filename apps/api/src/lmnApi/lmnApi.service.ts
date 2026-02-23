@@ -824,13 +824,9 @@ class LmnApiService {
     }
   }
 
-  public async addParentToStudent(
-    lmnApiToken: string,
-    studentUsername: string,
-    parentUsername: string,
-  ): Promise<unknown> {
+  public async addParentToStudent(lmnApiToken: string, studentUsername: string, parentUsername: string): Promise<void> {
     try {
-      const response = await this.request<unknown>(
+      await this.request<void>(
         HttpMethods.POST,
         `${USERS_LMN_API_ENDPOINT}/${studentUsername}/parents`,
         { users: [parentUsername] },
@@ -838,7 +834,6 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         },
       );
-      return response.data;
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.AddParentToStudentFailed,
@@ -853,9 +848,9 @@ class LmnApiService {
     lmnApiToken: string,
     studentUsername: string,
     parentUsername: string,
-  ): Promise<unknown> {
+  ): Promise<void> {
     try {
-      const response = await this.request<unknown>(
+      await this.request<void>(
         HttpMethods.DELETE,
         `${USERS_LMN_API_ENDPOINT}/${studentUsername}/parents`,
         { users: [parentUsername] },
@@ -863,7 +858,6 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         },
       );
-      return response.data;
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.DeleteParentFromStudentFailed,

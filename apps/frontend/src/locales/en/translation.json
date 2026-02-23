@@ -1609,20 +1609,24 @@
     "parentChildPairing": {
       "myParents": "My Parents",
       "myChildren": "My Children",
-      "description": "Connect your account with your parents or children.",
-      "myCode": "My Pairing Code",
-      "myCodeDescription": "Share this code with the person you want to connect with. The code is valid for 5 minutes.",
+      "descriptionStudent": "Here you can create a link with your parents.",
+      "descriptionParent": "Here you can create a link with your children.",
+      "myCode": "My Assignment Code",
+      "myCodeDescriptionStudent": "Share this code with your parent. The code is valid for 5 minutes.",
+      "myCodeDescriptionParent": "Share this code with your child. The code is valid for 5 minutes.",
       "enterCode": "Enter Code",
-      "enterCodeDescription": "Enter the pairing code you received from your parent or child.",
-      "enterCodePlaceholder": "Enter pairing code",
-      "submitCode": "Connect",
-      "relationships": "Connections",
-      "noRelationships": "No connections yet.",
+      "enterCodeDescriptionStudent": "Enter the assignment code you received from your parent.",
+      "enterCodeDescriptionParent": "Enter the assignment code you received from your child.",
+      "enterCodePlaceholder": "Enter assignment code",
+      "submitCode": "Assign",
+      "relationships": "Assignments",
+      "noRelationships": "No assignments yet.",
       "statusPending": "Pending",
       "statusAccepted": "Accepted",
       "statusRejected": "Rejected",
-      "pairingSuccess": "Connection request sent successfully!",
-      "codeRefreshed": "New pairing code generated.",
+      "pairingSuccess": "Assignment request sent successfully!",
+      "regenerateCode": "Regenerate",
+      "codeRefreshed": "New assignment code generated.",
       "codeExpired": "The code has expired. Please request a new code.",
       "parent": "Parent",
       "student": "Student",
@@ -1632,7 +1636,7 @@
       "reject": "Reject",
       "statusUpdated": "Status updated successfully.",
       "assignment": "Parent Assignment",
-      "assignmentDescription": "Manage parent-student pairing requests.",
+      "assignmentDescription": "Manage parent-student assignments.",
       "filterPlaceholder": "Search by parent or student..."
     },
     "addTotp": {
@@ -1966,14 +1970,14 @@
     "description": "Manage your school server settings and users."
   },
   "parentAssignment": {
-    "item": "{{count}} pairing",
-    "items": "{{count}} pairings",
-    "rowSelected": "{{selected}} of {{total}} pairing selected",
-    "rowsSelected": "{{selected}} of {{total}} pairings selected"
+    "item": "{{count}} assignment",
+    "items": "{{count}} assignments",
+    "rowSelected": "{{selected}} of {{total}} assignment selected",
+    "rowsSelected": "{{selected}} of {{total}} assignments selected"
   },
   "parentChildPairing": {
     "assignment": "Parent Assignment",
-    "assignmentDescription": "Manage parent-student pairing requests.",
+    "assignmentDescription": "Manage parent-student assignments.",
     "filterPlaceholder": "Search by parent or student...",
     "parent": "Parent",
     "student": "Student",
@@ -1988,12 +1992,13 @@
     "statusRejected": "Rejected",
     "statusUpdated": "Status updated successfully.",
     "errors": {
-      "codeNotFound": "The pairing code was not found.",
-      "codeExpired": "The pairing code has expired.",
-      "cannotPairWithSelf": "You cannot pair with yourself.",
-      "pairingAlreadyExists": "This pairing already exists.",
-      "invalidRole": "Your role does not allow pairing.",
-      "incompatibleRoles": "You cannot pair another student."
+      "codeNotFound": "The assignment code was not found.",
+      "codeExpired": "The assignment code has expired.",
+      "cannotPairWithSelf": "You cannot assign yourself.",
+      "pairingAlreadyExists": "This assignment already exists.",
+      "pairingNotFound": "The assignment was not found.",
+      "invalidRole": "Your role does not allow assignments.",
+      "incompatibleRoles": "You cannot be assigned to another student."
     }
   },
   "whiteboard": {

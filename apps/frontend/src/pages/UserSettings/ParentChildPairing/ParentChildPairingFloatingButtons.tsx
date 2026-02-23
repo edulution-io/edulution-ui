@@ -18,19 +18,29 @@
  */
 
 import React from 'react';
+import { t } from 'i18next';
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import useParentChildPairingStore from './useParentChildPairingStore';
 
 const ParentChildPairingFloatingButtons: React.FC = () => {
-  const { refreshPairingCode } = useParentChildPairingStore();
+  const { fetchPairingCode, fetchRelationships, refreshPairingCode } = useParentChildPairingStore();
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
       ReloadButton(() => {
-        void refreshPairingCode();
+        void fetchPairingCode();
+        void fetchRelationships();
       }),
+      {
+        icon: faRotateRight,
+        text: t('usersettings.parentChildPairing.regenerateCode'),
+        onClick: () => {
+          void refreshPairingCode();
+        },
+      },
     ],
     keyPrefix: 'parent-child-pairing-page-floating-button_',
   };
