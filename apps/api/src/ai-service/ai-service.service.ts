@@ -144,7 +144,7 @@ class AiServiceService {
 
     const openAiBaseUrl = provider === AI_PROVIDERS.OLLAMA ? `${baseUrl}/v1` : baseUrl;
     const openaiCompatible = createOpenAI({ baseURL: openAiBaseUrl, apiKey });
-    return openaiCompatible(model);
+    return openaiCompatible.chat(model);
   }
 }
 
