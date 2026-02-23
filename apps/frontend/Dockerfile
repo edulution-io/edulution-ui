@@ -19,7 +19,6 @@ ENV BUILD_NUMBER=$BUILD_NUMBER
 WORKDIR /usr/share/nginx/html
 
 COPY dist/apps/frontend .
-RUN echo "{\"version\":\"${APP_VERSION:-unknown}\",\"commitSha\":\"${COMMIT_SHA:-unknown}\",\"buildDate\":\"${BUILD_DATE:-unknown}\",\"buildNumber\":\"${BUILD_NUMBER:-unknown}\"}" > version.json
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
