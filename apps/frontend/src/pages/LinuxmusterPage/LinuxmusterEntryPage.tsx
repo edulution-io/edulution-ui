@@ -24,6 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import {
   faChalkboardTeacher,
+  faCircleInfo,
   faGlobe,
   faUserGraduate,
   faUserPlus,
@@ -34,6 +35,7 @@ import {
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { Card } from '@/components/shared/Card';
 import {
+  LINUXMUSTER_INFO_PATH,
   USER_MANAGEMENT_EXTRASTUDENTS_PATH,
   USER_MANAGEMENT_GLOBALADMINS_PATH,
   USER_MANAGEMENT_PARENTS_PATH,
@@ -43,9 +45,11 @@ import {
   USER_MANAGEMENT_TEACHERS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import isLmnVersionSupported from '@libs/lmnApi/utils/isLmnVersionSupported';
 import { LinuxmusterIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import useRegisterUserManagementSections from './UserManagement/useRegisterUserManagementSections';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import LmnVersionWarning from './components/LmnVersionWarning';
 
 interface UserTypeCard {
   labelKey: string;
@@ -111,9 +115,9 @@ const LinuxmusterEntryPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isLmn } = useDeploymentTarget();
+  const lmnVersions = useLmnApiStore((s) => s.lmnVersions);
 
-  useRegisterUserManagementSections();
-
+  const versionSupported = !isLmn || isLmnVersionSupported(lmnVersions['linuxmuster-api7']);
   const visibleCards = isLmn ? USER_TYPE_CARDS : USER_TYPE_CARDS.filter((card) => !card.lmnOnly);
 
   const nativeAppHeader = {
@@ -125,26 +129,56 @@ const LinuxmusterEntryPage: React.FC = () => {
   return (
     <PageLayout nativeAppHeader={nativeAppHeader}>
       <div className="p-4">
-        <h2 className="mb-4 text-xl font-semibold">{t('linuxmuster.userManagement')}</h2>
-        <div className="flex flex-wrap gap-2">
-          {visibleCards.map((card) => (
-            <button
-              key={card.labelKey}
-              type="button"
-              onClick={() => navigate(`/${card.path}/${card.defaultTab}`)}
-            >
-              <Card variant="tile">
-                <div className="m-4 flex flex-col items-center">
-                  <FontAwesomeIcon
-                    icon={card.icon}
-                    className="h-12 w-12 md:h-14 md:w-14"
-                  />
-                  <p>{t(card.labelKey)}</p>
-                </div>
-              </Card>
-            </button>
-          ))}
-        </div>
+        {!versionSupported && (
+          <div className="mb-6">
+            <LmnVersionWarning />
+          </div>
+        )}
+        {versionSupported && (
+          <>
+            <h2 className="mb-4 text-xl font-semibold">{t('linuxmuster.userManagement')}</h2>
+            <div className="flex flex-wrap gap-2">
+              {visibleCards.map((card) => (
+                <button
+                  key={card.labelKey}
+                  type="button"
+                  onClick={() => navigate(`/${card.path}/${card.defaultTab}`)}
+                >
+                  <Card variant="tile">
+                    <div className="m-4 flex flex-col items-center">
+                      <FontAwesomeIcon
+                        icon={card.icon}
+                        className="h-12 w-12 md:h-14 md:w-14"
+                      />
+                      <p>{t(card.labelKey)}</p>
+                    </div>
+                  </Card>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+        {isLmn && (
+          <>
+            <h2 className="mb-4 mt-8 text-xl font-semibold">{t('linuxmuster.system')}</h2>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => navigate(`/${LINUXMUSTER_INFO_PATH}`)}
+              >
+                <Card variant="tile">
+                  <div className="m-4 flex flex-col items-center">
+                    <FontAwesomeIcon
+                      icon={faCircleInfo}
+                      className="h-12 w-12 md:h-14 md:w-14"
+                    />
+                    <p>{t('linuxmuster.versionInfo')}</p>
+                  </div>
+                </Card>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </PageLayout>
   );
