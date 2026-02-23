@@ -20,11 +20,15 @@
 import type { DeviceColumnKey } from '@libs/deviceManagement/types/deviceColumnConfig';
 import type DeviceRow from '@libs/deviceManagement/types/deviceRow';
 
-const DEVICE_TEXT_FIELD_REGEX = /^[a-zA-Z0-9äöüÄÖÜß\-. ]+$/;
+const HOST_REGEX = /^[a-zA-Z0-9-]+$/;
+const MAX_HOST_LENGTH = 15;
+const GROUP_REGEX = /^[a-zA-Z0-9+\-_]+$/i;
 const MAC_ADDRESS_REGEX = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/;
 const IP_ADDRESS_REGEX = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
 
-const isValidDeviceTextField = (value: string): boolean => DEVICE_TEXT_FIELD_REGEX.test(value);
+const isValidHost = (value: string): boolean => HOST_REGEX.test(value) && value.length <= MAX_HOST_LENGTH;
+
+const isValidGroup = (value: string): boolean => GROUP_REGEX.test(value);
 
 const isValidMacAddress = (value: string): boolean => MAC_ADDRESS_REGEX.test(value);
 
@@ -42,9 +46,11 @@ const DROPDOWN_KEYS: Set<DeviceColumnKey> = new Set(['sophomorixRole', 'pxeFlag'
 const validateDeviceCell = (columnKey: DeviceColumnKey, value: string): boolean => {
   if (DROPDOWN_KEYS.has(columnKey)) return true;
   if (!value) return false;
+  if (columnKey === 'room' || columnKey === 'hostname') return isValidHost(value);
+  if (columnKey === 'group') return isValidGroup(value);
   if (columnKey === 'mac') return isValidMacAddress(value);
   if (columnKey === 'ip') return isValidIpAddress(value);
-  return isValidDeviceTextField(value);
+  return true;
 };
 
 const UNIQUE_KEYS: DeviceColumnKey[] = ['hostname', 'mac', 'ip'];

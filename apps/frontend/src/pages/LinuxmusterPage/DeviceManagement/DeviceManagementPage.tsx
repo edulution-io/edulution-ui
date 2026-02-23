@@ -60,7 +60,7 @@ const DeviceManagementPage: React.FC = () => {
   const prevSchoolRef = useRef(effectiveSchool);
 
   useEffect(() => {
-    setSections([{ id: DEVICE_MANAGEMENT_LOCATION, label: t('deviceManagement.title') }]);
+    setSections([{ id: DEVICE_MANAGEMENT_LOCATION, label: t('deviceManagement.title') }], DEVICE_MANAGEMENT_LOCATION);
     return () => setSections([]);
   }, [setSections, t]);
 
