@@ -767,7 +767,7 @@
     "globalbindusers": "Globale Binduser",
     "tabs": {
       "table": "Benutzer",
-      "list": "Listenverwaltung"
+      "list": "Import"
     },
     "filterUsers": "Benutzer filtern...",
     "loginClass": "Login / Klasse",
@@ -880,6 +880,7 @@
     "apply": "Anwenden",
     "applyConfirmTitle": "Geräteliste anwenden",
     "applyConfirmMessage": "Die Geräteliste wird gespeichert und sofort importiert. Möchten Sie fortfahren?",
+    "applyStarted": "Geräteliste wird angewendet...",
     "applyCompleted": "Geräteliste erfolgreich angewendet",
     "listSaved": "Geräteliste erfolgreich gespeichert",
     "validationFailed": "Bitte korrigieren Sie alle ungültigen Felder vor dem Speichern",
@@ -913,7 +914,7 @@
     "pxeFlags": {
       "0": "Kein PXE",
       "1": "Linbo-PXE",
-      "2": "Linbo-PXE +",
+      "2": "Linbo-PXE + OPSI-PXE",
       "3": "OPSI-PXE"
     },
     "csv": {

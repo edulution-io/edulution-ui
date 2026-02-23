@@ -24,6 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import {
   faChalkboardTeacher,
+  faDesktop,
   faGlobe,
   faUserGraduate,
   faUserPlus,
@@ -43,6 +44,7 @@ import {
   USER_MANAGEMENT_TEACHERS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import { DEVICE_MANAGEMENT_PATH } from '@libs/deviceManagement/constants/deviceManagementPaths';
 import { LinuxmusterIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 
@@ -141,6 +143,23 @@ const LinuxmusterEntryPage: React.FC = () => {
               </Card>
             </button>
           ))}
+        </div>
+        <h2 className="mb-4 mt-8 text-xl font-semibold">{t('deviceManagement.title')}</h2>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/${DEVICE_MANAGEMENT_PATH}`)}
+          >
+            <Card variant="tile">
+              <div className="m-4 flex flex-col items-center">
+                <FontAwesomeIcon
+                  icon={faDesktop}
+                  className="h-12 w-12 md:h-14 md:w-14"
+                />
+                <p>{t('deviceManagement.title')}</p>
+              </div>
+            </Card>
+          </button>
         </div>
       </div>
     </PageLayout>

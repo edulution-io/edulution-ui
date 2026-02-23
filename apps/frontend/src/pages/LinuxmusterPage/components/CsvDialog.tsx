@@ -23,30 +23,27 @@ import { Button } from '@edulution-io/ui-kit';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DropZone from '@/components/ui/DropZone';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
-import { entriesToCsv, csvToEntries } from '@libs/userManagement/utils/csvUtils';
-import useUserManagementStore from '../../useUserManagementStore';
 
 interface CsvDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  managementList: ManagementListType;
-  school: string;
+  title: string;
+  initialCsv: string;
+  onSave: (csvText: string) => void;
+  downloadFilename: string;
 }
 
-const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, managementList, school }) => {
+const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, title, initialCsv, onSave, downloadFilename }) => {
   const { t } = useTranslation();
-  const { getListData, setManagementListEntries } = useUserManagementStore();
-  const { managementListEntries } = getListData(managementList);
   const [csvText, setCsvText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
-      setCsvText(entriesToCsv(managementListEntries, managementList));
+      setCsvText(initialCsv);
     }
-  }, [isOpen, managementListEntries, managementList]);
+  }, [isOpen, initialCsv]);
 
   const handleScroll = useCallback(() => {
     if (textareaRef.current && lineNumbersRef.current) {
@@ -68,7 +65,7 @@ const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, managementList, 
   }, []);
 
   const handleSave = () => {
-    setManagementListEntries(managementList, csvToEntries(csvText, managementList));
+    onSave(csvText);
     onClose();
   };
 
@@ -77,7 +74,7 @@ const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, managementList, 
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${managementList}.csv`;
+    link.download = downloadFilename;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
   };
@@ -119,7 +116,7 @@ const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, managementList, 
         size="lg"
         onClick={handleDownload}
       >
-        {t('usermanagement.csv.download')}
+        {t('common.download')}
       </Button>
       <DialogFooterButtons
         handleClose={onClose}
@@ -132,7 +129,7 @@ const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, managementList, 
     <AdaptiveDialog
       isOpen={isOpen}
       handleOpenChange={onClose}
-      title={`/etc/linuxmuster/sophomorix/${school}/${managementList}.csv`}
+      title={title}
       body={body}
       footer={footer}
       desktopContentClassName="max-w-4xl"

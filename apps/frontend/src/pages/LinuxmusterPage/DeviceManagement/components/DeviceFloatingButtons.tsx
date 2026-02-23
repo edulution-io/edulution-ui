@@ -20,16 +20,22 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { faPlus, faSave, faCheck, faFileCsv, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faFileCsv, faPlus, faRotateLeft, faSave } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
-import { deviceEntriesToRows, createEmptyDeviceEntry } from '@libs/deviceManagement/utils/deviceCsvUtils';
-import { validateDeviceRows, findDuplicates } from '@libs/deviceManagement/utils/deviceValidation';
+import {
+  createEmptyDeviceEntry,
+  csvToDeviceEntries,
+  deviceEntriesToCsv,
+  deviceEntriesToRows,
+} from '@libs/deviceManagement/utils/deviceCsvUtils';
+import { validateDeviceRows } from '@libs/deviceManagement/utils/deviceValidation';
+import CsvDialog from '@/pages/LinuxmusterPage/components/CsvDialog';
 import useDeviceManagementStore from '../useDeviceManagementStore';
-import DeviceCsvDialog from './DeviceCsvDialog';
 
 interface DeviceFloatingButtonsProps {
   school: string;
@@ -55,11 +61,6 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
       toast.error(t('deviceManagement.validationFailed'));
       return false;
     }
-    const duplicates = findDuplicates(rows, new Set<string>());
-    if (duplicates.size > 0) {
-      toast.error(t('deviceManagement.validationFailed'));
-      return false;
-    }
     return true;
   };
 
@@ -75,8 +76,9 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
   };
 
   const handleConfirmApply = async () => {
-    setIsApplyConfirmOpen(false);
+    toast.info(t('deviceManagement.applyStarted'));
     await applyDevices(school, getFilteredEntries());
+    setIsApplyConfirmOpen(false);
     await fetchDevices(school, true);
   };
 
@@ -139,27 +141,30 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
     <>
       <FloatingButtonsBar config={config} />
       {school ? (
-        <DeviceCsvDialog
+        <CsvDialog
           isOpen={isCsvDialogOpen}
           onClose={() => setIsCsvDialogOpen(false)}
-          school={school}
-          entries={getFilteredEntries()}
-          onSave={handleCsvSave}
+          title={`/etc/linuxmuster/sophomorix/${school}/devices.csv`}
+          initialCsv={deviceEntriesToCsv(getFilteredEntries())}
+          onSave={(csvText) => handleCsvSave(csvToDeviceEntries(csvText))}
+          downloadFilename="devices.csv"
         />
       ) : null}
       <AdaptiveDialog
         isOpen={isApplyConfirmOpen}
         handleOpenChange={() => setIsApplyConfirmOpen(false)}
         title={t('deviceManagement.applyConfirmTitle')}
-        body={<p>{t('deviceManagement.applyConfirmMessage')}</p>}
+        body={isApplying ? <CircleLoader className="mx-auto" /> : <p>{t('deviceManagement.applyConfirmMessage')}</p>}
         footer={
-          <DialogFooterButtons
-            handleClose={() => setIsApplyConfirmOpen(false)}
-            handleSubmit={() => {
-              void handleConfirmApply();
-            }}
-            submitButtonText="deviceManagement.apply"
-          />
+          isApplying ? undefined : (
+            <DialogFooterButtons
+              handleClose={() => setIsApplyConfirmOpen(false)}
+              handleSubmit={() => {
+                void handleConfirmApply();
+              }}
+              submitButtonText="deviceManagement.apply"
+            />
+          )
         }
       />
     </>

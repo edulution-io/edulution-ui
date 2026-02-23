@@ -354,8 +354,8 @@ export class LmnApiController {
   }
 
   @Get('devices/:school/import-devices')
-  async importDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
-    return this.lmnApiService.importDevices(lmnApiToken, school);
+  async getImportDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getImportDevices(lmnApiToken, school);
   }
 
   @Get('listmanagement/:school/:managementList')

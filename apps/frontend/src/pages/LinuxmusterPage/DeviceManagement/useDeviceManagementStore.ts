@@ -148,6 +148,7 @@ const useDeviceManagementStore = create<DeviceManagementStore>()(
 
           await eduApi.get(`${DEVICES}/${school}/import-devices`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            timeout: 130000,
           });
           toast.success(i18n.t('deviceManagement.applyCompleted'));
         } catch (error) {

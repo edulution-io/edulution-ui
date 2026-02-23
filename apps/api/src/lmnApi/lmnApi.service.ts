@@ -1038,13 +1038,11 @@ class LmnApiService {
       return clean;
     });
     const payload = { data: sanitized };
-    Logger.log(`saveDevices -> POST ${endpoint}, payload: ${JSON.stringify(payload)}`, LmnApiService.name);
     try {
       const response = await this.request<ListManagementEntry[]>(HttpMethods.POST, endpoint, payload, {
         headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
       });
 
-      Logger.log(`saveDevices -> response status: ${response.status}`, LmnApiService.name);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -1064,7 +1062,7 @@ class LmnApiService {
     }
   }
 
-  public async importDevices(lmnApiToken: string, school: string): Promise<void> {
+  public async getImportDevices(lmnApiToken: string, school: string): Promise<void> {
     try {
       await this.request<unknown>(HttpMethods.GET, `${DEVICES_LMN_API_ENDPOINT}/${school}/import-devices`, undefined, {
         headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },

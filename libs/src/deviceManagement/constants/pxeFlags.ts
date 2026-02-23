@@ -20,8 +20,8 @@
 const PXE_FLAGS = [
   { id: '0', name: 'deviceManagement.pxeFlags.0' },
   { id: '1', name: 'deviceManagement.pxeFlags.1' },
-  { id: '2', name: 'deviceManagement.pxeFlags.2' },
-  { id: '3', name: 'deviceManagement.pxeFlags.3' },
+  { id: '2', name: 'deviceManagement.pxeFlags.2', disabled: true },
+  { id: '3', name: 'deviceManagement.pxeFlags.3', disabled: true },
 ] as const;
 
 export default PXE_FLAGS;

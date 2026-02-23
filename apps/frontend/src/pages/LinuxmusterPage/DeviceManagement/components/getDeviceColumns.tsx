@@ -58,7 +58,7 @@ const getDeviceColumns = ({
     accessorKey: config.key,
     header: ({ column }) => <SortableHeader column={column} />,
     meta: { translationId: config.translationKey },
-    size: 50,
+    size: 35,
     cell: ({ row, getValue }) => {
       const value = (getValue() as string) || '';
       const isNew = isNewRow(row.id);
@@ -77,15 +77,18 @@ const getDeviceColumns = ({
         const dropdownOptions = config.key === 'sophomorixRole' ? [...SOPHOMORIX_ROLES] : [...PXE_FLAGS];
 
         return (
-          <div className={cn('rounded-md border', borderColorClass)}>
-            <DropdownSelect
-              options={dropdownOptions}
-              selectedVal={value}
-              handleChange={(val) => onCellChange(row.index, config.key, val)}
-              classname="h-8"
-              translate
-            />
-          </div>
+          <DropdownSelect
+            options={dropdownOptions}
+            selectedVal={value}
+            handleChange={(val) => onCellChange(row.index, config.key, val)}
+            classname="h-8"
+            inputClassName={cn(
+              'h-8 border bg-transparent text-sm hover:bg-white focus:bg-white dark:bg-transparent dark:hover:bg-accent dark:focus:bg-accent',
+              borderColorClass,
+            )}
+            menuClassName="text-sm"
+            translate
+          />
         );
       }
 
@@ -107,7 +110,7 @@ const getDeviceColumns = ({
   cols.push({
     id: 'actions',
     header: () => null,
-    size: 20,
+    size: 30,
     enableHiding: false,
     cell: ({ row }) => {
       const { t } = useTranslation();

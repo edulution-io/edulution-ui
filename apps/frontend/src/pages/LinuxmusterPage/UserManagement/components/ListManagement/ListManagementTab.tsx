@@ -28,8 +28,9 @@ import type ListManagementRow from '@libs/userManagement/types/listManagementRow
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
 import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
 import { entriesToRows, rowsToEntries } from '@libs/userManagement/utils/csvUtils';
+import EditableTable, { type CellCallbacks } from '@/pages/LinuxmusterPage/components/EditableTable';
 import useUserManagementStore from '../../useUserManagementStore';
-import ListManagementTable from './ListManagementTable';
+import getListManagementColumns from './getListManagementColumns';
 
 interface ListManagementTabProps {
   userType: UserType;
@@ -140,6 +141,15 @@ const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
     return { newRowIds: newIds, changedCells: changed };
   }, [rows, managementListEntries, savedListEntries, managementList, deletedIndexSet]);
 
+  const getColumns = useCallback(
+    (callbacks: CellCallbacks) =>
+      getListManagementColumns({
+        managementList: managementList!,
+        ...callbacks,
+      }),
+    [managementList],
+  );
+
   if (!managementList) {
     return (
       <div className="flex h-64 items-center justify-center text-muted-foreground">
@@ -151,14 +161,14 @@ const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
   return (
     <div className="flex h-full flex-col">
       {isLoadingList || isBackgroundFetchingList ? <HorizontalLoader /> : <div className="h-1" />}
-      <ListManagementTable
+      <EditableTable<ListManagementRow>
         rows={rows}
-        managementList={managementList}
         newRowIds={newRowIds}
         changedCells={changedCells}
         deletedRowIds={deletedRowIds}
         onRowsChange={handleRowsChange}
         onDeleteRow={handleDeleteRow}
+        getColumns={getColumns}
         initialSorting={[{ id: LIST_MANAGEMENT_COLUMNS[managementList][0].key, desc: false }]}
       />
     </div>

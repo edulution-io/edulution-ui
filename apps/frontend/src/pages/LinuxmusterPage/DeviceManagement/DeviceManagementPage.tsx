@@ -32,8 +32,9 @@ import DEVICE_COLUMNS from '@libs/deviceManagement/constants/deviceColumns';
 import { deviceEntriesToRows, deviceRowsToEntries } from '@libs/deviceManagement/utils/deviceCsvUtils';
 import { findDuplicates } from '@libs/deviceManagement/utils/deviceValidation';
 import type DeviceRow from '@libs/deviceManagement/types/deviceRow';
+import EditableTable, { type CellCallbacks } from '@/pages/LinuxmusterPage/components/EditableTable';
 import useDeviceManagementStore from './useDeviceManagementStore';
-import DeviceTable from './components/DeviceTable';
+import getDeviceColumns from './components/getDeviceColumns';
 import DeviceFloatingButtons from './components/DeviceFloatingButtons';
 
 const DeviceManagementPage: React.FC = () => {
@@ -158,6 +159,21 @@ const DeviceManagementPage: React.FC = () => {
 
   const duplicateCells = useMemo(() => findDuplicates(rows, deletedRowIds), [rows, deletedRowIds]);
 
+  const duplicateCellsRef = useRef(duplicateCells);
+  duplicateCellsRef.current = duplicateCells;
+  const handleDuplicateRowRef = useRef(handleDuplicateRow);
+  handleDuplicateRowRef.current = handleDuplicateRow;
+
+  const getColumns = useCallback(
+    (callbacks: CellCallbacks) =>
+      getDeviceColumns({
+        ...callbacks,
+        isDuplicate: (rowId: string, columnKey: string) => duplicateCellsRef.current.has(`${rowId}-${columnKey}`),
+        onDuplicateRow: (rowIndex: number) => handleDuplicateRowRef.current(rowIndex),
+      }),
+    [],
+  );
+
   const nativeAppHeader = {
     title: t('deviceManagement.title'),
     description: t('deviceManagement.description'),
@@ -174,15 +190,14 @@ const DeviceManagementPage: React.FC = () => {
         </div>
         {isLoading || isBackgroundFetching ? <HorizontalLoader /> : <div className="h-1" />}
         <div className="flex-1 overflow-hidden">
-          <DeviceTable
+          <EditableTable<DeviceRow>
             rows={rows}
             newRowIds={newRowIds}
             changedCells={changedCells}
             deletedRowIds={deletedRowIds}
-            duplicateCells={duplicateCells}
             onRowsChange={handleRowsChange}
             onDeleteRow={handleDeleteRow}
-            onDuplicateRow={handleDuplicateRow}
+            getColumns={getColumns}
             initialSorting={[{ id: DEVICE_COLUMNS[0].key, desc: false }]}
           />
         </div>

@@ -766,7 +766,7 @@
     "globalbindusers": "Global Bind Users",
     "tabs": {
       "table": "Users",
-      "list": "List Management"
+      "list": "Import"
     },
     "filterUsers": "Filter users...",
     "loginClass": "Login / Class",
@@ -879,6 +879,7 @@
     "apply": "Apply",
     "applyConfirmTitle": "Apply device list",
     "applyConfirmMessage": "The device list will be saved and immediately imported. Do you want to continue?",
+    "applyStarted": "Applying device list...",
     "applyCompleted": "Device list applied successfully",
     "listSaved": "Device list saved successfully",
     "validationFailed": "Please fix all invalid fields before saving",
@@ -912,7 +913,7 @@
     "pxeFlags": {
       "0": "No PXE",
       "1": "Linbo-PXE",
-      "2": "Linbo-PXE +",
+      "2": "Linbo-PXE + OPSI-PXE",
       "3": "OPSI-PXE"
     },
     "csv": {
