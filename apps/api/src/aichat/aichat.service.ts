@@ -93,7 +93,7 @@ class AiChatService {
     username: string,
     ldapGroups?: string[],
     modelConfigId?: string,
-  ) {
+  ): Promise<{ result: ReturnType<typeof streamText>; conversationId: string; username: string }> {
     await this.getOwnedConversation(conversationId, username);
 
     const lastUserMessage = [...messages].reverse().find((message) => message.role === CHAT_ROLES.USER);

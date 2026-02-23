@@ -112,6 +112,7 @@ class AiChatController {
     );
 
     result.pipeUIMessageStreamToResponse(res, {
+      sendReasoning: true,
       onFinish: async ({ responseMessage }) => {
         const textContent = extractTextFromParts(responseMessage.parts);
 
