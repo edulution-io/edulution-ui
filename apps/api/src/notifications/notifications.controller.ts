@@ -59,6 +59,24 @@ class NotificationsController {
     return { count };
   }
 
+  @Get('sent')
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  @ApiQuery({ name: 'offset', required: false, type: Number, example: 0 })
+  async getSent(
+    @GetCurrentUsername() username: string,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+  ) {
+    const sanitizedLimit = Math.min(50, Math.max(1, limit));
+    const sanitizedOffset = Math.max(0, offset);
+    return this.notificationsService.getSentNotifications(username, sanitizedLimit, sanitizedOffset);
+  }
+
+  @Get('sent/:id/recipients')
+  async getSentNotificationRecipients(@Param('id') notificationId: string, @GetCurrentUsername() username: string) {
+    return this.notificationsService.getSentNotificationRecipients(notificationId, username);
+  }
+
   @Patch(':id')
   async markAsRead(@Param('id') userNotificationId: string, @GetCurrentUsername() username: string) {
     return this.notificationsService.markAsRead(userNotificationId, username);
@@ -67,6 +85,11 @@ class NotificationsController {
   @Patch()
   async markAllAsRead(@GetCurrentUsername() username: string) {
     return this.notificationsService.markAllAsRead(username);
+  }
+
+  @Delete('sent/:id')
+  async deleteSentNotification(@Param('id') notificationId: string, @GetCurrentUsername() username: string) {
+    await this.notificationsService.deleteSentNotification(notificationId, username);
   }
 
   @Delete(':id')

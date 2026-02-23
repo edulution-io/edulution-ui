@@ -17,14 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+const CUSTOM_PUSH_BODY_MAX_LENGTH = 150;
 
-const NOTIFICATION_FILTER_TYPE = {
-  ALL: 'all',
-  ...NOTIFICATION_TYPE,
-  SENT: 'sent',
-} as const;
-
-type NotificationFilterType = (typeof NOTIFICATION_FILTER_TYPE)[keyof typeof NOTIFICATION_FILTER_TYPE];
-
-export { NOTIFICATION_FILTER_TYPE, NotificationFilterType };
+export default CUSTOM_PUSH_BODY_MAX_LENGTH;

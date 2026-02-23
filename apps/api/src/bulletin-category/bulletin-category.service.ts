@@ -27,7 +27,7 @@ import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import BULLETIN_BOARD_ERROR_MESSAGE from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
@@ -64,7 +64,7 @@ class BulletinCategoryService implements OnModuleInit {
       const bulletinCategory = await this.bulletinCategoryModel.findById(bulletinCategoryId).exec();
       if (!bulletinCategory) {
         throw new CustomHttpException(
-          BulletinBoardErrorMessage.CATEGORY_NOT_FOUND,
+          BULLETIN_BOARD_ERROR_MESSAGE.CATEGORY_NOT_FOUND,
           HttpStatus.NOT_FOUND,
           'Invalid ID format',
         );
@@ -164,7 +164,7 @@ class BulletinCategoryService implements OnModuleInit {
     const category: BulletinCategoryDocument | null = await this.bulletinCategoryModel.findById(id).exec();
     if (!category) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.CATEGORY_NOT_FOUND,
+        BULLETIN_BOARD_ERROR_MESSAGE.CATEGORY_NOT_FOUND,
         HttpStatus.NOT_FOUND,
         'Invalid ID format',
       );
@@ -180,7 +180,7 @@ class BulletinCategoryService implements OnModuleInit {
   async remove(id: string): Promise<void> {
     const categoryToRemove = await this.bulletinCategoryModel.findById(id).exec();
     if (!categoryToRemove) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(BULLETIN_BOARD_ERROR_MESSAGE.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     try {
@@ -191,7 +191,10 @@ class BulletinCategoryService implements OnModuleInit {
         { $inc: { position: -1 } },
       );
     } catch (error) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BULLETIN_BOARD_ERROR_MESSAGE.CATEGORY_DELETE_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -204,7 +207,7 @@ class BulletinCategoryService implements OnModuleInit {
   async setPosition(categoryId: string, newPosition: number): Promise<boolean> {
     const category = await this.bulletinCategoryModel.findById(categoryId).exec();
     if (!category) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(BULLETIN_BOARD_ERROR_MESSAGE.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const categoryWithSamePosition = await this.bulletinCategoryModel.findOne({ position: newPosition }).exec();

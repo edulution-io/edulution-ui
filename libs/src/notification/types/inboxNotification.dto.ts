@@ -19,6 +19,7 @@
 
 import NotificationType from '@libs/notification/types/notificationType';
 import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import SentNotificationStats from '@libs/notification/types/sentNotificationStats';
 
 interface InboxNotificationDto {
   id: string;
@@ -34,6 +35,7 @@ interface InboxNotificationDto {
   updatedAt: Date;
   createdBy: string;
   readAt: Date | null;
+  sentStats?: SentNotificationStats;
 }
 
 export default InboxNotificationDto;

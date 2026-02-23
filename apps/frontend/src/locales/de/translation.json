@@ -69,6 +69,7 @@
     "categoryName": "Name der Kategorie",
     "bulletinUpdatedSuccessfully": "Mitteilung erfolgreich gespeichert",
     "bulletinCreatedSuccessfully": "Mitteilung erfolgreich erstellt",
+    "pushNotificationSentSuccessfully": "Push-Benachrichtigung erfolgreich gesendet",
     "bulletinsDeletedSuccessfully": "Mitteilungen erfolgreich gelöscht",
     "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
     "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
@@ -100,8 +101,20 @@
       "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
       "attachmentNotFound": "Anhang nicht gefunden",
-      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
-    }
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen",
+      "pushOnlyMissingFields": "Push-Titel und Push-Nachricht sind für den Modus 'Nur Push' erforderlich"
+    },
+    "pushNotification": "Push-Benachrichtigung",
+    "saveMode": "Veröffentlichungsart",
+    "saveModes": {
+      "pushAndBulletin": "Push & Aushang",
+      "bulletinOnly": "Nur Aushang",
+      "pushOnly": "Nur Push"
+    },
+    "customPushTitle": "Titel der Pushbenachrichtigung",
+    "customPushTitlePlaceholder": "Aushang bereit",
+    "customPushBody": "Push-Nachricht",
+    "customPushBodyPlaceholder": "Neuer Aushang in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Benachrichtigungen",
@@ -129,8 +142,17 @@
     "menu": {
       "all": "Alle",
       "messages": "Nachrichten",
-      "system": "System"
-    }
+      "system": "System",
+      "sent": "Gesendet"
+    },
+    "sentSection": "Gesendete Nachrichten",
+    "noSentNotifications": "Du hast keine Nachrichten gesendet",
+    "deleteAllSent": "Alle gesendeten löschen",
+    "confirmDeleteSent": "Möchtest du wirklich alle {{count}} gesendeten Nachrichten löschen? Diese werden auch bei den Empfängern gelöscht.",
+    "showRecipients": "Empfänger anzeigen",
+    "noRecipients": "Keine Empfänger",
+    "recipientsStats": "{{read}} von {{total}} haben gelesen",
+    "read": "Gelesen"
   },
   "appstore": {
     "title": "App-Store",
@@ -795,8 +817,8 @@
     "groupMembership": "Gruppenmitgliedschaft",
     "quota": "Quota",
     "noQuotaInfo": "Keine Quota-Informationen verfügbar",
-    "noListAvailable": "Für diesen Benutzertyp ist keine Listenverwaltung verfügbar.",
-    "listDescription": "Listenverwaltung für {{school}}/{{list}}.csv",
+    "noListAvailable": "Für diesen Benutzertyp ist kein Import verfügbar.",
+    "listDescription": "Import für {{school}}/{{list}}.csv",
     "csvPlaceholder": "CSV-Inhalt wird hier angezeigt...",
     "addUser": "Benutzer hinzufügen",
     "check": "Prüfen",
