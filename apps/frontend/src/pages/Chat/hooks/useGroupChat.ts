@@ -100,6 +100,8 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
     handleSubmit,
     isLoading: isLoading || isSending,
     error: error ? new Error(error) : null,
+    selectedFile: null,
+    setSelectedFile: () => {},
   };
 };
 
