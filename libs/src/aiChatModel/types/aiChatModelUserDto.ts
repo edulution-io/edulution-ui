@@ -17,6 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AI_ASSISTANT_EDU_API_ENDPOINT = 'ai-assistant';
+interface AiChatModelUserDto {
+  id: string;
+  name: string;
+}
 
-export default AI_ASSISTANT_EDU_API_ENDPOINT;
+export default AiChatModelUserDto;

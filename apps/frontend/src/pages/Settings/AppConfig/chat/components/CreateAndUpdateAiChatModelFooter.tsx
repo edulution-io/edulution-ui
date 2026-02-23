@@ -20,26 +20,24 @@
 import React from 'react';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
-interface CreateAndUpdateAiAssistantFooterProps {
+interface CreateAndUpdateAiChatModelFooterProps {
   handleFormSubmit: (e: React.FormEvent) => void;
-  isCurrentNameEqualToSelected: () => boolean;
   isSaveButtonDisabled: () => boolean;
-  handleDeleteAssistant: () => void;
+  handleDelete?: () => void;
   handleClose: () => void;
 }
 
-const CreateAndUpdateAiAssistantFooter = ({
+const CreateAndUpdateAiChatModelFooter = ({
   handleFormSubmit,
-  isCurrentNameEqualToSelected,
   isSaveButtonDisabled,
-  handleDeleteAssistant,
+  handleDelete,
   handleClose,
-}: CreateAndUpdateAiAssistantFooterProps) => (
+}: CreateAndUpdateAiChatModelFooterProps) => (
   <form onSubmit={handleFormSubmit}>
     <DialogFooterButtons
       handleClose={handleClose}
       handleSubmit={() => {}}
-      handleDelete={isCurrentNameEqualToSelected() ? handleDeleteAssistant : undefined}
+      handleDelete={handleDelete}
       submitButtonText="common.save"
       disableSubmit={isSaveButtonDisabled()}
       submitButtonType="submit"
@@ -47,4 +45,4 @@ const CreateAndUpdateAiAssistantFooter = ({
   </form>
 );
 
-export default CreateAndUpdateAiAssistantFooter;
+export default CreateAndUpdateAiChatModelFooter;

@@ -17,16 +17,35 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AiAssistantController from './ai-assistant.controller';
-import AiAssistantService from './ai-assistant.service';
-import { AiAssistant, AiAssistantSchema } from './ai-assistant.schema';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-@Module({
-  imports: [MongooseModule.forFeature([{ name: AiAssistant.name, schema: AiAssistantSchema }])],
-  controllers: [AiAssistantController],
-  providers: [AiAssistantService],
-  exports: [AiAssistantService],
-})
-export default class AiAssistantModule {}
+export type AiChatModelDocument = AiChatModel & Document;
+
+@Schema({ timestamps: true, strict: true })
+export class AiChatModel {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  aiServiceId: string;
+
+  @Prop({ type: String, default: '' })
+  systemPrompt: string;
+
+  @Prop({ type: Array, default: [] })
+  accessGroups: MultipleSelectorGroup[];
+
+  @Prop({ type: Boolean, default: true })
+  isActive: boolean;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
+}
+
+export const AiChatModelSchema = SchemaFactory.createForClass(AiChatModel);
+
+AiChatModelSchema.set('toJSON', {
+  virtuals: true,
+});

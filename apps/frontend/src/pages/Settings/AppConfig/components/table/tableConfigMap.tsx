@@ -22,22 +22,16 @@ import { type ContainerInfo } from 'dockerode';
 import AppConfigBulletinCategoryTableColumn from '@/pages/Settings/AppConfig/bulletinboard/AppConfigBulletinCategoryTableColumn';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import CreateAndUpdateBulletinCategoryDialog from '@/pages/Settings/AppConfig/bulletinboard/CreateAndUpdateBulletinCategoryDialog';
-import AppConfigAiAssistantTableColumn from '@/pages/Settings/AppConfig/chat/AppConfigAiAssistantTableColumn';
-import useAiAssistantTableStore from '@/pages/Settings/AppConfig/chat/useAiAssistantTableStore';
-import CreateAndUpdateAiAssistantDialog from '@/pages/Settings/AppConfig/chat/CreateAndUpdateAiAssistantDialog';
 import type AppConfigTableConfigsByAppName from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfigsByAppName';
 import APPS from '@libs/appconfig/constants/apps';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { type BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
-import type AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
-import { type AiAssistantTableStore } from '@libs/appconfig/types/aiAssistantTableStore';
 import createAppConfigTableEntry from '@/pages/Settings/AppConfig/components/table/createAppConfigTableEntry';
 import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
-import AI_ASSISTANT_TABLE_COLUMNS from '@libs/aiAssistant/constants/aiAssistantTableColumns';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
@@ -46,6 +40,12 @@ import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareT
 import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import { WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
 import WIREGUARD_TABLE_COLUMNS from '@libs/wireguard/constants/wireguardTableColumns';
+import type AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
+import { type AiChatModelTableStore } from '@libs/appconfig/types/aiChatModelTableStore';
+import AI_CHAT_MODEL_TABLE_COLUMNS from '@libs/aiChatModel/constants/aiChatModelTableColumns';
+import AppConfigAiChatModelTableColumn from '../../chat/AppConfigAiChatModelTableColumn';
+import useAiChatModelTableStore from '../../chat/useAiChatModelTableStore';
+import CreateAndUpdateAiChatModelDialog from '../../chat/CreateAndUpdateAiChatModelDialog';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
@@ -76,19 +76,6 @@ const DOCKER_CONTAINER_TABLE_COLUMS = {
 };
 
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
-  [APPS.CHAT]: [
-    createAppConfigTableEntry<AiAssistantResponseDto, AiAssistantTableStore>({
-      columns: AppConfigAiAssistantTableColumn,
-      useStore: useAiAssistantTableStore,
-      dialogBody: <CreateAndUpdateAiAssistantDialog tableId={ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE} />,
-      showAddButton: true,
-      filterKey: AI_ASSISTANT_TABLE_COLUMNS.NAME,
-      filterPlaceHolderText: 'chat.assistant.filterPlaceHolderText',
-      type: ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE,
-      hideColumnsInMobileView: [AI_ASSISTANT_TABLE_COLUMNS.CREATED_AT],
-      hideColumnsInTabletView: [AI_ASSISTANT_TABLE_COLUMNS.CREATED_AT],
-    }),
-  ],
   [APPS.BULLETIN_BOARD]: [
     createAppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>({
       columns: AppConfigBulletinCategoryTableColumn,
@@ -247,6 +234,19 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
         WIREGUARD_TABLE_COLUMNS.LAST_HANDSHAKE,
       ],
       hideColumnsInTabletView: [WIREGUARD_TABLE_COLUMNS.ALLOWED_IPS],
+    }),
+  ],
+  [APPS.CHAT]: [
+    createAppConfigTableEntry<AiChatModelResponseDto, AiChatModelTableStore>({
+      columns: AppConfigAiChatModelTableColumn,
+      useStore: useAiChatModelTableStore,
+      dialogBody: <CreateAndUpdateAiChatModelDialog tableId={ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE} />,
+      showAddButton: true,
+      filterKey: AI_CHAT_MODEL_TABLE_COLUMNS.NAME,
+      filterPlaceHolderText: 'chat.aiChatModel.filterPlaceHolderText',
+      type: ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE,
+      hideColumnsInMobileView: [AI_CHAT_MODEL_TABLE_COLUMNS.CREATED_AT],
+      hideColumnsInTabletView: [AI_CHAT_MODEL_TABLE_COLUMNS.CREATED_AT],
     }),
   ],
 };

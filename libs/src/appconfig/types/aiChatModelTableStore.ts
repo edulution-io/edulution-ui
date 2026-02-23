@@ -18,25 +18,27 @@
  */
 
 import AppConfigTable from '@libs/appconfig/types/appConfigTable';
-import AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
-import CreateAiAssistantDto from '@libs/aiAssistant/types/createAiAssistantDto';
+import AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
+import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
 
-export interface AiAssistantTableStore extends AppConfigTable<AiAssistantResponseDto> {
-  isDialogOpen: boolean;
-  setIsDialogOpen: (isOpen: boolean) => void;
+interface AiServiceOption {
+  id: string;
+  name: string;
+}
+
+export interface AiChatModelTableStore extends AppConfigTable<AiChatModelResponseDto> {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
-  addNewAssistant: (assistant: CreateAiAssistantDto) => Promise<void>;
-  setSelectedAssistant: (assistant: AiAssistantResponseDto | null) => void;
-  selectedAssistant: AiAssistantResponseDto | null;
-  checkIfNameAllReadyExists: (name: string) => Promise<void>;
-  updateAssistant: (id: string, assistant: CreateAiAssistantDto) => Promise<void>;
-  deleteAssistant: (id: string) => Promise<void>;
-  nameExistsAlready: boolean;
-  isNameCheckingLoading: boolean;
+  addNewModel: (model: CreateAiChatModelDto) => Promise<void>;
+  setSelectedModel: (model: AiChatModelResponseDto | null) => void;
+  selectedModel: AiChatModelResponseDto | null;
+  updateModel: (id: string, model: CreateAiChatModelDto) => Promise<void>;
+  deleteModel: (id: string) => Promise<void>;
   reset: () => void;
   isDeleteDialogOpen: boolean;
   isDeleteDialogLoading: boolean;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
   error: null | Error;
+  aiServiceOptions: AiServiceOption[];
+  fetchAiServiceOptions: () => Promise<void>;
 }

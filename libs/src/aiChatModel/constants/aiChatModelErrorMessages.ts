@@ -17,16 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+const AI_CHAT_MODEL_ERROR_MESSAGES = {
+  NOT_FOUND: 'aiChatModel.errors.notFound',
+  AI_SERVICE_NOT_FOUND: 'aiChatModel.errors.aiServiceNotFound',
+  ACCESS_DENIED: 'aiChatModel.errors.accessDenied',
+} as const;
 
-interface CreateAiAssistantDto {
-  name: string;
-  aiServiceId: string;
-  systemPrompt: string;
-  accessUsers: AttendeeDto[];
-  accessGroups: MultipleSelectorGroup[];
-  isActive: boolean;
-}
-
-export default CreateAiAssistantDto;
+export default AI_CHAT_MODEL_ERROR_MESSAGES;

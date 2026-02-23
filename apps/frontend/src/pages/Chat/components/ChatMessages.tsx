@@ -30,11 +30,14 @@ interface ChatMessagesProps {
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { user } = useUserStore();
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = containerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
   }, [messages]);
 
   if (messages.length === 0 && !isLoading) {
@@ -42,7 +45,10 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
   }
 
   return (
-    <div className="flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin">
+    <div
+      ref={containerRef}
+      className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin"
+    >
       {messages.map((message) => (
         <ChatBubble
           key={message.id}
@@ -55,7 +61,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
           <CircleLoader />
         </div>
       )}
-      <div ref={messagesEndRef} />
     </div>
   );
 };

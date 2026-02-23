@@ -19,37 +19,35 @@
 
 import { create, StoreApi, UseBoundStore } from 'zustand';
 import eduApi from '@/api/eduApi';
-import AI_ASSISTANT_EDU_API_ENDPOINT from '@libs/aiAssistant/constants/aiAssistantEduApiEndpoint';
-import AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
+import AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
+import AI_CHAT_MODEL_EDU_API_ENDPOINT from '@libs/aiChatModel/constants/aiChatModelEduApiEndpoint';
+import { AI_SERVICE_EDU_API_ENDPOINT } from '@libs/aiService/constants/apiEndpoints';
 import handleApiError from '@/utils/handleApiError';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
-import { AiAssistantTableStore } from '@libs/appconfig/types/aiAssistantTableStore';
+import { AiChatModelTableStore } from '@libs/appconfig/types/aiChatModelTableStore';
 
 const initialValues = {
-  isDialogOpen: false,
   isLoading: false,
-  selectedAssistant: null,
-  isNameCheckingLoading: false,
+  selectedModel: null,
   tableContentData: [],
-  nameExistsAlready: false,
   isDeleteDialogOpen: false,
   isDeleteDialogLoading: false,
   error: null,
+  aiServiceOptions: [],
 };
 
-const useAiAssistantTableStore: UseBoundStore<StoreApi<AiAssistantTableStore>> = create<AiAssistantTableStore>(
+const useAiChatModelTableStore: UseBoundStore<StoreApi<AiChatModelTableStore>> = create<AiChatModelTableStore>(
   (set, get) => ({
     ...initialValues,
     setIsLoading: (isLoading) => set({ isLoading }),
-    setIsDialogOpen: (isOpen) => set({ isDialogOpen: isOpen }),
     setIsDeleteDialogOpen: (isOpen) => set({ isDeleteDialogOpen: isOpen }),
 
-    addNewAssistant: async (assistant) => {
+    addNewModel: async (model) => {
       set({ error: null, isLoading: true });
       try {
-        await eduApi.post<AiAssistantResponseDto[]>(AI_ASSISTANT_EDU_API_ENDPOINT, assistant);
-        toast.success(i18n.t('chat.assistant.assistantCreatedSuccessfully'));
+        await eduApi.post<AiChatModelResponseDto>(AI_CHAT_MODEL_EDU_API_ENDPOINT, model);
+        toast.success(i18n.t('chat.aiChatModel.createdSuccessfully'));
       } catch (error) {
         handleApiError(error, set);
       } finally {
@@ -57,7 +55,7 @@ const useAiAssistantTableStore: UseBoundStore<StoreApi<AiAssistantTableStore>> =
       }
     },
 
-    setSelectedAssistant: (assistant) => set({ selectedAssistant: assistant }),
+    setSelectedModel: (model) => set({ selectedModel: model }),
 
     fetchTableContent: async () => {
       if (get().isLoading) {
@@ -66,7 +64,7 @@ const useAiAssistantTableStore: UseBoundStore<StoreApi<AiAssistantTableStore>> =
 
       set({ error: null, isLoading: true });
       try {
-        const response = await eduApi.get<AiAssistantResponseDto[]>(AI_ASSISTANT_EDU_API_ENDPOINT);
+        const response = await eduApi.get<AiChatModelResponseDto[]>(AI_CHAT_MODEL_EDU_API_ENDPOINT);
         set({ tableContentData: response.data });
       } catch (error) {
         handleApiError(error, set);
@@ -75,23 +73,11 @@ const useAiAssistantTableStore: UseBoundStore<StoreApi<AiAssistantTableStore>> =
       }
     },
 
-    checkIfNameAllReadyExists: async (name): Promise<void> => {
-      try {
-        set({ isNameCheckingLoading: true });
-        const response = await eduApi.get<{ exists: boolean }>(`${AI_ASSISTANT_EDU_API_ENDPOINT}/${name}`);
-        set({ nameExistsAlready: response.data.exists });
-      } catch (error) {
-        set({ nameExistsAlready: true });
-      } finally {
-        set({ isNameCheckingLoading: false });
-      }
-    },
-
-    updateAssistant: async (id, assistant) => {
+    updateModel: async (id, model) => {
       set({ error: null, isLoading: true });
       try {
-        await eduApi.patch(`${AI_ASSISTANT_EDU_API_ENDPOINT}/${id}`, assistant);
-        toast.success(i18n.t('chat.assistant.assistantUpdatedSuccessfully'));
+        await eduApi.patch(`${AI_CHAT_MODEL_EDU_API_ENDPOINT}/${id}`, model);
+        toast.success(i18n.t('chat.aiChatModel.updatedSuccessfully'));
       } catch (error) {
         handleApiError(error, set);
       } finally {
@@ -99,12 +85,12 @@ const useAiAssistantTableStore: UseBoundStore<StoreApi<AiAssistantTableStore>> =
       }
     },
 
-    deleteAssistant: async (id) => {
+    deleteModel: async (id) => {
       set({ error: null, isDeleteDialogLoading: true });
       try {
-        await eduApi.delete(`${AI_ASSISTANT_EDU_API_ENDPOINT}/${id}`);
-        toast.success(i18n.t('chat.assistant.assistantDeletedSuccessfully'));
-        set({ selectedAssistant: null });
+        await eduApi.delete(`${AI_CHAT_MODEL_EDU_API_ENDPOINT}/${id}`);
+        toast.success(i18n.t('chat.aiChatModel.deletedSuccessfully'));
+        set({ selectedModel: null });
       } catch (error) {
         handleApiError(error, set);
       } finally {
@@ -112,8 +98,17 @@ const useAiAssistantTableStore: UseBoundStore<StoreApi<AiAssistantTableStore>> =
       }
     },
 
+    fetchAiServiceOptions: async () => {
+      try {
+        const response = await eduApi.get<{ id: string; name: string }[]>(AI_SERVICE_EDU_API_ENDPOINT);
+        set({ aiServiceOptions: response.data.map((service) => ({ id: service.id, name: service.name })) });
+      } catch (error) {
+        handleApiError(error, set);
+      }
+    },
+
     reset: () => set(initialValues),
   }),
 );
 
-export default useAiAssistantTableStore;
+export default useAiChatModelTableStore;

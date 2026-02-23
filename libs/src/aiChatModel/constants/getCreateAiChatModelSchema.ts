@@ -17,9 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface AiChatConfig {
-  assistantFirstName?: string;
-  assistantLastName?: string;
-}
+import { TFunction } from 'i18next';
+import { z } from 'zod';
 
-export default AiChatConfig;
+const getCreateAiChatModelSchema = (t: TFunction<'translation', undefined>) =>
+  z.object({
+    name: z
+      .string()
+      .min(3, { message: t('common.min_chars', { count: 3 }) })
+      .max(100, { message: t('common.max_chars', { count: 100 }) }),
+    aiServiceId: z.string().min(1, { message: t('common.required') }),
+  });
+
+export default getCreateAiChatModelSchema;

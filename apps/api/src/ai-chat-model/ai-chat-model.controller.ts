@@ -19,48 +19,37 @@
 
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import CreateAiAssistantDto from '@libs/aiAssistant/types/createAiAssistantDto';
-import APPS from '@libs/appconfig/constants/apps';
+import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
+import AI_CHAT_MODEL_EDU_API_ENDPOINT from '@libs/aiChatModel/constants/aiChatModelEduApiEndpoint';
 import AdminGuard from '../common/guards/admin.guard';
-import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
-import AiAssistantService from './ai-assistant.service';
+import AiChatModelService from './ai-chat-model.service';
 
-@ApiTags('ai-assistant')
+@ApiTags(AI_CHAT_MODEL_EDU_API_ENDPOINT)
 @ApiBearerAuth()
-@RequireAppAccess(APPS.CHAT)
-@Controller('ai-assistant')
-class AiAssistantController {
-  constructor(private readonly aiAssistantService: AiAssistantService) {}
+@UseGuards(AdminGuard)
+@Controller(AI_CHAT_MODEL_EDU_API_ENDPOINT)
+class AiChatModelController {
+  constructor(private readonly aiChatModelService: AiChatModelService) {}
 
   @Get()
-  @UseGuards(AdminGuard)
   findAll() {
-    return this.aiAssistantService.findAll();
+    return this.aiChatModelService.findAll();
   }
 
   @Post()
-  @UseGuards(AdminGuard)
-  create(@Body() dto: CreateAiAssistantDto) {
-    return this.aiAssistantService.create(dto);
-  }
-
-  @Get(':name')
-  @UseGuards(AdminGuard)
-  async checkName(@Param('name') name: string): Promise<{ exists: boolean }> {
-    return this.aiAssistantService.checkIfNameExists(name);
+  create(@Body() dto: CreateAiChatModelDto) {
+    return this.aiChatModelService.create(dto);
   }
 
   @Patch(':id')
-  @UseGuards(AdminGuard)
-  update(@Param('id') id: string, @Body() dto: CreateAiAssistantDto) {
-    return this.aiAssistantService.update(id, dto);
+  update(@Param('id') id: string, @Body() dto: CreateAiChatModelDto) {
+    return this.aiChatModelService.update(id, dto);
   }
 
   @Delete(':id')
-  @UseGuards(AdminGuard)
   delete(@Param('id') id: string) {
-    return this.aiAssistantService.delete(id);
+    return this.aiChatModelService.delete(id);
   }
 }
 
-export default AiAssistantController;
+export default AiChatModelController;

@@ -18,33 +18,31 @@
  */
 
 import React from 'react';
-import useAiAssistantTableStore from '@/pages/Settings/AppConfig/chat/useAiAssistantTableStore';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
+import useAiChatModelTableStore from '@/pages/Settings/AppConfig/chat/useAiChatModelTableStore';
 
-const DeleteAiAssistantDialog = () => {
+const DeleteAiChatModelDialog = () => {
   const {
-    selectedAssistant,
-    setSelectedAssistant,
-    deleteAssistant,
-    setIsDialogOpen,
+    selectedModel,
+    setSelectedModel,
+    deleteModel,
     isDeleteDialogOpen,
     setIsDeleteDialogOpen,
     isDeleteDialogLoading,
     fetchTableContent,
     error,
-  } = useAiAssistantTableStore();
+  } = useAiChatModelTableStore();
 
-  if (!selectedAssistant) return null;
+  if (!selectedModel) return null;
 
   const handleClose = () => {
-    setIsDialogOpen(false);
-    setSelectedAssistant(null);
+    setSelectedModel(null);
     setIsDeleteDialogOpen(false);
   };
 
   const handleConfirmDelete = async () => {
-    if (!selectedAssistant.id) return;
-    await deleteAssistant(selectedAssistant.id);
+    if (!selectedModel.id) return;
+    await deleteModel(selectedModel.id);
     await fetchTableContent();
     handleClose();
   };
@@ -53,15 +51,15 @@ const DeleteAiAssistantDialog = () => {
     <DeleteConfirmationDialog
       isOpen={isDeleteDialogOpen}
       onOpenChange={() => handleClose()}
-      items={[{ id: selectedAssistant.id || '', name: selectedAssistant.name }]}
+      items={[{ id: selectedModel.id || '', name: selectedModel.name }]}
       onConfirmDelete={handleConfirmDelete}
       isLoading={isDeleteDialogLoading}
       error={error}
-      titleTranslationKey="chat.assistant.deleteAssistant"
-      messageTranslationKey="chat.assistant.confirmSingleAssistantDelete"
+      titleTranslationKey="chat.aiChatModel.delete"
+      messageTranslationKey="chat.aiChatModel.confirmDelete"
       autoCloseOnSuccess={false}
     />
   );
 };
 
-export default DeleteAiAssistantDialog;
+export default DeleteAiChatModelDialog;

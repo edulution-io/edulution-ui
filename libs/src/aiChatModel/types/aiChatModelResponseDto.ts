@@ -17,17 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { TFunction } from 'i18next';
-import { z } from 'zod';
+import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
+import { IsDate, IsMongoId, IsOptional, IsString } from 'class-validator';
 
-const getCreateAiAssistantSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    name: z
-      .string()
-      .min(3, { message: t('common.min_chars', { count: 3 }) })
-      .max(50, { message: t('common.max_chars', { count: 50 }) }),
-    aiServiceId: z.string().min(1, { message: t('common.required') }),
-    systemPrompt: z.string().min(1, { message: t('common.required') }),
-  });
+class AiChatModelResponseDto extends CreateAiChatModelDto {
+  @IsMongoId()
+  id: string;
 
-export default getCreateAiAssistantSchema;
+  @IsString()
+  aiServiceName: string;
+
+  @IsDate()
+  @IsOptional()
+  createdAt: Date;
+
+  @IsDate()
+  @IsOptional()
+  updatedAt: Date;
+}
+
+export default AiChatModelResponseDto;

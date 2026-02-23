@@ -17,8 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AI_ASSISTANT_ERROR_MESSAGES = {
-  NOT_FOUND: 'aiAssistant.errors.notFound',
-} as const;
+const AI_CHAT_MODEL_EDU_API_ENDPOINT = 'ai-chat-model';
 
-export default AI_ASSISTANT_ERROR_MESSAGES;
+export default AI_CHAT_MODEL_EDU_API_ENDPOINT;

@@ -36,23 +36,21 @@
     "newChat": "Nouveau Chat",
     "startNewAiChat": "Démarrer une nouvelle conversation IA",
     "deleteChat": "Supprimer le chat",
-    "selectAssistant": "Sélectionner un assistant",
-    "assistant": {
-      "createNewAssistant": "Créer un nouvel assistant",
-      "editAssistant": "Modifier l'assistant",
-      "assistantName": "Nom de l'assistant",
-      "systemPrompt": "Invite système",
-      "systemPromptPlaceholder": "Entrez l'invite système pour cet assistant...",
+    "aiChatModel": {
+      "createNew": "Créer un modèle de chat IA",
+      "edit": "Modifier le modèle de chat IA",
+      "delete": "Supprimer le modèle de chat IA",
+      "confirmDelete": "Voulez-vous vraiment supprimer ce modèle de chat IA ?",
+      "name": "Nom",
       "aiService": "Service IA",
-      "selectAiService": "Sélectionner un service IA",
-      "accessUsersAndGroupsTitle": "Contrôle d'accès",
-      "accessUsersAndGroups": "Utilisateurs et groupes pouvant utiliser cet assistant",
-      "assistantCreatedSuccessfully": "Assistant créé avec succès",
-      "assistantUpdatedSuccessfully": "Assistant mis à jour avec succès",
-      "assistantDeletedSuccessfully": "Assistant supprimé avec succès",
-      "deleteAssistant": "Supprimer l'assistant",
-      "confirmSingleAssistantDelete": "Êtes-vous sûr de vouloir supprimer cet assistant ?",
-      "filterPlaceHolderText": "Rechercher par nom d'assistant"
+      "systemPrompt": "Prompt système",
+      "accessGroups": "Groupes d'accès",
+      "isActive": "Actif",
+      "selectModel": "Sélectionner un modèle",
+      "filterPlaceHolderText": "Rechercher des modèles de chat IA...",
+      "createdSuccessfully": "Modèle de chat IA créé avec succès",
+      "updatedSuccessfully": "Modèle de chat IA mis à jour avec succès",
+      "deletedSuccessfully": "Modèle de chat IA supprimé avec succès"
     }
   },
   "bulletinboard": {
@@ -2007,8 +2005,8 @@
     "chatAiChatEnabledDescription": "Activer ou désactiver la fonction de chat IA.",
     "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
     "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA.",
-    "chatAiAssistantTableTitle": "Assistants IA",
-    "chatAiAssistantTableDescription": "Gérez les assistants IA avec des invites système personnalisées et un contrôle d'accès.",
+    "chatAiChatModelTableTitle": "Modèles de chat IA",
+    "chatAiChatModelTableDescription": "Configurez les modèles de chat IA avec des services IA spécifiques et des groupes d'accès.",
     "chatSearxngUrlTitle": "SearXNG URL",
     "chatSearxngUrlDescription": "URL de l'instance SearXNG utilisée pour la recherche web IA."
   },

@@ -17,12 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import CreateAiAssistantDto from '@libs/aiAssistant/types/createAiAssistantDto';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import AiServiceModule from '../ai-service/ai-service.module';
+import AiChatModelController from './ai-chat-model.controller';
+import AiChatModelService from './ai-chat-model.service';
+import { AiChatModel, AiChatModelSchema } from './ai-chat-model.schema';
 
-interface AiAssistantResponseDto extends CreateAiAssistantDto {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export default AiAssistantResponseDto;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: AiChatModel.name, schema: AiChatModelSchema }]), AiServiceModule],
+  controllers: [AiChatModelController],
+  providers: [AiChatModelService],
+  exports: [AiChatModelService],
+})
+export default class AiChatModelModule {}

@@ -30,8 +30,8 @@ import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { type WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import { type WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
-import type AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
-import { type AiAssistantTableStore } from '@libs/appconfig/types/aiAssistantTableStore';
+import type AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
+import { type AiChatModelTableStore } from '@libs/appconfig/types/aiChatModelTableStore';
 import type AppConfigTableEntry from './appConfigTableEntry';
 
 type AllowedTableEntry =
@@ -42,10 +42,9 @@ type AllowedTableEntry =
   | AppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>
   | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>
   | AppConfigTableEntry<WireguardPeer, WireguardTableStore>
-  | AppConfigTableEntry<AiAssistantResponseDto, AiAssistantTableStore>;
+  | AppConfigTableEntry<AiChatModelResponseDto, AiChatModelTableStore>;
 
 type AppConfigTableConfigsByAppName = {
-  [APPS.CHAT]: AppConfigTableEntry<AiAssistantResponseDto, AiAssistantTableStore>[];
   [APPS.BULLETIN_BOARD]: AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>[];
   [APPS.CLASS_MANAGEMENT]: (
     | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
@@ -62,6 +61,7 @@ type AppConfigTableConfigsByAppName = {
     | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
     | AppConfigTableEntry<WireguardPeer, WireguardTableStore>
   )[];
+  [APPS.CHAT]: AppConfigTableEntry<AiChatModelResponseDto, AiChatModelTableStore>[];
 } & {
   [key: string]: AllowedTableEntry[];
 };

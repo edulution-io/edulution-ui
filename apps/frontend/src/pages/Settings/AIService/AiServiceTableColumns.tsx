@@ -74,6 +74,29 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
     },
   },
   {
+    id: AI_SERVICE_TABLE_COLUMNS.PURPOSE,
+    size: 120,
+    header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'settings.aiServices.purpose',
+    },
+    accessorFn: (row) => row.purpose,
+    cell: ({ row }) => {
+      const { setSelectedAiService, setIsDialogOpen } = useAiServiceTableStore();
+      const handleRowClick = () => {
+        setSelectedAiService(row.original);
+        setIsDialogOpen(true);
+      };
+
+      return (
+        <SelectableCell
+          onClick={handleRowClick}
+          text={row.original.purpose}
+        />
+      );
+    },
+  },
+  {
     id: AI_SERVICE_TABLE_COLUMNS.MODEL,
     size: 150,
     header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,

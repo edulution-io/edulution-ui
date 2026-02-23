@@ -23,27 +23,26 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import useAiAssistantTableStore from '@/pages/Settings/AppConfig/chat/useAiAssistantTableStore';
-import AiAssistantResponseDto from '@libs/aiAssistant/types/aiAssistantResponseDto';
+import AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
+import AI_CHAT_MODEL_TABLE_COLUMNS from '@libs/aiChatModel/constants/aiChatModelTableColumns';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import AI_ASSISTANT_TABLE_COLUMNS from '@libs/aiAssistant/constants/aiAssistantTableColumns';
-import useAiServiceTableStore from '@/pages/Settings/AIService/useAiServiceTableStore';
+import useAiChatModelTableStore from '@/pages/Settings/AppConfig/chat/useAiChatModelTableStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
-const AppConfigAiAssistantTableColumn: ColumnDef<AiAssistantResponseDto>[] = [
+const AppConfigAiChatModelTableColumn: ColumnDef<AiChatModelResponseDto>[] = [
   {
-    id: AI_ASSISTANT_TABLE_COLUMNS.NAME,
-    header: ({ column }) => <SortableHeader<AiAssistantResponseDto, unknown> column={column} />,
+    id: AI_CHAT_MODEL_TABLE_COLUMNS.NAME,
+    header: ({ column }) => <SortableHeader<AiChatModelResponseDto, unknown> column={column} />,
     meta: {
-      translationId: 'chat.assistant.assistantName',
+      translationId: 'chat.aiChatModel.name',
     },
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
-      const { setSelectedAssistant } = useAiAssistantTableStore();
+      const { setSelectedModel } = useAiChatModelTableStore();
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
-        setSelectedAssistant(row.original);
-        setDialogOpen(ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE);
+        setSelectedModel(row.original);
+        setDialogOpen(ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE);
       };
 
       return (
@@ -55,51 +54,49 @@ const AppConfigAiAssistantTableColumn: ColumnDef<AiAssistantResponseDto>[] = [
     },
   },
   {
-    id: AI_ASSISTANT_TABLE_COLUMNS.AI_SERVICE,
-    header: ({ column }) => <SortableHeader<AiAssistantResponseDto, unknown> column={column} />,
+    id: AI_CHAT_MODEL_TABLE_COLUMNS.AI_SERVICE,
+    header: ({ column }) => <SortableHeader<AiChatModelResponseDto, unknown> column={column} />,
     meta: {
-      translationId: 'chat.assistant.aiService',
+      translationId: 'chat.aiChatModel.aiService',
     },
-    accessorFn: (row) => row.aiServiceId,
+    accessorFn: (row) => row.aiServiceName,
     cell: ({ row }) => {
-      const { setSelectedAssistant } = useAiAssistantTableStore();
+      const { setSelectedModel } = useAiChatModelTableStore();
       const { setDialogOpen } = useAppConfigTableDialogStore();
-      const { tableContentData: aiServices } = useAiServiceTableStore();
       const handleRowClick = () => {
-        setSelectedAssistant(row.original);
-        setDialogOpen(ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE);
+        setSelectedModel(row.original);
+        setDialogOpen(ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE);
       };
-      const aiService = aiServices.find((s) => s.id === row.original.aiServiceId);
 
       return (
         <SelectableCell
           onClick={handleRowClick}
-          text={aiService ? `${aiService.name} (${aiService.model})` : row.original.aiServiceId}
+          text={row.original.aiServiceName}
         />
       );
     },
   },
   {
-    id: AI_ASSISTANT_TABLE_COLUMNS.IS_ACTIVE,
+    id: AI_CHAT_MODEL_TABLE_COLUMNS.IS_ACTIVE,
     size: 60,
-    header: ({ column }) => <SortableHeader<AiAssistantResponseDto, unknown> column={column} />,
+    header: ({ column }) => <SortableHeader<AiChatModelResponseDto, unknown> column={column} />,
     meta: {
-      translationId: 'bulletinboard.isActive',
+      translationId: 'chat.aiChatModel.isActive',
     },
     accessorFn: (row) => row.isActive,
     cell: ({ row }) => {
-      const { setSelectedAssistant } = useAiAssistantTableStore();
+      const { setSelectedModel } = useAiChatModelTableStore();
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
-        setSelectedAssistant(row.original);
-        setDialogOpen(ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE);
+        setSelectedModel(row.original);
+        setDialogOpen(ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE);
       };
       return (
         <SelectableCell
           icon={
             <FontAwesomeIcon
               icon={row.original.isActive ? faEye : faEyeSlash}
-              className="text-green-500"
+              className={row.original.isActive ? 'text-green-500' : 'text-muted-foreground'}
             />
           }
           onClick={handleRowClick}
@@ -108,19 +105,19 @@ const AppConfigAiAssistantTableColumn: ColumnDef<AiAssistantResponseDto>[] = [
     },
   },
   {
-    id: AI_ASSISTANT_TABLE_COLUMNS.CREATED_AT,
+    id: AI_CHAT_MODEL_TABLE_COLUMNS.CREATED_AT,
     size: 130,
-    header: ({ column }) => <SortableHeader<AiAssistantResponseDto, unknown> column={column} />,
+    header: ({ column }) => <SortableHeader<AiChatModelResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'common.createdAt',
     },
     accessorFn: (row) => row.createdAt,
     cell: ({ row }) => {
-      const { setSelectedAssistant } = useAiAssistantTableStore();
+      const { setSelectedModel } = useAiChatModelTableStore();
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
-        setSelectedAssistant(row.original);
-        setDialogOpen(ExtendedOptionKeys.CHAT_AI_ASSISTANT_TABLE);
+        setSelectedModel(row.original);
+        setDialogOpen(ExtendedOptionKeys.CHAT_AI_CHAT_MODEL_TABLE);
       };
       return (
         <SelectableCell
@@ -132,4 +129,4 @@ const AppConfigAiAssistantTableColumn: ColumnDef<AiAssistantResponseDto>[] = [
   },
 ];
 
-export default AppConfigAiAssistantTableColumn;
+export default AppConfigAiChatModelTableColumn;

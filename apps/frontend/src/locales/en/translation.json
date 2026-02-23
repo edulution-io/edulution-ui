@@ -36,23 +36,21 @@
     "newChat": "New Chat",
     "startNewAiChat": "Start a new AI conversation",
     "deleteChat": "Delete chat",
-    "selectAssistant": "Select Assistant",
-    "assistant": {
-      "createNewAssistant": "Create New Assistant",
-      "editAssistant": "Edit Assistant",
-      "assistantName": "Assistant Name",
-      "systemPrompt": "System Prompt",
-      "systemPromptPlaceholder": "Enter the system prompt for this assistant...",
+    "aiChatModel": {
+      "createNew": "Create AI Chat Model",
+      "edit": "Edit AI Chat Model",
+      "delete": "Delete AI Chat Model",
+      "confirmDelete": "Do you really want to delete this AI chat model?",
+      "name": "Name",
       "aiService": "AI Service",
-      "selectAiService": "Select an AI Service",
-      "accessUsersAndGroupsTitle": "Access Control",
-      "accessUsersAndGroups": "Users and groups that can use this assistant",
-      "assistantCreatedSuccessfully": "Assistant created successfully",
-      "assistantUpdatedSuccessfully": "Assistant updated successfully",
-      "assistantDeletedSuccessfully": "Assistant deleted successfully",
-      "deleteAssistant": "Delete Assistant",
-      "confirmSingleAssistantDelete": "Are you sure you want to delete this assistant?",
-      "filterPlaceHolderText": "Search for assistant name"
+      "systemPrompt": "System Prompt",
+      "accessGroups": "Access Groups",
+      "isActive": "Active",
+      "selectModel": "Select Model",
+      "filterPlaceHolderText": "Search AI chat models...",
+      "createdSuccessfully": "AI chat model created successfully",
+      "updatedSuccessfully": "AI chat model updated successfully",
+      "deletedSuccessfully": "AI chat model deleted successfully"
     }
   },
   "bulletinboard": {
@@ -2181,8 +2179,8 @@
     "chatAiChatEnabledDescription": "Enable or disable the AI chat feature.",
     "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
     "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat.",
-    "chatAiAssistantTableTitle": "AI Assistants",
-    "chatAiAssistantTableDescription": "Manage AI assistants with custom system prompts and access control.",
+    "chatAiChatModelTableTitle": "AI Chat Models",
+    "chatAiChatModelTableDescription": "Configure AI chat models with specific AI services and access groups.",
     "chatSearxngUrlTitle": "SearXNG URL",
     "chatSearxngUrlDescription": "URL of the SearXNG instance used for AI web search."
   },

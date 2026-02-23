@@ -17,11 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AI_ASSISTANT_TABLE_COLUMNS = {
-  NAME: 'name',
-  AI_SERVICE: 'aiService',
-  IS_ACTIVE: 'isActive',
-  CREATED_AT: 'createdAt',
-} as const;
+import { UIMessage } from 'ai';
 
-export default AI_ASSISTANT_TABLE_COLUMNS;
+const extractTextFromParts = (parts: UIMessage['parts']): string =>
+  parts
+    .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
+    .map((part) => part.text)
+    .join('');
+
+export default extractTextFromParts;

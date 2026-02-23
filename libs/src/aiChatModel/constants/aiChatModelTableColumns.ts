@@ -17,9 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface AiAssistantOption {
-  id: string;
-  name: string;
-}
+const AI_CHAT_MODEL_TABLE_COLUMNS = {
+  NAME: 'name',
+  AI_SERVICE: 'aiServiceName',
+  IS_ACTIVE: 'isActive',
+  CREATED_AT: 'createdAt',
+} as const;
 
-export default AiAssistantOption;
+export default AI_CHAT_MODEL_TABLE_COLUMNS;

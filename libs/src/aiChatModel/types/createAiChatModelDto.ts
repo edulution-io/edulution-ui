@@ -17,38 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-export type AiAssistantDocument = AiAssistant & Document;
-
-@Schema({ timestamps: true, strict: true })
-export class AiAssistant {
-  @Prop({ required: true })
+class CreateAiChatModelDto {
+  @IsString()
   name: string;
 
-  @Prop({ required: true })
+  @IsString()
   aiServiceId: string;
 
-  @Prop({ required: true })
-  systemPrompt: string;
+  @IsString()
+  @IsOptional()
+  systemPrompt?: string;
 
-  @Prop({ type: Array, default: [] })
-  accessUsers: MultipleSelectorGroup[];
-
-  @Prop({ type: Array, default: [] })
+  @IsArray()
   accessGroups: MultipleSelectorGroup[];
 
-  @Prop({ type: Boolean, default: true })
+  @IsBoolean()
   isActive: boolean;
-
-  @Prop({ default: 1 })
-  schemaVersion: number;
 }
 
-export const AiAssistantSchema = SchemaFactory.createForClass(AiAssistant);
-
-AiAssistantSchema.set('toJSON', {
-  virtuals: true,
-});
+export default CreateAiChatModelDto;
