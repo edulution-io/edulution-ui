@@ -423,6 +423,16 @@
       "CopyFailed": "La copie a échoué",
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
+    "singleDownload": {
+      "promptInfo": "Le téléchargement de votre fichier a commencé.",
+      "downloadSucceeded": "Le fichier a-t-il été téléchargé avec succès ?",
+      "help": "Aide"
+    },
+    "multipleDownload": {
+      "promptInfo": "Votre navigateur peut demander l'autorisation de télécharger plusieurs fichiers.",
+      "downloadSucceeded": "Tous les fichiers ont-ils été téléchargés avec succès?",
+      "help": "Aide"
+    },
     "publicFileSharing": {
       "sharedBy": "Partagé par",
       "errors": {

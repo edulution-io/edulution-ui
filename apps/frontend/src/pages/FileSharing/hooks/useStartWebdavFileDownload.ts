@@ -23,14 +23,18 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import triggerBrowserDownload from '@libs/common/utils/triggerBrowserDownload';
 import ContentType from '@libs/filesharing/types/contentType';
+import useDownloadPermission from './useDownloadPermission';
 
 const useStartWebdavFileDownload = () => {
   const { webdavShare } = useParams();
   const { downloadFile } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { checkDownloadAllowed } = useDownloadPermission();
 
   return async (files: DirectoryFileDTO[]) => {
     if (!files?.length) return;
+
+    checkDownloadAllowed(files.length);
 
     await Promise.all(
       files.map(async (file) => {
