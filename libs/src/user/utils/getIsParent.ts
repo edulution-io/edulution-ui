@@ -17,12 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PARENT_CHILD_PAIRING_API_ENDPOINTS = {
-  BASE: 'parent-child-pairing',
-  CODE: 'code',
-  ALL: 'all',
-  STATUS: 'status',
-  RELATIONSHIPS: 'relationships',
-} as const;
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 
-export default PARENT_CHILD_PAIRING_API_ENDPOINTS;
+const getIsParent = (ldapGroups: string[]) =>
+  ldapGroups.includes(GroupRoles.PARENT) ||
+  ldapGroups.includes(GroupRoles.TEACHER) ||
+  ldapGroups.includes(GroupRoles.STAFF);
+
+export default getIsParent;

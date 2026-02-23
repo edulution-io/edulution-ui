@@ -24,14 +24,16 @@ import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentC
 import type TableAction from '@libs/common/types/tableAction';
 import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
 import sortString from '@libs/common/utils/sortString';
+import Checkbox from '@/components/ui/Checkbox';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import ParentChildPairingStatusBadge from '@/components/shared/ParentChildPairingStatusBadge';
 
 const COLUMN_IDS = {
+  SELECT: 'select',
   PARENT: 'parent',
   STUDENT: 'student',
-  SCHOOL: 'school',
   STATUS: 'status',
   CREATED_AT: 'createdAt',
   ACTIONS: 'actions',
@@ -47,11 +49,35 @@ const getParentAssignmentColumns = ({
   onReject,
 }: ParentAssignmentColumnsProps): ColumnDef<ParentChildPairingDto>[] => [
   {
+    id: COLUMN_IDS.SELECT,
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+        aria-label="Select all"
+      />
+    ),
+    enableSorting: false,
+    size: 50,
+    cell: ({ row }) => (
+      <SelectableCell
+        row={row}
+        isFirstColumn
+        className="max-w-0"
+      />
+    ),
+  },
+  {
     id: COLUMN_IDS.PARENT,
     meta: { translationId: 'parentChildPairing.parent' },
     header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
     accessorFn: (row) => row.parent,
-    cell: ({ row }) => row.original.parent,
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.parent}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
     enableSorting: true,
     sortingFn: (rowA, rowB) => sortString(rowA.original.parent, rowB.original.parent),
   },
@@ -63,15 +89,6 @@ const getParentAssignmentColumns = ({
     cell: ({ row }) => row.original.student,
     enableSorting: true,
     sortingFn: (rowA, rowB) => sortString(rowA.original.student, rowB.original.student),
-  },
-  {
-    id: COLUMN_IDS.SCHOOL,
-    meta: { translationId: 'parentChildPairing.school' },
-    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
-    accessorFn: (row) => row.school,
-    cell: ({ row }) => row.original.school,
-    enableSorting: true,
-    sortingFn: (rowA, rowB) => sortString(rowA.original.school, rowB.original.school),
   },
   {
     id: COLUMN_IDS.STATUS,

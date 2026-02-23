@@ -32,8 +32,15 @@ import PARENT_CHILD_PAIRING_CACHE_CONFIG from '@libs/parent-child-pairing/consta
 import type ParentChildPairingCodeResponseDto from '@libs/parent-child-pairing/types/parentChildPairingCodeResponseDto';
 import type ParentChildPairingStatusType from '@libs/parent-child-pairing/types/parentChildPairingStatusType';
 import type ParentChildPairingLogActionType from '@libs/parent-child-pairing/types/parentChildPairingLogActionType';
+import type ParentChildPairingRelationshipDto from '@libs/parent-child-pairing/types/parentChildPairingRelationshipDto';
+import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import PARENT_CHILD_PAIRING_GROUP_SUFFIX from '@libs/parent-child-pairing/constants/parentChildPairingGroupSuffix';
+import type CachedUser from '@libs/user/types/cachedUser';
+import getIsParent from '@libs/user/utils/getIsParent';
 import CustomHttpException from '../common/CustomHttpException';
 import LmnApiService from '../lmnApi/lmnApi.service';
+import UsersService from '../users/users.service';
 import { ParentChildPairing, ParentChildPairingDocument } from './parent-child-pairing.schema';
 
 interface CachedPairingUserData {
@@ -50,6 +57,7 @@ class ParentChildPairingService {
     private readonly parentChildPairingModel: Model<ParentChildPairingDocument>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly lmnApiService: LmnApiService,
+    private readonly usersService: UsersService,
   ) {}
 
   async getOrCreateCode(
@@ -95,7 +103,7 @@ class ParentChildPairingService {
       );
     }
 
-    const callerIsParent = groups.includes(GroupRoles.PARENT);
+    const callerIsParent = getIsParent(groups);
     const callerIsStudent = groups.includes(GroupRoles.STUDENT);
 
     if (!callerIsParent && !callerIsStudent) {
@@ -107,7 +115,7 @@ class ParentChildPairingService {
       );
     }
 
-    const targetIsParent = target.groups.includes(GroupRoles.PARENT);
+    const targetIsParent = getIsParent(target.groups);
     const targetIsStudent = target.groups.includes(GroupRoles.STUDENT);
 
     if (!targetIsParent && !targetIsStudent) {
@@ -168,7 +176,7 @@ class ParentChildPairingService {
   }
 
   async getRelationships(username: string, groups: string[]): Promise<ParentChildPairingDto[]> {
-    const isParent = groups.includes(GroupRoles.PARENT);
+    const isParent = getIsParent(groups);
     const isStudent = groups.includes(GroupRoles.STUDENT);
 
     const filter: Record<string, string> = {};
@@ -181,6 +189,148 @@ class ParentChildPairingService {
     const pairings = await this.parentChildPairingModel.find(filter).exec();
 
     return pairings.map((p) => ParentChildPairingService.toParentChildPairingDto(p));
+  }
+
+  async getEnrichedRelationships(
+    username: string,
+    groups: string[],
+    school: string,
+  ): Promise<ParentChildPairingRelationshipDto[]> {
+    const cachedUsers = await this.usersService.findAllCachedUsers(school);
+    const isParent = getIsParent(groups);
+    const isStudent = groups.includes(GroupRoles.STUDENT);
+
+    let activeRelationships: ParentChildPairingRelationshipDto[] = [];
+    if (isStudent) {
+      activeRelationships = await this.getActiveRelationshipsForStudent(username, school, cachedUsers);
+    } else if (isParent) {
+      activeRelationships = await this.getActiveRelationshipsForParent(username, groups, school, cachedUsers);
+    }
+
+    const nonActivePairings = await this.getNonActivePairingsFromDb(username, groups, cachedUsers, activeRelationships);
+
+    return [...activeRelationships, ...nonActivePairings];
+  }
+
+  private async getActiveRelationshipsForStudent(
+    studentUsername: string,
+    school: string,
+    cachedUsers: CachedUser[],
+  ): Promise<ParentChildPairingRelationshipDto[]> {
+    const groupKey = `${GROUP_WITH_MEMBERS_CACHE_KEY}-/${studentUsername}${PARENT_CHILD_PAIRING_GROUP_SUFFIX}`;
+    const group = await this.cacheManager.get<GroupWithMembers>(groupKey);
+
+    if (!group?.members) return [];
+
+    const studentUser = cachedUsers.find((u) => u.username === studentUsername);
+
+    return group.members.map((parentMember) => ({
+      id: `ldap-${parentMember.username}-${studentUsername}`,
+      parent: parentMember.username,
+      student: studentUsername,
+      school,
+      status: PARENT_CHILD_PAIRING_STATUS.ACCEPTED,
+      logs: [],
+      createdAt: '',
+      updatedAt: '',
+      studentFirstName: studentUser?.firstName ?? '',
+      studentLastName: studentUser?.lastName ?? '',
+      parentFirstName: parentMember.firstName ?? '',
+      parentLastName: parentMember.lastName ?? '',
+      isGroupActive: true,
+    }));
+  }
+
+  private async getActiveRelationshipsForParent(
+    parentUsername: string,
+    groups: string[],
+    school: string,
+    cachedUsers: CachedUser[],
+  ): Promise<ParentChildPairingRelationshipDto[]> {
+    const studentUsernames = ParentChildPairingService.extractStudentUsernamesFromGroups(groups);
+
+    if (studentUsernames.length === 0) return [];
+
+    const results = await Promise.all(
+      studentUsernames.map(async (studentUsername) => {
+        const groupKey = `${GROUP_WITH_MEMBERS_CACHE_KEY}-/${studentUsername}${PARENT_CHILD_PAIRING_GROUP_SUFFIX}`;
+        const group = await this.cacheManager.get<GroupWithMembers>(groupKey);
+
+        if (!group) return null;
+
+        const parentMember = group.members?.find((m) => m.username === parentUsername);
+        if (!parentMember) return null;
+
+        const studentUser = cachedUsers.find((u) => u.username === studentUsername);
+        if (!studentUser) return null;
+
+        const result: ParentChildPairingRelationshipDto = {
+          id: `ldap-${parentUsername}-${studentUsername}`,
+          parent: parentUsername,
+          student: studentUsername,
+          school,
+          status: PARENT_CHILD_PAIRING_STATUS.ACCEPTED,
+          logs: [],
+          createdAt: '',
+          updatedAt: '',
+          studentFirstName: studentUser.firstName ?? '',
+          studentLastName: studentUser.lastName ?? '',
+          parentFirstName: parentMember.firstName ?? '',
+          parentLastName: parentMember.lastName ?? '',
+          isGroupActive: true,
+        };
+
+        return result;
+      }),
+    );
+
+    return results.filter((r): r is ParentChildPairingRelationshipDto => r !== null);
+  }
+
+  private async getNonActivePairingsFromDb(
+    username: string,
+    groups: string[],
+    cachedUsers: CachedUser[],
+    activeRelationships: ParentChildPairingRelationshipDto[],
+  ): Promise<ParentChildPairingRelationshipDto[]> {
+    const isParent = getIsParent(groups);
+    const isStudent = groups.includes(GroupRoles.STUDENT);
+
+    const filter: Record<string, unknown> = {
+      status: { $in: [PARENT_CHILD_PAIRING_STATUS.PENDING, PARENT_CHILD_PAIRING_STATUS.REJECTED] },
+    };
+    if (isParent) filter.parent = username;
+    else if (isStudent) filter.student = username;
+    else return [];
+
+    const pairings = await this.parentChildPairingModel.find(filter).exec();
+    const activeKeys = new Set(activeRelationships.map((r) => `${r.parent}-${r.student}`));
+
+    return pairings
+      .map((p) => ParentChildPairingService.toParentChildPairingDto(p))
+      .filter((p) => !activeKeys.has(`${p.parent}-${p.student}`))
+      .map((pairing) => {
+        const studentUser = cachedUsers.find((u) => u.username === pairing.student);
+        const parentUser = cachedUsers.find((u) => u.username === pairing.parent);
+
+        return {
+          ...pairing,
+          studentFirstName: studentUser?.firstName ?? '',
+          studentLastName: studentUser?.lastName ?? '',
+          parentFirstName: parentUser?.firstName ?? '',
+          parentLastName: parentUser?.lastName ?? '',
+          isGroupActive: false,
+        };
+      });
+  }
+
+  private static extractStudentUsernamesFromGroups(groups: string[]): string[] {
+    return groups
+      .filter((g) => g.endsWith(PARENT_CHILD_PAIRING_GROUP_SUFFIX))
+      .map((g) => {
+        const name = g.startsWith('/') ? g.slice(1) : g;
+        return name.slice(0, -PARENT_CHILD_PAIRING_GROUP_SUFFIX.length);
+      });
   }
 
   async getAllParentChildPairings(
@@ -206,25 +356,9 @@ class ParentChildPairingService {
     performedBy: string,
     lmnApiToken: string,
   ): Promise<ParentChildPairingDto> {
-    const parentChildPairing = await this.parentChildPairingModel
-      .findByIdAndUpdate(
-        pairingId,
-        {
-          status,
-          $push: {
-            logs: {
-              action: PARENT_CHILD_PAIRING_LOG_ACTION.STATUS_CHANGED,
-              performedBy,
-              timestamp: new Date(),
-              details: status,
-            },
-          },
-        },
-        { new: true },
-      )
-      .exec();
+    const pairing = await this.parentChildPairingModel.findById(pairingId).exec();
 
-    if (!parentChildPairing) {
+    if (!pairing) {
       throw new CustomHttpException(
         PARENT_CHILD_PAIRING_ERROR_MESSAGES.CODE_NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -233,36 +367,26 @@ class ParentChildPairingService {
       );
     }
 
-    Logger.log(`Parent-child pairing ${pairingId} status updated to ${status}`, ParentChildPairingService.name);
-
     if (status === PARENT_CHILD_PAIRING_STATUS.ACCEPTED) {
-      void this.registerParentInLmnApi(lmnApiToken, parentChildPairing.student, parentChildPairing.parent);
+      await this.lmnApiService.addParentToStudent(lmnApiToken, pairing.student, pairing.parent);
     }
 
     if (status === PARENT_CHILD_PAIRING_STATUS.REJECTED) {
-      void this.unregisterParentInLmnApi(lmnApiToken, parentChildPairing.student, parentChildPairing.parent);
+      void this.unregisterParentInLmnApi(lmnApiToken, pairing.student, pairing.parent);
     }
 
-    return ParentChildPairingService.toParentChildPairingDto(parentChildPairing);
-  }
+    pairing.status = status as ParentChildPairingStatusType;
+    pairing.logs.push({
+      action: PARENT_CHILD_PAIRING_LOG_ACTION.STATUS_CHANGED,
+      performedBy,
+      timestamp: new Date(),
+      details: status,
+    });
+    await pairing.save();
 
-  private async registerParentInLmnApi(
-    lmnApiToken: string,
-    studentUsername: string,
-    parentUsername: string,
-  ): Promise<void> {
-    try {
-      await this.lmnApiService.addParentToStudent(lmnApiToken, studentUsername, parentUsername);
-      Logger.log(
-        `Registered parent ${parentUsername} for student ${studentUsername} in lmn-api`,
-        ParentChildPairingService.name,
-      );
-    } catch (error: unknown) {
-      Logger.error(
-        `Failed to register parent ${parentUsername} for student ${studentUsername} in lmn-api: ${String(error)}`,
-        ParentChildPairingService.name,
-      );
-    }
+    Logger.log(`Parent-child pairing ${pairingId} status updated to ${status}`, ParentChildPairingService.name);
+
+    return ParentChildPairingService.toParentChildPairingDto(pairing);
   }
 
   private async unregisterParentInLmnApi(

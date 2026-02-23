@@ -19,9 +19,12 @@
 
 import { create } from 'zustand';
 import { toast } from 'sonner';
+import { RowSelectionState } from '@tanstack/react-table';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import PARENT_CHILD_PAIRING_API_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoints';
 import PARENT_CHILD_PAIRING_QUERY_PARAMS from '@libs/parent-child-pairing/constants/parentChildPairingQueryParams';
 import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
@@ -33,11 +36,14 @@ interface ParentAssignmentStore {
   isLoading: boolean;
   statusFilter: string;
   selectedSchool: string;
+  selectedRows: RowSelectionState;
 
   fetchPairings: () => Promise<void>;
   updateStatus: (id: string, status: string) => Promise<void>;
+  updateStatusBulk: (ids: string[], status: string) => Promise<void>;
   setStatusFilter: (status: string) => void;
   setSelectedSchool: (school: string) => void;
+  setSelectedRows: (rows: RowSelectionState) => void;
 }
 
 const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
@@ -45,6 +51,7 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
   isLoading: false,
   statusFilter: PARENT_CHILD_PAIRING_STATUS.PENDING,
   selectedSchool: '',
+  selectedRows: {},
 
   fetchPairings: async () => {
     set({ isLoading: true });
@@ -71,13 +78,33 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
 
   updateStatus: async (id: string, status: string) => {
     try {
+      const { lmnApiToken } = useLmnApiStore.getState();
       await eduApi.patch(
         `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${id}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.STATUS}`,
-        {
-          status,
-        },
+        { status },
+        { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
       );
       toast.success(i18n.t('parentChildPairing.statusUpdated'));
+      await get().fetchPairings();
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
+
+  updateStatusBulk: async (ids: string[], status: string) => {
+    try {
+      const { lmnApiToken } = useLmnApiStore.getState();
+      await Promise.all(
+        ids.map((id) =>
+          eduApi.patch(
+            `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${id}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.STATUS}`,
+            { status },
+            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
+          ),
+        ),
+      );
+      toast.success(i18n.t('parentChildPairing.statusUpdated'));
+      set({ selectedRows: {} });
       await get().fetchPairings();
     } catch (error) {
       handleApiError(error, set);
@@ -92,6 +119,10 @@ const useParentAssignmentStore = create<ParentAssignmentStore>((set, get) => ({
   setSelectedSchool: (selectedSchool: string) => {
     set({ selectedSchool });
     void get().fetchPairings();
+  },
+
+  setSelectedRows: (selectedRows: RowSelectionState) => {
+    set({ selectedRows });
   },
 }));
 

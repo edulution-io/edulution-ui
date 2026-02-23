@@ -66,6 +66,15 @@ class ParentChildPairingController {
     return this.parentChildPairingService.createParentChildPairing(username, groups, user.school, body.code);
   }
 
+  @Get(PARENT_CHILD_PAIRING_API_ENDPOINTS.RELATIONSHIPS)
+  async getEnrichedRelationships(
+    @GetCurrentUsername() username: string,
+    @GetCurrentUserGroups() groups: string[],
+    @GetCurrentUser() user: JwtUser,
+  ) {
+    return this.parentChildPairingService.getEnrichedRelationships(username, groups, user.school);
+  }
+
   @Get()
   async getRelationships(@GetCurrentUsername() username: string, @GetCurrentUserGroups() groups: string[]) {
     return this.parentChildPairingService.getRelationships(username, groups);

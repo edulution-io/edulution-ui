@@ -24,12 +24,12 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import i18n from '@/i18n';
 import PARENT_CHILD_PAIRING_API_ENDPOINTS from '@libs/parent-child-pairing/constants/parentChildPairingApiEndpoints';
-import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
+import type ParentChildPairingRelationshipDto from '@libs/parent-child-pairing/types/parentChildPairingRelationshipDto';
 import type ParentChildPairingCodeResponseDto from '@libs/parent-child-pairing/types/parentChildPairingCodeResponseDto';
 
 interface ParentChildPairingStore {
   pairingCodeResponse: ParentChildPairingCodeResponseDto | null;
-  relationships: ParentChildPairingDto[];
+  relationships: ParentChildPairingRelationshipDto[];
   isLoading: boolean;
   isSubmitting: boolean;
   error: string | null;
@@ -102,7 +102,9 @@ const useParentChildPairingStore = create<ParentChildPairingStore>((set) => ({
 
   fetchRelationships: async () => {
     try {
-      const { data } = await eduApi.get<ParentChildPairingDto[]>(PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE);
+      const { data } = await eduApi.get<ParentChildPairingRelationshipDto[]>(
+        `${PARENT_CHILD_PAIRING_API_ENDPOINTS.BASE}/${PARENT_CHILD_PAIRING_API_ENDPOINTS.RELATIONSHIPS}`,
+      );
       set({ relationships: data });
     } catch (error) {
       handleApiError(error, set);

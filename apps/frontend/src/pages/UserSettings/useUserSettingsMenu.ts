@@ -48,6 +48,7 @@ import {
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import getIsParent from '@libs/user/utils/getIsParent';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -60,7 +61,7 @@ const useUserSettingsMenu = () => {
   const isMailConfigured = !!findAppConfigByName(appConfigs, APPS.MAIL);
   const isWireguardConfigured = !!findAppConfigByName(appConfigs, APPS.WIREGUARD);
   const isStudent = ldapGroups.includes(GroupRoles.STUDENT);
-  const isParent = ldapGroups.includes(GroupRoles.PARENT);
+  const isParent = getIsParent(ldapGroups);
   const isStudentOrParent = isStudent || isParent;
 
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = useMemo(

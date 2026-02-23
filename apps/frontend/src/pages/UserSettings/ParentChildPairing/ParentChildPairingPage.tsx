@@ -32,6 +32,7 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useUserStore from '@/store/UserStore/useUserStore';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import getIsParent from '@libs/user/utils/getIsParent';
 import PARENT_CHILD_PAIRING_QR_CONFIG from '@libs/parent-child-pairing/constants/parentChildPairingQrConfig';
 import type ParentChildPairingQrPayload from '@libs/parent-child-pairing/types/parentChildPairingQrPayload';
 import ParentChildPairingStatusBadge from '@/components/shared/ParentChildPairingStatusBadge';
@@ -55,7 +56,7 @@ const ParentChildPairingPage: React.FC = () => {
   } = useParentChildPairingStore();
 
   const isStudent = ldapGroups.includes(GroupRoles.STUDENT);
-  const isParent = ldapGroups.includes(GroupRoles.PARENT);
+  const isParent = getIsParent(ldapGroups);
 
   const title = isStudent
     ? t('usersettings.parentChildPairing.myParents')
@@ -206,8 +207,8 @@ const ParentChildPairingPage: React.FC = () => {
                   >
                     <span>
                       {isStudent
-                        ? `${t('usersettings.parentChildPairing.parent')}: ${rel.parent}`
-                        : `${t('usersettings.parentChildPairing.student')}: ${rel.student}`}
+                        ? `${t('usersettings.parentChildPairing.parent')}: ${rel.parentFirstName && rel.parentLastName ? `${rel.parentFirstName} ${rel.parentLastName}` : rel.parent}`
+                        : `${t('usersettings.parentChildPairing.student')}: ${rel.studentFirstName && rel.studentLastName ? `${rel.studentFirstName} ${rel.studentLastName}` : rel.student}`}
                     </span>
                     <ParentChildPairingStatusBadge status={rel.status} />
                   </div>

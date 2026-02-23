@@ -17,12 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PARENT_CHILD_PAIRING_API_ENDPOINTS = {
-  BASE: 'parent-child-pairing',
-  CODE: 'code',
-  ALL: 'all',
-  STATUS: 'status',
-  RELATIONSHIPS: 'relationships',
-} as const;
+import type ParentChildPairingDto from './parentChildPairingDto';
 
-export default PARENT_CHILD_PAIRING_API_ENDPOINTS;
+interface ParentChildPairingRelationshipDto extends ParentChildPairingDto {
+  studentFirstName: string;
+  studentLastName: string;
+  parentFirstName: string;
+  parentLastName: string;
+  isGroupActive: boolean;
+}
+
+export default ParentChildPairingRelationshipDto;

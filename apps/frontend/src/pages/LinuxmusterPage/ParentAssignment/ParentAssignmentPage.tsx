@@ -19,6 +19,7 @@
 
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import getTokenPayload from '@libs/common/utils/getTokenPayload';
 import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
 import PARENT_CHILD_PAIRING_STATUS_FILTER_ALL from '@libs/parent-child-pairing/constants/parentChildPairingStatusFilterAll';
@@ -37,11 +38,21 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import useUserStore from '@/store/UserStore/useUserStore';
 import useParentAssignmentStore from './useParentAssignmentStore';
 import getParentAssignmentColumns from './getParentAssignmentColumns';
+import ParentAssignmentFloatingButtons from './ParentAssignmentFloatingButtons';
 
 const ParentAssignmentPage: React.FC = () => {
   const { t } = useTranslation();
-  const { pairings, isLoading, statusFilter, fetchPairings, updateStatus, setStatusFilter, setSelectedSchool } =
-    useParentAssignmentStore();
+  const {
+    pairings,
+    isLoading,
+    statusFilter,
+    selectedRows,
+    fetchPairings,
+    updateStatus,
+    setStatusFilter,
+    setSelectedSchool,
+    setSelectedRows,
+  } = useParentAssignmentStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { selectedSchool: classManagementSchool, schools, getSchools } = useClassManagementStore();
   const eduApiToken = useUserStore((s) => s.eduApiToken);
@@ -124,6 +135,14 @@ const ParentAssignmentPage: React.FC = () => {
   const statusFilterCount = statusFilter !== PARENT_CHILD_PAIRING_STATUS_FILTER_ALL ? 1 : 0;
   const activeFilterCount = statusFilterCount + 1;
 
+  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
+    (updaterOrValue: RowSelectionState | ((old: RowSelectionState) => RowSelectionState)) => {
+      const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
+      setSelectedRows(newValue);
+    },
+    [selectedRows, setSelectedRows],
+  );
+
   const handleResetFilters = useCallback(() => {
     setStatusFilter(PARENT_CHILD_PAIRING_STATUS.PENDING);
   }, [setStatusFilter]);
@@ -149,6 +168,9 @@ const ParentAssignmentPage: React.FC = () => {
           filterPlaceHolderText="parentChildPairing.filterPlaceholder"
           applicationName={APPS.LINUXMUSTER}
           getRowId={(row) => row.id}
+          enableRowSelection
+          selectedRows={selectedRows}
+          onRowSelectionChange={handleRowSelectionChange}
           searchBarAdditionalComponent={
             <>
               <TableFilterDropdown
@@ -173,6 +195,7 @@ const ParentAssignmentPage: React.FC = () => {
           }
           activeFilterCount={activeFilterCount}
         />
+        <ParentAssignmentFloatingButtons />
       </div>
     </PageLayout>
   );
