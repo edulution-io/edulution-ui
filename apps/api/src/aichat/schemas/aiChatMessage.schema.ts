@@ -17,9 +17,34 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemedFile from '@libs/common/types/themedFile';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import ChatRole from '@libs/chat/types/chatRole';
 
-type TAppFieldType = string | number | boolean | ThemedFile | MultipleSelectorGroup[];
+export type AiChatMessageDocument = AiChatMessage & Document;
 
-export default TAppFieldType;
+@Schema({ timestamps: true, strict: true })
+export class AiChatMessage {
+  @Prop({ type: Types.ObjectId, ref: 'AiConversation', required: true, index: true })
+  conversationId: Types.ObjectId;
+
+  @Prop({ type: String, required: true })
+  role: ChatRole;
+
+  @Prop({ type: String, required: true })
+  content: string;
+
+  @Prop({ type: String, required: true })
+  createdBy: string;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
+}
+
+export const AiChatMessageSchema = SchemaFactory.createForClass(AiChatMessage);
+
+AiChatMessageSchema.index({ conversationId: 1, createdAt: -1 });
+
+AiChatMessageSchema.set('toJSON', {
+  virtuals: true,
+});

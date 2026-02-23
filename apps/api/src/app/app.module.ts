@@ -69,6 +69,7 @@ import AccessGuard from '../auth/access.guard';
 import AuthGuard from '../auth/auth.guard';
 import WireguardModule from '../wireguard/wireguard.module';
 import ChatModule from '../chat/chat.module';
+import AiChatModule from '../aichat/aichat.module';
 
 @Module({
   imports: [
@@ -144,6 +145,7 @@ import ChatModule from '../chat/chat.module';
     ScriptsModule,
     WireguardModule,
     ChatModule,
+    AiChatModule,
   ],
   providers: [
     {

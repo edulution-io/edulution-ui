@@ -27,38 +27,54 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useChatStore from '@/store/useChatStore';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
-import ChatContent from './components/ChatContent';
+import GroupChatContent from '@/pages/Chat/components/GroupChatContent';
 import useRegisterChatSections from './useRegisterChatSections';
+import AiChatContent from './components/AiChatContent';
 
 const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
   Object.values(CHAT_GROUP_TYPE_LOCATIONS).includes(value as GroupTypeLocation);
 
 const ChatPage = () => {
   const { t } = useTranslation();
-  const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
+  const { groupType, groupName, chatId } = useParams<{ groupType: string; groupName: string; chatId: string }>();
   const { isLoadingGroups } = useChatStore();
   useRegisterChatSections();
 
-  return (
-    <PageLayout hasFullWidthMain>
-      <LoadingIndicatorDialog isOpen={isLoadingGroups} />
-      <div className="flex h-full flex-col">
-        {groupName && isValidGroupType(groupType) ? (
-          <ChatContent
-            groupName={groupName}
-            groupType={groupType}
-          />
-        ) : (
-          <div className="bg-glass flex flex-1 flex-col items-center justify-center ">
-            <FontAwesomeIcon
-              icon={faComments}
-              className="mb-4 h-16 w-16 text-muted-foreground opacity-30"
-            />
-            <p className="text-lg text-muted-foreground">{t('chat.selectConversation')}</p>
-            <p className="mt-2 text-sm text-muted-foreground opacity-70">{t('chat.selectFromSidebar')}</p>
-          </div>
-        )}
+  const renderContent = () => {
+    if (chatId) {
+      return (
+        <AiChatContent
+          key={chatId}
+          chatId={chatId}
+        />
+      );
+    }
+
+    if (groupName && isValidGroupType(groupType)) {
+      return (
+        <GroupChatContent
+          groupName={groupName}
+          groupType={groupType}
+        />
+      );
+    }
+
+    return (
+      <div className="bg-glass flex flex-1 flex-col items-center justify-center backdrop-blur-lg">
+        <FontAwesomeIcon
+          icon={faComments}
+          className="h-16 w-16 text-muted-foreground opacity-30"
+        />
+        <p className="text-lg text-muted-foreground">{t('chat.selectConversation')}</p>
+        <p className="mt-2 text-sm text-muted-foreground opacity-70">{t('chat.selectFromSidebar')}</p>
       </div>
+    );
+  };
+
+  return (
+    <PageLayout isFullScreenAppWithoutFloatingButtons>
+      <LoadingIndicatorDialog isOpen={isLoadingGroups} />
+      <div className="flex h-full flex-col overflow-hidden">{renderContent()}</div>
     </PageLayout>
   );
 };

@@ -24,3 +24,12 @@ export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
 export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
 
 export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
+
+export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
+
+export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
+
+export const getAiChatMessagesEndpoint = (conversationId: string): string =>
+  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
+
+export const AI_CHAT_CONFIG_ENDPOINT = `${APPS.AICHAT}/config`;

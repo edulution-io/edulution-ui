@@ -18,37 +18,27 @@
  */
 
 import React from 'react';
-import { Route } from 'react-router-dom';
-import ChatPage from '@/pages/Chat/ChatPage';
-import APPS from '@libs/appconfig/constants/apps';
-import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
+import ChatView from '@/pages/Chat/components/ChatView';
+import useAiChat from '@/pages/Chat/hooks/useAiChat';
+import useAiChatStore from '@/store/useAiChatStore';
 
-const getChatRoutes = () => [
-  <Route
-    key={CHAT_PATH}
-    path={CHAT_PATH}
-  >
-    <Route
-      index
-      element={<ChatPage />}
-    />
-    <Route
-      path={APPS.AICHAT}
-      element={<ChatPage />}
-    />
-    <Route
-      path={`${APPS.AICHAT}/:chatId`}
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType"
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType/:groupName"
-      element={<ChatPage />}
-    />
-  </Route>,
-];
+const AI_CHAT_TITLE = 'AI Chat';
 
-export default getChatRoutes;
+interface AiChatContentProps {
+  chatId: string;
+}
+
+const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
+  const adapter = useAiChat(chatId);
+  const conversations = useAiChatStore((state) => state.conversations);
+  const title = conversations.find((c) => c.id === chatId)?.title ?? AI_CHAT_TITLE;
+
+  return (
+    <ChatView
+      adapter={adapter}
+      title={title}
+    />
+  );
+};
+
+export default AiChatContent;

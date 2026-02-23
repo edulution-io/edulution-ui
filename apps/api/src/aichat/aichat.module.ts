@@ -17,38 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import ChatPage from '@/pages/Chat/ChatPage';
-import APPS from '@libs/appconfig/constants/apps';
-import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import AiChatController from './aichat.controller';
+import AiChatService from './aichat.service';
+import { AiConversation, AiConversationSchema } from './schemas/aiConversation.schema';
+import { AiChatMessage, AiChatMessageSchema } from './schemas/aiChatMessage.schema';
 
-const getChatRoutes = () => [
-  <Route
-    key={CHAT_PATH}
-    path={CHAT_PATH}
-  >
-    <Route
-      index
-      element={<ChatPage />}
-    />
-    <Route
-      path={APPS.AICHAT}
-      element={<ChatPage />}
-    />
-    <Route
-      path={`${APPS.AICHAT}/:chatId`}
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType"
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType/:groupName"
-      element={<ChatPage />}
-    />
-  </Route>,
-];
-
-export default getChatRoutes;
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: AiConversation.name, schema: AiConversationSchema }]),
+    MongooseModule.forFeature([{ name: AiChatMessage.name, schema: AiChatMessageSchema }]),
+  ],
+  controllers: [AiChatController],
+  providers: [AiChatService],
+})
+export default class AiChatModule {}

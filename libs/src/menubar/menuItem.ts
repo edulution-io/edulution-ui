@@ -22,8 +22,10 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 interface MenuItem {
   id: string;
   label: string;
-  icon: string | IconDefinition;
+  icon?: string | IconDefinition;
+  iconClassName?: string;
   action?: () => void;
+  onDelete?: () => void;
   path?: string;
   disableTranslation?: boolean;
   children?: MenuItem[];

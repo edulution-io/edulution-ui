@@ -20,6 +20,7 @@
     "schoolClasses": "Classes",
     "project": "Projet",
     "projects": "Projets",
+    "aiChat": "Chat IA",
     "selectFromSidebar": "Sélectionnez une classe ou un projet dans la barre latérale",
     "noMessages": "Aucun message pour le moment",
     "startConversation": "Écrivez le premier message",
@@ -31,7 +32,10 @@
       "messageSendFailed": "Échec de l'envoi du message",
       "invalidGroupType": "Type de groupe invalide"
     },
-    "refreshGroups": "Actualiser les groupes"
+    "refreshGroups": "Actualiser les groupes",
+    "newChat": "Nouveau Chat",
+    "startNewAiChat": "Démarrer une nouvelle conversation IA",
+    "deleteChat": "Supprimer le chat"
   },
   "bulletinboard": {
     "settings": "Paramètres",
@@ -1116,6 +1120,10 @@
           "title": "Pairs WireGuard",
           "description": "Gérez ici les pairs VPN WireGuard et les connexions site-à-site."
         },
+        "chat": {
+          "title": "Fonctionnalités de chat",
+          "description": "Configurez les fonctionnalités de chat disponibles pour les utilisateurs."
+        },
         "files": {
           "title": "Fichiers",
           "description": "Ici, les fichiers affichés dans l'application peuvent être gérés.",
@@ -1949,7 +1957,15 @@
       "light": "clair",
       "dark": "sombre",
       "title": "Logo thématique {{variant}}"
-    }
+    },
+    "chatGroupChatEnabledTitle": "Chat de groupe",
+    "chatGroupChatEnabledDescription": "Activer ou désactiver la fonction de chat de groupe.",
+    "chatGroupChatGroupsTitle": "Groupes autorisés (Chat de groupe)",
+    "chatGroupChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat de groupe.",
+    "chatAiChatEnabledTitle": "Chat IA",
+    "chatAiChatEnabledDescription": "Activer ou désactiver la fonction de chat IA.",
+    "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
+    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA."
   },
   "preview": {
     "image": "Aperçu de l'image",

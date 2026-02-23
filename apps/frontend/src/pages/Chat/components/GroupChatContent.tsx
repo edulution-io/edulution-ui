@@ -24,12 +24,12 @@ import useGroupChat from '@/pages/Chat/hooks/useGroupChat';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
-interface ChatContentProps {
+interface GroupChatContentProps {
   groupName: string;
   groupType: GroupTypeLocation;
 }
 
-const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
+const GroupChatContent: React.FC<GroupChatContentProps> = ({ groupName, groupType }) => {
   const { t } = useTranslation();
   const adapter = useGroupChat(groupName, groupType);
   const title = `${groupType === CHAT_GROUP_TYPE_LOCATIONS.CLASSES ? t('chat.schoolClass') : t('chat.project')}: ${groupName}`;
@@ -42,4 +42,4 @@ const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
   );
 };
 
-export default ChatContent;
+export default GroupChatContent;

@@ -56,6 +56,7 @@ import URL_SYNC_EXTENDED_OPTIONS, {
 import APP_LOGO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/appLogoExtendedOptions';
 import { ALL_DISPLAY_LOCATIONS } from '@libs/appconfig/constants/appDisplayLocations';
 import WIREGUARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/wireguardExtendedOptions';
+import CHAT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/chatExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -154,6 +155,9 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.CHAT,
     icon: ContactIcon,
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.chat]: CHAT_EXTENDED_OPTIONS,
+    },
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {

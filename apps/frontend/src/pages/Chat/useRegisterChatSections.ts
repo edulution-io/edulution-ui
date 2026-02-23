@@ -18,11 +18,17 @@
  */
 
 import { useEffect, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type Section from '@libs/menubar/section';
-import { CHAT_CLASSES_LOCATION, CHAT_PATH, CHAT_PROJECTS_LOCATION } from '@libs/chat/constants/chatPaths';
+import {
+  CHAT_AICHAT_PATH,
+  CHAT_CLASSES_LOCATION,
+  CHAT_PATH,
+  CHAT_PROJECTS_LOCATION,
+} from '@libs/chat/constants/chatPaths';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import useChatStore from '@/store/useChatStore';
+import useAiChatStore from '@/store/useAiChatStore';
 import useSubMenuStore from '@/store/useSubMenuStore';
 
 const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
@@ -30,17 +36,31 @@ const isValidGroupType = (value: string | undefined): value is GroupTypeLocation
 
 const useRegisterChatSections = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { groupType } = useParams<{ groupType: string; groupName: string }>();
   const { userGroups, fetchUserGroups } = useChatStore();
+  const { conversations, fetchConversations } = useAiChatStore();
   const { setSections } = useSubMenuStore();
 
+  const isAiChat = pathname.startsWith(`/${CHAT_AICHAT_PATH}`);
+
   useEffect(() => {
-    if (!userGroups) {
+    if (isAiChat) {
+      void fetchConversations();
+    } else if (!userGroups) {
       void fetchUserGroups();
     }
-  }, [userGroups, fetchUserGroups]);
+  }, [isAiChat, userGroups, fetchUserGroups, fetchConversations]);
 
   const sections: Section[] = useMemo(() => {
+    if (isAiChat) {
+      return conversations.map((conv) => ({
+        id: conv.id,
+        label: conv.title,
+        action: () => navigate(`/${CHAT_AICHAT_PATH}/${conv.id}`),
+      }));
+    }
+
     if (!userGroups || !isValidGroupType(groupType)) return [];
 
     const groups = groupType === CHAT_CLASSES_LOCATION ? userGroups.classes : userGroups.projects;
@@ -50,7 +70,7 @@ const useRegisterChatSections = () => {
       label: group.name,
       action: () => navigate(`/${CHAT_PATH}/${groupType}/${encodeURIComponent(group.name)}`),
     }));
-  }, [userGroups, groupType, navigate]);
+  }, [isAiChat, conversations, userGroups, groupType, navigate]);
 
   useEffect(() => {
     setSections(sections);
