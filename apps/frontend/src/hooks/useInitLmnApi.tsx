@@ -25,7 +25,7 @@ import useDeploymentTarget from './useDeploymentTarget';
 const useInitLmnApi = () => {
   const { isLmn } = useDeploymentTarget();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
-  const { lmnApiToken, setLmnApiToken, getOwnUser } = useLmnApiStore();
+  const { lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion } = useLmnApiStore();
 
   useEffect(() => {
     if (!isLmn || !isAuthenticated) return;
@@ -34,8 +34,9 @@ const useInitLmnApi = () => {
       void setLmnApiToken();
     } else {
       void getOwnUser();
+      void getLmnVersion(true);
     }
-  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser]);
+  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion]);
 };
 
 export default useInitLmnApi;

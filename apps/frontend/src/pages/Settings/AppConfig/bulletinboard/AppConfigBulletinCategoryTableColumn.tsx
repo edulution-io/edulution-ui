@@ -140,7 +140,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
           icon={
             <FontAwesomeIcon
               icon={row.original.isActive ? faEye : faEyeSlash}
-              className="text-green-500"
+              className={row.original.isActive ? 'text-green-500' : 'text-red-500'}
             />
           }
           onClick={handleRowClick}
