@@ -20,9 +20,11 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
 import {
+  LINUXMUSTER_INFO_LOCATION,
+  LINUXMUSTER_INFO_PATH,
   LINUXMUSTER_PATH,
   USER_MANAGEMENT_LOCATION,
   USER_MANAGEMENT_STUDENTS_PATH,
@@ -38,6 +40,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
   const { isLmn } = useDeploymentTarget();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
+  const navigateToInfo = useCallback(() => navigate(`/${LINUXMUSTER_INFO_PATH}`), [navigate]);
   const navigateToUserManagement = useCallback(
     () => navigate(`/${USER_MANAGEMENT_STUDENTS_PATH}/${USER_MANAGEMENT_TABS.TABLE}`),
     [navigate],
@@ -56,15 +59,25 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faGrip,
           action: navigateToLinuxmuster,
         },
-        {
-          id: USER_MANAGEMENT_LOCATION,
-          label: 'usermanagement.menuTitle',
-          icon: faListCheck,
-          action: navigateToUserManagement,
-        },
+        ...(isLmn
+          ? [
+              {
+                id: USER_MANAGEMENT_LOCATION,
+                label: 'usermanagement.menuTitle',
+                icon: faListCheck,
+                action: navigateToUserManagement,
+              },
+              {
+                id: LINUXMUSTER_INFO_LOCATION,
+                label: 'linuxmuster.versionInfo',
+                icon: faCircleInfo,
+                action: navigateToInfo,
+              },
+            ]
+          : []),
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement],
+    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToInfo],
   );
 };
 
