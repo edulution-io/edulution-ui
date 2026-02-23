@@ -109,7 +109,6 @@ const cleanAllStores = async () => {
   usePublicShareStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
-  useResultDialogStore.getState().reset();
   useSelectCreateDockerContainerDialogStore.getState().reset();
   useSidebarStore.getState().reset();
   useSseStore.getState().reset();
