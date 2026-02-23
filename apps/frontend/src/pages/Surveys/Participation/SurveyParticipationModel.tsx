@@ -314,32 +314,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!surveyParticipationModel || !selectedSurvey?.id) {
         return;
       }
-
-      // eslint-disable-next-line no-console
-      console.log(
-        'Received SSE message for backend limiter update (selectedSurveyID):',
-        selectedSurvey.id,
-        'data:',
-        e.data,
-      );
-
       const { surveyId, questionName } = JSON.parse(e.data) as UpdateRestfulChoicesDto;
-
-      // eslint-disable-next-line no-console
-      console.log('passes identity check:', surveyId === selectedSurvey.id);
-
       if (surveyId !== selectedSurvey.id) {
         return;
       }
       const question = surveyParticipationModel.getQuestionByName(questionName);
       const choicesByUrl = question?.choicesByUrl as ChoicesRestful | undefined;
-
-      // eslint-disable-next-line no-console
-      console.log('choicesByUrl', choicesByUrl);
-
-      // eslint-disable-next-line no-console
-      console.log('choicesByUrl.isEmpty', choicesByUrl?.isEmpty);
-
       if (!choicesByUrl || choicesByUrl.isEmpty) {
         return;
       }
