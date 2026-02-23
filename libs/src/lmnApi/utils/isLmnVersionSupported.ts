@@ -17,26 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import useUserStore from '@/store/UserStore/useUserStore';
-import useDeploymentTarget from './useDeploymentTarget';
+export const MIN_LMN_VERSION = '7.3.26';
 
-const useInitLmnApi = () => {
-  const { isLmn } = useDeploymentTarget();
-  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
-  const { lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion } = useLmnApiStore();
+const parseVersion = (version: string): number[] => version.split('-')[0].split('.').map(Number);
 
-  useEffect(() => {
-    if (!isLmn || !isAuthenticated) return;
-
-    if (!lmnApiToken) {
-      void setLmnApiToken();
-    } else {
-      void getOwnUser();
-      void getLmnVersion(true);
-    }
-  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion]);
+const isLmnVersionSupported = (currentVersion: string): boolean => {
+  if (!currentVersion) return false;
+  const current = parseVersion(currentVersion);
+  const minimum = parseVersion(MIN_LMN_VERSION);
+  for (let i = 0; i < minimum.length; i += 1) {
+    if ((current[i] ?? 0) > minimum[i]) return true;
+    if ((current[i] ?? 0) < minimum[i]) return false;
+  }
+  return true;
 };
 
-export default useInitLmnApi;
+export default isLmnVersionSupported;

@@ -1355,7 +1355,7 @@
       "setAdminGroupWarning": "Es muss mindestens eine Administratorengruppe ausgewählt sein."
     },
     "info": {
-      "title": "Info"
+      "title": "Lizenz"
     },
     "webhooks": {
       "title": "Webhooks",
@@ -2001,7 +2001,10 @@
     "item": "{{count}} Benutzer",
     "items": "{{count}} Benutzer",
     "userManagement": "Benutzerverwaltung",
-    "description": "Verwalte deine Schulserver-Einstellungen und Benutzer."
+    "description": "Verwalte deine Schulserver-Einstellungen und Benutzer.",
+    "versionInfo": "Versionsübersicht",
+    "system": "System",
+    "versionMismatch": "Die Linuxmuster API-Version ist zu alt. Mindestens Version {{version}} wird benötigt."
   },
   "whiteboard": {
     "title": "WHITEBOARD",

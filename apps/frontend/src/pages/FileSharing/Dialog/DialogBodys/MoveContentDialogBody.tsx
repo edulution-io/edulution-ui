@@ -65,6 +65,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   } = useFileSharingMoveDialogStore();
 
   const firstRender = useRef(true);
+  const lastCleanedDialogShare = useRef<string | undefined>(undefined);
 
   const currentDirItem: DirectoryFileDTO = {
     filePath: currentPath,
@@ -85,13 +86,17 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   }, [selectedWebdavShare, clearDialogFilesOnShareChange]);
 
   useEffect(() => {
-    if (!selectedWebdavShare && !webdavShare) return;
+    const activeShare = selectedWebdavShare || webdavShare;
+    if (!activeShare) return;
+
+    const needsCleanup = lastCleanedDialogShare.current !== activeShare;
 
     if (showAllFiles) {
-      void fetchDialogFiles(selectedWebdavShare || webdavShare, currentPath);
+      void fetchDialogFiles(activeShare, currentPath, needsCleanup);
     } else {
-      void fetchDialogDirs(selectedWebdavShare || webdavShare, currentPath);
+      void fetchDialogDirs(activeShare, currentPath, needsCleanup);
     }
+    lastCleanedDialogShare.current = activeShare;
   }, [webdavShare, selectedWebdavShare, currentPath, showAllFiles]);
 
   useEffect(() => {
