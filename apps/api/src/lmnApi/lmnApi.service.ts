@@ -17,9 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import DEVICE_FIELDS from '@libs/deviceManagement/constants/deviceFields';
 import {
+  DEVICES_LMN_API_ENDPOINT,
   EXAM_MODE_LMN_API_ENDPOINT,
   LIST_MANAGEMENT_LMN_API_ENDPOINT,
   MANAGEMENT_GROUPS_LMN_API_ENDPOINT,
@@ -993,6 +995,82 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.SophomorixApplyFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getDevices(lmnApiToken: string, school: string): Promise<ListManagementEntry[]> {
+    try {
+      const response = await this.request<ListManagementEntry[]>(
+        HttpMethods.GET,
+        `${DEVICES_LMN_API_ENDPOINT}/${school}`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetDevicesFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async saveDevices(
+    lmnApiToken: string,
+    school: string,
+    data: ListManagementEntry[],
+  ): Promise<ListManagementEntry[]> {
+    const endpoint = `${DEVICES_LMN_API_ENDPOINT}/${school}`;
+    const sanitized = data.map((entry) => {
+      const clean: Record<string, string | null> = {};
+      DEVICE_FIELDS.forEach((field) => {
+        clean[field] = entry[field] ?? '';
+      });
+      return clean;
+    });
+    const payload = { data: sanitized };
+    try {
+      const response = await this.request<ListManagementEntry[]>(HttpMethods.POST, endpoint, payload, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        Logger.error(
+          `saveDevices failed: status=${error.response?.status} data=${JSON.stringify(error.response?.data)}`,
+          LmnApiService.name,
+        );
+      } else {
+        Logger.error(`saveDevices failed: ${String(error)}`, LmnApiService.name);
+      }
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SaveDevicesFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getImportDevices(lmnApiToken: string, school: string): Promise<void> {
+    try {
+      await this.request<unknown>(HttpMethods.GET, `${DEVICES_LMN_API_ENDPOINT}/${school}/import-devices`, undefined, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        timeout: 120000,
+      });
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.ImportDevicesFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
         LmnApiService.name,

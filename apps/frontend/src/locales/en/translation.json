@@ -260,7 +260,10 @@
       "GetManagementListFailed": "Failed to get management list",
       "SaveManagementListFailed": "Failed to save management list",
       "SophomorixCheckFailed": "Sophomorix check failed",
-      "SophomorixApplyFailed": "Sophomorix apply failed"
+      "SophomorixApplyFailed": "Sophomorix apply failed",
+      "GetDevicesFailed": "Failed to load device list",
+      "SaveDevicesFailed": "Failed to save device list",
+      "ImportDevicesFailed": "Device import failed"
     }
   },
   "ticketsystem": {
@@ -887,6 +890,58 @@
       "L": "Locked",
       "K": "Killable",
       "R": "Removable"
+    }
+  },
+  "deviceManagement": {
+    "menuTitle": "Device Management",
+    "title": "Devices",
+    "description": "View and manage devices.",
+    "addDevice": "Add device",
+    "duplicateDevice": "Duplicate device",
+    "apply": "Apply",
+    "applyConfirmTitle": "Apply device list",
+    "applyConfirmMessage": "The device list will be saved and immediately imported. Do you want to continue?",
+    "applyStarted": "Applying device list...",
+    "applyCompleted": "Device list applied successfully",
+    "listSaved": "Device list saved successfully",
+    "validationFailed": "Please fix all invalid fields before saving",
+    "duplicateFound": "Duplicate entries found for hostname, MAC, or IP",
+    "columns": {
+      "room": "Room",
+      "hostname": "Hostname",
+      "group": "Group",
+      "mac": "MAC",
+      "ip": "IP",
+      "sophomorixRole": "Sophomorix Role",
+      "pxeFlag": "PXE"
+    },
+    "roles": {
+      "addc": "Domain Controller",
+      "byod": "BYOD",
+      "classroom-studentcomputer": "Classroom Student Computer",
+      "classroom-teachercomputer": "Classroom Teacher Computer",
+      "faculty-teachercomputer": "Faculty Teacher Computer",
+      "iponly": "IP-Only",
+      "mobile": "Mobile",
+      "printer": "Printer",
+      "router": "Router",
+      "server": "Server",
+      "staffcomputer": "Staff Computer",
+      "switch": "Switch",
+      "thinclient": "Thin Client",
+      "voip": "VOIP",
+      "wlan": "WLan"
+    },
+    "pxeFlags": {
+      "0": "No PXE",
+      "1": "Linbo-PXE",
+      "2": "Linbo-PXE + OPSI-PXE",
+      "3": "OPSI-PXE"
+    },
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Drop file here to import",
+      "download": "CSV Download"
     }
   },
   "select": "Select",
@@ -1842,6 +1897,7 @@
     "date": "Date",
     "time": "Time",
     "revert": "Revert",
+    "duplicate": "Duplicate",
     "restart": "Restart",
     "kill": "Kill",
     "install": "Install",

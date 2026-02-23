@@ -25,6 +25,7 @@ import {
   USER_MANAGEMENT_EXTRASTUDENTS_PATH,
   USER_MANAGEMENT_GLOBALADMINS_LOCATION,
   USER_MANAGEMENT_GLOBALADMINS_PATH,
+  USER_MANAGEMENT_LOCATION,
   USER_MANAGEMENT_PARENTS_LOCATION,
   USER_MANAGEMENT_PARENTS_PATH,
   USER_MANAGEMENT_SCHOOLADMINS_LOCATION,
@@ -102,7 +103,7 @@ const useRegisterUserManagementSections = () => {
   );
 
   useEffect(() => {
-    setSections(visibleSections);
+    setSections(visibleSections, USER_MANAGEMENT_LOCATION);
     return () => setSections([]);
   }, [visibleSections, setSections]);
 };

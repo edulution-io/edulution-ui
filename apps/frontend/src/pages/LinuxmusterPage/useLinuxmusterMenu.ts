@@ -20,7 +20,7 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faCircleInfo, faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faDesktop, faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
 import {
   LINUXMUSTER_INFO_LOCATION,
@@ -30,6 +30,10 @@ import {
   USER_MANAGEMENT_STUDENTS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import {
+  DEVICE_MANAGEMENT_LOCATION,
+  DEVICE_MANAGEMENT_PATH,
+} from '@libs/deviceManagement/constants/deviceManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -45,6 +49,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
     () => navigate(`/${USER_MANAGEMENT_STUDENTS_PATH}/${USER_MANAGEMENT_TABS.TABLE}`),
     [navigate],
   );
+  const navigateToDevices = useCallback(() => navigate(`/${DEVICE_MANAGEMENT_PATH}`), [navigate]);
 
   return useMemo(
     () => ({
@@ -59,25 +64,27 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faGrip,
           action: navigateToLinuxmuster,
         },
-        ...(isLmn
-          ? [
-              {
-                id: USER_MANAGEMENT_LOCATION,
-                label: 'usermanagement.menuTitle',
-                icon: faListCheck,
-                action: navigateToUserManagement,
-              },
-              {
-                id: LINUXMUSTER_INFO_LOCATION,
-                label: 'linuxmuster.versionInfo',
-                icon: faCircleInfo,
-                action: navigateToInfo,
-              },
-            ]
-          : []),
+        {
+          id: USER_MANAGEMENT_LOCATION,
+          label: 'usermanagement.menuTitle',
+          icon: faListCheck,
+          action: navigateToUserManagement,
+        },
+        {
+          id: DEVICE_MANAGEMENT_LOCATION,
+          label: 'deviceManagement.menuTitle',
+          icon: faDesktop,
+          action: navigateToDevices,
+        },
+        {
+          id: LINUXMUSTER_INFO_LOCATION,
+          label: 'linuxmuster.versionInfo',
+          icon: faCircleInfo,
+          action: navigateToInfo,
+        },
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToInfo],
+    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToDevices, navigateToInfo],
   );
 };
 
