@@ -20,22 +20,26 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
+import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 
 interface ChatViewProps {
   adapter: ChatAdapter;
   title?: string;
+  models?: AiChatModelUserDto[];
+  selectedModelId?: string | null;
+  onModelChange?: (id: string | null) => void;
 }
 
-const ChatView: React.FC<ChatViewProps> = ({ adapter, title }) => {
+const ChatView: React.FC<ChatViewProps> = ({ adapter, title, models, selectedModelId, onModelChange }) => {
   const { t } = useTranslation();
   const { messages, input, setInput, handleSubmit, isLoading, error } = adapter;
 
   return (
     <div className="bg-glass flex h-full flex-col">
       {title && (
-        <div className="border-b border-muted px-4 py-3">
+        <div className="flex items-center gap-4 border-b border-muted px-4 py-3">
           <h3 className="font-semibold text-background">{title}</h3>
         </div>
       )}
@@ -56,6 +60,9 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title }) => {
         onChange={setInput}
         onSubmit={handleSubmit}
         isLoading={isLoading}
+        models={models}
+        selectedModelId={selectedModelId}
+        onModelChange={onModelChange}
       />
     </div>
   );

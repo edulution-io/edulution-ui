@@ -39,6 +39,8 @@ import PathValidationErrorMessages from '@libs/common/constants/path-validation-
 import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
 import ChatErrorMessages from '@libs/chat/types/chatErrorMessages';
 import AiChatErrorMessages from '@libs/chat/types/aiChatErrorMessages';
+import AiServiceErrorMessages from '@libs/aiService/types/aiServiceErrorMessages';
+import AiChatModelErrorMessages from '@libs/aiChatModel/types/aiChatModelErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -62,6 +64,8 @@ type ErrorMessage =
   | PathValidationErrorMessages
   | WireguardErrorMessages
   | ChatErrorMessages
-  | AiChatErrorMessages;
+  | AiChatErrorMessages
+  | AiServiceErrorMessages
+  | AiChatModelErrorMessages;
 
 export default ErrorMessage;

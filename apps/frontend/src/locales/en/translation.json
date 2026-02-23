@@ -35,7 +35,23 @@
     "refreshGroups": "Refresh groups",
     "newChat": "New Chat",
     "startNewAiChat": "Start a new AI conversation",
-    "deleteChat": "Delete chat"
+    "deleteChat": "Delete chat",
+    "aiChatModel": {
+      "createNew": "Create AI Chat Model",
+      "edit": "Edit AI Chat Model",
+      "delete": "Delete AI Chat Model",
+      "confirmDelete": "Do you really want to delete this AI chat model?",
+      "name": "Name",
+      "aiService": "AI Service",
+      "systemPrompt": "System Prompt",
+      "accessGroups": "Access Groups",
+      "isActive": "Active",
+      "selectModel": "Select Model",
+      "filterPlaceHolderText": "Search AI chat models...",
+      "createdSuccessfully": "AI chat model created successfully",
+      "updatedSuccessfully": "AI chat model updated successfully",
+      "deletedSuccessfully": "AI chat model deleted successfully"
+    }
   },
   "bulletinboard": {
     "settings": "Settings",
@@ -1180,6 +1196,29 @@
     "info": {
       "title": "Info"
     },
+    "aiServices": {
+      "title": "AI Services",
+      "provider": "Provider",
+      "model": "Model",
+      "isActive": "Active",
+      "baseUrl": "Base URL",
+      "apiKey": "API Key",
+      "namePlaceholder": "Service name",
+      "baseUrlPlaceholder": "https://...",
+      "apiKeyPlaceholder": "Enter API key",
+      "modelPlaceholder": "Select a model",
+      "loadingModels": "Loading models...",
+      "fetchModelsFailed": "Failed to load available models",
+      "purpose": "Purpose",
+      "searchPlaceholder": "Search AI services...",
+      "createAiService": "Create AI Service",
+      "editAiService": "Edit AI Service",
+      "deleteAiService": "Delete AI Service",
+      "confirmDelete": "Do you really want to delete this AI service?",
+      "createdSuccessfully": "AI service created successfully",
+      "updatedSuccessfully": "AI service updated successfully",
+      "deletedSuccessfully": "AI service deleted successfully"
+    },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
@@ -1261,7 +1300,7 @@
           "title": "WireGuard Peers",
           "description": "Manage WireGuard VPN peers and site-to-site connections here."
         },
-        "chat": {
+        "chatFeatures": {
           "title": "Chat Features",
           "description": "Configure which chat features are available to users."
         },
@@ -2139,7 +2178,9 @@
     "chatAiChatEnabledTitle": "AI Chat",
     "chatAiChatEnabledDescription": "Enable or disable the AI chat feature.",
     "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
-    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat."
+    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat.",
+    "chatAiChatModelTableTitle": "AI Chat Models",
+    "chatAiChatModelTableDescription": "Configure AI chat models with specific AI services and access groups."
   },
   "mails": {
     "errors": {

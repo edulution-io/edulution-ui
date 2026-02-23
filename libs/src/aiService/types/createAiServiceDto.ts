@@ -16,3 +16,18 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
+
+import AiProviderType from '@libs/aiService/types/aiProviderType';
+import AiServicePurposeType from '@libs/aiService/types/aiServicePurposeType';
+
+interface CreateAiServiceDto {
+  name: string;
+  provider: AiProviderType;
+  baseUrl: string;
+  apiKey: string;
+  model: string;
+  purpose: AiServicePurposeType;
+  isActive: boolean;
+}
+
+export default CreateAiServiceDto;

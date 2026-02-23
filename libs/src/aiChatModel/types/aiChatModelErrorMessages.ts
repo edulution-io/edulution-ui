@@ -17,9 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface AiChatConfig {
-  assistantFirstName?: string;
-  assistantLastName?: string;
-}
+import AI_CHAT_MODEL_ERROR_MESSAGES from '@libs/aiChatModel/constants/aiChatModelErrorMessages';
 
-export default AiChatConfig;
+type AiChatModelErrorMessages = (typeof AI_CHAT_MODEL_ERROR_MESSAGES)[keyof typeof AI_CHAT_MODEL_ERROR_MESSAGES];
+
+export default AiChatModelErrorMessages;

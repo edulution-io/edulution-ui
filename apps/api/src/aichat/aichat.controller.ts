@@ -36,11 +36,13 @@ import { Response } from 'express';
 import { UIMessage } from 'ai';
 import APPS from '@libs/appconfig/constants/apps';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
+import extractTextFromParts from '@libs/chat/utils/extractTextFromParts';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 import ChatFeatureGuard from '../common/guards/chatFeature.guard';
 import AiChatService from './aichat.service';
+import AiChatModelService from '../ai-chat-model/ai-chat-model.service';
 
 @ApiTags(APPS.AICHAT)
 @ApiBearerAuth()
@@ -48,12 +50,10 @@ import AiChatService from './aichat.service';
 @UseGuards(ChatFeatureGuard)
 @Controller(APPS.AICHAT)
 class AiChatController {
-  constructor(private readonly aiChatService: AiChatService) {}
-
-  @Get('config')
-  getConfig() {
-    return this.aiChatService.getConfig();
-  }
+  constructor(
+    private readonly aiChatService: AiChatService,
+    private readonly aiChatModelService: AiChatModelService,
+  ) {}
 
   @Get('conversations')
   async getConversations(@GetCurrentUser() currentUser: JwtUser) {
@@ -89,24 +89,32 @@ class AiChatController {
     return this.aiChatService.getMessages(id, currentUser.preferred_username, limit, offset);
   }
 
+  @Get('models')
+  async getAccessibleModels(@GetCurrentUser() currentUser: JwtUser) {
+    return this.aiChatModelService.findAccessibleModels(currentUser.ldapGroups);
+  }
+
   @Post('chat')
   async chat(
-    @Body() body: { id: string; messages: UIMessage[] },
+    @Body() body: { id: string; messages: UIMessage[]; modelConfigId?: string },
     @Res() res: Response,
     @GetCurrentUser() currentUser: JwtUser,
   ) {
-    const { id: conversationId, messages } = body;
+    const { id: conversationId, messages, modelConfigId } = body;
     const username = currentUser.preferred_username;
 
-    const { result } = await this.aiChatService.streamChat(conversationId, messages, username);
+    const { result } = await this.aiChatService.streamChat(
+      conversationId,
+      messages,
+      username,
+      currentUser.ldapGroups,
+      modelConfigId,
+    );
 
     result.pipeUIMessageStreamToResponse(res, {
       sendReasoning: true,
       onFinish: async ({ responseMessage }) => {
-        const textContent = responseMessage.parts
-          .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
-          .map((part) => part.text)
-          .join('');
+        const textContent = extractTextFromParts(responseMessage.parts);
 
         if (textContent) {
           await this.aiChatService.saveMessage(conversationId, CHAT_ROLES.ASSISTANT, textContent, username);

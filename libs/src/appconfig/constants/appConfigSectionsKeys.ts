@@ -33,7 +33,7 @@ const AppConfigSectionsKeys = {
   urlHandling: 'urlHandling',
   appLogo: 'appLogo',
   wireguard: 'wireguard',
-  chat: 'chat',
+  chat: 'chatFeatures',
 } as const;
 
 export default AppConfigSectionsKeys;

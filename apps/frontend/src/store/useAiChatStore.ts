@@ -19,48 +19,40 @@
 
 import { create } from 'zustand';
 import AiConversation from '@libs/chat/types/aiConversation';
-import AiChatConfig from '@libs/chat/types/aiChatConfig';
 import AiChatMessageResponse from '@libs/chat/types/aiChatMessageResponse';
+import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import {
   AI_CHAT_CONVERSATIONS_ENDPOINT,
-  AI_CHAT_CONFIG_ENDPOINT,
+  AI_CHAT_MODELS_ENDPOINT,
   getAiChatMessagesEndpoint,
 } from '@libs/chat/constants/chatApiEndpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
-const DEFAULT_CONVERSATION_TITLE = 'New Chat';
-
 interface AiChatStore {
   conversations: AiConversation[];
   activeConversationId: string | null;
-  config: AiChatConfig | null;
   isLoading: boolean;
   error: string | null;
-  fetchConfig: () => Promise<void>;
+  availableModels: AiChatModelUserDto[];
+  selectedModelId: string | null;
   fetchConversations: () => Promise<void>;
-  createConversation: () => Promise<string | null>;
+  createConversation: (title: string) => Promise<string | null>;
   deleteConversation: (id: string) => Promise<void>;
   setActiveConversation: (id: string | null) => void;
   updateConversationTitle: (id: string, title: string) => Promise<void>;
   fetchMessages: (conversationId: string) => Promise<AiChatMessageResponse[]>;
+  fetchAvailableModels: () => Promise<void>;
+  setSelectedModelId: (id: string | null) => void;
 }
 
-const useAiChatStore = create<AiChatStore>((set) => ({
+const useAiChatStore = create<AiChatStore>((set, get) => ({
   conversations: [],
   activeConversationId: null,
-  config: null,
   isLoading: false,
   error: null,
-
-  fetchConfig: async () => {
-    try {
-      const response = await eduApi.get<AiChatConfig>(AI_CHAT_CONFIG_ENDPOINT);
-      set({ config: response.data });
-    } catch (error) {
-      handleApiError(error, set);
-    }
-  },
+  availableModels: [],
+  selectedModelId: null,
 
   fetchConversations: async () => {
     set({ isLoading: true });
@@ -74,10 +66,10 @@ const useAiChatStore = create<AiChatStore>((set) => ({
     }
   },
 
-  createConversation: async () => {
+  createConversation: async (title) => {
     try {
       const response = await eduApi.post<AiConversation>(AI_CHAT_CONVERSATIONS_ENDPOINT, {
-        title: DEFAULT_CONVERSATION_TITLE,
+        title,
       });
       const conversation = response.data;
       set((state) => ({
@@ -95,7 +87,7 @@ const useAiChatStore = create<AiChatStore>((set) => ({
     try {
       await eduApi.delete(`${AI_CHAT_CONVERSATIONS_ENDPOINT}/${id}`);
       set((state) => {
-        const filtered = state.conversations.filter((c) => c.id !== id);
+        const filtered = state.conversations.filter((conversation) => conversation.id !== id);
         const isActive = state.activeConversationId === id;
         return {
           conversations: filtered,
@@ -117,7 +109,7 @@ const useAiChatStore = create<AiChatStore>((set) => ({
       return response.data;
     } catch (error) {
       handleApiError(error, set);
-      return [] as AiChatMessageResponse[];
+      return [];
     }
   },
 
@@ -125,12 +117,29 @@ const useAiChatStore = create<AiChatStore>((set) => ({
     try {
       await eduApi.patch(`${AI_CHAT_CONVERSATIONS_ENDPOINT}/${id}`, { title });
       set((state) => ({
-        conversations: state.conversations.map((c) => (c.id === id ? { ...c, title } : c)),
+        conversations: state.conversations.map((conversation) =>
+          conversation.id === id ? { ...conversation, title } : conversation,
+        ),
       }));
     } catch (error) {
       handleApiError(error, set);
     }
   },
+
+  fetchAvailableModels: async () => {
+    try {
+      const response = await eduApi.get<AiChatModelUserDto[]>(AI_CHAT_MODELS_ENDPOINT);
+      const models = response.data;
+      const currentSelectedId = get().selectedModelId;
+      const isCurrentStillAvailable = models.some((model) => model.id === currentSelectedId);
+      const selectedModelId = isCurrentStillAvailable ? currentSelectedId : (models[0]?.id ?? null);
+      set({ availableModels: models, selectedModelId });
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
+
+  setSelectedModelId: (id) => set({ selectedModelId: id }),
 }));
 
 export default useAiChatStore;

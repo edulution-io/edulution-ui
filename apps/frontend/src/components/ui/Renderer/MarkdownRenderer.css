@@ -46,3 +46,12 @@ html.dark .w-md-editor-preview {
   height: 18px;
   width: 18px;
 }
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex {
+  max-width: 100%;
+}

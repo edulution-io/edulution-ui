@@ -22,6 +22,7 @@ const GLOBAL_SETTINGS_TABS = {
   GENERAL_SETTINGS: 'global-settings',
   USER_ADMINISTRATION: 'user-administration',
   INFO: 'info',
+  AI_SERVICES: 'ai-services',
 } as const;
 
 export default GLOBAL_SETTINGS_TABS;

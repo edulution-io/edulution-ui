@@ -38,6 +38,8 @@
     "npm": "^10.9.4"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.44",
+    "@ai-sdk/google": "^3.0.29",
     "@ai-sdk/openai": "^3.0.26",
     "@ai-sdk/react": "^3.0.81",
     "@dnd-kit/core": "^6.3.1",
@@ -128,6 +130,7 @@
     "input-otp": "^1.2.4",
     "ioredis": "^5.6.0",
     "js-beautify": "^1.15.4",
+    "katex": "^0.16.32",
     "keycloak-js": "^26.2.0",
     "keyv": "^5.3.3",
     "ldapts": "^8.0.9",
@@ -154,7 +157,9 @@
     "react-router-dom": "^6.28.2",
     "reflect-metadata": "^0.1.14",
     "rehype-highlight": "^7.0.2",
+    "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
     "rxjs": "^7.8.0",
     "sass": "^1.70.0",
     "shadcn": "^2.9.3",

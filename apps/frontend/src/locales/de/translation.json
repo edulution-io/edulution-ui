@@ -35,7 +35,23 @@
     "refreshGroups": "Gruppen aktualisieren",
     "newChat": "Neuer Chat",
     "startNewAiChat": "Starte eine neue KI-Unterhaltung",
-    "deleteChat": "Chat löschen"
+    "deleteChat": "Chat löschen",
+    "aiChatModel": {
+      "createNew": "AI-Chat-Modell erstellen",
+      "edit": "AI-Chat-Modell bearbeiten",
+      "delete": "AI-Chat-Modell löschen",
+      "confirmDelete": "Möchten Sie dieses AI-Chat-Modell wirklich löschen?",
+      "name": "Name",
+      "aiService": "AI-Dienst",
+      "systemPrompt": "System-Prompt",
+      "accessGroups": "Zugriffsgruppen",
+      "isActive": "Aktiv",
+      "selectModel": "Modell auswählen",
+      "filterPlaceHolderText": "AI-Chat-Modelle suchen...",
+      "createdSuccessfully": "AI-Chat-Modell erfolgreich erstellt",
+      "updatedSuccessfully": "AI-Chat-Modell erfolgreich aktualisiert",
+      "deletedSuccessfully": "AI-Chat-Modell erfolgreich gelöscht"
+    }
   },
   "bulletinboard": {
     "settings": "Einstellungen",
@@ -1183,6 +1199,29 @@
     "info": {
       "title": "Info"
     },
+    "aiServices": {
+      "title": "KI-Dienste",
+      "provider": "Anbieter",
+      "model": "Modell",
+      "isActive": "Aktiv",
+      "baseUrl": "Basis-URL",
+      "apiKey": "API-Schlüssel",
+      "namePlaceholder": "Dienstname",
+      "baseUrlPlaceholder": "https://...",
+      "apiKeyPlaceholder": "API-Schlüssel eingeben",
+      "modelPlaceholder": "Modell auswählen",
+      "loadingModels": "Modelle werden geladen...",
+      "fetchModelsFailed": "Verfügbare Modelle konnten nicht geladen werden",
+      "purpose": "Verwendungszweck",
+      "searchPlaceholder": "KI-Dienste suchen...",
+      "createAiService": "KI-Dienst erstellen",
+      "editAiService": "KI-Dienst bearbeiten",
+      "deleteAiService": "KI-Dienst löschen",
+      "confirmDelete": "Möchten Sie diesen KI-Dienst wirklich löschen?",
+      "createdSuccessfully": "KI-Dienst erfolgreich erstellt",
+      "updatedSuccessfully": "KI-Dienst erfolgreich aktualisiert",
+      "deletedSuccessfully": "KI-Dienst erfolgreich gelöscht"
+    },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
       "position": {
@@ -1264,7 +1303,7 @@
           "title": "WireGuard Peers",
           "description": "Hier können WireGuard VPN-Peers und Site-to-Site-Verbindungen verwaltet werden."
         },
-        "chat": {
+        "chatFeatures": {
           "title": "Chat-Funktionen",
           "description": "Lege fest, welche Chat-Funktionen den Nutzern zur Verfügung stehen."
         },
@@ -2160,7 +2199,9 @@
     "chatAiChatEnabledTitle": "AI Chat",
     "chatAiChatEnabledDescription": "Aktiviert oder deaktiviert die AI-Chat-Funktion.",
     "chatAiChatGroupsTitle": "Berechtigte Gruppen (AI Chat)",
-    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben."
+    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben.",
+    "chatAiChatModelTableTitle": "AI-Chat-Modelle",
+    "chatAiChatModelTableDescription": "Konfigurieren Sie AI-Chat-Modelle mit bestimmten AI-Diensten und Zugriffsgruppen."
   },
   "preview": {
     "image": "Bildvorschau",

@@ -20,29 +20,25 @@
 import { useState, useCallback, useMemo, useEffect, useRef, FormEvent } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
-import type ChatAdapter from '@libs/chat/types/chatAdapter';
 import type ChatMessage from '@libs/chat/types/chatMessage';
+import type ChatRole from '@libs/chat/types/chatRole';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
+import extractTextFromParts from '@libs/chat/utils/extractTextFromParts';
 import { AI_CHAT_API_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import eduApi from '@/api/eduApi';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useAiChatStore from '@/store/useAiChatStore';
+import getAuthHeaders from '@/utils/getAuthHeaders';
+import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 
 const TITLE_MAX_LENGTH = 50;
-
-const getAuthHeaders = (): Record<string, string> => {
-  const authHeader = eduApi.defaults.headers.Authorization;
-  if (typeof authHeader === 'string') {
-    return { Authorization: authHeader };
-  }
-  return {};
-};
+const VALID_CHAT_ROLES = new Set<string>([CHAT_ROLES.USER, CHAT_ROLES.ASSISTANT]);
 
 const useAiChat = (chatId: string): ChatAdapter => {
   const [input, setInput] = useState('');
   const titleSetRef = useRef(false);
-  const { updateConversationTitle, config } = useAiChatStore();
+  const createdAtMapRef = useRef(new Map<string, string>());
+  const updateConversationTitle = useAiChatStore((state) => state.updateConversationTitle);
   const username = useUserStore((state) => state.user?.username);
 
   const transport = useMemo(
@@ -50,13 +46,18 @@ const useAiChat = (chatId: string): ChatAdapter => {
       new DefaultChatTransport({
         api: `${EDU_API_URL}/${AI_CHAT_API_ENDPOINT}`,
         headers: getAuthHeaders,
+        body: () => {
+          const { selectedModelId: modelConfigId } = useAiChatStore.getState();
+          if (modelConfigId) return { modelConfigId };
+          return {};
+        },
       }),
     [],
   );
 
   const { messages: uiMessages, sendMessage, setMessages, status, error } = useChat({ transport, id: chatId });
   const messagesLoadedRef = useRef(false);
-  const { fetchMessages } = useAiChatStore();
+  const fetchMessages = useAiChatStore((state) => state.fetchMessages);
 
   useEffect(() => {
     if (messagesLoadedRef.current) return;
@@ -67,11 +68,14 @@ const useAiChat = (chatId: string): ChatAdapter => {
 
       titleSetRef.current = true;
 
-      const restored: UIMessage[] = dbMessages.reverse().map((msg) => ({
-        id: msg.id,
-        role: msg.role as UIMessage['role'],
-        parts: [{ type: 'text' as const, text: msg.content }],
-      }));
+      const restored: UIMessage[] = [...dbMessages].reverse().map((message) => {
+        createdAtMapRef.current.set(message.id, message.createdAt);
+        return {
+          id: message.id,
+          role: message.role as UIMessage['role'],
+          parts: [{ type: 'text' as const, text: message.content }],
+        };
+      });
 
       setMessages(restored);
     });
@@ -79,36 +83,32 @@ const useAiChat = (chatId: string): ChatAdapter => {
 
   const messages = useMemo<ChatMessage[]>(
     () =>
-      uiMessages.map((msg) => {
-        const textContent = msg.parts
-          .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
-          .map((part) => part.text)
-          .join('');
+      uiMessages
+        .filter((message) => VALID_CHAT_ROLES.has(message.role))
+        .map((message) => {
+          const textContent = extractTextFromParts(message.parts);
 
-        const isAssistant = msg.role === CHAT_ROLES.ASSISTANT;
+          if (!createdAtMapRef.current.has(message.id)) {
+            createdAtMapRef.current.set(message.id, new Date().toISOString());
+          }
 
-        return {
-          id: msg.id,
-          role: msg.role as ChatMessage['role'],
-          content: textContent,
-          createdAt: new Date(),
-          createdBy: isAssistant ? CHAT_ROLES.ASSISTANT : username,
-          createdByUserFirstName: isAssistant ? config?.assistantFirstName : undefined,
-          createdByUserLastName: isAssistant ? config?.assistantLastName : undefined,
-        };
-      }),
-    [uiMessages, username, config],
+          return {
+            id: message.id,
+            role: message.role as ChatRole,
+            content: textContent,
+            createdAt: createdAtMapRef.current.get(message.id)!,
+            createdBy: message.role === CHAT_ROLES.ASSISTANT ? CHAT_ROLES.ASSISTANT : username,
+          };
+        }),
+    [uiMessages, username],
   );
 
   useEffect(() => {
     if (titleSetRef.current) return;
-    const firstUserMessage = uiMessages.find((msg) => msg.role === CHAT_ROLES.USER);
+    const firstUserMessage = uiMessages.find((message) => message.role === CHAT_ROLES.USER);
     if (!firstUserMessage) return;
 
-    const textContent = firstUserMessage.parts
-      .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
-      .map((part) => part.text)
-      .join('');
+    const textContent = extractTextFromParts(firstUserMessage.parts);
 
     if (textContent.trim()) {
       void updateConversationTitle(chatId, textContent.substring(0, TITLE_MAX_LENGTH));

@@ -32,7 +32,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
   <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
     <div
       className={cn(
-        'max-w-[75%] overflow-hidden rounded-2xl px-4 py-2',
+        'min-w-0 max-w-[75%] overflow-hidden rounded-2xl px-4 py-2',
         isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
       )}
     >

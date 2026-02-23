@@ -70,8 +70,8 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
         }
 
         addMessage(payload);
-      } catch (err) {
-        console.error('Failed to parse SSE chat message', err);
+      } catch (parseError) {
+        console.error('Failed to parse SSE chat message', parseError);
       }
     },
     [currentUsername, addMessage],
