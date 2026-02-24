@@ -236,7 +236,7 @@ class SurveysController {
   }
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
-  async serveFiles(
+  async serveFile(
     @Param('surveyId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) surveyId: string,
     @Param('questionId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) questionId: string,
     @Param('filename', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) filename: string,
@@ -250,7 +250,7 @@ class SurveysController {
   }
 
   @Get(`${FILES}/:filename`)
-  async serveTempFiles(
+  async serveTempFile(
     @Param('filename', new ValidatePathPipe(SURVEYS_TEMP_FILES_PATH)) filename: string,
     @Req() req: Request,
     @Res() res: Response,
