@@ -75,13 +75,13 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
     {
       labelTranslationId: 'classmanagement.hide',
       name: 'hide',
-      disabled,
+      disabled: !isSuperAdmin,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'classmanagement.isJoinable',
       name: 'join',
-      disabled,
+      disabled: !isSuperAdmin,
       component: 'checkbox',
     },
     {
