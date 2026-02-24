@@ -33,6 +33,7 @@ import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useDebounceValue } from 'usehooks-ts';
+import useMedia from '@/hooks/useMedia';
 import { VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
 
 const MULTIPLE_SELECTOR_BASE_CLASSES =
@@ -209,6 +210,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>,
   ) => {
+    const { isMobileView, isTabletView } = useMedia();
     const inputRef = useRef<HTMLInputElement>(null);
     const triggerRef = useRef<HTMLDivElement>(null);
     const popoverContentRef = useRef<HTMLDivElement>(null);
@@ -514,7 +516,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                   className={cn(
                     'w-full overflow-y-auto rounded-lg text-p outline-none animate-in scrollbar-thin',
                     variantClasses[variant],
-                    totalItemCount > 5 && 'pb-32',
+                    totalItemCount > 5 && (isMobileView || isTabletView) && 'pb-32',
                   )}
                 >
                   {isLoading ? (

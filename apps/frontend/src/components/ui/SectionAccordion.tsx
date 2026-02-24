@@ -114,7 +114,7 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
       type="multiple"
       value={openItems}
       onValueChange={handleValueChange}
-      className={cn('w-full space-y-4 pb-4', className)}
+      className={cn('w-full space-y-4 pb-4 pt-2', className)}
     >
       {children}
     </Root>
