@@ -32,6 +32,7 @@ const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
   filesharing: 'edulution-onlyoffice',
   [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
   wireguard: 'edulution-wireguard',
+  learningmanagement: 'edulution-moodle',
 } as const;
 
 export default DOCKER_APPLICATION_LIST;

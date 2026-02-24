@@ -2208,6 +2208,18 @@
     "EDU_WG_DNS": {
       "title": "Serveur DNS",
       "description": "L'adresse du serveur DNS pour la connexion VPN."
+    },
+    "MOODLE_WWWROOT": {
+      "title": "Racine WWW",
+      "description": "L'URL complète où Moodle est accessible (par ex. https://moodle.example.com)."
+    },
+    "MOODLE_ADMIN_EMAIL": {
+      "title": "E-mail administrateur",
+      "description": "L'adresse e-mail de l'administrateur Moodle."
+    },
+    "MOODLE_SITE_NAME": {
+      "title": "Nom du site",
+      "description": "Le nom affiché de l'instance Moodle."
     }
   },
   "edulution-manager": {

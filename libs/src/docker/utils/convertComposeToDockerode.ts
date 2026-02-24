@@ -65,13 +65,15 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: string },
     );
 
+    const cmd = Array.isArray(service.command) ? service.command : service.command?.split(' ');
+
     const containerOptions: ContainerCreateOptions = {
       name: service.container_name,
       Image: service.image,
       OpenStdin: service.stdin_open,
       StopTimeout: stopTimeOut,
       Env: service.environment || undefined,
-      Cmd: service.command ? service.command.split(' ') : undefined,
+      Cmd: cmd,
       HostConfig: {
         Binds: binds,
         PortBindings: portBindings,

@@ -21,9 +21,11 @@ import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@
 import Docker from 'dockerode';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { ensureDirSync, writeFileSync } from 'fs-extra';
+import { ensureDirSync, existsSync, readFileSync, writeFileSync } from 'fs-extra';
 import { join } from 'path';
+import { parse } from 'yaml';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import generateSecureToken from '@libs/common/utils/generateSecureToken';
 import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
@@ -212,6 +214,33 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  private static readSavedEnvValues(applicationName: string, keys: string[]): Record<string, string> {
+    const filePath = join(APPS_FILES_PATH, applicationName, 'docker-compose.yml');
+    if (!existsSync(filePath)) return {};
+
+    try {
+      const content = readFileSync(filePath, 'utf-8');
+      const doc = parse(content) as { services?: Record<string, { environment?: Record<string, string> }> };
+      if (!doc.services) return {};
+
+      const allEnvs = Object.values(doc.services).reduce<Record<string, string>>((acc, svc) => {
+        if (svc.environment && typeof svc.environment === 'object' && !Array.isArray(svc.environment)) {
+          Object.assign(acc, svc.environment);
+        }
+        return acc;
+      }, {});
+
+      return keys.reduce<Record<string, string>>((acc, key) => {
+        if (allEnvs[key]) {
+          acc[key] = allEnvs[key];
+        }
+        return acc;
+      }, {});
+    } catch {
+      return {};
+    }
+  }
+
   async replaceEnvVariables(
     createContainersDto: Docker.ContainerCreateOptions[],
     applicationName: string,
@@ -219,6 +248,14 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     const appConfigValues: Record<string, string> = {};
 
     switch (applicationName) {
+      case APPS.LEARNING_MANAGEMENT: {
+        const passwordKeys = ['MOODLE_DB_PASSWORD', 'MOODLE_DB_ROOT_PASSWORD', 'MOODLE_ADMIN_PASSWORD'];
+        const savedValues = DockerService.readSavedEnvValues(applicationName, passwordKeys);
+        passwordKeys.forEach((key) => {
+          appConfigValues[key] = savedValues[key] || generateSecureToken();
+        });
+        break;
+      }
       case APPS.WIREGUARD: {
         const wireguardConfig = await this.appConfigService.getAppConfigByName(APPS.WIREGUARD);
         if (wireguardConfig?.options?.apiKey) {

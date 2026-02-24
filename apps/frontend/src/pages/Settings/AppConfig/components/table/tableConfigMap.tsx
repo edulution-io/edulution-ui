@@ -117,6 +117,23 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       hideColumnsInTabletView: [],
     }),
   ],
+  [APPS.LEARNING_MANAGEMENT]: [
+    createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
+      columns: DockerContainerTableColumns,
+      useStore: useDockerApplicationStore,
+      dialogBody: (
+        <CreateDockerContainerDialog
+          settingLocation={APPS.LEARNING_MANAGEMENT}
+          tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
+        />
+      ),
+      showAddButton: true,
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
+      filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
+      type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMS,
+    }),
+  ],
   [APPS.MAIL]: [
     createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
       columns: DockerContainerTableColumns,
