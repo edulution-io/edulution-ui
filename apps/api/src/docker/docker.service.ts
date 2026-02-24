@@ -267,17 +267,30 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         break;
     }
 
-    const newCreateContainersDto: Docker.ContainerCreateOptions[] = createContainersDto.map((service) => ({
-      ...service,
-      Env: service.Env?.map((env) =>
-        env.replace(/\${([^}]+)}/g, (match, varName: string) => {
-          if (appConfigValues[varName]) {
-            return appConfigValues[varName];
-          }
-          return process.env[varName] || match;
-        }),
-      ),
-    }));
+    const varPattern = /\${([^}]+)}/g;
+
+    const resolveVar = (match: string, expr: string): string => {
+      const sepIndex = expr.indexOf(':-');
+      const varName = sepIndex === -1 ? expr : expr.slice(0, sepIndex);
+      const defaultValue = sepIndex === -1 ? undefined : expr.slice(sepIndex + 2);
+      if (appConfigValues[varName]) return appConfigValues[varName];
+      if (process.env[varName]) return process.env[varName];
+      if (defaultValue !== undefined) return defaultValue;
+      return match;
+    };
+
+    const resolveVarsInValue = (value: unknown): unknown => {
+      if (typeof value === 'string') return value.replace(varPattern, resolveVar);
+      if (Array.isArray(value)) return value.map(resolveVarsInValue);
+      if (value && typeof value === 'object') {
+        return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveVarsInValue(v)]));
+      }
+      return value;
+    };
+
+    const newCreateContainersDto = createContainersDto.map(
+      (service) => resolveVarsInValue(service) as Docker.ContainerCreateOptions,
+    );
 
     return newCreateContainersDto;
   }
@@ -320,18 +333,17 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         }),
       );
 
-      await Promise.all(
-        newContainers.map(async (containerDto) => {
-          this.sseService.sendEventToUsers(
-            [SPECIAL_USERS.GLOBAL_ADMIN],
-            { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
-            SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
-          );
-          const container = await this.docker.createContainer(containerDto);
-          await container.start();
-          Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
-        }),
-      );
+      await newContainers.reduce(async (prev, containerDto) => {
+        await prev;
+        this.sseService.sendEventToUsers(
+          [SPECIAL_USERS.GLOBAL_ADMIN],
+          { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
+          SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
+        );
+        const container = await this.docker.createContainer(containerDto);
+        await container.start();
+        Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
+      }, Promise.resolve());
 
       if (applicationName && newContainers && originalComposeConfig) {
         DockerService.saveDockerCompose(applicationName, newContainers, originalComposeConfig);

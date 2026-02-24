@@ -20,8 +20,46 @@
 import { type ContainerCreateOptions } from 'dockerode';
 import type DockerCompose from '../types/dockerCompose';
 
+const NANOSECONDS_PER_SECOND = 1_000_000_000;
+
+const UNIT_TO_SECONDS: Record<string, number> = { m: 60, ms: 0.001, s: 1 };
+
+const parseDurationToNs = (duration: string | undefined): number | undefined => {
+  if (!duration) return undefined;
+  const match = duration.match(/^(\d+)(s|m|ms)$/);
+  if (!match) return undefined;
+  const [, value, unit] = match;
+  return Number(value) * (UNIT_TO_SECONDS[unit] ?? 1) * NANOSECONDS_PER_SECOND;
+};
+
+const normalizeEnv = (env: string[] | Record<string, string> | undefined): string[] | undefined => {
+  if (!env) return undefined;
+  if (Array.isArray(env)) return env;
+  return Object.entries(env).map(([key, value]) => `${key}=${value}`);
+};
+
+const topologicalSort = (services: DockerCompose['services']): string[] => {
+  const visited = new Set<string>();
+  const result: string[] = [];
+
+  const visit = (name: string): void => {
+    if (visited.has(name)) return;
+    visited.add(name);
+
+    const deps = services[name]?.depends_on;
+    const depNames = Array.isArray(deps) ? deps : Object.keys(deps ?? {});
+    depNames.forEach(visit);
+
+    result.push(name);
+  };
+
+  Object.keys(services).forEach(visit);
+  return result;
+};
+
 const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptions[] =>
-  Object.entries(compose.services).map(([serviceName, service]) => {
+  topologicalSort(compose.services).map((serviceName) => {
+    const service = compose.services[serviceName];
     const volumes = service.volumes?.reduce(
       (acc, volume) => {
         const [, containerPath] = volume.split(':');
@@ -67,13 +105,24 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
 
     const cmd = Array.isArray(service.command) ? service.command : service.command?.split(' ');
 
+    const healthcheck = service.healthcheck
+      ? {
+          Test: service.healthcheck.test,
+          Interval: parseDurationToNs(service.healthcheck.interval),
+          Timeout: parseDurationToNs(service.healthcheck.timeout),
+          StartPeriod: parseDurationToNs(service.healthcheck.start_period),
+          Retries: service.healthcheck.retries,
+        }
+      : undefined;
+
     const containerOptions: ContainerCreateOptions = {
-      name: service.container_name,
+      name: service.container_name || serviceName,
       Image: service.image,
       OpenStdin: service.stdin_open,
       StopTimeout: stopTimeOut,
-      Env: service.environment || undefined,
+      Env: normalizeEnv(service.environment),
       Cmd: cmd,
+      Healthcheck: healthcheck,
       HostConfig: {
         Binds: binds,
         PortBindings: portBindings,

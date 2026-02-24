@@ -23,15 +23,22 @@ type DockerCompose = {
       image: string;
       container_name?: string;
       volumes?: string[];
-      environment?: string[];
+      environment?: string[] | Record<string, string>;
       restart?: string;
       ports?: string[];
       command?: string | string[];
-      depends_on?: string[];
+      depends_on?: string[] | Record<string, unknown>;
       stdin_open?: boolean;
       stop_grace_period?: string;
       cap_add?: string[];
       sysctls?: string[];
+      healthcheck?: {
+        test?: string[];
+        interval?: string;
+        timeout?: string;
+        start_period?: string;
+        retries?: number;
+      };
     };
   };
   volumes?: {
