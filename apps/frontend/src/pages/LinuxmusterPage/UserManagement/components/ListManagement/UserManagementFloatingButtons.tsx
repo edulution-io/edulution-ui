@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { faCheck, faFileCsv, faRotateLeft, faSave, faUserPlus } from '@fortawesome/free-solid-svg-icons';
@@ -128,13 +128,14 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     }
   };
 
-  const initialCsv = managementList
-    ? entriesToCsvWithComments(
-        useUserManagementStore.getState().getListData(managementList).commentEntries,
-        useUserManagementStore.getState().getListData(managementList).managementListEntries,
-        managementList,
-      )
-    : '';
+  const initialCsv = useMemo(() => {
+    if (!isCsvDialogOpen || !managementList) return '';
+    return entriesToCsvWithComments(
+      useUserManagementStore.getState().getListData(managementList).commentEntries,
+      useUserManagementStore.getState().getListData(managementList).managementListEntries,
+      managementList,
+    );
+  }, [isCsvDialogOpen, managementList]);
 
   const handleCsvSave = (csvText: string) => {
     if (!managementList) return;

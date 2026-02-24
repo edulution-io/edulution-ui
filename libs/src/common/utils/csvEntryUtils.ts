@@ -24,7 +24,9 @@ const CSV_SEPARATOR = ';';
 const COMMENT_PREFIX = '#';
 
 const isCommentEntry = (entry: ListManagementEntry): boolean => {
-  const firstValue = Object.values(entry)[0];
+  const values = Object.values(entry);
+  if (values.length === 0) return false;
+  const firstValue = values[0];
   return typeof firstValue === 'string' && firstValue.trimStart().startsWith(COMMENT_PREFIX);
 };
 
@@ -43,7 +45,7 @@ const entriesToRows = <T extends { id: string }>(entries: ListManagementEntry[],
     const row: Record<string, string> = { id: crypto.randomUUID() };
 
     columns.forEach((col) => {
-      row[col.key] = (entry[col.apiKey] as string) ?? '';
+      row[col.key] = (entry[col.entryKey] as string) ?? '';
     });
 
     return row as T;
@@ -61,7 +63,7 @@ const rowsToEntries = <T>(
       index < originalEntries.length ? { ...originalEntries[index] } : emptyEntryFactory();
 
     columns.forEach((col) => {
-      base[col.apiKey] = (row as unknown as Record<string, string>)[col.key] ?? null;
+      base[col.entryKey] = (row as unknown as Record<string, string>)[col.key] ?? null;
     });
 
     return base;

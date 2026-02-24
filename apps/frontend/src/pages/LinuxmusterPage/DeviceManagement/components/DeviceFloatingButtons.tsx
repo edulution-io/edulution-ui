@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { faCheck, faFileCsv, faPlus, faRotateLeft, faSave } from '@fortawesome/free-solid-svg-icons';
@@ -99,10 +99,10 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
     useDeviceManagementStore.getState().setCommentEntries(commentEntries);
   };
 
-  const intialCsv = deviceEntriesToCsvWithComments(
-    useDeviceManagementStore.getState().commentEntries,
-    getFilteredEntries(),
-  );
+  const initialCsv = useMemo(() => {
+    if (!isCsvDialogOpen) return '';
+    return deviceEntriesToCsvWithComments(useDeviceManagementStore.getState().commentEntries, getFilteredEntries());
+  }, [isCsvDialogOpen]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
@@ -152,7 +152,7 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
           isOpen={isCsvDialogOpen}
           onClose={() => setIsCsvDialogOpen(false)}
           title={`/etc/linuxmuster/sophomorix/${school}/devices.csv`}
-          initialCsv={intialCsv}
+          initialCsv={initialCsv}
           onSave={handleCsvSave}
           downloadFilename="devices.csv"
         />

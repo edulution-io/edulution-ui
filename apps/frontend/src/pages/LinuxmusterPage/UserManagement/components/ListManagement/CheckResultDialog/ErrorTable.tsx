@@ -72,7 +72,7 @@ const ErrorTable: React.FC<ErrorTableProps> = ({ errorEntries, errorDetails }) =
                 <TableRow key={key}>
                   <TableCell>{parsed.filename}</TableCell>
                   {columns.map((col) => (
-                    <TableCell key={col.key}>{parsed.fields[col.apiKey] ?? ''}</TableCell>
+                    <TableCell key={col.key}>{parsed.fields[col.entryKey] ?? ''}</TableCell>
                   ))}
                   <TableCell className="text-red-400">{reason}</TableCell>
                 </TableRow>

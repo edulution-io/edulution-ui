@@ -19,7 +19,7 @@
 
 interface BaseColumnConfig {
   key: string;
-  apiKey: string;
+  entryKey: string;
 }
 
 export default BaseColumnConfig;
