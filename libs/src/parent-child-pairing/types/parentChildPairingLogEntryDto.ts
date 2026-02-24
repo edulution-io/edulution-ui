@@ -17,13 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as rootPackage from '../../../../package.json';
+import type ParentChildPairingLogActionType from './parentChildPairingLogActionType';
 
-const UNKNOWN = 'unknown';
+interface ParentChildPairingLogEntryDto {
+  action: ParentChildPairingLogActionType;
+  performedBy: string;
+  timestamp: string;
+  details?: string;
+}
 
-export default () => ({
-  version: process.env.APP_VERSION || rootPackage.version,
-  commitSha: process.env.COMMIT_SHA || UNKNOWN,
-  buildDate: process.env.BUILD_DATE || UNKNOWN,
-  buildNumber: process.env.BUILD_NUMBER || UNKNOWN,
-});
+export default ParentChildPairingLogEntryDto;

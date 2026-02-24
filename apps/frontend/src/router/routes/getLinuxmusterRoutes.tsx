@@ -22,6 +22,7 @@ import { Navigate, Route } from 'react-router-dom';
 import {
   LINUXMUSTER_INFO_LOCATION,
   LINUXMUSTER_PATH,
+  PARENT_ASSIGNMENT_LOCATION,
   USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
   USER_MANAGEMENT_GLOBALADMINS_LOCATION,
   USER_MANAGEMENT_LOCATION,
@@ -36,6 +37,7 @@ import { DEVICE_MANAGEMENT_LOCATION } from '@libs/deviceManagement/constants/dev
 import LinuxmusterEntryPage from '@/pages/LinuxmusterPage/LinuxmusterEntryPage';
 import LinuxmusterInfoPage from '@/pages/LinuxmusterPage/Info/LinuxmusterInfoPage';
 import UserManagementPage from '@/pages/LinuxmusterPage/UserManagement/UserManagementPage';
+import ParentAssignmentPage from '@/pages/LinuxmusterPage/ParentAssignment/ParentAssignmentPage';
 import DeviceManagementPage from '@/pages/LinuxmusterPage/DeviceManagement/DeviceManagementPage';
 
 const getLinuxmusterRoutes = () => [
@@ -144,6 +146,10 @@ const getLinuxmusterRoutes = () => [
         element={<UserManagementPage userType="globaladmins" />}
       />
     </Route>
+    <Route
+      path={PARENT_ASSIGNMENT_LOCATION}
+      element={<ParentAssignmentPage />}
+    />
     <Route
       path={DEVICE_MANAGEMENT_LOCATION}
       element={<DeviceManagementPage />}

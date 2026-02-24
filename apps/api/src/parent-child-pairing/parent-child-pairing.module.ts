@@ -17,13 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as rootPackage from '../../../../package.json';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import ParentChildPairingService from './parent-child-pairing.service';
+import ParentChildPairingController from './parent-child-pairing.controller';
+import { ParentChildPairing, ParentChildPairingSchema } from './parent-child-pairing.schema';
+import LmnApiModule from '../lmnApi/lmnApi.module';
 
-const UNKNOWN = 'unknown';
-
-export default () => ({
-  version: process.env.APP_VERSION || rootPackage.version,
-  commitSha: process.env.COMMIT_SHA || UNKNOWN,
-  buildDate: process.env.BUILD_DATE || UNKNOWN,
-  buildNumber: process.env.BUILD_NUMBER || UNKNOWN,
-});
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: ParentChildPairing.name, schema: ParentChildPairingSchema }]),
+    LmnApiModule,
+  ],
+  providers: [ParentChildPairingService],
+  controllers: [ParentChildPairingController],
+  exports: [ParentChildPairingService],
+})
+export default class ParentChildPairingModule {}

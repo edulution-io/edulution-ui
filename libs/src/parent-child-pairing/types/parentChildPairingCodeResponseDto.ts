@@ -17,13 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as rootPackage from '../../../../package.json';
+interface ParentChildPairingCodeResponseDto {
+  code: string;
+  expiresAt: string;
+}
 
-const UNKNOWN = 'unknown';
-
-export default () => ({
-  version: process.env.APP_VERSION || rootPackage.version,
-  commitSha: process.env.COMMIT_SHA || UNKNOWN,
-  buildDate: process.env.BUILD_DATE || UNKNOWN,
-  buildNumber: process.env.BUILD_NUMBER || UNKNOWN,
-});
+export default ParentChildPairingCodeResponseDto;

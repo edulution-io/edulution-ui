@@ -17,13 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as rootPackage from '../../../../package.json';
+const PARENT_CHILD_PAIRING_API_ENDPOINTS = {
+  BASE: 'parent-child-pairing',
+  CODE: 'code',
+  ALL: 'all',
+  STATUS: 'status',
+  RELATIONSHIPS: 'relationships',
+} as const;
 
-const UNKNOWN = 'unknown';
-
-export default () => ({
-  version: process.env.APP_VERSION || rootPackage.version,
-  commitSha: process.env.COMMIT_SHA || UNKNOWN,
-  buildDate: process.env.BUILD_DATE || UNKNOWN,
-  buildNumber: process.env.BUILD_NUMBER || UNKNOWN,
-});
+export default PARENT_CHILD_PAIRING_API_ENDPOINTS;
