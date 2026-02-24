@@ -33,6 +33,7 @@ enum LmnApiErrorMessage {
   TogglePrinterJoinedFailed = 'lmnApi.errors.TogglePrinterJoinedFailed',
   GetPrintersFailed = 'lmnApi.errors.GetPrintersFailed',
   GetUserSchoolClassFailed = 'lmnApi.errors.GetUserSchoolClassFailed',
+  UpdateSchoolClassFailed = 'lmnApi.errors.UpdateSchoolClassFailed',
   GetUserProjectsFailed = 'lmnApi.errors.GetUserProjectsFailed',
   GetUserFailed = 'lmnApi.errors.GetUserFailed',
   GetUsersFailed = 'lmnApi.errors.GetUsersFailed',

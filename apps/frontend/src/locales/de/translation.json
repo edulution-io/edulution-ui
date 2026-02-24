@@ -232,6 +232,7 @@
       "AddManagementGroupFailed": "Hinzufügen der Verwaltungsgruppe fehlgeschlagen",
       "GetUserSchoolClassesFailed": "Abrufen der Schulklassen des Benutzers fehlgeschlagen",
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
+      "UpdateSchoolClassFailed": "Aktualisierung der Schulklasse fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
       "GetUsersFailed": "Abrufen der Benutzer fehlgeschlagen",
@@ -639,6 +640,9 @@
       "createSuccess": "Projekt erfolgreich erstellt",
       "updateSuccess": "Projekt erfolgreich aktualisiert",
       "deleteSuccess": "Projekt erfolgreich gelöscht"
+    },
+    "schoolClass": {
+      "updateSuccess": "Schulklasse erfolgreich aktualisiert"
     },
     "sessions": {
       "createSuccess": "Sitzung erfolgreich erstellt",

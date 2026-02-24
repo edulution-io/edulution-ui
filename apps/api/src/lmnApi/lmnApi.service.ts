@@ -262,6 +262,34 @@ class LmnApiService {
     }
   }
 
+  public async updateSchoolClass(lmnApiToken: string, formValues: GroupFormDto): Promise<LmnApiSchoolClass> {
+    try {
+      const data = {
+        maillist: formValues.maillist,
+        mailalias: formValues.mailalias,
+        mailquota: formValues.mailquota ? +formValues.mailquota : undefined,
+        proxyAddresses: formValues.proxyAddresses,
+      };
+      const response = await this.request<LmnApiSchoolClass>(
+        HttpMethods.PATCH,
+        `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${formValues.name}`,
+        data,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.UpdateSchoolClassFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
     schoolClass: string,

@@ -266,13 +266,13 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     <form onSubmit={handleFormSubmit}>
       <DialogFooterButtons
         handleClose={onClose}
-        handleSubmit={item.createFunction ? () => {} : undefined}
+        handleSubmit={item.createFunction || item.updateFunction ? () => {} : undefined}
         handleDelete={item.createFunction && userGroupToEdit ? onDeleteButton : undefined}
         submitButtonType="submit"
         disableSubmit={disableDialogButtons}
         disableCancel={disableDialogButtons}
         disableDelete={disableDialogButtons}
-        cancelButtonText={item.createFunction ? 'cancel' : 'common.close'}
+        cancelButtonText={item.createFunction || item.updateFunction ? 'cancel' : 'common.close'}
         submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
       />
     </form>

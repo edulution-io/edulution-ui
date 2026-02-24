@@ -87,7 +87,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
     {
       labelTranslationId: 'common.mailList',
       name: 'maillist',
-      disabled,
+      disabled: !isSuperAdmin,
       component: 'checkbox',
     },
     {

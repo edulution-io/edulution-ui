@@ -119,6 +119,14 @@ export class LmnApiController {
     return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
   }
 
+  @Patch('school-classes')
+  async updateSchoolClass(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { formValues: GroupFormDto },
+  ) {
+    return this.lmnApiService.updateSchoolClass(lmnApiToken, body.formValues);
+  }
+
   @Put('school-classes/:schoolClass/:action')
   async toggleSchoolClassJoined(
     @Param() params: { schoolClass: string; action: GroupJoinState },
