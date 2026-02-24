@@ -128,8 +128,8 @@ const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
         const currentEntry = managementListEntries[index];
         if (currentEntry && savedEntry) {
           columns.forEach((col) => {
-            const currentValue = currentEntry[col.apiKey] ?? '';
-            const savedValue = savedEntry[col.apiKey] ?? '';
+            const currentValue = currentEntry[col.entryKey] ?? '';
+            const savedValue = savedEntry[col.entryKey] ?? '';
             if (currentValue !== savedValue) {
               changed.add(`${row.id}-${col.key}`);
             }

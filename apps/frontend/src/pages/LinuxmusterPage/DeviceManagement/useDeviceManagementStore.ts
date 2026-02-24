@@ -35,6 +35,7 @@ type DeviceManagementStore = {
   devices: ListManagementEntry[];
   savedDevices: ListManagementEntry[];
   deletedIndices: number[];
+  commentEntries: ListManagementEntry[];
   isLoading: boolean;
   isBackgroundFetching: boolean;
   isSaving: boolean;
@@ -45,6 +46,7 @@ type DeviceManagementStore = {
   saveDevices: (school: string, data: ListManagementEntry[], silent?: boolean) => Promise<void>;
   applyDevices: (school: string, data: ListManagementEntry[]) => Promise<void>;
   setDeviceEntries: (entries: ListManagementEntry[]) => void;
+  setCommentEntries: (entries: ListManagementEntry[]) => void;
   addDeletedIndex: (index: number) => void;
   reset: () => void;
 };
@@ -53,6 +55,7 @@ const initialState = {
   devices: [] as ListManagementEntry[],
   savedDevices: [] as ListManagementEntry[],
   deletedIndices: [] as number[],
+  commentEntries: [] as ListManagementEntry[],
   isLoading: false,
   isBackgroundFetching: false,
   isSaving: false,
@@ -92,12 +95,13 @@ const useDeviceManagementStore = create<DeviceManagementStore>()(
           const response = await eduApi.get<ListManagementEntry[]>(`${DEVICES}/${school}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
+          const commentEntries = response.data.filter((entry) => isCommentEntry(entry));
           const entries = response.data.filter((entry) => !isCommentEntry(entry));
 
           if (isBackground && hasUnsavedChanges(get().devices, get().savedDevices, get().deletedIndices)) {
-            set({ savedDevices: entries });
+            set({ savedDevices: entries, commentEntries });
           } else {
-            set({ devices: entries, savedDevices: entries, deletedIndices: [] });
+            set({ devices: entries, savedDevices: entries, deletedIndices: [], commentEntries });
           }
         } catch (error) {
           handleApiError(error, set);
@@ -115,9 +119,10 @@ const useDeviceManagementStore = create<DeviceManagementStore>()(
         set({ isSaving: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
+          const allEntries = [...get().commentEntries, ...data];
           await eduApi.post(
             `${DEVICES}/${school}`,
-            { data },
+            { data: allEntries },
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
@@ -137,9 +142,10 @@ const useDeviceManagementStore = create<DeviceManagementStore>()(
         set({ isApplying: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
+          const allEntries = [...get().commentEntries, ...data];
           await eduApi.post(
             `${DEVICES}/${school}`,
-            { data },
+            { data: allEntries },
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
@@ -162,6 +168,10 @@ const useDeviceManagementStore = create<DeviceManagementStore>()(
         set({ devices: entries });
       },
 
+      setCommentEntries: (entries: ListManagementEntry[]) => {
+        set({ commentEntries: entries });
+      },
+
       addDeletedIndex: (index: number) => {
         set((s) => ({ deletedIndices: [...s.deletedIndices, index] }));
       },
@@ -175,6 +185,7 @@ const useDeviceManagementStore = create<DeviceManagementStore>()(
         devices: state.devices,
         savedDevices: state.savedDevices,
         deletedIndices: state.deletedIndices,
+        commentEntries: state.commentEntries,
       }),
     },
   ),

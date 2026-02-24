@@ -17,13 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type ListData from '../types/listData';
+interface BaseColumnConfig {
+  key: string;
+  entryKey: string;
+}
 
-const EMPTY_LIST_DATA: ListData = {
-  managementListEntries: [],
-  savedListEntries: [],
-  deletedEntryIndices: [],
-  commentEntries: [],
-};
-
-export default EMPTY_LIST_DATA;
+export default BaseColumnConfig;

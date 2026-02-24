@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { faCheck, faFileCsv, faPlus, faRotateLeft, faSave } from '@fortawesome/free-solid-svg-icons';
@@ -29,8 +29,8 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
 import {
   createEmptyDeviceEntry,
-  csvToDeviceEntries,
-  deviceEntriesToCsv,
+  csvToDeviceEntriesWithComments,
+  deviceEntriesToCsvWithComments,
   deviceEntriesToRows,
 } from '@libs/deviceManagement/utils/deviceCsvUtils';
 import { validateDeviceRows } from '@libs/deviceManagement/utils/deviceValidation';
@@ -93,9 +93,16 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
     setDeviceEntries([...currentEntries, createEmptyDeviceEntry()]);
   };
 
-  const handleCsvSave = (entries: ListManagementEntry[]) => {
+  const handleCsvSave = (csvText: string) => {
+    const { entries, commentEntries } = csvToDeviceEntriesWithComments(csvText);
     setDeviceEntries(entries);
+    useDeviceManagementStore.getState().setCommentEntries(commentEntries);
   };
+
+  const initialCsv = useMemo(() => {
+    if (!isCsvDialogOpen) return '';
+    return deviceEntriesToCsvWithComments(useDeviceManagementStore.getState().commentEntries, getFilteredEntries());
+  }, [isCsvDialogOpen]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
@@ -145,8 +152,8 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
           isOpen={isCsvDialogOpen}
           onClose={() => setIsCsvDialogOpen(false)}
           title={`/etc/linuxmuster/sophomorix/${school}/devices.csv`}
-          initialCsv={deviceEntriesToCsv(getFilteredEntries())}
-          onSave={(csvText) => handleCsvSave(csvToDeviceEntries(csvText))}
+          initialCsv={initialCsv}
+          onSave={handleCsvSave}
           downloadFilename="devices.csv"
         />
       ) : null}

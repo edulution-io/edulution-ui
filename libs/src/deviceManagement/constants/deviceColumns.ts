@@ -20,18 +20,18 @@
 import type DeviceColumnConfig from '@libs/deviceManagement/types/deviceColumnConfig';
 
 const DEVICE_COLUMNS: DeviceColumnConfig[] = [
-  { key: 'room', apiKey: 'room', translationKey: 'deviceManagement.columns.room', type: 'text' },
-  { key: 'hostname', apiKey: 'hostname', translationKey: 'deviceManagement.columns.hostname', type: 'text' },
-  { key: 'group', apiKey: 'group', translationKey: 'deviceManagement.columns.group', type: 'text' },
-  { key: 'mac', apiKey: 'mac', translationKey: 'deviceManagement.columns.mac', type: 'text' },
-  { key: 'ip', apiKey: 'ip', translationKey: 'deviceManagement.columns.ip', type: 'text' },
+  { key: 'room', entryKey: 'room', translationKey: 'deviceManagement.columns.room', type: 'text' },
+  { key: 'hostname', entryKey: 'hostname', translationKey: 'deviceManagement.columns.hostname', type: 'text' },
+  { key: 'group', entryKey: 'group', translationKey: 'deviceManagement.columns.group', type: 'text' },
+  { key: 'mac', entryKey: 'mac', translationKey: 'deviceManagement.columns.mac', type: 'text' },
+  { key: 'ip', entryKey: 'ip', translationKey: 'deviceManagement.columns.ip', type: 'text' },
   {
     key: 'sophomorixRole',
-    apiKey: 'sophomorixRole',
+    entryKey: 'sophomorixRole',
     translationKey: 'deviceManagement.columns.sophomorixRole',
     type: 'dropdown',
   },
-  { key: 'pxeFlag', apiKey: 'pxeFlag', translationKey: 'deviceManagement.columns.pxeFlag', type: 'dropdown' },
+  { key: 'pxeFlag', entryKey: 'pxeFlag', translationKey: 'deviceManagement.columns.pxeFlag', type: 'dropdown' },
 ];
 
 export default DEVICE_COLUMNS;
