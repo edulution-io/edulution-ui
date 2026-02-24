@@ -20,6 +20,7 @@
 import { TFunction } from 'i18next';
 import { z } from 'zod';
 import AI_PROVIDERS from '@libs/aiService/constants/aiProviders';
+import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 
 const getCreateAiServiceSchema = (t: TFunction<'translation', undefined>) =>
@@ -41,6 +42,15 @@ const getCreateAiServiceSchema = (t: TFunction<'translation', undefined>) =>
     purpose: z.enum([AI_SERVICE_PURPOSES.CHAT]),
     isActive: z.boolean().default(true),
     isDataPrivacyCompliant: z.boolean().default(false),
+    capabilities: z
+      .array(
+        z.enum([
+          AI_SERVICE_CAPABILITIES.TOOL_EXECUTION,
+          AI_SERVICE_CAPABILITIES.VISION,
+          AI_SERVICE_CAPABILITIES.IMAGE_GENERATION,
+        ]),
+      )
+      .default([]),
   });
 
 export default getCreateAiServiceSchema;

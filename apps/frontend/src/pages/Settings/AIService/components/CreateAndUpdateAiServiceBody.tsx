@@ -26,12 +26,15 @@ import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { DropdownSelect } from '@/components';
+import Checkbox from '@/components/ui/Checkbox';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import useAiServiceTableStore from '@/pages/Settings/AIService/useAiServiceTableStore';
 import CreateAiServiceDto from '@libs/aiService/types/createAiServiceDto';
 import AiProviderType from '@libs/aiService/types/aiProviderType';
+import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import AiServicePurposeType from '@libs/aiService/types/aiServicePurposeType';
 import AI_PROVIDER_OPTIONS from '@libs/aiService/constants/aiProviderOptions';
+import AI_SERVICE_CAPABILITY_OPTIONS from '@libs/aiService/constants/aiServiceCapabilityOptions';
 import AI_SERVICE_PURPOSE_OPTIONS from '@libs/aiService/constants/aiServicePurposeOptions';
 
 interface CreateAndUpdateAiServiceBodyProps {
@@ -191,6 +194,29 @@ const CreateAndUpdateAiServiceBody = ({
           checked={watch('isDataPrivacyCompliant')}
           onCheckedChange={(isChecked) => setValue('isDataPrivacyCompliant', isChecked)}
         />
+
+        <div>
+          <p className="font-bold">{t('settings.aiServices.capabilities')}</p>
+          <div className="mt-2 space-y-2">
+            {AI_SERVICE_CAPABILITY_OPTIONS.map((option) => {
+              const capabilities = watch('capabilities') ?? [];
+              const isChecked = capabilities.includes(option.id);
+              return (
+                <Checkbox
+                  key={option.id}
+                  label={t(option.translationKey)}
+                  checked={isChecked}
+                  onCheckedChange={(checked: boolean) => {
+                    const updated = checked
+                      ? [...capabilities, option.id]
+                      : capabilities.filter((c: AiServiceCapabilityType) => c !== option.id);
+                    setValue('capabilities', updated, { shouldValidate: true });
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
       </form>
     </Form>
   );

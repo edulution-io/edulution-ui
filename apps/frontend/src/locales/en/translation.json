@@ -1225,7 +1225,11 @@
       "deletedSuccessfully": "AI service deleted successfully",
       "isDataPrivacyCompliant": "Data Privacy Compliant",
       "dataPrivacyCompliant": "Data privacy compliant",
-      "dataPrivacyNotCompliant": "Not data privacy compliant"
+      "dataPrivacyNotCompliant": "Not data privacy compliant",
+      "capabilities": "Capabilities",
+      "capability_tool_execution": "Tool Execution",
+      "capability_vision": "Vision",
+      "capability_image_generation": "Image Generation"
     },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {

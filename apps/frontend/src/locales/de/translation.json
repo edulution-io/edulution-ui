@@ -1228,7 +1228,11 @@
       "deletedSuccessfully": "KI-Dienst erfolgreich gelöscht",
       "isDataPrivacyCompliant": "Datenschutzkonform",
       "dataPrivacyCompliant": "Datenschutzkonform",
-      "dataPrivacyNotCompliant": "Nicht datenschutzkonform"
+      "dataPrivacyNotCompliant": "Nicht datenschutzkonform",
+      "capabilities": "Fähigkeiten",
+      "capability_tool_execution": "Tool-Ausführung",
+      "capability_vision": "Vision",
+      "capability_image_generation": "Bilderzeugung"
     },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {

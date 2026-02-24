@@ -22,14 +22,29 @@ import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faShieldHalved } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEye,
+  faEyeSlash,
+  faScrewdriverWrench,
+  faShieldHalved,
+  faWandMagicSparkles,
+} from '@fortawesome/free-solid-svg-icons';
 import AiServiceResponseDto from '@libs/aiService/types/aiServiceResponseDto';
+import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
 import AI_SERVICE_TABLE_COLUMNS from '@libs/aiService/constants/aiServiceTableColumns';
+import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import useAiServiceTableStore from '@/pages/Settings/AIService/useAiServiceTableStore';
+
+const CAPABILITY_ICONS: Record<AiServiceCapabilityType, typeof faScrewdriverWrench> = {
+  [AI_SERVICE_CAPABILITIES.TOOL_EXECUTION]: faScrewdriverWrench,
+  [AI_SERVICE_CAPABILITIES.VISION]: faEye,
+  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faWandMagicSparkles,
+};
 
 const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
   {
     id: AI_SERVICE_TABLE_COLUMNS.NAME,
+    size: 120,
     header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'common.name',
@@ -52,7 +67,7 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
   },
   {
     id: AI_SERVICE_TABLE_COLUMNS.PROVIDER,
-    size: 120,
+    size: 60,
     header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'settings.aiServices.provider',
@@ -75,7 +90,7 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
   },
   {
     id: AI_SERVICE_TABLE_COLUMNS.PURPOSE,
-    size: 120,
+    size: 60,
     header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'settings.aiServices.purpose',
@@ -98,7 +113,7 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
   },
   {
     id: AI_SERVICE_TABLE_COLUMNS.MODEL,
-    size: 100,
+    size: 60,
     header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'settings.aiServices.model',
@@ -176,8 +191,44 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
     },
   },
   {
+    id: AI_SERVICE_TABLE_COLUMNS.CAPABILITIES,
+    size: 60,
+    header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'settings.aiServices.capabilities',
+    },
+    accessorFn: (row) => row.capabilities?.join(', ') ?? '',
+    cell: ({ row }) => {
+      const { setSelectedAiService, setIsDialogOpen } = useAiServiceTableStore();
+      const handleRowClick = () => {
+        setSelectedAiService(row.original);
+        setIsDialogOpen(true);
+      };
+      const capabilities = row.original.capabilities ?? [];
+
+      return (
+        <SelectableCell
+          onClick={handleRowClick}
+          icon={
+            capabilities.length > 0 ? (
+              <div className="flex gap-2">
+                {capabilities.map((cap) => (
+                  <FontAwesomeIcon
+                    key={cap}
+                    icon={CAPABILITY_ICONS[cap]}
+                    className="text-ciDarkGrey"
+                  />
+                ))}
+              </div>
+            ) : undefined
+          }
+        />
+      );
+    },
+  },
+  {
     id: AI_SERVICE_TABLE_COLUMNS.CREATED_AT,
-    size: 130,
+    size: 60,
     header: ({ column }) => <SortableHeader<AiServiceResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'common.createdAt',

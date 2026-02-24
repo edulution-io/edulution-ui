@@ -20,6 +20,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import AI_PROVIDERS from '@libs/aiService/constants/aiProviders';
+import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 
 export type AiServiceDocument = AiService & Document;
@@ -50,7 +51,10 @@ export class AiService {
   @Prop({ type: Boolean, default: false })
   isDataPrivacyCompliant: boolean;
 
-  @Prop({ default: 1 })
+  @Prop({ type: [String], enum: Object.values(AI_SERVICE_CAPABILITIES), default: [] })
+  capabilities: string[];
+
+  @Prop({ default: 2 })
   schemaVersion: number;
 }
 

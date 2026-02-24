@@ -20,6 +20,8 @@
 import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faScrewdriverWrench, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { Textarea } from '@/components/ui/Textarea';
@@ -30,11 +32,20 @@ import useGroupStore from '@/store/GroupStore';
 import useAiChatModelTableStore from '@/pages/Settings/AppConfig/chat/useAiChatModelTableStore';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
+import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
+import AI_SERVICE_CAPABILITY_OPTIONS from '@libs/aiService/constants/aiServiceCapabilityOptions';
+import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 
 interface CreateAndUpdateAiChatModelBodyProps {
   handleFormSubmit: (e: React.FormEvent) => void;
   form: UseFormReturn<CreateAiChatModelDto>;
 }
+
+const CAPABILITY_ICONS: Record<AiServiceCapabilityType, typeof faScrewdriverWrench> = {
+  [AI_SERVICE_CAPABILITIES.TOOL_EXECUTION]: faScrewdriverWrench,
+  [AI_SERVICE_CAPABILITIES.VISION]: faEye,
+  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faWandMagicSparkles,
+};
 
 const CreateAndUpdateAiChatModelBody = ({ handleFormSubmit, form }: CreateAndUpdateAiChatModelBodyProps) => {
   const { t } = useTranslation();
@@ -42,6 +53,9 @@ const CreateAndUpdateAiChatModelBody = ({ handleFormSubmit, form }: CreateAndUpd
   const { setValue, watch, control } = form;
   const aiServiceOptions = useAiChatModelTableStore((state) => state.aiServiceOptions);
   const fetchAiServiceOptions = useAiChatModelTableStore((state) => state.fetchAiServiceOptions);
+  const selectedServiceId = watch('aiServiceId');
+  const selectedService = aiServiceOptions.find((s) => s.id === selectedServiceId);
+  const selectedCapabilities = selectedService?.capabilities ?? [];
 
   useEffect(() => {
     void fetchAiServiceOptions();
@@ -80,6 +94,23 @@ const CreateAndUpdateAiChatModelBody = ({ handleFormSubmit, form }: CreateAndUpd
             </FormItem>
           )}
         />
+
+        {selectedCapabilities.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {selectedCapabilities.map((cap) => {
+              const option = AI_SERVICE_CAPABILITY_OPTIONS.find((o) => o.id === cap);
+              return (
+                <span
+                  key={cap}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
+                >
+                  <FontAwesomeIcon icon={CAPABILITY_ICONS[cap]} />
+                  {option ? t(option.translationKey) : cap}
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         <FormFieldSH
           control={control}

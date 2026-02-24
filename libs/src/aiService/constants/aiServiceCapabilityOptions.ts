@@ -17,13 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
 import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 
-interface AiChatModelUserDto {
-  id: string;
-  name: string;
-  isDataPrivacyCompliant: boolean;
-  capabilities: AiServiceCapabilityType[];
-}
+const AI_SERVICE_CAPABILITY_OPTIONS: { id: AiServiceCapabilityType; translationKey: string }[] = [
+  { id: AI_SERVICE_CAPABILITIES.TOOL_EXECUTION, translationKey: 'settings.aiServices.capability_tool_execution' },
+  { id: AI_SERVICE_CAPABILITIES.VISION, translationKey: 'settings.aiServices.capability_vision' },
+  { id: AI_SERVICE_CAPABILITIES.IMAGE_GENERATION, translationKey: 'settings.aiServices.capability_image_generation' },
+];
 
-export default AiChatModelUserDto;
+export default AI_SERVICE_CAPABILITY_OPTIONS;

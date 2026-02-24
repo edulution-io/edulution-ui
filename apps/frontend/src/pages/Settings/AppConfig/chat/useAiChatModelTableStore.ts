@@ -26,6 +26,7 @@ import handleApiError from '@/utils/handleApiError';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { AiChatModelTableStore } from '@libs/appconfig/types/aiChatModelTableStore';
+import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 
 const initialValues = {
   isLoading: false,
@@ -100,8 +101,17 @@ const useAiChatModelTableStore: UseBoundStore<StoreApi<AiChatModelTableStore>> =
 
     fetchAiServiceOptions: async () => {
       try {
-        const response = await eduApi.get<{ id: string; name: string }[]>(AI_SERVICE_EDU_API_ENDPOINT);
-        set({ aiServiceOptions: response.data.map((service) => ({ id: service.id, name: service.name })) });
+        const response =
+          await eduApi.get<{ id: string; name: string; capabilities: AiServiceCapabilityType[] }[]>(
+            AI_SERVICE_EDU_API_ENDPOINT,
+          );
+        set({
+          aiServiceOptions: response.data.map((service) => ({
+            id: service.id,
+            name: service.name,
+            capabilities: service.capabilities ?? [],
+          })),
+        });
       } catch (error) {
         handleApiError(error, set);
       }

@@ -20,13 +20,28 @@
 import React, { useRef, useEffect, useCallback, ChangeEvent, KeyboardEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faPaperclip, faXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEye,
+  faPaperPlane,
+  faPaperclip,
+  faScrewdriverWrench,
+  faWandMagicSparkles,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
 import { DropdownSelect } from '@/components';
 import { Button, cn } from '@edulution-io/ui-kit';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
+import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
+import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
 import TEXTAREA_MAX_HEIGHT_PX from '@libs/chat/constants/textareaMaxHeightPx';
+
+const CAPABILITY_ICONS: Record<AiServiceCapabilityType, typeof faScrewdriverWrench> = {
+  [AI_SERVICE_CAPABILITIES.TOOL_EXECUTION]: faScrewdriverWrench,
+  [AI_SERVICE_CAPABILITIES.VISION]: faEye,
+  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faWandMagicSparkles,
+};
 
 interface ChatInputProps {
   value: string;
@@ -60,6 +75,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasModels = models && models.length > 0;
   const modelOptions = hasModels ? models.map((model) => ({ id: model.id, name: model.name })) : [];
+  const selectedModel = models?.find((model) => model.id === selectedModelId);
+  const selectedCapabilities = selectedModel?.capabilities ?? [];
 
   const handleFileChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -104,8 +121,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
     >
       <div
         className={cn(
-          'rounded-2xl border bg-white shadow-sm dark:bg-accent',
-          isPrivacyCompliant ? 'border-border' : 'border-2 border-red-500',
+          'rounded-2xl border-2 bg-white shadow-sm dark:bg-accent',
+          isPrivacyCompliant ? 'border-border' : 'border-red-500',
         )}
       >
         {selectedFile && (
@@ -160,17 +177,30 @@ const ChatInput: React.FC<ChatInputProps> = ({
           )}
           <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
             {hasModels && onModelChange && (
-              <DropdownSelect
-                options={modelOptions}
-                selectedVal={selectedModelId ?? ''}
-                handleChange={(selectedValue) => {
-                  if (selectedValue) onModelChange(selectedValue);
-                }}
-                placeholder={t('chat.aiChatModel.selectModel')}
-                openToTop
-                translate={false}
-                classname="min-w-0 max-w-72 flex-1"
-              />
+              <>
+                {selectedCapabilities.length > 0 && (
+                  <div className="flex gap-1.5">
+                    {selectedCapabilities.map((cap) => (
+                      <FontAwesomeIcon
+                        key={cap}
+                        icon={CAPABILITY_ICONS[cap]}
+                        className="h-3.5 w-3.5 text-muted-foreground"
+                      />
+                    ))}
+                  </div>
+                )}
+                <DropdownSelect
+                  options={modelOptions}
+                  selectedVal={selectedModelId ?? ''}
+                  handleChange={(selectedValue) => {
+                    if (selectedValue) onModelChange(selectedValue);
+                  }}
+                  placeholder={t('chat.aiChatModel.selectModel')}
+                  openToTop
+                  translate={false}
+                  classname="min-w-0 max-w-72 flex-1"
+                />
+              </>
             )}
             <Button
               type="submit"

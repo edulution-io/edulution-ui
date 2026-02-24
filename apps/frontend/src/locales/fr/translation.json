@@ -1088,7 +1088,11 @@
       "deletedSuccessfully": "Service IA supprimé avec succès",
       "isDataPrivacyCompliant": "Conforme à la protection des données",
       "dataPrivacyCompliant": "Conforme à la protection des données",
-      "dataPrivacyNotCompliant": "Non conforme à la protection des données"
+      "dataPrivacyNotCompliant": "Non conforme à la protection des données",
+      "capabilities": "Capacités",
+      "capability_tool_execution": "Exécution d'outils",
+      "capability_vision": "Vision",
+      "capability_image_generation": "Génération d'images"
     },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {

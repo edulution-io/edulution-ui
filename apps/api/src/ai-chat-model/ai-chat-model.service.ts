@@ -24,6 +24,7 @@ import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
 import AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
 import AI_CHAT_MODEL_ERROR_MESSAGES from '@libs/aiChatModel/constants/aiChatModelErrorMessages';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
+import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import CustomHttpException from '../common/CustomHttpException';
 import AiServiceService from '../ai-service/ai-service.service';
 import { AiChatModel, AiChatModelDocument } from './ai-chat-model.schema';
@@ -84,15 +85,22 @@ class AiChatModelService {
 
     const aiServiceIds = [...new Set(accessibleModels.map((model) => model.aiServiceId))];
     const services = aiServiceIds.length > 0 ? await this.aiServiceService.findByIds(aiServiceIds) : [];
-    const servicePrivacyMap = new Map(
-      services.map((service) => [service.id as string, service.isDataPrivacyCompliant ?? false]),
+    const serviceMap = new Map(
+      services.map((service) => [
+        service.id as string,
+        { isDataPrivacyCompliant: service.isDataPrivacyCompliant ?? false, capabilities: service.capabilities ?? [] },
+      ]),
     );
 
-    return accessibleModels.map((model) => ({
-      id: model.id as string,
-      name: model.name,
-      isDataPrivacyCompliant: servicePrivacyMap.get(model.aiServiceId) ?? false,
-    }));
+    return accessibleModels.map((model) => {
+      const service = serviceMap.get(model.aiServiceId);
+      return {
+        id: model.id as string,
+        name: model.name,
+        isDataPrivacyCompliant: service?.isDataPrivacyCompliant ?? false,
+        capabilities: (service?.capabilities ?? []) as AiServiceCapabilityType[],
+      };
+    });
   }
 
   private async validateAiServiceExists(aiServiceId: string): Promise<void> {
