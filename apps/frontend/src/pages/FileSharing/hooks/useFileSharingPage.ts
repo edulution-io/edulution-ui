@@ -78,7 +78,6 @@ const useFileSharingPage = () => {
   useEffect(() => {
     if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
       clearFilesOnShareChange();
-      hasRestoredSession.current = false;
       lastFetchedKey.current = '';
     }
     previousWebdavShare.current = webdavShare;
