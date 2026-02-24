@@ -61,6 +61,7 @@ const useFileSharingPage = () => {
 
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || shareRootPath;
 
+  const lastCleanedShare = useRef<string | undefined>(undefined);
   const previousWebdavShare = useRef<string | undefined>(webdavShare);
   const hasRestoredSession = useRef(false);
   const lastFetchedKey = useRef('');
@@ -79,6 +80,7 @@ const useFileSharingPage = () => {
       clearFilesOnShareChange();
       hasRestoredSession.current = false;
       lastFetchedKey.current = '';
+      lastCleanedShare.current = undefined;
     }
     previousWebdavShare.current = webdavShare;
   }, [webdavShare, clearFilesOnShareChange]);
@@ -87,6 +89,7 @@ const useFileSharingPage = () => {
     if (isFileProcessing || webdavShares.length === 0 || isWaitingForUserData) return;
 
     const hasPathParam = searchParams.has(URL_SEARCH_PARAMS.PATH);
+    const needsCleanup = lastCleanedShare.current !== webdavShare;
 
     const redirectTo = (targetPath: string) => {
       const next = new URLSearchParams(searchParams);
@@ -115,7 +118,8 @@ const useFileSharingPage = () => {
     const fetchKey = `${webdavShare}:${path}`;
     if (fetchKey !== lastFetchedKey.current) {
       lastFetchedKey.current = fetchKey;
-      void fetchFiles(webdavShare, path);
+      void fetchFiles(webdavShare, path, needsCleanup);
+      lastCleanedShare.current = webdavShare;
     }
     if (path !== '/') setPathToRestoreSession(path);
   }, [

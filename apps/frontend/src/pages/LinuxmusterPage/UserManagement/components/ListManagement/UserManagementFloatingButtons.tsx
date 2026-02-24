@@ -26,11 +26,13 @@ import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floati
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import type UserType from '@libs/userManagement/types/userType';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
-import { createEmptyEntry, entriesToRows } from '@libs/userManagement/utils/csvUtils';
+import { createEmptyEntry, entriesToRows, entriesToCsv, csvToEntries } from '@libs/userManagement/utils/csvUtils';
 import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import validateListRows from '@libs/userManagement/utils/validateListRows';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useUserManagementStore from '../../useUserManagementStore';
-import CsvDialog from './CsvDialog';
+import CsvDialog from '../../../components/CsvDialog';
 import CheckResultDialog from './CheckResultDialog/CheckResultDialog';
 
 interface UserManagementFloatingButtonsProps {
@@ -50,6 +52,7 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     runSophomorixApply,
   } = useUserManagementStore();
   const [isCsvDialogOpen, setIsCsvDialogOpen] = useState(false);
+  const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const [isCheckDialogOpen, setIsCheckDialogOpen] = useState(false);
   const [checkResult, setCheckResult] = useState<SophomorixCheckResponse | null>(null);
 
@@ -80,8 +83,13 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     }
   };
 
-  const handleCheck = async () => {
+  const handleCheckClick = () => {
     if (!validateEntries()) return;
+    setIsSaveConfirmOpen(true);
+  };
+
+  const handleConfirmSaveAndCheck = async () => {
+    setIsSaveConfirmOpen(false);
     setCheckResult(null);
     setIsCheckDialogOpen(true);
     if (selectedSchool && managementList) {
@@ -147,9 +155,7 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
       {
         icon: faCheck,
         text: t('usermanagement.check'),
-        onClick: () => {
-          void handleCheck();
-        },
+        onClick: handleCheckClick,
         isVisible: !isSaving,
       },
       {
@@ -169,10 +175,34 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
         <CsvDialog
           isOpen={isCsvDialogOpen}
           onClose={() => setIsCsvDialogOpen(false)}
-          managementList={managementList}
-          school={selectedSchool}
+          title={`/etc/linuxmuster/sophomorix/${selectedSchool}/${managementList}.csv`}
+          initialCsv={entriesToCsv(
+            useUserManagementStore.getState().getListData(managementList).managementListEntries,
+            managementList,
+          )}
+          onSave={(csvText) => {
+            useUserManagementStore
+              .getState()
+              .setManagementListEntries(managementList, csvToEntries(csvText, managementList));
+          }}
+          downloadFilename={`${managementList}.csv`}
         />
       ) : null}
+      <AdaptiveDialog
+        isOpen={isSaveConfirmOpen}
+        handleOpenChange={() => setIsSaveConfirmOpen(false)}
+        title={t('usermanagement.saveConfirmTitle')}
+        body={<p>{t('usermanagement.saveConfirmMessage')}</p>}
+        footer={
+          <DialogFooterButtons
+            handleClose={() => setIsSaveConfirmOpen(false)}
+            handleSubmit={() => {
+              void handleConfirmSaveAndCheck();
+            }}
+            submitButtonText="usermanagement.check"
+          />
+        }
+      />
       <CheckResultDialog
         isOpen={isCheckDialogOpen}
         onClose={() => setIsCheckDialogOpen(false)}

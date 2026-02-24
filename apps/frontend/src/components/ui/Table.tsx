@@ -94,7 +94,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        'z-2 sticky top-0 w-full backdrop-blur-md',
+        'sticky top-0 z-10 w-full backdrop-blur-md',
         'mr-4 h-8 px-2 text-left align-middle font-medium text-background [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}

@@ -29,3 +29,4 @@ export const PRINT_PASSWORDS_LMN_API_ENDPOINT = 'print-passwords/schoolclasses';
 export const PRINTERS_LMN_API_ENDPOINT = 'printers';
 export const QUOTAS_LMN_API_ENDPOINT = 'quotas';
 export const LIST_MANAGEMENT_LMN_API_ENDPOINT = 'listmanagement';
+export const DEVICES_LMN_API_ENDPOINT = 'devices';
