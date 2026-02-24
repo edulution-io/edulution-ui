@@ -18,13 +18,15 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import WHITEBOARD_FILES_PATH from '@libs/whiteboard/constants/whiteboardFilesPath';
 import { Response } from 'express';
 import TLDrawSyncController from './tldraw-sync.controller';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
 import CustomHttpException from '../common/CustomHttpException';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 jest.mock('./tldraw-sync.service', () => ({ __esModule: true, default: class {} }));
 
@@ -71,6 +73,49 @@ describe(TLDrawSyncController.name, () => {
         expect((e as Error).message).toBe(CommonErrorMessages.FILE_NOT_PROVIDED);
         expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
       }
+    });
+  });
+
+  describe('path validation for whiteboard assets', () => {
+    const pipe = new ValidatePathPipe(WHITEBOARD_FILES_PATH);
+
+    describe('valid whiteboard filenames', () => {
+      it('should accept a typical whiteboard asset filename', () => {
+        expect(pipe.transform('abc123def456.png')).toBe('abc123def456.png');
+      });
+
+      it('should accept a whiteboard export with hyphens', () => {
+        expect(pipe.transform('whiteboard-export-2025.svg')).toBe('whiteboard-export-2025.svg');
+      });
+
+      it('should accept an asset in a subdirectory', () => {
+        expect(pipe.transform('assets/image.webp')).toBe('assets/image.webp');
+      });
+
+      it('should accept array params as used by wildcard routes', () => {
+        expect(pipe.transform(['assets', 'drawing.png'])).toBe('assets/drawing.png');
+      });
+    });
+
+    describe('path traversal attacks on whiteboard assets', () => {
+      it('should block traversal attempting to escape whiteboard directory', () => {
+        const result = pipe.transform('../../etc/passwd');
+        expect(result).not.toContain('..');
+      });
+
+      it('should strip shell metacharacters from filenames', () => {
+        const result = pipe.transform('asset$(whoami).png');
+        expect(result).toBe('assetwhoami.png');
+      });
+
+      it('should strip spaces and special chars from whiteboard filenames', () => {
+        const result = pipe.transform('my drawing (1).png');
+        expect(result).toBe('mydrawing1.png');
+      });
+
+      it('should throw for empty filename', () => {
+        expect(() => pipe.transform('')).toThrow(BadRequestException);
+      });
     });
   });
 });
