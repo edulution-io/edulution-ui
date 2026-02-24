@@ -99,8 +99,6 @@ const useMenuBarConfig = (): MenuBarEntry => {
     if (sectionChildren.length === 0) return undefined;
     if (parentId && itemId !== parentId) return undefined;
     if (itemId === activeMenuItemId) return sectionChildren;
-    if (sectionChildren.some((c) => c.id === activeMenuItemId)) return sectionChildren;
-    if (!activeMenuItemId) return sectionChildren;
     return undefined;
   };
 
