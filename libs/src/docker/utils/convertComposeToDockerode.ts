@@ -19,6 +19,7 @@
 
 import { type ContainerCreateOptions } from 'dockerode';
 import type DockerCompose from '../types/dockerCompose';
+import DOCKER_NETWORK_MODE from '../constants/dockerNetworkMode';
 
 const NANOSECONDS_PER_SECOND = 1_000_000_000;
 
@@ -32,32 +33,30 @@ const parseDurationToNs = (duration: string | undefined): number | undefined => 
   return Number(value) * (UNIT_TO_SECONDS[unit] ?? 1) * NANOSECONDS_PER_SECOND;
 };
 
-const normalizeEnvToRecord = (
-  env: string[] | Record<string, string> | undefined,
-): Record<string, string> | undefined => {
+const normalizeEnvToStringArray = (env: string[] | Record<string, string> | undefined): string[] | undefined => {
   if (!env) return undefined;
-  if (!Array.isArray(env)) return env;
-  return env.reduce<Record<string, string>>((acc, entry) => {
-    const eqIndex = entry.indexOf('=');
-    if (eqIndex !== -1) {
-      acc[entry.substring(0, eqIndex)] = entry.substring(eqIndex + 1);
-    }
-    return acc;
-  }, {});
+  if (Array.isArray(env)) return env;
+  return Object.entries(env).map(([k, v]) => `${k}=${v}`);
 };
 
 const topologicalSort = (services: DockerCompose['services']): string[] => {
   const visited = new Set<string>();
+  const inProgress = new Set<string>();
   const result: string[] = [];
 
   const visit = (name: string): void => {
     if (visited.has(name)) return;
-    visited.add(name);
+    if (inProgress.has(name)) {
+      throw new Error(`Circular dependency detected for service '${name}'`);
+    }
+    inProgress.add(name);
 
     const deps = services[name]?.depends_on;
     const depNames = Array.isArray(deps) ? deps : Object.keys(deps ?? {});
     depNames.forEach(visit);
 
+    inProgress.delete(name);
+    visited.add(name);
     result.push(name);
   };
 
@@ -100,7 +99,8 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: object },
     );
 
-    const stopTimeOut = service.stop_grace_period ? Number(service.stop_grace_period.split('s')[0]) : undefined;
+    const stopGraceNs = parseDurationToNs(service.stop_grace_period);
+    const stopTimeOut = stopGraceNs !== undefined ? stopGraceNs / NANOSECONDS_PER_SECOND : undefined;
 
     const sysctls = service.sysctls?.reduce(
       (acc, sysctl) => {
@@ -128,14 +128,14 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       Image: service.image,
       OpenStdin: service.stdin_open,
       StopTimeout: stopTimeOut,
-      Env: normalizeEnvToRecord(service.environment) as unknown as string[],
+      Env: normalizeEnvToStringArray(service.environment),
       Cmd: cmd,
       Healthcheck: healthcheck,
       HostConfig: {
         Binds: binds,
         PortBindings: portBindings,
         RestartPolicy: service.restart ? { Name: service.restart } : undefined,
-        NetworkMode: 'edulution-ui_default',
+        NetworkMode: DOCKER_NETWORK_MODE,
         CapAdd: service.cap_add,
         Sysctls: sysctls,
       },

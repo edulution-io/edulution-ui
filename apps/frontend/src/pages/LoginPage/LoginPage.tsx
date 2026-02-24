@@ -50,6 +50,7 @@ import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import JUST_LOGGED_IN_KEY from '@libs/auth/constants/justLoggedInKey';
 import getRandomUUID from '@/utils/getRandomUUID';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
@@ -176,6 +177,7 @@ const LoginPage: React.FC = () => {
     const previousUser = sessionStorage.getItem('username');
 
     sessionStorage.setItem('username', currentUser ?? '');
+    sessionStorage.setItem(JUST_LOGGED_IN_KEY, 'true');
 
     if (state?.from) {
       navigate(state.from, { replace: true });

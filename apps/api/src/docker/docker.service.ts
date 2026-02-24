@@ -234,7 +234,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       }, {});
 
       return keys.reduce<Record<string, string>>((acc, key) => {
-        if (allEnvs[key]) {
+        if (key in allEnvs) {
           acc[key] = allEnvs[key];
         }
         return acc;
@@ -278,8 +278,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       const sepIndex = expr.indexOf(':-');
       const varName = sepIndex === -1 ? expr : expr.slice(0, sepIndex);
       const defaultValue = sepIndex === -1 ? undefined : expr.slice(sepIndex + 2);
-      if (appConfigValues[varName]) return appConfigValues[varName];
-      if (process.env[varName]) return process.env[varName];
+      if (varName in appConfigValues) return appConfigValues[varName];
+      if (process.env[varName] !== undefined) return process.env[varName];
       if (defaultValue !== undefined) return defaultValue;
       return match;
     };

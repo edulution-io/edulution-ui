@@ -52,6 +52,7 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
       `Failed to create Keycloak client '${clientId}': ${getErrorMessage(error)}`,
       ensureKeycloakClient.name,
     );
+    throw error;
   }
 };
 
