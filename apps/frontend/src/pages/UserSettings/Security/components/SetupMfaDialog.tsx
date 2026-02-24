@@ -27,7 +27,7 @@ import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import JUST_LOGGED_IN_KEY from '@libs/auth/constants/justLoggedInKey';
+import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
@@ -35,6 +35,7 @@ import copyToClipboard from '@/utils/copyToClipboard';
 const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
   const { globalSettings } = useGlobalSettingsApiStore();
+  const { isJustLoggedIn, setIsJustLoggedIn } = useSessionFlagsStore();
   const {
     qrCode,
     qrCodeIsLoading,
@@ -47,15 +48,7 @@ const SetupMfaDialog: React.FC = () => {
   } = useUserStore();
   const { ldapGroups } = useLdapGroups();
   const [totp, setTotp] = useState('');
-  const [isJustLoggedIn, setIsJustLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const flag = sessionStorage.getItem(JUST_LOGGED_IN_KEY);
-    if (flag === 'true') {
-      setIsJustLoggedIn(true);
-      sessionStorage.removeItem(JUST_LOGGED_IN_KEY);
-    }
-  }, []);
+  const [isMfaForced, setIsMfaForced] = useState(false);
 
   useEffect(() => {
     if (!isJustLoggedIn || globalSettings === null) return;
@@ -64,8 +57,10 @@ const SetupMfaDialog: React.FC = () => {
     const isMfaRequired = mfaGroups.some((g) => ldapGroups.includes(g.path));
 
     if (isMfaRequired && !user?.mfaEnabled) {
+      setIsMfaForced(true);
       setIsSetTotpDialogOpen(true);
     }
+    setIsJustLoggedIn(false);
   }, [globalSettings?.auth?.mfaEnforcedGroups, user?.mfaEnabled, isJustLoggedIn]);
 
   useEffect(() => {
@@ -83,6 +78,7 @@ const SetupMfaDialog: React.FC = () => {
 
   const handleOpenChange = () => {
     setIsSetTotpDialogOpen(!isSetTotpDialogOpen);
+    setIsMfaForced(false);
     setTotp('');
   };
 
@@ -103,7 +99,7 @@ const SetupMfaDialog: React.FC = () => {
       }}
       className="space-y-3"
     >
-      {isJustLoggedIn && <p className="font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
+      {isMfaForced && <p className="font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
       <p>{t('usersettings.addTotp.qrCodeInstructions')}</p>
       <div className="flex justify-center">
         <QRCodeDisplay

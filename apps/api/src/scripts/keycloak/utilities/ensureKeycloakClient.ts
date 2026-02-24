@@ -27,9 +27,11 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
     const keycloakAccessToken = await getKeycloakToken();
     const keycloakClient = createKeycloakAxiosClient(keycloakAccessToken);
 
-    const existingClients = await keycloakClient.get<unknown[]>('/clients', { params: { clientId } });
+    const existingClients = await keycloakClient.get<{ id: string }[]>('/clients', { params: { clientId } });
     if (existingClients.data.length > 0) {
-      Logger.log(`Keycloak client '${clientId}' already exists; skipping creation.`, ensureKeycloakClient.name);
+      const internalId = existingClients.data[0].id;
+      await keycloakClient.put(`/clients/${internalId}`, { clientId, secret: clientSecret });
+      Logger.log(`Keycloak client '${clientId}' already exists; secret updated.`, ensureKeycloakClient.name);
       return;
     }
 

@@ -223,11 +223,21 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
     try {
       const content = readFileSync(filePath, 'utf-8');
-      const doc = parse(content) as { services?: Record<string, { environment?: Record<string, string> }> };
+      const doc = parse(content) as {
+        services?: Record<string, { environment?: string[] | Record<string, string> }>;
+      };
       if (!doc.services) return {};
 
       const allEnvs = Object.values(doc.services).reduce<Record<string, string>>((acc, svc) => {
-        if (svc.environment && typeof svc.environment === 'object' && !Array.isArray(svc.environment)) {
+        if (!svc.environment) return acc;
+        if (Array.isArray(svc.environment)) {
+          svc.environment.forEach((entry) => {
+            const eqIndex = entry.indexOf('=');
+            if (eqIndex !== -1) {
+              acc[entry.slice(0, eqIndex)] = entry.slice(eqIndex + 1);
+            }
+          });
+        } else {
           Object.assign(acc, svc.environment);
         }
         return acc;
@@ -256,7 +266,15 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         MOODLE_GENERATE_SECRETS.forEach((key) => {
           appConfigValues[key] = savedValues[key] || generateSecureToken();
         });
-        const moodleClientId = DOCKER_APPLICATION_LIST.learningmanagement as string;
+        const moodleClientId = DOCKER_APPLICATION_LIST.learningmanagement;
+        if (!moodleClientId) {
+          throw new CustomHttpException(
+            DockerErrorMessages.DOCKER_CREATION_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            undefined,
+            DockerService.name,
+          );
+        }
         appConfigValues.KEYCLOAK_MOODLE_CLIENT_ID = moodleClientId;
         await ensureKeycloakClient(moodleClientId, appConfigValues.KEYCLOAK_MOODLE_CLIENT_SECRET);
         break;
@@ -279,7 +297,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       const varName = sepIndex === -1 ? expr : expr.slice(0, sepIndex);
       const defaultValue = sepIndex === -1 ? undefined : expr.slice(sepIndex + 2);
       if (varName in appConfigValues) return appConfigValues[varName];
-      if (process.env[varName] !== undefined) return process.env[varName];
+      const envValue = process.env[varName];
+      if (envValue !== undefined) return envValue;
       if (defaultValue !== undefined) return defaultValue;
       return match;
     };

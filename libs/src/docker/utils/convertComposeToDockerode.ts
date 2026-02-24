@@ -49,6 +49,9 @@ const topologicalSort = (services: DockerCompose['services']): string[] => {
     if (inProgress.has(name)) {
       throw new Error(`Circular dependency detected for service '${name}'`);
     }
+    if (!(name in services)) {
+      throw new Error(`Unknown service dependency '${name}'`);
+    }
     inProgress.add(name);
 
     const deps = services[name]?.depends_on;
@@ -111,7 +114,12 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: string },
     );
 
-    const cmd = Array.isArray(service.command) ? service.command : service.command?.split(' ');
+    const parseCommand = (): string[] | undefined => {
+      if (Array.isArray(service.command)) return service.command;
+      if (service.command) return ['/bin/sh', '-c', service.command];
+      return undefined;
+    };
+    const cmd = parseCommand();
 
     const healthcheck = service.healthcheck
       ? {

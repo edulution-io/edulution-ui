@@ -17,6 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const JUST_LOGGED_IN_KEY = 'justLoggedIn';
+import { create } from 'zustand';
 
-export default JUST_LOGGED_IN_KEY;
+interface SessionFlagsStore {
+  isJustLoggedIn: boolean;
+  setIsJustLoggedIn: (isJustLoggedIn: boolean) => void;
+  reset: () => void;
+}
+
+const initialState = {
+  isJustLoggedIn: false,
+};
+
+const useSessionFlagsStore = create<SessionFlagsStore>((set) => ({
+  ...initialState,
+
+  setIsJustLoggedIn: (isJustLoggedIn) => set({ isJustLoggedIn }),
+
+  reset: () => set(initialState),
+}));
+
+export default useSessionFlagsStore;
