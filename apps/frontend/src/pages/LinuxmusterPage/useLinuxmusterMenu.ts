@@ -20,12 +20,14 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faCircleInfo, faDesktop, faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faDesktop, faGrip, faListCheck, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
 import {
   LINUXMUSTER_INFO_LOCATION,
   LINUXMUSTER_INFO_PATH,
   LINUXMUSTER_PATH,
+  PARENT_ASSIGNMENT_LOCATION,
+  PARENT_ASSIGNMENT_PATH,
   USER_MANAGEMENT_LOCATION,
   USER_MANAGEMENT_STUDENTS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
@@ -44,6 +46,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
   const { isLmn } = useDeploymentTarget();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
+  const navigateToParentAssignment = useCallback(() => navigate(`/${PARENT_ASSIGNMENT_PATH}`), [navigate]);
   const navigateToInfo = useCallback(() => navigate(`/${LINUXMUSTER_INFO_PATH}`), [navigate]);
   const navigateToUserManagement = useCallback(
     () => navigate(`/${USER_MANAGEMENT_STUDENTS_PATH}/${USER_MANAGEMENT_TABS.TABLE}`),
@@ -77,6 +80,12 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           action: navigateToDevices,
         },
         {
+          id: PARENT_ASSIGNMENT_LOCATION,
+          label: 'usermanagement.parentAssignment',
+          icon: faUserGroup,
+          action: navigateToParentAssignment,
+        },
+        {
           id: LINUXMUSTER_INFO_LOCATION,
           label: 'linuxmuster.versionInfo',
           icon: faCircleInfo,
@@ -84,7 +93,15 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
         },
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToDevices, navigateToInfo],
+    [
+      isLmn,
+      t,
+      navigateToLinuxmuster,
+      navigateToUserManagement,
+      navigateToDevices,
+      navigateToParentAssignment,
+      navigateToInfo,
+    ],
   );
 };
 

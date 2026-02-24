@@ -22,32 +22,32 @@ import type ColumnConfig from '@libs/userManagement/types/columnConfig';
 
 const LIST_MANAGEMENT_COLUMNS: Record<ManagementListType, ColumnConfig[]> = {
   [MANAGEMENT_LIST_TYPES.STUDENTS]: [
-    { key: 'class', apiKey: 'class', translationKey: 'usermanagement.list.class' },
-    { key: 'lastName', apiKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
-    { key: 'firstName', apiKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
-    { key: 'birthday', apiKey: 'birthday', translationKey: 'usermanagement.list.birthday' },
+    { key: 'class', entryKey: 'class', translationKey: 'usermanagement.list.class' },
+    { key: 'lastName', entryKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
+    { key: 'firstName', entryKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
+    { key: 'birthday', entryKey: 'birthday', translationKey: 'usermanagement.list.birthday' },
   ],
   [MANAGEMENT_LIST_TYPES.PARENTS]: [
-    { key: 'lastName', apiKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
-    { key: 'firstName', apiKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
+    { key: 'lastName', entryKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
+    { key: 'firstName', entryKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
   ],
   [MANAGEMENT_LIST_TYPES.TEACHERS]: [
-    { key: 'lastName', apiKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
-    { key: 'firstName', apiKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
-    { key: 'birthday', apiKey: 'birthday', translationKey: 'usermanagement.list.birthday' },
-    { key: 'login', apiKey: 'login', translationKey: 'usermanagement.list.login' },
+    { key: 'lastName', entryKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
+    { key: 'firstName', entryKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
+    { key: 'birthday', entryKey: 'birthday', translationKey: 'usermanagement.list.birthday' },
+    { key: 'login', entryKey: 'login', translationKey: 'usermanagement.list.login' },
   ],
   [MANAGEMENT_LIST_TYPES.EXTRASTUDENTS]: [
-    { key: 'class', apiKey: 'class', translationKey: 'usermanagement.list.class' },
-    { key: 'lastName', apiKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
-    { key: 'firstName', apiKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
-    { key: 'birthday', apiKey: 'birthday', translationKey: 'usermanagement.list.birthday' },
-    { key: 'login', apiKey: 'login', translationKey: 'usermanagement.list.login' },
+    { key: 'class', entryKey: 'class', translationKey: 'usermanagement.list.class' },
+    { key: 'lastName', entryKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
+    { key: 'firstName', entryKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
+    { key: 'birthday', entryKey: 'birthday', translationKey: 'usermanagement.list.birthday' },
+    { key: 'login', entryKey: 'login', translationKey: 'usermanagement.list.login' },
   ],
   [MANAGEMENT_LIST_TYPES.STAFF]: [
-    { key: 'category', apiKey: 'class', translationKey: 'usermanagement.list.category' },
-    { key: 'lastName', apiKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
-    { key: 'firstName', apiKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
+    { key: 'category', entryKey: 'class', translationKey: 'usermanagement.list.category' },
+    { key: 'lastName', entryKey: 'last_name', translationKey: 'usermanagement.list.lastName' },
+    { key: 'firstName', entryKey: 'first_name', translationKey: 'usermanagement.list.firstName' },
   ],
 };
 

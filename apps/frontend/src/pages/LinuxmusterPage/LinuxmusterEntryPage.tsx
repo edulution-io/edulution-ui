@@ -28,6 +28,7 @@ import {
   faDesktop,
   faGlobe,
   faUserGraduate,
+  faUserGroup,
   faUserPlus,
   faUsers,
   faUserShield,
@@ -37,6 +38,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import { Card } from '@/components/shared/Card';
 import {
   LINUXMUSTER_INFO_PATH,
+  PARENT_ASSIGNMENT_PATH,
   USER_MANAGEMENT_EXTRASTUDENTS_PATH,
   USER_MANAGEMENT_GLOBALADMINS_PATH,
   USER_MANAGEMENT_PARENTS_PATH,
@@ -173,6 +175,23 @@ const LinuxmusterEntryPage: React.FC = () => {
                   className="h-8 w-8 md:h-10 md:w-10"
                 />
                 <p>{t('deviceManagement.title')}</p>
+              </div>
+            </Card>
+          </button>
+        </div>
+        <h2 className="mb-4 mt-8 text-xl font-semibold">{t('parentChildPairing.assignment')}</h2>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/${PARENT_ASSIGNMENT_PATH}`)}
+          >
+            <Card variant="tile">
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <FontAwesomeIcon
+                  icon={faUserGroup}
+                  className="h-8 w-8 md:h-10 md:w-10"
+                />
+                <p>{t('parentChildPairing.assignment')}</p>
               </div>
             </Card>
           </button>

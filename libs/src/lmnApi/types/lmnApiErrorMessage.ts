@@ -51,6 +51,8 @@ enum LmnApiErrorMessage {
   GetUsersByRoleFailed = 'lmnApi.errors.GetUsersByRoleFailed',
   GetManagementListFailed = 'lmnApi.errors.GetManagementListFailed',
   SaveManagementListFailed = 'lmnApi.errors.SaveManagementListFailed',
+  AddParentToStudentFailed = 'lmnApi.errors.AddParentToStudentFailed',
+  DeleteParentFromStudentFailed = 'lmnApi.errors.DeleteParentFromStudentFailed',
   SophomorixCheckFailed = 'lmnApi.errors.SophomorixCheckFailed',
   SophomorixApplyFailed = 'lmnApi.errors.SophomorixApplyFailed',
   GetDevicesFailed = 'lmnApi.errors.GetDevicesFailed',

@@ -72,6 +72,7 @@ type UserManagementStore = {
   setSelectedUserDetails: (user: LmnUserInfo | null) => void;
   getListData: (managementList: string) => ListData;
   setManagementListEntries: (managementList: string, entries: ListManagementEntry[]) => void;
+  setCommentEntries: (managementList: string, entries: ListManagementEntry[]) => void;
   addDeletedEntryIndex: (managementList: string, index: number) => void;
   reset: () => void;
 };
@@ -155,13 +156,14 @@ const useUserManagementStore = create<UserManagementStore>()(
           const response = await eduApi.get<ListManagementEntry[]>(`${LIST_MANAGEMENT}/${school}/${managementList}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
+          const commentEntries = response.data.filter((entry) => isCommentEntry(entry));
           const entries = response.data.filter((entry) => !isCommentEntry(entry));
 
           if (isBackground && cached && hasUnsavedChanges(cached)) {
             set((s) => ({
               listDataByType: {
                 ...s.listDataByType,
-                [managementList]: { ...cached, savedListEntries: entries },
+                [managementList]: { ...cached, savedListEntries: entries, commentEntries },
               },
             }));
           } else {
@@ -172,6 +174,7 @@ const useUserManagementStore = create<UserManagementStore>()(
                   managementListEntries: entries,
                   savedListEntries: entries,
                   deletedEntryIndices: [],
+                  commentEntries,
                 },
               },
             }));
@@ -197,9 +200,11 @@ const useUserManagementStore = create<UserManagementStore>()(
         set({ isSaving: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
+          const existing = get().listDataByType[managementList] ?? EMPTY_LIST_DATA;
+          const allEntries = [...existing.commentEntries, ...data];
           await eduApi.post(
             `${LIST_MANAGEMENT}/${school}/${managementList}`,
-            { data },
+            { data: allEntries },
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
@@ -208,6 +213,7 @@ const useUserManagementStore = create<UserManagementStore>()(
             listDataByType: {
               ...s.listDataByType,
               [managementList]: {
+                ...existing,
                 managementListEntries: data,
                 savedListEntries: data,
                 deletedEntryIndices: [],
@@ -298,6 +304,16 @@ const useUserManagementStore = create<UserManagementStore>()(
           listDataByType: {
             ...s.listDataByType,
             [managementList]: { ...existing, managementListEntries: entries },
+          },
+        }));
+      },
+
+      setCommentEntries: (managementList: string, entries: ListManagementEntry[]) => {
+        const existing = get().listDataByType[managementList] ?? EMPTY_LIST_DATA;
+        set((s) => ({
+          listDataByType: {
+            ...s.listDataByType,
+            [managementList]: { ...existing, commentEntries: entries },
           },
         }));
       },

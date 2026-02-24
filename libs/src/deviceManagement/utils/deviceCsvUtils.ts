@@ -21,57 +21,41 @@ import type ListManagementEntry from '@libs/userManagement/types/listManagementE
 import type DeviceRow from '@libs/deviceManagement/types/deviceRow';
 import DEVICE_COLUMNS from '@libs/deviceManagement/constants/deviceColumns';
 import DEVICE_FIELDS from '@libs/deviceManagement/constants/deviceFields';
+import {
+  createEmptyEntry as createEmptyEntryBase,
+  entriesToRows as entriesToRowsBase,
+  rowsToEntries as rowsToEntriesBase,
+  entriesToCsvWithComments as entriesToCsvWithCommentsBase,
+  csvToEntriesWithComments as csvToEntriesWithCommentsBase,
+} from '@libs/common/utils/csvEntryUtils';
 
-const deviceEntriesToRows = (entries: ListManagementEntry[]): DeviceRow[] => {
-  if (!Array.isArray(entries)) return [];
-
-  return entries.map((entry) => {
-    const row: Partial<DeviceRow> = { id: crypto.randomUUID() };
-
-    DEVICE_COLUMNS.forEach((col) => {
-      (row as Record<string, string>)[col.key] = (entry[col.apiKey] as string) ?? '';
-    });
-
-    return row as DeviceRow;
-  });
+const DEVICE_ENTRY_DEFAULTS: Record<string, string> = {
+  sophomorixRole: 'classroom-studentcomputer',
+  pxeFlag: '0',
 };
 
-const createEmptyDeviceEntry = (): ListManagementEntry => {
-  const entry: ListManagementEntry = {};
-  DEVICE_FIELDS.forEach((field) => {
-    entry[field] = '';
-  });
-  entry.sophomorixRole = 'classroom-studentcomputer';
-  entry.pxeFlag = '0';
-  return entry;
-};
+const createEmptyDeviceEntry = (): ListManagementEntry => createEmptyEntryBase(DEVICE_FIELDS, DEVICE_ENTRY_DEFAULTS);
+
+const deviceEntriesToRows = (entries: ListManagementEntry[]): DeviceRow[] =>
+  entriesToRowsBase<DeviceRow>(entries, DEVICE_COLUMNS);
 
 const deviceRowsToEntries = (rows: DeviceRow[], originalEntries: ListManagementEntry[]): ListManagementEntry[] =>
-  rows.map((row, index) => {
-    const base: ListManagementEntry =
-      index < originalEntries.length ? { ...originalEntries[index] } : createEmptyDeviceEntry();
+  rowsToEntriesBase(rows, originalEntries, DEVICE_COLUMNS, createEmptyDeviceEntry);
 
-    DEVICE_COLUMNS.forEach((col) => {
-      base[col.apiKey] = (row as unknown as Record<string, string>)[col.key] ?? null;
-    });
+const deviceEntriesToCsvWithComments = (
+  commentEntries: ListManagementEntry[],
+  dataEntries: ListManagementEntry[],
+): string => entriesToCsvWithCommentsBase(commentEntries, dataEntries, DEVICE_FIELDS);
 
-    return base;
-  });
+const csvToDeviceEntriesWithComments = (
+  csv: string,
+): { entries: ListManagementEntry[]; commentEntries: ListManagementEntry[] } =>
+  csvToEntriesWithCommentsBase(csv, DEVICE_FIELDS);
 
-const deviceEntriesToCsv = (entries: ListManagementEntry[]): string =>
-  entries.map((entry) => DEVICE_FIELDS.map((field) => entry[field] ?? '').join(';')).join('\n');
-
-const csvToDeviceEntries = (csv: string): ListManagementEntry[] =>
-  csv
-    .split('\n')
-    .filter((line) => line.trim().length > 0 && !line.trimStart().startsWith('#'))
-    .map((line) => {
-      const values = line.split(';');
-      const entry: ListManagementEntry = {};
-      DEVICE_FIELDS.forEach((field, index) => {
-        entry[field] = values[index] ?? null;
-      });
-      return entry;
-    });
-
-export { deviceEntriesToRows, deviceRowsToEntries, createEmptyDeviceEntry, deviceEntriesToCsv, csvToDeviceEntries };
+export {
+  deviceEntriesToRows,
+  deviceRowsToEntries,
+  createEmptyDeviceEntry,
+  deviceEntriesToCsvWithComments,
+  csvToDeviceEntriesWithComments,
+};
