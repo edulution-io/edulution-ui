@@ -20,13 +20,18 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { faSave, faCheck, faFileCsv, faUserPlus, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faFileCsv, faRotateLeft, faSave, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import type UserType from '@libs/userManagement/types/userType';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
-import { createEmptyEntry, entriesToRows, entriesToCsv, csvToEntries } from '@libs/userManagement/utils/csvUtils';
+import {
+  createEmptyEntry,
+  csvToEntriesWithComments,
+  entriesToCsvWithComments,
+  entriesToRows,
+} from '@libs/userManagement/utils/csvUtils';
 import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import validateListRows from '@libs/userManagement/utils/validateListRows';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -123,6 +128,22 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     }
   };
 
+  const initialCsv = managementList
+    ? entriesToCsvWithComments(
+        useUserManagementStore.getState().getListData(managementList).commentEntries,
+        useUserManagementStore.getState().getListData(managementList).managementListEntries,
+        managementList,
+      )
+    : '';
+
+  const handleCsvSave = (csvText: string) => {
+    if (!managementList) return;
+    const { entries, commentEntries } = csvToEntriesWithComments(csvText, managementList);
+    const store = useUserManagementStore.getState();
+    store.setManagementListEntries(managementList, entries);
+    store.setCommentEntries(managementList, commentEntries);
+  };
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       {
@@ -176,15 +197,8 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
           isOpen={isCsvDialogOpen}
           onClose={() => setIsCsvDialogOpen(false)}
           title={`/etc/linuxmuster/sophomorix/${selectedSchool}/${managementList}.csv`}
-          initialCsv={entriesToCsv(
-            useUserManagementStore.getState().getListData(managementList).managementListEntries,
-            managementList,
-          )}
-          onSave={(csvText) => {
-            useUserManagementStore
-              .getState()
-              .setManagementListEntries(managementList, csvToEntries(csvText, managementList));
-          }}
+          initialCsv={initialCsv}
+          onSave={handleCsvSave}
           downloadFilename={`${managementList}.csv`}
         />
       ) : null}

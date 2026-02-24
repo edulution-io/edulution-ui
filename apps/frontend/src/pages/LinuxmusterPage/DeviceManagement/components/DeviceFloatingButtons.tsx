@@ -29,8 +29,8 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
 import {
   createEmptyDeviceEntry,
-  csvToDeviceEntries,
-  deviceEntriesToCsv,
+  csvToDeviceEntriesWithComments,
+  deviceEntriesToCsvWithComments,
   deviceEntriesToRows,
 } from '@libs/deviceManagement/utils/deviceCsvUtils';
 import { validateDeviceRows } from '@libs/deviceManagement/utils/deviceValidation';
@@ -93,9 +93,16 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
     setDeviceEntries([...currentEntries, createEmptyDeviceEntry()]);
   };
 
-  const handleCsvSave = (entries: ListManagementEntry[]) => {
+  const handleCsvSave = (csvText: string) => {
+    const { entries, commentEntries } = csvToDeviceEntriesWithComments(csvText);
     setDeviceEntries(entries);
+    useDeviceManagementStore.getState().setCommentEntries(commentEntries);
   };
+
+  const intialCsv = deviceEntriesToCsvWithComments(
+    useDeviceManagementStore.getState().commentEntries,
+    getFilteredEntries(),
+  );
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
@@ -145,8 +152,8 @@ const DeviceFloatingButtons: React.FC<DeviceFloatingButtonsProps> = ({ school })
           isOpen={isCsvDialogOpen}
           onClose={() => setIsCsvDialogOpen(false)}
           title={`/etc/linuxmuster/sophomorix/${school}/devices.csv`}
-          initialCsv={deviceEntriesToCsv(getFilteredEntries())}
-          onSave={(csvText) => handleCsvSave(csvToDeviceEntries(csvText))}
+          initialCsv={intialCsv}
+          onSave={handleCsvSave}
           downloadFilename="devices.csv"
         />
       ) : null}

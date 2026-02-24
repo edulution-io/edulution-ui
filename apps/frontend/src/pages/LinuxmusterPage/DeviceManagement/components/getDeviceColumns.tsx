@@ -120,7 +120,7 @@ const getDeviceColumns = ({
             type="button"
             variant="btn-ghost"
             onClick={() => onDuplicateRow(row.index)}
-            className="p-2 text-muted-foreground hover:text-foreground"
+            className="p-2 text-muted-foreground"
             aria-label={t('common.duplicate')}
           >
             <FontAwesomeIcon icon={faCopy} />
