@@ -32,10 +32,18 @@ const parseDurationToNs = (duration: string | undefined): number | undefined => 
   return Number(value) * (UNIT_TO_SECONDS[unit] ?? 1) * NANOSECONDS_PER_SECOND;
 };
 
-const normalizeEnv = (env: string[] | Record<string, string> | undefined): string[] | undefined => {
+const normalizeEnvToRecord = (
+  env: string[] | Record<string, string> | undefined,
+): Record<string, string> | undefined => {
   if (!env) return undefined;
-  if (Array.isArray(env)) return env;
-  return Object.entries(env).map(([key, value]) => `${key}=${value}`);
+  if (!Array.isArray(env)) return env;
+  return env.reduce<Record<string, string>>((acc, entry) => {
+    const eqIndex = entry.indexOf('=');
+    if (eqIndex !== -1) {
+      acc[entry.substring(0, eqIndex)] = entry.substring(eqIndex + 1);
+    }
+    return acc;
+  }, {});
 };
 
 const topologicalSort = (services: DockerCompose['services']): string[] => {
@@ -120,7 +128,7 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       Image: service.image,
       OpenStdin: service.stdin_open,
       StopTimeout: stopTimeOut,
-      Env: normalizeEnv(service.environment),
+      Env: normalizeEnvToRecord(service.environment) as unknown as string[],
       Cmd: cmd,
       Healthcheck: healthcheck,
       HostConfig: {
