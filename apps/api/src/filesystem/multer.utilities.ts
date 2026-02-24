@@ -17,14 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { extname } from 'path';
+import { basename, extname, resolve, sep } from 'node:path';
 import { Request } from 'express';
+import { BadRequestException } from '@nestjs/common';
 import { diskStorage, MulterError } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SVG_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/svgUploadAllowedMimeTypes';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
-import validatePath from '../common/pipes/validatePath';
+import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
+import sanitizePath from '@libs/filesystem/utils/sanitizePath';
 
 export const createDiskStorage = (
   basePath: string,
@@ -34,19 +36,26 @@ export const createDiskStorage = (
   diskStorage({
     destination: (req, _file, callback) => {
       const folderPath = getDestinationPath(req);
-      const sanitizedFolderPath = validatePath(basePath, folderPath);
-      if (!existsSync(sanitizedFolderPath)) {
-        mkdirSync(sanitizedFolderPath, { recursive: true });
+      const resolvedFolder = resolve(folderPath);
+      const resolvedBase = resolve(basePath);
+
+      if (!resolvedFolder.startsWith(resolvedBase + sep) && resolvedFolder !== resolvedBase) {
+        callback(new BadRequestException(PathValidationErrorMessages.OutsidePublicDirectory), '');
+        return;
       }
-      callback(null, sanitizedFolderPath);
+
+      if (!existsSync(folderPath)) {
+        mkdirSync(folderPath, { recursive: true });
+      }
+      callback(null, folderPath);
     },
     filename: (req, file, callback) => {
       let fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
       if (fileNameGenerator) {
         fileName = fileNameGenerator(req, file);
       }
-      const sanitizedFileName = validatePath(basePath, fileName);
-      callback(null, sanitizedFileName);
+      const sanitized = sanitizePath(basename(fileName));
+      callback(null, sanitized);
     },
   });
 

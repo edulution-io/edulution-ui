@@ -35,7 +35,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { type Request, type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import WHITEBOARD_FILES_PATH from '@libs/whiteboard/constants/whiteboardFilesPath';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import APPS from '@libs/appconfig/constants/apps';
 import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
@@ -66,8 +66,8 @@ class TLDrawSyncController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
-        APPS_FILES_PATH,
-        () => `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
+        WHITEBOARD_FILES_PATH,
+        () => WHITEBOARD_FILES_PATH,
         false,
         (_req, file) => file.originalname,
       ),
@@ -82,7 +82,7 @@ class TLDrawSyncController {
 
   @Get(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
   serveFiles(
-    @Param('filename', new ValidatePathPipe(`${APPS_FILES_PATH}/${APPS.WHITEBOARD}`)) filename: string | string[],
+    @Param('filename', new ValidatePathPipe(WHITEBOARD_FILES_PATH)) filename: string | string[],
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -90,11 +90,8 @@ class TLDrawSyncController {
   }
 
   @Delete(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
-  deleteFile(@Param('filename', new ValidatePathPipe(`${APPS_FILES_PATH}/${APPS.WHITEBOARD}`)) filename: string) {
-    return FilesystemService.deleteFile(
-      `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
-      FilesystemService.buildPathString(filename),
-    );
+  deleteFile(@Param('filename', new ValidatePathPipe(WHITEBOARD_FILES_PATH)) filename: string) {
+    return FilesystemService.deleteFile(WHITEBOARD_FILES_PATH, FilesystemService.buildPathString(filename));
   }
 
   @Get(`${TLDRAW_SYNC_ENDPOINTS.HISTORY}/:${ROOM_ID_PARAM}`)

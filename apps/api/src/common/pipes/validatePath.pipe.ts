@@ -18,7 +18,7 @@
  */
 
 import { Injectable, PipeTransform } from '@nestjs/common';
-import validatePath from './validatePath';
+import validatePath from '../utils/validatePath';
 
 @Injectable()
 class ValidatePathPipe implements PipeTransform<string | string[] | undefined, string | undefined> {
