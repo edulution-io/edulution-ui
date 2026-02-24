@@ -19,40 +19,29 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-const BASE_CHARS_PER_FRAME = 2;
-const CATCHUP_DIVISOR = 10;
-const CATCHUP_THRESHOLD = 50;
+const CHARS_PER_FRAME = 6;
 
 const StreamingText: React.FC<{ text: string }> = ({ text }) => {
   const [displayed, setDisplayed] = useState('');
   const targetRef = useRef(text);
   const displayedLenRef = useRef(0);
   const rafRef = useRef(0);
-  const isRunningRef = useRef(false);
 
-  const startAnimation = () => {
-    if (isRunningRef.current) return;
-    isRunningRef.current = true;
+  useEffect(() => {
+    targetRef.current = text;
 
     const animate = () => {
       const target = targetRef.current;
       if (displayedLenRef.current < target.length) {
-        const buffer = target.length - displayedLenRef.current;
-        const step = buffer > CATCHUP_THRESHOLD ? Math.ceil(buffer / CATCHUP_DIVISOR) : BASE_CHARS_PER_FRAME;
-        displayedLenRef.current = Math.min(displayedLenRef.current + step, target.length);
+        displayedLenRef.current = Math.min(displayedLenRef.current + CHARS_PER_FRAME, target.length);
         setDisplayed(target.slice(0, displayedLenRef.current));
         rafRef.current = requestAnimationFrame(animate);
-      } else {
-        isRunningRef.current = false;
       }
     };
 
+    cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(animate);
-  };
 
-  useEffect(() => {
-    targetRef.current = text;
-    startAnimation();
     return () => cancelAnimationFrame(rafRef.current);
   }, [text]);
 

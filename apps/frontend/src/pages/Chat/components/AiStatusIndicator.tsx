@@ -31,7 +31,14 @@ const AiStatusIndicator: React.FC<AiStatusIndicatorProps> = ({ label }) => (
       alt=""
       className="h-5 w-5 shrink-0 animate-pulse"
     />
-    <span className="text-xs text-muted-foreground">{label}...</span>
+    <span className="text-xs text-muted-foreground">
+      {label}
+      <span className="inline-flex w-4">
+        <span className="animate-dot-1">.</span>
+        <span className="animate-dot-2">.</span>
+        <span className="animate-dot-3">.</span>
+      </span>
+    </span>
   </div>
 );
 

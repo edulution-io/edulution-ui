@@ -92,6 +92,21 @@ class AiChatController {
     return this.aiChatService.getMessages(id, currentUser.preferred_username, limit, offset);
   }
 
+  @Post('conversations/:id/generate-title')
+  async generateTitle(
+    @Param('id') id: string,
+    @Body('modelConfigId') modelConfigId: string | undefined,
+    @GetCurrentUser() currentUser: JwtUser,
+  ) {
+    const title = await this.aiChatService.generateTitle(
+      id,
+      currentUser.preferred_username,
+      currentUser.ldapGroups,
+      modelConfigId,
+    );
+    return { title };
+  }
+
   @Get('models')
   async getAccessibleModels(@GetCurrentUser() currentUser: JwtUser) {
     return this.aiChatModelService.findAccessibleModels(currentUser.ldapGroups);

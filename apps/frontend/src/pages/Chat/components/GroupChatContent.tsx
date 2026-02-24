@@ -35,10 +35,12 @@ const GroupChatContent: React.FC<GroupChatContentProps> = ({ groupName, groupTyp
   const title = `${groupType === CHAT_GROUP_TYPE_LOCATIONS.CLASSES ? t('chat.schoolClass') : t('chat.project')}: ${groupName}`;
 
   return (
-    <ChatView
-      adapter={adapter}
-      title={title}
-    />
+    <>
+      <div className="flex w-full flex-row justify-between space-x-2 px-6 pb-2 pt-2">
+        <p className="text-background">{title}</p>
+      </div>
+      <ChatView adapter={adapter} />
+    </>
   );
 };
 

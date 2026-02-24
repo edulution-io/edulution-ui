@@ -39,6 +39,7 @@ interface ChatInputProps {
   onModelChange?: (id: string | null) => void;
   selectedFile?: File | null;
   onFileSelect?: (file: File | null) => void;
+  isPrivacyCompliant?: boolean;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
@@ -52,6 +53,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   onModelChange,
   selectedFile,
   onFileSelect,
+  isPrivacyCompliant = true,
 }) => {
   const { t } = useTranslation();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -100,7 +102,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
       onSubmit={handleSubmit}
       className="bg-background/80 p-4 backdrop-blur-sm"
     >
-      <div className="rounded-2xl border border-border bg-white shadow-sm dark:bg-accent">
+      <div
+        className={cn(
+          'rounded-2xl border bg-white shadow-sm dark:bg-accent',
+          isPrivacyCompliant ? 'border-border' : 'border-2 border-red-500',
+        )}
+      >
         {selectedFile && (
           <div className="flex items-center gap-2 px-4 pt-3">
             <span className="truncate rounded-lg bg-muted px-3 py-1 text-xs">{selectedFile.name}</span>
@@ -127,20 +134,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           maxLength={CHAT_MESSAGE_MAX_LENGTH}
           disabled={isLoading}
         />
-        <div className="flex items-center justify-end gap-2 px-3 pb-2">
-          {hasModels && onModelChange && (
-            <DropdownSelect
-              options={modelOptions}
-              selectedVal={selectedModelId ?? ''}
-              handleChange={(selectedValue) => {
-                if (selectedValue) onModelChange(selectedValue);
-              }}
-              placeholder={t('chat.aiChatModel.selectModel')}
-              openToTop
-              translate={false}
-              classname="w-44"
-            />
-          )}
+        <div className="flex items-center justify-between px-3 pb-2">
           {onFileSelect && (
             <>
               <input
@@ -164,18 +158,33 @@ const ChatInput: React.FC<ChatInputProps> = ({
               </Button>
             </>
           )}
-          <Button
-            type="submit"
-            variant="btn-collaboration"
-            size="icon"
-            disabled={!canSubmit}
-            className={cn('h-8 w-8 shrink-0 rounded-lg', !canSubmit && 'opacity-50')}
-          >
-            <FontAwesomeIcon
-              icon={faPaperPlane}
-              className="h-3.5 w-3.5"
-            />
-          </Button>
+          <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
+            {hasModels && onModelChange && (
+              <DropdownSelect
+                options={modelOptions}
+                selectedVal={selectedModelId ?? ''}
+                handleChange={(selectedValue) => {
+                  if (selectedValue) onModelChange(selectedValue);
+                }}
+                placeholder={t('chat.aiChatModel.selectModel')}
+                openToTop
+                translate={false}
+                classname="min-w-0 max-w-72 flex-1"
+              />
+            )}
+            <Button
+              type="submit"
+              variant="btn-collaboration"
+              size="icon"
+              disabled={!canSubmit}
+              className={cn('h-8 w-8 shrink-0 rounded-lg', !canSubmit && 'opacity-50')}
+            >
+              <FontAwesomeIcon
+                icon={faPaperPlane}
+                className="h-3.5 w-3.5"
+              />
+            </Button>
+          </div>
         </div>
       </div>
     </form>

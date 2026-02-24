@@ -20,7 +20,7 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { streamText, stepCountIs, UIMessage } from 'ai';
+import { streamText, generateText, stepCountIs, UIMessage } from 'ai';
 import type { LanguageModelV3 } from '@ai-sdk/provider';
 import type { ModelMessage, UserModelMessage, AssistantModelMessage } from '@ai-sdk/provider-utils';
 import APPS from '@libs/appconfig/constants/apps';
@@ -128,6 +128,36 @@ class AiChatService {
     });
 
     return { result: result as unknown as ReturnType<typeof streamText>, conversationId, username };
+  }
+
+  async generateTitle(
+    conversationId: string,
+    username: string,
+    ldapGroups?: string[],
+    modelConfigId?: string,
+  ): Promise<string> {
+    const recentMessages = await this.aiChatMessageModel
+      .find({ conversationId })
+      .sort({ createdAt: 1 })
+      .limit(4)
+      .exec();
+
+    const transcript = recentMessages
+      .map((msg) => `${msg.role === CHAT_ROLES.USER ? 'User' : 'Assistant'}: ${msg.content}`)
+      .join('\n');
+
+    const { model } = await this.resolveLanguageModel(ldapGroups, modelConfigId);
+
+    const { text } = await generateText({
+      model,
+      system:
+        'Generate a short, descriptive title (max 6 words) for the following conversation. The title MUST be in the same language as the user message. Reply with ONLY the title, nothing else. No quotes, no punctuation, no explanation.',
+      prompt: transcript,
+    });
+
+    const title = text.trim();
+    await this.updateConversationTitle(conversationId, username, title);
+    return title;
   }
 
   async saveMessage(

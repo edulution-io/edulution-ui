@@ -17,8 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import type Section from '@libs/menubar/section';
 import {
   CHAT_AICHAT_PATH,
@@ -34,15 +36,26 @@ import useSubMenuStore from '@/store/useSubMenuStore';
 const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
   value === CHAT_CLASSES_LOCATION || value === CHAT_PROJECTS_LOCATION;
 
+const NEW_CHAT_SECTION_ID = 'new-ai-chat';
+
 const useRegisterChatSections = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { groupType } = useParams<{ groupType: string; groupName: string }>();
   const { userGroups, fetchUserGroups } = useChatStore();
-  const { conversations, fetchConversations } = useAiChatStore();
+  const { conversations, fetchConversations, createConversation } = useAiChatStore();
   const { setSections } = useSubMenuStore();
 
   const isAiChat = pathname.startsWith(`/${CHAT_AICHAT_PATH}`);
+
+  const handleNewChat = useCallback(() => {
+    void createConversation(t('chat.newChat')).then((newId) => {
+      if (newId) {
+        navigate(`/${CHAT_AICHAT_PATH}/${newId}`);
+      }
+    });
+  }, [createConversation, navigate, t]);
 
   useEffect(() => {
     if (isAiChat) {
@@ -54,11 +67,21 @@ const useRegisterChatSections = () => {
 
   const sections: Section[] = useMemo(() => {
     if (isAiChat) {
-      return conversations.map((conv) => ({
+      const newChatSection: Section = {
+        id: NEW_CHAT_SECTION_ID,
+        label: t('chat.newChat'),
+        icon: faPlus,
+        iconClassName: 'text-background',
+        action: handleNewChat,
+      };
+
+      const conversationSections = conversations.map((conv) => ({
         id: conv.id,
         label: conv.title,
         action: () => navigate(`/${CHAT_AICHAT_PATH}/${conv.id}`),
       }));
+
+      return [newChatSection, ...conversationSections];
     }
 
     if (!userGroups || !isValidGroupType(groupType)) return [];

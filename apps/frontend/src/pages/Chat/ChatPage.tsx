@@ -21,7 +21,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComments } from '@fortawesome/free-solid-svg-icons';
+import { faComments, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { Button } from '@edulution-io/ui-kit';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useChatStore from '@/store/useChatStore';
@@ -37,7 +38,7 @@ const isValidGroupType = (value: string | undefined): value is GroupTypeLocation
 const ChatPage = () => {
   const { t } = useTranslation();
   const { groupType, groupName, chatId } = useParams<{ groupType: string; groupName: string; chatId: string }>();
-  const { isLoadingGroups } = useChatStore();
+  const { isLoadingGroups, fetchUserGroups } = useChatStore();
   useRegisterChatSections();
 
   const renderContent = () => {
@@ -67,6 +68,22 @@ const ChatPage = () => {
         />
         <p className="text-lg text-muted-foreground">{t('chat.selectConversation')}</p>
         <p className="mt-2 text-sm text-muted-foreground opacity-70">{t('chat.selectFromSidebar')}</p>
+        {groupType && (
+          <Button
+            type="button"
+            variant="btn-ghost"
+            disabled={isLoadingGroups}
+            onClick={() => fetchUserGroups()}
+            className="mt-4 flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted-background disabled:opacity-50"
+          >
+            <FontAwesomeIcon
+              icon={faRotate}
+              className="h-4 w-4"
+              spin={isLoadingGroups}
+            />
+            <span className="text-sm">{t('chat.refreshGroups')}</span>
+          </Button>
+        )}
       </div>
     );
   };

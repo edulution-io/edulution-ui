@@ -40,7 +40,10 @@ const useAiChat = (chatId: string): ChatAdapter => {
   const titleSetRef = useRef(false);
   const createdAtMapRef = useRef(new Map<string, string>());
   const updateConversationTitle = useAiChatStore((state) => state.updateConversationTitle);
+  const generateConversationTitle = useAiChatStore((state) => state.generateConversationTitle);
+  const selectedModelId = useAiChatStore((state) => state.selectedModelId);
   const username = useUserStore((state) => state.user?.username);
+  const prevStatusRef = useRef('' as string);
 
   const transport = useMemo(
     () =>
@@ -82,43 +85,63 @@ const useAiChat = (chatId: string): ChatAdapter => {
     });
   }, [chatId, fetchMessages, setMessages]);
 
-  const messages = useMemo<ChatMessage[]>(
-    () =>
-      uiMessages
-        .filter((message) => VALID_CHAT_ROLES.has(message.role))
-        .map((message) => {
-          const textContent = extractTextFromParts(message.parts);
-          const filePart = message.parts.find((part) => part.type === 'file');
-          const fileName = filePart && 'filename' in filePart ? (filePart.filename as string) : undefined;
+  const messageCacheRef = useRef(new Map<string, ChatMessage>());
 
-          if (!createdAtMapRef.current.has(message.id)) {
-            createdAtMapRef.current.set(message.id, new Date().toISOString());
-          }
+  const messages = useMemo<ChatMessage[]>(() => {
+    const nextCache = new Map<string, ChatMessage>();
+    const result = uiMessages
+      .filter((message) => VALID_CHAT_ROLES.has(message.role))
+      .map((message) => {
+        const textContent = extractTextFromParts(message.parts);
+        const filePart = message.parts.find((part) => part.type === 'file');
+        const fileName = filePart && 'filename' in filePart ? (filePart.filename as string) : undefined;
 
-          return {
-            id: message.id,
-            role: message.role as ChatRole,
-            content: textContent,
-            createdAt: createdAtMapRef.current.get(message.id)!,
-            createdBy: message.role === CHAT_ROLES.ASSISTANT ? CHAT_ROLES.ASSISTANT : username,
-            fileName,
-          };
-        }),
-    [uiMessages, username],
-  );
+        if (!createdAtMapRef.current.has(message.id)) {
+          createdAtMapRef.current.set(message.id, new Date().toISOString());
+        }
+
+        const cached = messageCacheRef.current.get(message.id);
+        if (cached && cached.content === textContent && cached.fileName === fileName) {
+          nextCache.set(message.id, cached);
+          return cached;
+        }
+
+        const chatMessage: ChatMessage = {
+          id: message.id,
+          role: message.role as ChatRole,
+          content: textContent,
+          createdAt: createdAtMapRef.current.get(message.id)!,
+          createdBy: message.role === CHAT_ROLES.ASSISTANT ? CHAT_ROLES.ASSISTANT : username,
+          fileName,
+        };
+        nextCache.set(message.id, chatMessage);
+        return chatMessage;
+      });
+
+    messageCacheRef.current = nextCache;
+    return result;
+  }, [uiMessages, username]);
 
   useEffect(() => {
+    const wasStreaming = prevStatusRef.current === 'streaming';
+    prevStatusRef.current = status;
+
     if (titleSetRef.current) return;
+    if (!wasStreaming || status !== 'ready') return;
+
     const firstUserMessage = uiMessages.find((message) => message.role === CHAT_ROLES.USER);
     if (!firstUserMessage) return;
 
     const textContent = extractTextFromParts(firstUserMessage.parts);
+    if (!textContent.trim()) return;
 
-    if (textContent.trim()) {
-      void updateConversationTitle(chatId, textContent.substring(0, TITLE_MAX_LENGTH));
-      titleSetRef.current = true;
-    }
-  }, [uiMessages, chatId, updateConversationTitle]);
+    titleSetRef.current = true;
+    void generateConversationTitle(chatId, selectedModelId ?? undefined).then((title) => {
+      if (!title) {
+        void updateConversationTitle(chatId, textContent.substring(0, TITLE_MAX_LENGTH));
+      }
+    });
+  }, [status, uiMessages, chatId, generateConversationTitle, updateConversationTitle, selectedModelId]);
 
   const isLoading = status === 'submitted' || status === 'streaming';
 

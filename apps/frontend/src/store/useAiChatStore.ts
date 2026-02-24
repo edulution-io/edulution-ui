@@ -25,6 +25,7 @@ import {
   AI_CHAT_CONVERSATIONS_ENDPOINT,
   AI_CHAT_MODELS_ENDPOINT,
   getAiChatMessagesEndpoint,
+  getAiChatGenerateTitleEndpoint,
 } from '@libs/chat/constants/chatApiEndpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -42,6 +43,7 @@ interface AiChatStore {
   setActiveConversation: (id: string | null) => void;
   updateConversationTitle: (id: string, title: string) => Promise<void>;
   fetchMessages: (conversationId: string) => Promise<AiChatMessageResponse[]>;
+  generateConversationTitle: (id: string, modelConfigId?: string) => Promise<string | null>;
   fetchAvailableModels: () => Promise<void>;
   setSelectedModelId: (id: string | null) => void;
 }
@@ -123,6 +125,24 @@ const useAiChatStore = create<AiChatStore>((set, get) => ({
       }));
     } catch (error) {
       handleApiError(error, set);
+    }
+  },
+
+  generateConversationTitle: async (id, modelConfigId?) => {
+    try {
+      const response = await eduApi.post<{ title: string }>(getAiChatGenerateTitleEndpoint(id), {
+        ...(modelConfigId ? { modelConfigId } : {}),
+      });
+      const { title } = response.data;
+      set((state) => ({
+        conversations: state.conversations.map((conversation) =>
+          conversation.id === id ? { ...conversation, title } : conversation,
+        ),
+      }));
+      return title;
+    } catch (error) {
+      handleApiError(error, set);
+      return null;
     }
   },
 

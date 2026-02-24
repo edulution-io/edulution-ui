@@ -20,7 +20,7 @@
     "schoolClasses": "Schulklassen",
     "project": "Projekt",
     "projects": "Projekte",
-    "aiChat": "KI-Chat",
+    "aiChat": "KI-Assistent",
     "selectFromSidebar": "Wähle eine Klasse oder ein Projekt aus der Seitenleiste",
     "noMessages": "Noch keine Nachrichten",
     "startConversation": "Schreibe die erste Nachricht",
@@ -30,29 +30,32 @@
       "conversationNotFound": "Unterhaltung nicht gefunden",
       "unauthorizedAccess": "Nicht autorisiert",
       "messageSendFailed": "Nachricht konnte nicht gesendet werden",
-      "invalidGroupType": "Ungültiger Gruppentyp"
+      "invalidGroupType": "Ungültiger Gruppentyp",
+      "contextWindowExceeded": "Die Unterhaltung ist zu lang. Bitte starte einen neuen Chat.",
+      "aiRequestFailed": "Die KI-Anfrage ist fehlgeschlagen. Bitte versuche es erneut."
     },
     "refreshGroups": "Gruppen aktualisieren",
     "newChat": "Neuer Chat",
-    "startNewAiChat": "Starte eine neue KI-Unterhaltung",
+    "startNewAiChat": "Starte eine neue KI-Assistenten-Unterhaltung",
     "deleteChat": "Chat löschen",
     "aiThinking": "Denkt nach",
     "aiWriting": "Schreibt",
+    "aiDisclaimer": "KI kann halluzinieren. Bitte überprüfe wichtige Informationen.",
     "aiChatModel": {
-      "createNew": "AI-Chat-Modell erstellen",
-      "edit": "AI-Chat-Modell bearbeiten",
-      "delete": "AI-Chat-Modell löschen",
-      "confirmDelete": "Möchten Sie dieses AI-Chat-Modell wirklich löschen?",
+      "createNew": "KI-Assistenten-Modell erstellen",
+      "edit": "KI-Assistenten-Modell bearbeiten",
+      "delete": "KI-Assistenten-Modell löschen",
+      "confirmDelete": "Möchten Sie dieses KI-Assistenten-Modell wirklich löschen?",
       "name": "Name",
       "aiService": "AI-Dienst",
       "systemPrompt": "System-Prompt",
       "accessGroups": "Zugriffsgruppen",
       "isActive": "Aktiv",
       "selectModel": "Modell auswählen",
-      "filterPlaceHolderText": "AI-Chat-Modelle suchen...",
-      "createdSuccessfully": "AI-Chat-Modell erfolgreich erstellt",
-      "updatedSuccessfully": "AI-Chat-Modell erfolgreich aktualisiert",
-      "deletedSuccessfully": "AI-Chat-Modell erfolgreich gelöscht"
+      "filterPlaceHolderText": "KI-Assistenten-Modelle suchen...",
+      "createdSuccessfully": "KI-Assistenten-Modell erfolgreich erstellt",
+      "updatedSuccessfully": "KI-Assistenten-Modell erfolgreich aktualisiert",
+      "deletedSuccessfully": "KI-Assistenten-Modell erfolgreich gelöscht"
     }
   },
   "bulletinboard": {
@@ -1050,8 +1053,8 @@
     "sidebar": "Backup"
   },
   "aichat": {
-    "title": "KI CHAT",
-    "sidebar": "KI Chat"
+    "title": "KI-ASSISTENT",
+    "sidebar": "KI-Assistent"
   },
   "roombooking": {
     "sidebar": "Raumbuchung"
@@ -2201,12 +2204,12 @@
     "chatGroupChatEnabledDescription": "Aktiviert oder deaktiviert die Gruppenchat-Funktion.",
     "chatGroupChatGroupsTitle": "Berechtigte Gruppen (Gruppenchat)",
     "chatGroupChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den Gruppenchat haben.",
-    "chatAiChatEnabledTitle": "AI Chat",
-    "chatAiChatEnabledDescription": "Aktiviert oder deaktiviert die AI-Chat-Funktion.",
-    "chatAiChatGroupsTitle": "Berechtigte Gruppen (AI Chat)",
-    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den AI-Chat haben.",
-    "chatAiChatModelTableTitle": "AI-Chat-Modelle",
-    "chatAiChatModelTableDescription": "Konfigurieren Sie AI-Chat-Modelle mit bestimmten AI-Diensten und Zugriffsgruppen.",
+    "chatAiChatEnabledTitle": "KI-Assistent",
+    "chatAiChatEnabledDescription": "Aktiviert oder deaktiviert die KI-Assistenten-Funktion.",
+    "chatAiChatGroupsTitle": "Berechtigte Gruppen (KI-Assistent)",
+    "chatAiChatGroupsDescription": "Wähle die Gruppen aus, die Zugriff auf den KI-Assistenten haben.",
+    "chatAiChatModelTableTitle": "KI-Assistenten-Modelle",
+    "chatAiChatModelTableDescription": "Konfigurieren Sie KI-Assistenten-Modelle mit bestimmten KI-Diensten und Zugriffsgruppen.",
     "chatSearxngUrlTitle": "SearXNG URL",
     "chatSearxngUrlDescription": "URL der SearXNG-Instanz für die KI-Websuche.",
     "chatTikaUrlTitle": "Tika URL",

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import { cn } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -47,36 +47,45 @@ const renderMessageContent = (content: string, isOwnMessage: boolean, isStreamin
   );
 };
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage, isStreaming = false }) => (
-  <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
-    <div
-      className={cn(
-        'min-w-0 max-w-[75%] overflow-hidden rounded-2xl px-4 py-2',
-        isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
-      )}
-    >
-      {isOwnMessage && message.fileName && (
-        <div className="mb-1 flex items-center gap-1.5 rounded-lg bg-white/20 px-2.5 py-1.5 text-xs">
-          <FontAwesomeIcon
-            icon={faFile}
-            className="h-3 w-3 shrink-0"
-          />
-          <span className="truncate">{message.fileName}</span>
-        </div>
-      )}
-      {renderMessageContent(message.content, isOwnMessage, isStreaming)}
-      <div className={cn('mt-1 flex items-center gap-2 text-xs', isOwnMessage ? 'justify-end' : 'justify-between')}>
-        {!isOwnMessage && (
-          <span className="font-medium opacity-70">
-            {message.createdByUserFirstName} {message.createdByUserLastName}
-          </span>
+const ChatBubble: React.FC<ChatBubbleProps> = memo(({ message, isOwnMessage, isStreaming = false }) => {
+  if (!message.content?.trim() && !message.fileName) return null;
+
+  return (
+    <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
+      <div
+        className={cn(
+          'min-w-0 max-w-[75%] overflow-hidden rounded-2xl px-4 py-2',
+          isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
+          isStreaming && 'w-[75%]',
         )}
-        <span className={isOwnMessage ? 'text-white/70' : 'text-muted-foreground'}>
-          {formatIsoDateToLocaleString(message.createdAt)}
-        </span>
+      >
+        {isOwnMessage && message.fileName && (
+          <div className="mb-1 flex items-center gap-1.5 rounded-lg bg-white/20 px-2.5 py-1.5 text-xs">
+            <FontAwesomeIcon
+              icon={faFile}
+              className="h-3 w-3 shrink-0"
+            />
+            <span className="truncate">{message.fileName}</span>
+          </div>
+        )}
+        {renderMessageContent(message.content, isOwnMessage, isStreaming)}
+        <div
+          className={cn('mt-1 flex items-center gap-2 text-[8px]', isOwnMessage ? 'justify-end' : 'justify-between')}
+        >
+          {!isOwnMessage && (
+            <span className="font-medium opacity-70">
+              {message.createdByUserFirstName} {message.createdByUserLastName}
+            </span>
+          )}
+          <span className={cn('text-[8px] leading-tight', isOwnMessage ? 'text-white/70' : 'text-muted-foreground')}>
+            {formatIsoDateToLocaleString(message.createdAt)}
+          </span>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+});
+
+ChatBubble.displayName = 'ChatBubble';
 
 export default ChatBubble;

@@ -19,6 +19,9 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '@edulution-io/ui-kit';
 import ChatView from '@/pages/Chat/components/ChatView';
 import useAiChat from '@/pages/Chat/hooks/useAiChat';
 import useAiChatStore from '@/store/useAiChatStore';
@@ -36,20 +39,44 @@ const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
   const setSelectedModelId = useAiChatStore((state) => state.setSelectedModelId);
   const fetchAvailableModels = useAiChatStore((state) => state.fetchAvailableModels);
   const title = conversations.find((conversation) => conversation.id === chatId)?.title ?? t('chat.newChat');
+  const selectedModel = availableModels.find((model) => model.id === selectedModelId);
+  const isPrivacyCompliant = selectedModel?.isDataPrivacyCompliant ?? true;
 
   useEffect(() => {
     void fetchAvailableModels();
   }, [fetchAvailableModels]);
 
   return (
-    <ChatView
-      adapter={adapter}
-      title={title}
-      models={availableModels}
-      selectedModelId={selectedModelId}
-      onModelChange={setSelectedModelId}
-      showTypingIndicator
-    />
+    <>
+      <div className="flex w-full flex-col px-6 pb-2 pt-2">
+        <p className="text-background">{title}</p>
+        {selectedModel && (
+          <div
+            className={cn(
+              'flex items-center gap-1.5 text-xs font-medium',
+              isPrivacyCompliant ? 'text-green-700' : 'text-red-700',
+            )}
+          >
+            <FontAwesomeIcon
+              icon={faShieldHalved}
+              className="h-3 w-3"
+            />
+            <span>
+              {isPrivacyCompliant
+                ? t('settings.aiServices.dataPrivacyCompliant')
+                : t('settings.aiServices.dataPrivacyNotCompliant')}
+            </span>
+          </div>
+        )}
+      </div>
+      <ChatView
+        adapter={adapter}
+        models={availableModels}
+        selectedModelId={selectedModelId}
+        onModelChange={setSelectedModelId}
+        showTypingIndicator
+      />
+    </>
   );
 };
 

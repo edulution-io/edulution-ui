@@ -58,3 +58,4 @@ export { default as NCMIcon } from '@/assets/icons/edulution/edu_NCM.svg';
 export { default as NextcloudIcon } from '@/assets/icons/edulution/edu_Nextcloud.svg';
 export { default as NotificationIcon } from '@/assets/icons/edulution/edu_Notification.svg';
 export { default as VPNIcon } from '@/assets/icons/edulution/edu_VPN.svg';
+export { default as ChatIcon } from '@/assets/icons/edulution/edu_Chat.svg';

@@ -20,7 +20,7 @@
     "schoolClasses": "School Classes",
     "project": "Project",
     "projects": "Projects",
-    "aiChat": "AI Chat",
+    "aiChat": "AI Assistant",
     "selectFromSidebar": "Select a class or project from the sidebar",
     "noMessages": "No messages yet",
     "startConversation": "Write the first message",
@@ -30,29 +30,32 @@
       "conversationNotFound": "Conversation not found",
       "unauthorizedAccess": "Unauthorized access",
       "messageSendFailed": "Failed to send message",
-      "invalidGroupType": "Invalid group type"
+      "invalidGroupType": "Invalid group type",
+      "contextWindowExceeded": "The conversation is too long. Please start a new chat.",
+      "aiRequestFailed": "The AI request failed. Please try again."
     },
     "refreshGroups": "Refresh groups",
     "newChat": "New Chat",
-    "startNewAiChat": "Start a new AI conversation",
+    "startNewAiChat": "Start a new AI Assistant conversation",
     "deleteChat": "Delete chat",
     "aiThinking": "Thinking",
     "aiWriting": "Writing",
+    "aiDisclaimer": "AI can hallucinate. Please verify important information.",
     "aiChatModel": {
-      "createNew": "Create AI Chat Model",
-      "edit": "Edit AI Chat Model",
-      "delete": "Delete AI Chat Model",
-      "confirmDelete": "Do you really want to delete this AI chat model?",
+      "createNew": "Create AI Assistant Model",
+      "edit": "Edit AI Assistant Model",
+      "delete": "Delete AI Assistant Model",
+      "confirmDelete": "Do you really want to delete this AI Assistant model?",
       "name": "Name",
       "aiService": "AI Service",
       "systemPrompt": "System Prompt",
       "accessGroups": "Access Groups",
       "isActive": "Active",
       "selectModel": "Select Model",
-      "filterPlaceHolderText": "Search AI chat models...",
-      "createdSuccessfully": "AI chat model created successfully",
-      "updatedSuccessfully": "AI chat model updated successfully",
-      "deletedSuccessfully": "AI chat model deleted successfully"
+      "filterPlaceHolderText": "Search AI Assistant models...",
+      "createdSuccessfully": "AI Assistant model created successfully",
+      "updatedSuccessfully": "AI Assistant model updated successfully",
+      "deletedSuccessfully": "AI Assistant model deleted successfully"
     }
   },
   "bulletinboard": {
@@ -1048,8 +1051,8 @@
     "sidebar": "Backup"
   },
   "aichat": {
-    "title": "KI CHAT",
-    "sidebar": "KI Chat"
+    "title": "AI ASSISTANT",
+    "sidebar": "AI Assistant"
   },
   "roombooking": {
     "sidebar": "Room booking"
@@ -2180,12 +2183,12 @@
     "chatGroupChatEnabledDescription": "Enable or disable the group chat feature.",
     "chatGroupChatGroupsTitle": "Authorized Groups (Group Chat)",
     "chatGroupChatGroupsDescription": "Select the groups that have access to the group chat.",
-    "chatAiChatEnabledTitle": "AI Chat",
-    "chatAiChatEnabledDescription": "Enable or disable the AI chat feature.",
-    "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
-    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat.",
-    "chatAiChatModelTableTitle": "AI Chat Models",
-    "chatAiChatModelTableDescription": "Configure AI chat models with specific AI services and access groups.",
+    "chatAiChatEnabledTitle": "AI Assistant",
+    "chatAiChatEnabledDescription": "Enable or disable the AI Assistant feature.",
+    "chatAiChatGroupsTitle": "Authorized Groups (AI Assistant)",
+    "chatAiChatGroupsDescription": "Select the groups that have access to the AI Assistant.",
+    "chatAiChatModelTableTitle": "AI Assistant Models",
+    "chatAiChatModelTableDescription": "Configure AI Assistant models with specific AI services and access groups.",
     "chatSearxngUrlTitle": "SearXNG URL",
     "chatSearxngUrlDescription": "URL of the SearXNG instance used for AI web search.",
     "chatTikaUrlTitle": "Tika URL",

@@ -20,7 +20,7 @@
     "schoolClasses": "Classes",
     "project": "Projet",
     "projects": "Projets",
-    "aiChat": "Chat IA",
+    "aiChat": "Assistant IA",
     "selectFromSidebar": "Sélectionnez une classe ou un projet dans la barre latérale",
     "noMessages": "Aucun message pour le moment",
     "startConversation": "Écrivez le premier message",
@@ -30,29 +30,32 @@
       "conversationNotFound": "Conversation introuvable",
       "unauthorizedAccess": "Accès non autorisé",
       "messageSendFailed": "Échec de l'envoi du message",
-      "invalidGroupType": "Type de groupe invalide"
+      "invalidGroupType": "Type de groupe invalide",
+      "contextWindowExceeded": "La conversation est trop longue. Veuillez démarrer un nouveau chat.",
+      "aiRequestFailed": "La requête IA a échoué. Veuillez réessayer."
     },
     "refreshGroups": "Actualiser les groupes",
     "newChat": "Nouveau Chat",
-    "startNewAiChat": "Démarrer une nouvelle conversation IA",
+    "startNewAiChat": "Démarrer une nouvelle conversation avec l'Assistant IA",
     "deleteChat": "Supprimer le chat",
     "aiThinking": "Réfléchit",
     "aiWriting": "Écrit",
+    "aiDisclaimer": "L'IA peut halluciner. Veuillez vérifier les informations importantes.",
     "aiChatModel": {
-      "createNew": "Créer un modèle de chat IA",
-      "edit": "Modifier le modèle de chat IA",
-      "delete": "Supprimer le modèle de chat IA",
-      "confirmDelete": "Voulez-vous vraiment supprimer ce modèle de chat IA ?",
+      "createNew": "Créer un modèle d'Assistant IA",
+      "edit": "Modifier le modèle d'Assistant IA",
+      "delete": "Supprimer le modèle d'Assistant IA",
+      "confirmDelete": "Voulez-vous vraiment supprimer ce modèle d'Assistant IA ?",
       "name": "Nom",
       "aiService": "Service IA",
       "systemPrompt": "Prompt système",
       "accessGroups": "Groupes d'accès",
       "isActive": "Actif",
       "selectModel": "Sélectionner un modèle",
-      "filterPlaceHolderText": "Rechercher des modèles de chat IA...",
-      "createdSuccessfully": "Modèle de chat IA créé avec succès",
-      "updatedSuccessfully": "Modèle de chat IA mis à jour avec succès",
-      "deletedSuccessfully": "Modèle de chat IA supprimé avec succès"
+      "filterPlaceHolderText": "Rechercher des modèles d'Assistant IA...",
+      "createdSuccessfully": "Modèle d'Assistant IA créé avec succès",
+      "updatedSuccessfully": "Modèle d'Assistant IA mis à jour avec succès",
+      "deletedSuccessfully": "Modèle d'Assistant IA supprimé avec succès"
     }
   },
   "bulletinboard": {
@@ -930,8 +933,8 @@
     "sidebar": "Sauvegarde"
   },
   "aichat": {
-    "title": "IA chat",
-    "sidebar": "IA chat"
+    "title": "ASSISTANT IA",
+    "sidebar": "Assistant IA"
   },
   "roombooking": {
     "sidebar": "Réservation de salles"
@@ -2006,12 +2009,12 @@
     "chatGroupChatEnabledDescription": "Activer ou désactiver la fonction de chat de groupe.",
     "chatGroupChatGroupsTitle": "Groupes autorisés (Chat de groupe)",
     "chatGroupChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat de groupe.",
-    "chatAiChatEnabledTitle": "Chat IA",
-    "chatAiChatEnabledDescription": "Activer ou désactiver la fonction de chat IA.",
-    "chatAiChatGroupsTitle": "Groupes autorisés (Chat IA)",
-    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès au chat IA.",
-    "chatAiChatModelTableTitle": "Modèles de chat IA",
-    "chatAiChatModelTableDescription": "Configurez les modèles de chat IA avec des services IA spécifiques et des groupes d'accès.",
+    "chatAiChatEnabledTitle": "Assistant IA",
+    "chatAiChatEnabledDescription": "Activer ou désactiver la fonction d'Assistant IA.",
+    "chatAiChatGroupsTitle": "Groupes autorisés (Assistant IA)",
+    "chatAiChatGroupsDescription": "Sélectionnez les groupes qui ont accès à l'Assistant IA.",
+    "chatAiChatModelTableTitle": "Modèles d'Assistant IA",
+    "chatAiChatModelTableDescription": "Configurez les modèles d'Assistant IA avec des services IA spécifiques et des groupes d'accès.",
     "chatSearxngUrlTitle": "SearXNG URL",
     "chatSearxngUrlDescription": "URL de l'instance SearXNG utilisée pour la recherche web IA.",
     "chatTikaUrlTitle": "Tika URL",

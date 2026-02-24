@@ -60,10 +60,17 @@ const TAILWIND_CONFIG: Config = {
           '0%,70%,100%': { opacity: '1' },
           '20%,50%': { opacity: '0' },
         },
+        'dot-blink': {
+          '0%, 20%': { opacity: '0' },
+          '50%, 100%': { opacity: '1' },
+        },
       },
       animation: {
         fadeInBottom: 'fadeInBottom 0.5s ease-out forwards',
         'caret-blink': 'caret-blink 1.25s ease-out infinite',
+        'dot-1': 'dot-blink 1.4s infinite',
+        'dot-2': 'dot-blink 1.4s 0.2s infinite',
+        'dot-3': 'dot-blink 1.4s 0.4s infinite',
       },
       flex: {
         '2': '2 1 0%',

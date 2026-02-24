@@ -17,11 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
-import { cn } from '@edulution-io/ui-kit';
+import { toast } from 'sonner';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import ChatMessages from './ChatMessages';
@@ -29,7 +27,6 @@ import ChatInput from './ChatInput';
 
 interface ChatViewProps {
   adapter: ChatAdapter;
-  title?: string;
   models?: AiChatModelUserDto[];
   selectedModelId?: string | null;
   onModelChange?: (id: string | null) => void;
@@ -38,7 +35,6 @@ interface ChatViewProps {
 
 const ChatView: React.FC<ChatViewProps> = ({
   adapter,
-  title,
   models,
   selectedModelId,
   onModelChange,
@@ -48,44 +44,23 @@ const ChatView: React.FC<ChatViewProps> = ({
   const { messages, input, setInput, handleSubmit, isLoading, error, selectedFile, setSelectedFile } = adapter;
   const selectedModel = models?.find((model) => model.id === selectedModelId);
   const isPrivacyCompliant = selectedModel?.isDataPrivacyCompliant ?? true;
+  const prevErrorRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (error && error.message !== prevErrorRef.current) {
+      prevErrorRef.current = error.message;
+      const isContextWindowError =
+        error.message.toLowerCase().includes('context') && error.message.toLowerCase().includes('window');
+      const translationKey = isContextWindowError ? 'chat.errors.contextWindowExceeded' : 'chat.errors.aiRequestFailed';
+      toast.error(t(translationKey));
+    }
+    if (!error) {
+      prevErrorRef.current = null;
+    }
+  }, [error, t]);
 
   return (
-    <div
-      className={cn(
-        'bg-glass flex h-full flex-col',
-        !isPrivacyCompliant && selectedModel && 'rounded-lg border-2 border-red-500',
-      )}
-    >
-      {title && (
-        <div className="flex items-center gap-4 border-b border-muted px-4 py-3">
-          <h3 className="font-semibold text-background">{title}</h3>
-          {selectedModel && (
-            <div
-              className={cn(
-                'flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium',
-                isPrivacyCompliant ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700',
-              )}
-            >
-              <FontAwesomeIcon
-                icon={faShieldHalved}
-                className="h-3 w-3"
-              />
-              <span>
-                {isPrivacyCompliant
-                  ? t('settings.aiServices.dataPrivacyCompliant')
-                  : t('settings.aiServices.dataPrivacyNotCompliant')}
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-destructive/10 mx-4 mt-4 rounded-lg p-3 text-sm text-destructive">
-          {t('chat.error')}: {error.message}
-        </div>
-      )}
-
+    <div className="bg-glass flex h-full flex-col">
       <ChatMessages
         messages={messages}
         isLoading={isLoading}
@@ -102,7 +77,11 @@ const ChatView: React.FC<ChatViewProps> = ({
         onModelChange={onModelChange}
         selectedFile={selectedFile}
         onFileSelect={setSelectedFile}
+        isPrivacyCompliant={isPrivacyCompliant}
       />
+      {models && models.length > 0 && (
+        <p className="pb-2 text-center text-xs font-light text-muted-foreground">{t('chat.aiDisclaimer')}</p>
+      )}
     </div>
   );
 };

@@ -19,9 +19,8 @@
 
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { faUsers, faUserGear, faRobot } from '@fortawesome/free-solid-svg-icons';
-import { ContactIcon } from '@/assets/icons';
+import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
+import { AiChatIcon, ChatIcon } from '@/assets/icons';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -37,7 +36,6 @@ import {
 } from '@libs/chat/constants/chatPaths';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useAiChatStore from '@/store/useAiChatStore';
 
 const hasGroupAccess = (ldapGroups: string[], configuredGroups: MultipleSelectorGroup[]): boolean => {
   if (configuredGroups.length === 0) return false;
@@ -45,11 +43,9 @@ const hasGroupAccess = (ldapGroups: string[], configuredGroups: MultipleSelector
 };
 
 const useChatMenu = (): MenuBarEntry => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const appConfigs = useAppConfigsStore((state) => state.appConfigs);
   const { ldapGroups, isSuperAdmin } = useLdapGroups();
-  const createConversation = useAiChatStore((state) => state.createConversation);
 
   const chatConfig = findAppConfigByName(appConfigs, APPS.CHAT);
 
@@ -68,17 +64,13 @@ const useChatMenu = (): MenuBarEntry => {
   const navigateToClasses = useCallback(() => navigate(`/${CHAT_CLASSES_PATH}`), [navigate]);
   const navigateToProjects = useCallback(() => navigate(`/${CHAT_PROJECTS_PATH}`), [navigate]);
   const navigateToAiChat = useCallback(() => {
-    void createConversation(t('chat.newChat')).then((newId) => {
-      if (newId) {
-        navigate(`/${CHAT_AICHAT_PATH}/${newId}`);
-      }
-    });
-  }, [createConversation, navigate, t]);
+    navigate(`/${CHAT_AICHAT_PATH}`);
+  }, [navigate]);
 
   return useMemo(
     () => ({
       title: 'chat.title',
-      icon: ContactIcon,
+      icon: ChatIcon,
       color: 'hover:bg-ciGreenToBlue',
       appName: APPS.CHAT,
       menuItems: [
@@ -103,7 +95,7 @@ const useChatMenu = (): MenuBarEntry => {
               {
                 id: CHAT_AICHAT_LOCATION,
                 label: 'chat.aiChat',
-                icon: faRobot,
+                icon: AiChatIcon,
                 action: navigateToAiChat,
               },
             ]

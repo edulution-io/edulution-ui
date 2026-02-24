@@ -90,7 +90,8 @@ const useMenuBarConfig = (): MenuBarEntry => {
       sections.map((section) => ({
         id: section.id,
         label: section.label,
-        icon: '',
+        icon: section.icon ?? '',
+        iconClassName: section.iconClassName,
         action: section.action ?? (() => scrollToSection(section.id)),
         disableTranslation: true,
       })),
