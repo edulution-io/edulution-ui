@@ -20,9 +20,14 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faListCheck, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
-import { LINUXMUSTER_PATH, USER_MANAGEMENT_LOCATION } from '@libs/userManagement/constants/userManagementPaths';
+import {
+  LINUXMUSTER_PATH,
+  PARENT_ASSIGNMENT_LOCATION,
+  PARENT_ASSIGNMENT_PATH,
+  USER_MANAGEMENT_LOCATION,
+} from '@libs/userManagement/constants/userManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -33,6 +38,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
   const { isLmn } = useDeploymentTarget();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
+  const navigateToParentAssignment = useCallback(() => navigate(`/${PARENT_ASSIGNMENT_PATH}`), [navigate]);
 
   return useMemo(
     () => ({
@@ -47,9 +53,15 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faListCheck,
           action: navigateToLinuxmuster,
         },
+        {
+          id: PARENT_ASSIGNMENT_LOCATION,
+          label: 'usermanagement.parentAssignment',
+          icon: faUserGroup,
+          action: navigateToParentAssignment,
+        },
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster],
+    [isLmn, t, navigateToLinuxmuster, navigateToParentAssignment],
   );
 };
 

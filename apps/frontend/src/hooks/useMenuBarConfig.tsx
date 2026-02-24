@@ -95,23 +95,23 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const configValues = menuBarConfigRegistry[rootPathName] ?? DISABLED_MENU_BAR_ENTRY;
   const activeMenuItemId = getFromPathName(pathname, 2);
 
-  const getItemChildren = (itemId: string): MenuItem[] | undefined => {
+  const getItemChildren = (itemId: string, isFirstItem: boolean): MenuItem[] | undefined => {
     if (sectionChildren.length === 0) return undefined;
     if (itemId === activeMenuItemId) return sectionChildren;
     if (sectionChildren.some((c) => c.id === activeMenuItemId)) return sectionChildren;
-    if (!activeMenuItemId) return sectionChildren;
+    if (!activeMenuItemId && isFirstItem) return sectionChildren;
     return undefined;
   };
 
   const menuItems: MenuItem[] = useMemo(
     () =>
-      configValues.menuItems.map((item) => ({
+      configValues.menuItems.map((item, index) => ({
         id: item.id,
         label: item.disableTranslation ? item.label : t(item.label),
         action: () => item.action(),
         icon: item.icon,
         disableTranslation: item.disableTranslation,
-        children: getItemChildren(item.id),
+        children: getItemChildren(item.id, index === 0),
       })),
     [configValues.menuItems, t, activeMenuItemId, sectionChildren],
   );

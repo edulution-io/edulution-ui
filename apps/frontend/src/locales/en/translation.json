@@ -239,7 +239,9 @@
       "SaveManagementListFailed": "Failed to save management list",
       "SophomorixCheckFailed": "Sophomorix check failed",
       "SophomorixApplyFailed": "Sophomorix apply failed",
-      "GetSophomorixStatusFailed": "Failed to get sophomorix status"
+      "GetSophomorixStatusFailed": "Failed to get sophomorix status",
+      "AddParentToStudentFailed": "Failed to register parent for student",
+      "DeleteParentFromStudentFailed": "Failed to remove parent from student group"
     }
   },
   "ticketsystem": {
@@ -742,6 +744,7 @@
     "titleLmn": "SCHOOL SERVER",
     "titleGeneric": "SERVER",
     "menuTitle": "User management",
+    "parentAssignment": "Parent Assignment",
     "description": "View and manage user accounts, lists, and roles.",
     "students": "Students",
     "teachers": "Teachers",
@@ -1603,26 +1606,38 @@
       "downloadButton": "Download Configuration",
       "error": "The VPN service is currently unavailable. Please try again later or contact an administrator."
     },
-    "pairing": {
+    "parentChildPairing": {
       "myParents": "My Parents",
       "myChildren": "My Children",
-      "description": "Connect your account with your parents or children.",
-      "myCode": "My Pairing Code",
-      "myCodeDescription": "Share this code with the person you want to connect with. The code is valid for 5 minutes.",
+      "descriptionStudent": "Here you can create a link with your parents.",
+      "descriptionParent": "Here you can create a link with your children.",
+      "myCode": "My Assignment Code",
+      "myCodeDescriptionStudent": "Share this code with your parent. The code is valid for 5 minutes.",
+      "myCodeDescriptionParent": "Share this code with your child. The code is valid for 5 minutes.",
       "enterCode": "Enter Code",
-      "enterCodeDescription": "Enter the pairing code you received from your parent or child.",
-      "enterCodePlaceholder": "Enter pairing code",
-      "submitCode": "Connect",
-      "relationships": "Connections",
-      "noRelationships": "No connections yet.",
+      "enterCodeDescriptionStudent": "Enter the assignment code you received from your parent.",
+      "enterCodeDescriptionParent": "Enter the assignment code you received from your child.",
+      "enterCodePlaceholder": "Enter assignment code",
+      "submitCode": "Assign",
+      "relationships": "Assignments",
+      "noRelationships": "No assignments yet.",
       "statusPending": "Pending",
       "statusAccepted": "Accepted",
       "statusRejected": "Rejected",
-      "pairingSuccess": "Connection request sent successfully!",
-      "codeRefreshed": "New pairing code generated.",
+      "pairingSuccess": "Assignment request sent successfully!",
+      "regenerateCode": "Regenerate",
+      "codeRefreshed": "New assignment code generated.",
       "codeExpired": "The code has expired. Please request a new code.",
       "parent": "Parent",
-      "student": "Student"
+      "student": "Student",
+      "statusColumn": "Status",
+      "createdAt": "Created at",
+      "accept": "Accept",
+      "reject": "Reject",
+      "statusUpdated": "Status updated successfully.",
+      "assignment": "Parent Assignment",
+      "assignmentDescription": "Manage parent-student assignments.",
+      "filterPlaceholder": "Search by parent or student..."
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
@@ -1953,6 +1968,38 @@
     "items": "{{count}} users",
     "userManagement": "User Management",
     "description": "Manage your school server settings and users."
+  },
+  "parentAssignment": {
+    "item": "{{count}} assignment",
+    "items": "{{count}} assignments",
+    "rowSelected": "{{selected}} of {{total}} assignment selected",
+    "rowsSelected": "{{selected}} of {{total}} assignments selected"
+  },
+  "parentChildPairing": {
+    "assignment": "Parent Assignment",
+    "assignmentDescription": "Manage parent-student assignments.",
+    "filterPlaceholder": "Search by parent or student...",
+    "parent": "Parent",
+    "student": "Student",
+    "school": "School",
+    "statusColumn": "Status",
+    "createdAt": "Created at",
+    "accept": "Accept",
+    "reject": "Reject",
+    "statusAll": "All",
+    "statusPending": "Pending",
+    "statusAccepted": "Accepted",
+    "statusRejected": "Rejected",
+    "statusUpdated": "Status updated successfully.",
+    "errors": {
+      "codeNotFound": "The assignment code was not found.",
+      "codeExpired": "The assignment code has expired.",
+      "cannotPairWithSelf": "You cannot assign yourself.",
+      "pairingAlreadyExists": "This assignment already exists.",
+      "pairingNotFound": "The assignment was not found.",
+      "invalidRole": "Your role does not allow assignments.",
+      "incompatibleRoles": "You cannot be assigned to another student."
+    }
   },
   "whiteboard": {
     "title": "WHITEBOARD",

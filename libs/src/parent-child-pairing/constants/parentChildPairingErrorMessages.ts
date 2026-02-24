@@ -17,15 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type PairingStatusType from './pairingStatusType';
+const PARENT_CHILD_PAIRING_ERROR_MESSAGES = {
+  CODE_NOT_FOUND: 'parentChildPairing.errors.codeNotFound',
+  CODE_EXPIRED: 'parentChildPairing.errors.codeExpired',
+  CANNOT_PAIR_WITH_SELF: 'parentChildPairing.errors.cannotPairWithSelf',
+  PAIRING_ALREADY_EXISTS: 'parentChildPairing.errors.pairingAlreadyExists',
+  PAIRING_NOT_FOUND: 'parentChildPairing.errors.pairingNotFound',
+  INVALID_ROLE: 'parentChildPairing.errors.invalidRole',
+  INCOMPATIBLE_ROLES: 'parentChildPairing.errors.incompatibleRoles',
+} as const;
 
-interface PairingDto {
-  id: string;
-  parent: string;
-  student: string;
-  status: PairingStatusType;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export default PairingDto;
+export default PARENT_CHILD_PAIRING_ERROR_MESSAGES;

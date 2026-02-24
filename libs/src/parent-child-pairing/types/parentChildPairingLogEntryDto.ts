@@ -17,8 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import PAIRING_STATUS from '../constants/pairingStatus';
+import type ParentChildPairingLogActionType from './parentChildPairingLogActionType';
 
-type PairingStatusType = (typeof PAIRING_STATUS)[keyof typeof PAIRING_STATUS];
+interface ParentChildPairingLogEntryDto {
+  action: ParentChildPairingLogActionType;
+  performedBy: string;
+  timestamp: string;
+  details?: string;
+}
 
-export default PairingStatusType;
+export default ParentChildPairingLogEntryDto;

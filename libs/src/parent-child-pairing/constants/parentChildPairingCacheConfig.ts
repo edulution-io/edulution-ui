@@ -17,16 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import PairingService from './pairing.service';
-import PairingController from './pairing.controller';
-import { Pairing, PairingSchema } from './pairing.schema';
+const PARENT_CHILD_PAIRING_CACHE_CONFIG = {
+  CODE_KEY_PREFIX: 'parent-child-pairing:code:',
+  USER_KEY_PREFIX: 'parent-child-pairing:user:',
+  CODE_LENGTH: 8,
+  CODE_TTL_MS: 300_000,
+} as const;
 
-@Module({
-  imports: [MongooseModule.forFeature([{ name: Pairing.name, schema: PairingSchema }])],
-  providers: [PairingService],
-  controllers: [PairingController],
-  exports: [PairingService],
-})
-export default class PairingModule {}
+export default PARENT_CHILD_PAIRING_CACHE_CONFIG;

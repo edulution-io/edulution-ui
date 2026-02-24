@@ -219,7 +219,9 @@
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
       "GetSchoolsFailed": "L'appel des écoles a échoué",
-      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué.",
+      "AddParentToStudentFailed": "Échec de l'enregistrement du parent pour l'élève",
+      "DeleteParentFromStudentFailed": "Échec de la suppression du parent de l'élève"
     }
   },
   "ticketsystem": {
@@ -650,6 +652,7 @@
     "titleLmn": "SERVEUR SCOLAIRE",
     "titleGeneric": "SERVEUR",
     "menuTitle": "Gestion des utilisateurs",
+    "parentAssignment": "Affectation parentale",
     "description": "Afficher et gérer les comptes utilisateurs, les listes et les rôles.",
     "students": "Élèves",
     "teachers": "Enseignants",
@@ -1453,26 +1456,38 @@
       "downloadButton": "Télécharger la configuration",
       "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
     },
-    "pairing": {
+    "parentChildPairing": {
       "myParents": "Mes Parents",
       "myChildren": "Mes Enfants",
-      "description": "Connectez votre compte avec vos parents ou enfants.",
-      "myCode": "Mon Code d'Appariement",
-      "myCodeDescription": "Partagez ce code avec la personne avec laquelle vous souhaitez vous connecter. Le code est valide 5 minutes.",
+      "descriptionStudent": "Ici, vous pouvez créer un lien avec vos parents.",
+      "descriptionParent": "Ici, vous pouvez créer un lien avec vos enfants.",
+      "myCode": "Mon Code d'Affectation",
+      "myCodeDescriptionStudent": "Partagez ce code avec votre parent. Le code est valide 5 minutes.",
+      "myCodeDescriptionParent": "Partagez ce code avec votre enfant. Le code est valide 5 minutes.",
       "enterCode": "Saisir le Code",
-      "enterCodeDescription": "Saisissez le code d'appariement que vous avez reçu de votre parent ou enfant.",
-      "enterCodePlaceholder": "Saisir le code d'appariement",
-      "submitCode": "Connecter",
-      "relationships": "Connexions",
-      "noRelationships": "Pas encore de connexions.",
+      "enterCodeDescriptionStudent": "Saisissez le code d'affectation que vous avez reçu de votre parent.",
+      "enterCodeDescriptionParent": "Saisissez le code d'affectation que vous avez reçu de votre enfant.",
+      "enterCodePlaceholder": "Saisir le code d'affectation",
+      "submitCode": "Affecter",
+      "relationships": "Affectations",
+      "noRelationships": "Pas encore d'affectations.",
       "statusPending": "En attente",
       "statusAccepted": "Accepté",
       "statusRejected": "Rejeté",
-      "pairingSuccess": "Demande de connexion envoyée avec succès!",
-      "codeRefreshed": "Nouveau code d'appariement généré.",
+      "pairingSuccess": "Demande d'affectation envoyée avec succès!",
+      "regenerateCode": "Régénérer",
+      "codeRefreshed": "Nouveau code d'affectation généré.",
       "codeExpired": "Le code a expiré. Veuillez demander un nouveau code.",
       "parent": "Parent",
-      "student": "Élève"
+      "student": "Élève",
+      "statusColumn": "Statut",
+      "createdAt": "Créé le",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "statusUpdated": "Statut mis à jour avec succès.",
+      "assignment": "Affectation parentale",
+      "assignmentDescription": "Gérer les affectations parent-élève.",
+      "filterPlaceholder": "Rechercher par parent ou élève..."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
@@ -1787,6 +1802,38 @@
     "items": "{{count}} utilisateurs",
     "userManagement": "Gestion des utilisateurs",
     "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
+  },
+  "parentAssignment": {
+    "item": "{{count}} affectation",
+    "items": "{{count}} affectations",
+    "rowSelected": "{{selected}} sur {{total}} affectation sélectionnée",
+    "rowsSelected": "{{selected}} sur {{total}} affectations sélectionnées"
+  },
+  "parentChildPairing": {
+    "assignment": "Affectation parentale",
+    "assignmentDescription": "Gérer les affectations parent-élève.",
+    "filterPlaceholder": "Rechercher par parent ou élève...",
+    "parent": "Parent",
+    "student": "Élève",
+    "school": "École",
+    "statusColumn": "Statut",
+    "createdAt": "Créé le",
+    "accept": "Accepter",
+    "reject": "Rejeter",
+    "statusAll": "Tous",
+    "statusPending": "En attente",
+    "statusAccepted": "Accepté",
+    "statusRejected": "Rejeté",
+    "statusUpdated": "Statut mis à jour avec succès.",
+    "errors": {
+      "codeNotFound": "Le code d’affectation n’a pas été trouvé.",
+      "codeExpired": "Le code d’affectation a expiré.",
+      "cannotPairWithSelf": "Vous ne pouvez pas vous affecter à vous-même.",
+      "pairingAlreadyExists": "Cette affectation existe déjà.",
+      "pairingNotFound": "L'affectation n'a pas été trouvée.",
+      "invalidRole": "Votre rôle ne permet pas l’affectation.",
+      "incompatibleRoles": "Vous ne pouvez pas être affecté à un autre élève."
+    }
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",

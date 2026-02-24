@@ -17,10 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_STATUS = {
-  PENDING: 'pending',
-  ACCEPTED: 'accepted',
-  REJECTED: 'rejected',
-} as const;
+const PARENT_CHILD_PAIRING_GROUP_SUFFIX = '-parents';
 
-export default PAIRING_STATUS;
+export default PARENT_CHILD_PAIRING_GROUP_SUFFIX;

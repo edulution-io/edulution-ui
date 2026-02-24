@@ -17,11 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PAIRING_CACHE_CONFIG = {
-  CODE_KEY_PREFIX: 'pairing:code:',
-  USER_KEY_PREFIX: 'pairing:user:',
-  CODE_LENGTH: 8,
-  CODE_TTL_MS: 300_000,
-} as const;
+const PARENT_CHILD_PAIRING_STATUS_FILTER_ALL = '';
 
-export default PAIRING_CACHE_CONFIG;
+export default PARENT_CHILD_PAIRING_STATUS_FILTER_ALL;

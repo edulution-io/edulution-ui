@@ -17,8 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import PAIRING_ERROR_MESSAGES from '../constants/pairingErrorMessages';
+import type ParentChildPairingStatusType from './parentChildPairingStatusType';
+import type ParentChildPairingLogEntryDto from './parentChildPairingLogEntryDto';
 
-type PairingErrorMessagesType = (typeof PAIRING_ERROR_MESSAGES)[keyof typeof PAIRING_ERROR_MESSAGES];
+interface ParentChildPairingDto {
+  id: string;
+  parent: string;
+  student: string;
+  school: string;
+  status: ParentChildPairingStatusType;
+  logs: ParentChildPairingLogEntryDto[];
+  createdAt: string;
+  updatedAt: string;
+}
 
-export default PairingErrorMessagesType;
+export default ParentChildPairingDto;

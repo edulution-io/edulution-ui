@@ -17,8 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface SubmitPairingCodeDto {
+interface ParentChildPairingCodeResponseDto {
   code: string;
+  expiresAt: string;
 }
 
-export default SubmitPairingCodeDto;
+export default ParentChildPairingCodeResponseDto;

@@ -26,6 +26,7 @@ import {
   faChalkboardTeacher,
   faGlobe,
   faUserGraduate,
+  faUserGroup,
   faUserPlus,
   faUsers,
   faUserShield,
@@ -34,6 +35,7 @@ import {
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { Card } from '@/components/shared/Card';
 import {
+  PARENT_ASSIGNMENT_PATH,
   USER_MANAGEMENT_EXTRASTUDENTS_PATH,
   USER_MANAGEMENT_GLOBALADMINS_PATH,
   USER_MANAGEMENT_PARENTS_PATH,
@@ -144,6 +146,23 @@ const LinuxmusterEntryPage: React.FC = () => {
               </Card>
             </button>
           ))}
+        </div>
+        <h2 className="mb-4 mt-8 text-xl font-semibold">{t('parentChildPairing.assignment')}</h2>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/${PARENT_ASSIGNMENT_PATH}`)}
+          >
+            <Card variant="tile">
+              <div className="m-4 flex flex-col items-center">
+                <FontAwesomeIcon
+                  icon={faUserGroup}
+                  className="h-12 w-12 md:h-14 md:w-14"
+                />
+                <p>{t('parentChildPairing.assignment')}</p>
+              </div>
+            </Card>
+          </button>
         </div>
       </div>
     </PageLayout>

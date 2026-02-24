@@ -42,12 +42,13 @@ import {
   USER_SETTINGS_USER_INTERFACE_PATH,
   WIREGUARD_ACCESS_PATH,
   USER_SETTINGS_WIREGUARD_ACCESS_PATH,
-  PAIRING_PATH,
-  USER_SETTINGS_PAIRING_PATH,
+  PARENT_CHILD_PAIRING_PATH,
+  USER_SETTINGS_PARENT_CHILD_PAIRING_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import getIsParent from '@libs/user/utils/getIsParent';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -60,7 +61,7 @@ const useUserSettingsMenu = () => {
   const isMailConfigured = !!findAppConfigByName(appConfigs, APPS.MAIL);
   const isWireguardConfigured = !!findAppConfigByName(appConfigs, APPS.WIREGUARD);
   const isStudent = ldapGroups.includes(GroupRoles.STUDENT);
-  const isParent = ldapGroups.includes(GroupRoles.PARENT);
+  const isParent = getIsParent(ldapGroups);
   const isStudentOrParent = isStudent || isParent;
 
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = useMemo(
@@ -117,10 +118,12 @@ const useUserSettingsMenu = () => {
         ...(isStudentOrParent
           ? [
               {
-                id: PAIRING_PATH,
-                label: isStudent ? 'usersettings.pairing.myParents' : 'usersettings.pairing.myChildren',
+                id: PARENT_CHILD_PAIRING_PATH,
+                label: isStudent
+                  ? 'usersettings.parentChildPairing.myParents'
+                  : 'usersettings.parentChildPairing.myChildren',
                 icon: ContactIcon,
-                action: () => navigate(USER_SETTINGS_PAIRING_PATH),
+                action: () => navigate(USER_SETTINGS_PARENT_CHILD_PAIRING_PATH),
               },
             ]
           : []),

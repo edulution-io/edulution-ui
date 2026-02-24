@@ -17,38 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import PAIRING_STATUS from '@libs/pairing/constants/pairingStatus';
-import type PairingStatusType from '@libs/pairing/types/pairingStatusType';
+import { Prop, Schema } from '@nestjs/mongoose';
+import PARENT_CHILD_PAIRING_LOG_ACTION from '@libs/parent-child-pairing/constants/parentChildPairingLogAction';
+import type ParentChildPairingLogActionType from '@libs/parent-child-pairing/types/parentChildPairingLogActionType';
 
-export type PairingDocument = Pairing & Document;
-
-@Schema({ timestamps: true })
-export class Pairing {
-  @Prop({ type: String, required: true })
-  parent: string;
+@Schema()
+class ParentChildPairingLogEntry {
+  @Prop({ type: String, required: true, enum: Object.values(PARENT_CHILD_PAIRING_LOG_ACTION) })
+  action: ParentChildPairingLogActionType;
 
   @Prop({ type: String, required: true })
-  student: string;
+  performedBy: string;
 
-  @Prop({ type: String, required: true, default: PAIRING_STATUS.PENDING })
-  status: PairingStatusType;
+  @Prop({ type: Date, required: true, default: () => new Date() })
+  timestamp: Date;
 
-  @Prop({ type: Number, default: 1 })
-  schemaVersion: number;
-
-  @Prop()
-  createdAt: Date;
-
-  @Prop()
-  updatedAt: Date;
+  @Prop({ type: String })
+  details?: string;
 }
 
-export const PairingSchema = SchemaFactory.createForClass(Pairing);
-
-PairingSchema.index({ parent: 1, student: 1 }, { unique: true });
-
-PairingSchema.set('toJSON', {
-  virtuals: true,
-});
+export default ParentChildPairingLogEntry;
