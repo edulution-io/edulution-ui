@@ -29,6 +29,7 @@ import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import type MailFlagsChangedNotificationDto from '@libs/mail/types/mailFlagsChangedNotification.dto';
+import type { MailDto } from '@libs/mail/types';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
@@ -211,8 +212,8 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       }
     });
 
-    client.on('exists', (data: { path: string; count: number; prevCount: number }) => {
-      this.handleExistsEvent(username, data.count, data.prevCount);
+    client.on('exists', (data: { path: string; count: number }) => {
+      this.handleExistsEvent(username, data.count);
     });
 
     (client as NodeJS.EventEmitter).on(
@@ -246,24 +247,24 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private handleExistsEvent(username: string, count: number, prevCount: number): void {
+  private handleExistsEvent(username: string, count: number): void {
     const connection = this.idleConnections.get(username);
     if (!connection) {
       return;
     }
 
-    if (count > prevCount) {
-      const newMailCount = count - prevCount;
+    if (count > connection.previousMailCount) {
+      const newMailCount = count - connection.previousMailCount;
       Logger.log(`New mail detected for ${username}: ${newMailCount} new mail(s)`, MailIdleService.name);
 
       const notification: MailNewMailNotificationDto = {
         count,
-        previousCount: prevCount,
+        previousCount: connection.previousMailCount,
         newMailCount,
       };
 
       this.sseService.sendEventToUser(username, notification, SSE_MESSAGE_TYPE.MAIL_NEW_MAIL);
-      void this.fetchNewMailsAndNotify(username, prevCount, count);
+      void this.fetchNewMailsAndNotify(username, connection.previousMailCount, count);
     }
 
     connection.previousMailCount = count;
@@ -531,6 +532,47 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
           MailIdleService.name,
         );
       }
+    }
+  }
+
+  async fetchUnseenMails(username: string): Promise<MailDto[] | null> {
+    const connection = this.idleConnections.get(username);
+    if (!connection?.client?.usable || connection.isFetching) {
+      return null;
+    }
+
+    try {
+      const unseenMailUniqueIds = await connection.client.search({ seen: false }, { uid: true });
+
+      if (!unseenMailUniqueIds || unseenMailUniqueIds.length === 0) {
+        return [];
+      }
+
+      const newestMailUniqueIds = [...unseenMailUniqueIds]
+        .sort((a: number, b: number) => b - a)
+        .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
+
+      const uniqueIdRange = newestMailUniqueIds.join(',');
+      const messages = await connection.client.fetchAll(
+        { uid: uniqueIdRange },
+        { envelope: true, flags: true, uid: true },
+      );
+
+      const mails: MailDto[] = messages
+        .map((mail) => ({
+          id: mail.uid,
+          subject: mail.envelope?.subject,
+          flags: mail.flags,
+        }))
+        .sort((a, b) => b.id - a.id);
+      Logger.verbose(`Feed: ${mails.length} unseen mails fetched via IDLE connection`, MailIdleService.name);
+      return mails;
+    } catch (error) {
+      Logger.error(
+        `Failed to fetch unseen mails via IDLE for ${username}: ${getErrorMessage(error)}`,
+        MailIdleService.name,
+      );
+      return null;
     }
   }
 

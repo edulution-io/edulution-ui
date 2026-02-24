@@ -28,6 +28,7 @@ interface NotificationFilterBadgesProps {
   activeFilter: NotificationFilterType;
   onFilterChange: (filter: NotificationFilterType) => void;
   notifications: InboxNotificationDto[];
+  sentCount: number;
 }
 
 const FILTERS = [
@@ -36,29 +37,49 @@ const FILTERS = [
   { key: NOTIFICATION_FILTER_TYPE.SYSTEM, labelKey: 'notificationscenter.menu.system' },
 ] as const;
 
-const getFilterCount = (filter: NotificationFilterType, notifications: InboxNotificationDto[]): number => {
+const SENT_FILTER = { key: NOTIFICATION_FILTER_TYPE.SENT, labelKey: 'notificationscenter.menu.sent' } as const;
+
+const getFilterCount = (
+  filter: NotificationFilterType,
+  notifications: InboxNotificationDto[],
+  sentCount: number,
+): number => {
+  if (filter === NOTIFICATION_FILTER_TYPE.SENT) {
+    return sentCount;
+  }
   if (isNotificationType(filter)) {
     return notifications.filter((notification) => notification.type === filter).length;
   }
   return notifications.length;
 };
 
-const NotificationFilterBadges = ({ activeFilter, onFilterChange, notifications }: NotificationFilterBadgesProps) => {
+const NotificationFilterBadges = ({
+  activeFilter,
+  onFilterChange,
+  notifications,
+  sentCount,
+}: NotificationFilterBadgesProps) => {
   const { t } = useTranslation();
+
+  const filtersToShow = sentCount > 0 ? [...FILTERS, SENT_FILTER] : FILTERS;
 
   return (
     <div className="flex gap-2">
-      {FILTERS.map(({ key, labelKey }) => {
+      {filtersToShow.map(({ key, labelKey }) => {
         const isActive = activeFilter === key;
-        const count = getFilterCount(key, notifications);
+        const count = getFilterCount(key, notifications, sentCount);
 
         return (
           <Button
             key={key}
             type="button"
             variant="btn-ghost"
-            size="md"
-            className={cn(isActive ? 'hover:bg-primary/90 bg-primary text-white' : '')}
+            className={cn(
+              'rounded-lg px-3 py-1 text-sm font-medium',
+              isActive
+                ? 'hover:bg-primary/90 bg-primary text-white'
+                : 'bg-muted-foreground/10 text-background hover:bg-muted-background',
+            )}
             onClick={() => onFilterChange(key)}
           >
             {t(labelKey)} ({count})

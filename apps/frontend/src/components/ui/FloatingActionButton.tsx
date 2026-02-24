@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { Button } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
@@ -78,9 +78,12 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center pr-1 md:pt-1">
+    <div className="group relative mt-1 flex flex-col items-center justify-center">
       {renderContent()}
-      <span className={FLOATING_BUTTON_CLASS_NAME}>{text}</span>
+      <span className={cn(FLOATING_BUTTON_CLASS_NAME, 'group-hover:invisible')}>{text}</span>
+      <span className="invisible absolute bottom-[-1px] left-1/2 z-10 w-max -translate-x-1/2 whitespace-nowrap rounded-sm bg-foreground px-1.5 py-px text-center text-background group-hover:visible">
+        {text}
+      </span>
     </div>
   );
 };

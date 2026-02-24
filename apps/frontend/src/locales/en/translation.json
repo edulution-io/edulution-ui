@@ -55,6 +55,7 @@
     "categoryName": "Category name",
     "bulletinUpdatedSuccessfully": "Bulletin updated successfully",
     "bulletinCreatedSuccessfully": "Bulletin created successfully",
+    "pushNotificationSentSuccessfully": "Push notification sent successfully",
     "bulletinsDeletedSuccessfully": "Bulletins deleted successfully",
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",
@@ -100,8 +101,20 @@
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
       "attachmentNotFound": "Attachment not found",
-      "attachmentDeletionFailed": "Failed to delete an attachment"
-    }
+      "attachmentDeletionFailed": "Failed to delete an attachment",
+      "pushOnlyMissingFields": "Push title and push message are required for 'Push Only' mode"
+    },
+    "pushNotification": "Push Notification",
+    "saveMode": "Publication Type",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin Only",
+      "pushOnly": "Push Only"
+    },
+    "customPushTitle": "Push Notification Title",
+    "customPushTitlePlaceholder": "Bulletin ready",
+    "customPushBody": "Push Message",
+    "customPushBodyPlaceholder": "New bulletin in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Notifications",
@@ -129,8 +142,17 @@
     "menu": {
       "all": "All",
       "messages": "Messages",
-      "system": "System"
-    }
+      "system": "System",
+      "sent": "Sent"
+    },
+    "sentSection": "Sent messages",
+    "noSentNotifications": "You haven't sent any messages",
+    "deleteAllSent": "Delete all sent",
+    "confirmDeleteSent": "Are you sure you want to delete all {{count}} sent messages? They will also be deleted for all recipients.",
+    "showRecipients": "Show recipients",
+    "noRecipients": "No recipients",
+    "recipientsStats": "{{read}} of {{total}} have read",
+    "read": "Read"
   },
   "mountpoints": {
     "home": "Home",
@@ -241,7 +263,10 @@
       "SophomorixApplyFailed": "Sophomorix apply failed",
       "GetSophomorixStatusFailed": "Failed to get sophomorix status",
       "AddParentToStudentFailed": "Failed to register parent for student",
-      "DeleteParentFromStudentFailed": "Failed to remove parent from student group"
+      "DeleteParentFromStudentFailed": "Failed to remove parent from student group",
+      "GetDevicesFailed": "Failed to load device list",
+      "SaveDevicesFailed": "Failed to save device list",
+      "ImportDevicesFailed": "Device import failed"
     }
   },
   "ticketsystem": {
@@ -434,6 +459,16 @@
       "SharingFailed": "Sharing files failed",
       "CopyFailed": "Copy failed",
       "FileFormatNotSupported": "File format is not supported"
+    },
+    "singleDownload": {
+      "promptInfo": "Your file download has started.",
+      "downloadSucceeded": "Did the file download successfully?",
+      "help": "Help"
+    },
+    "multipleDownload": {
+      "promptInfo": "Your browser may ask for permission to download multiple files.",
+      "downloadSucceeded": "Did all files download successfully?",
+      "help": "Help"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -756,8 +791,8 @@
     "globaladmins": "Global Admins",
     "globalbindusers": "Global Bind Users",
     "tabs": {
-      "table": "Table",
-      "list": "List Management"
+      "table": "Users",
+      "list": "Import"
     },
     "filterUsers": "Filter users...",
     "loginClass": "Login / Class",
@@ -785,11 +820,13 @@
     "groupMembership": "Group membership",
     "quota": "Quota",
     "noQuotaInfo": "No quota information available",
-    "noListAvailable": "No list management available for this user type.",
-    "listDescription": "List management for {{school}}/{{list}}.csv",
+    "noListAvailable": "No import available for this user type.",
+    "listDescription": "Import for {{school}}/{{list}}.csv",
     "csvPlaceholder": "CSV content will be displayed here...",
     "addUser": "Add user",
     "check": "Check",
+    "saveConfirmTitle": "Save list",
+    "saveConfirmMessage": "The list must be saved before checking. Do you want to save the list now and continue?",
     "apply": "Apply",
     "exportCsv": "Export CSV",
     "csv": {
@@ -857,6 +894,58 @@
       "L": "Locked",
       "K": "Killable",
       "R": "Removable"
+    }
+  },
+  "deviceManagement": {
+    "menuTitle": "Device Management",
+    "title": "Devices",
+    "description": "View and manage devices.",
+    "addDevice": "Add device",
+    "duplicateDevice": "Duplicate device",
+    "apply": "Apply",
+    "applyConfirmTitle": "Apply device list",
+    "applyConfirmMessage": "The device list will be saved and immediately imported. Do you want to continue?",
+    "applyStarted": "Applying device list...",
+    "applyCompleted": "Device list applied successfully",
+    "listSaved": "Device list saved successfully",
+    "validationFailed": "Please fix all invalid fields before saving",
+    "duplicateFound": "Duplicate entries found for hostname, MAC, or IP",
+    "columns": {
+      "room": "Room",
+      "hostname": "Hostname",
+      "group": "Group",
+      "mac": "MAC",
+      "ip": "IP",
+      "sophomorixRole": "Sophomorix Role",
+      "pxeFlag": "PXE"
+    },
+    "roles": {
+      "addc": "Domain Controller",
+      "byod": "BYOD",
+      "classroom-studentcomputer": "Classroom Student Computer",
+      "classroom-teachercomputer": "Classroom Teacher Computer",
+      "faculty-teachercomputer": "Faculty Teacher Computer",
+      "iponly": "IP-Only",
+      "mobile": "Mobile",
+      "printer": "Printer",
+      "router": "Router",
+      "server": "Server",
+      "staffcomputer": "Staff Computer",
+      "switch": "Switch",
+      "thinclient": "Thin Client",
+      "voip": "VOIP",
+      "wlan": "WLan"
+    },
+    "pxeFlags": {
+      "0": "No PXE",
+      "1": "Linbo-PXE",
+      "2": "Linbo-PXE + OPSI-PXE",
+      "3": "OPSI-PXE"
+    },
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Drop file here to import",
+      "download": "CSV Download"
     }
   },
   "select": "Select",
@@ -1289,7 +1378,7 @@
       "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
-      "title": "Info"
+      "title": "License"
     },
     "webhooks": {
       "title": "Webhooks",
@@ -1845,6 +1934,7 @@
     "date": "Date",
     "time": "Time",
     "revert": "Revert",
+    "duplicate": "Duplicate",
     "restart": "Restart",
     "kill": "Kill",
     "install": "Install",
@@ -1967,7 +2057,10 @@
     "item": "{{count}} user",
     "items": "{{count}} users",
     "userManagement": "User Management",
-    "description": "Manage your school server settings and users."
+    "description": "Manage your school server settings and users.",
+    "versionInfo": "Version overview",
+    "system": "System",
+    "versionMismatch": "The Linuxmuster API version is too old. At least version {{version}} is required."
   },
   "parentAssignment": {
     "item": "{{count}} assignment",

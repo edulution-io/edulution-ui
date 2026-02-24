@@ -23,6 +23,9 @@
 
 - Stack: TypeScript, React 18, NestJS 11, Nx workspace.
 - Linting: ESLint (Airbnb + TypeScript, a11y, import rules). Run `npm run lint`.
+- When linting, prefer linting only the changed files instead of the full project:
+  - `npx eslint path/to/changed/file.ts --quiet`
+  - Only run `npm run lint` for final verification before commits
 - Formatting: Prettier (2 spaces, 120 cols, single quotes, trailing commas). Run `npm run format`.
 - React: Function components as arrow functions; allow prop spreading; avoid `console` except `info|warn|error`.
 - Shared code lives under `libs/`, move utility functions, types, and constants always there (in separate files). Do not move UI components there.
@@ -36,6 +39,7 @@
 - Do not use magic strings. Always use constants.
 - In NestJS services, use static Logger calls with the service name as context: `Logger.log('message', ServiceName.name)`, `Logger.error('message', ServiceName.name)`. Do not create instance logger with `private readonly logger = new Logger()`.
 - In React, use `eduApi` (axios) from `@/api/eduApi` for API calls instead of native `fetch`. API calls should be placed in Zustand stores, not in components. Use `ResponseType.BLOB` for blob responses and `handleApiError` for error handling.
+- All newly added zustand stores must be reset in apps/frontend/src/store/utils/cleanAllStores.ts
 - Always search the code for existing patterns, functions, classes, types, and constants before creating new ones.
 - Use generic types over unsafe type casting.
 - Migrations MUST always increase the schema version number so later migrations are triggered.

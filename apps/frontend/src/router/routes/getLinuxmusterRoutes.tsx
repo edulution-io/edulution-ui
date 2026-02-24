@@ -20,6 +20,7 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import {
+  LINUXMUSTER_INFO_LOCATION,
   LINUXMUSTER_PATH,
   PARENT_ASSIGNMENT_LOCATION,
   USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
@@ -32,9 +33,12 @@ import {
   USER_MANAGEMENT_TEACHERS_LOCATION,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import { DEVICE_MANAGEMENT_LOCATION } from '@libs/deviceManagement/constants/deviceManagementPaths';
 import LinuxmusterEntryPage from '@/pages/LinuxmusterPage/LinuxmusterEntryPage';
+import LinuxmusterInfoPage from '@/pages/LinuxmusterPage/Info/LinuxmusterInfoPage';
 import UserManagementPage from '@/pages/LinuxmusterPage/UserManagement/UserManagementPage';
 import ParentAssignmentPage from '@/pages/LinuxmusterPage/ParentAssignment/ParentAssignmentPage';
+import DeviceManagementPage from '@/pages/LinuxmusterPage/DeviceManagement/DeviceManagementPage';
 
 const getLinuxmusterRoutes = () => [
   <Route
@@ -44,6 +48,10 @@ const getLinuxmusterRoutes = () => [
     <Route
       path=""
       element={<LinuxmusterEntryPage />}
+    />
+    <Route
+      path={LINUXMUSTER_INFO_LOCATION}
+      element={<LinuxmusterInfoPage />}
     />
     <Route path={USER_MANAGEMENT_LOCATION}>
       <Route
@@ -141,6 +149,10 @@ const getLinuxmusterRoutes = () => [
     <Route
       path={PARENT_ASSIGNMENT_LOCATION}
       element={<ParentAssignmentPage />}
+    />
+    <Route
+      path={DEVICE_MANAGEMENT_LOCATION}
+      element={<DeviceManagementPage />}
     />
   </Route>,
 ];

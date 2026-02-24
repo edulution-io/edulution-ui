@@ -19,6 +19,11 @@
 
 import * as rootPackage from '../../../../package.json';
 
+const UNKNOWN = 'unknown';
+
 export default () => ({
-  version: rootPackage.version,
+  version: process.env.APP_VERSION || rootPackage.version,
+  commitSha: process.env.COMMIT_SHA || UNKNOWN,
+  buildDate: process.env.BUILD_DATE || UNKNOWN,
+  buildNumber: process.env.BUILD_NUMBER || UNKNOWN,
 });
