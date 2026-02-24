@@ -23,6 +23,7 @@ import { Model } from 'mongoose';
 import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
 import fieldsToProjection from '@libs/common/utils/fieldsToProjection';
 import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
+import UpdateBulletinBoardGridRowsDto from '@libs/user-preferences/types/update-bulletin-board-grid-rows.dto';
 import { UserPreferences, UserPreferencesDocument } from './user-preferences.schema';
 
 @Injectable()
@@ -41,6 +42,7 @@ class UserPreferencesService {
 
     return {
       collapsedBulletins: doc?.collapsedBulletins ?? {},
+      bulletinBoardGridRows: doc?.bulletinBoardGridRows ?? '1',
     };
   }
 
@@ -49,6 +51,16 @@ class UserPreferencesService {
       .findOneAndUpdate(
         { username },
         { $set: { [`${USER_PREFERENCES_FIELDS.collapsedBulletins}.${updateDto.bulletinId}`]: updateDto.collapsed } },
+        { new: true, upsert: true },
+      )
+      .lean();
+  }
+
+  async updateBulletinBoardGridRows(username: string, updateDto: UpdateBulletinBoardGridRowsDto) {
+    return this.userPreferencesModel
+      .findOneAndUpdate(
+        { username },
+        { $set: { [USER_PREFERENCES_FIELDS.bulletinBoardGridRows]: updateDto.gridRows } },
         { new: true, upsert: true },
       )
       .lean();

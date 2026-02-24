@@ -21,7 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import ViewModeType from '@libs/common/types/viewModeType';
-import { cn , Button } from '@edulution-io/ui-kit';
+import { cn, Button } from '@edulution-io/ui-kit';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faList } from '@fortawesome/free-solid-svg-icons';

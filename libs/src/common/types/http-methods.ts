@@ -63,12 +63,13 @@ export const HTTP_HEADERS = {
   Authorization: 'Authorization',
   XApiKey: 'x-api-key',
   CONNECTION_UID: 'Connection-Uid',
-  XForwaredFor: 'x-forwarded-for',
-  UserAgent: 'User-Agent',
+  XForwarededFor: 'x-forwarded-for',
+  UserAgent: 'user-agent',
   Depth: 'Depth',
   CacheControl: 'Cache-Control',
   ETag: 'ETag',
   AssetSource: 'X-Asset-Source',
+  XForceCleanupCache: 'X-Force-Cleanup-Cache',
 } as const;
 
 export enum WebdavRequestDepth {

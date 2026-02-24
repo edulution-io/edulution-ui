@@ -25,6 +25,7 @@ import SendPushNotificationDto from '@libs/notification/types/send-pushNotificat
 import CreateNotificationDto from '@libs/notification/types/createNotification.dto';
 import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
+import NotificationRecipientDto from '@libs/notification/types/notificationRecipient.dto';
 import USER_NOTIFICATION_STATUS from '@libs/notification/constants/userNotificationStatus';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
@@ -79,6 +80,7 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     triggeredBy: string = NOTIFICATION_TYPE.USER,
     createNotificationDto?: CreateNotificationDto,
+    skipPush = false,
   ): Promise<void> {
     let notification: NotificationDocument | null = null;
 
@@ -98,12 +100,14 @@ class NotificationsService {
         this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
       }
 
-      const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
-      await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
+      if (!skipPush) {
+        const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
+        await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
 
-      if (notification) {
-        await this.updateLastPushSentAt(String(notification.id));
-        await this.updateUserNotificationStatus(String(notification.id), usernames, USER_NOTIFICATION_STATUS.SENT);
+        if (notification) {
+          await this.updateLastPushSentAt(String(notification.id));
+          await this.updateUserNotificationStatus(String(notification.id), usernames, USER_NOTIFICATION_STATUS.SENT);
+        }
       }
     } catch (error) {
       if (notification) {
@@ -183,6 +187,7 @@ class NotificationsService {
     await this.userNotificationModel.updateMany(
       { notificationId: objectId, username: { $in: usernames } },
       { $set: { status } },
+      { timestamps: false },
     );
   }
 
@@ -211,12 +216,13 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     triggeredBy: string | undefined,
     createNotificationDto: CreateNotificationDto,
+    skipPush = false,
   ): Promise<void> {
     const effectiveTriggeredBy = triggeredBy ?? NOTIFICATION_TYPE.USER;
     const { sourceType, sourceId } = createNotificationDto;
 
     if (!sourceType || !sourceId) {
-      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto);
+      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto, skipPush);
       return;
     }
 
@@ -229,9 +235,10 @@ class NotificationsService {
         partialNotification,
         effectiveTriggeredBy,
         createNotificationDto,
+        skipPush,
       );
     } else {
-      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto);
+      await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto, skipPush);
     }
   }
 
@@ -241,6 +248,7 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     triggeredBy: string,
     updateData: CreateNotificationDto,
+    skipPush = false,
   ): Promise<void> {
     const notificationId = String(existingNotification.id);
     const objectId = new Types.ObjectId(notificationId);
@@ -261,12 +269,12 @@ class NotificationsService {
 
     this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
 
-    if (NotificationsService.shouldSendPush(existingNotification)) {
+    if (!skipPush && NotificationsService.shouldSendPush(existingNotification)) {
       const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
       await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
       await this.updateLastPushSentAt(notificationId);
       await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.SENT);
-    } else {
+    } else if (!skipPush) {
       Logger.log(
         `Push debounced for notification ${notificationId} (last sent: ${existingNotification.lastPushSentAt?.toISOString()})`,
         NotificationsService.name,
@@ -334,7 +342,7 @@ class NotificationsService {
   ): PipelineStage[] {
     return [
       { $match: { username, ...additionalUserNotificationMatch } },
-      { $sort: { createdAt: -1 as const } },
+      { $sort: { updatedAt: -1 as const } },
       {
         $lookup: {
           from: this.notificationModel.collection.name,
@@ -391,11 +399,120 @@ class NotificationsService {
       content: userNotificationData.notification.content,
       data: userNotificationData.notification.data,
       createdAt: userNotificationData.notification.createdAt,
+      updatedAt: userNotificationData.notification.updatedAt,
       createdBy: userNotificationData.notification.createdBy,
       readAt: userNotificationData.readAt,
     }));
 
     return { notifications, total };
+  }
+
+  async getSentNotifications(
+    username: string,
+    limit = 20,
+    offset = 0,
+  ): Promise<{ notifications: InboxNotificationDto[]; total: number }> {
+    const result = await this.notificationModel.aggregate<{
+      data: Array<{
+        id: string;
+        type: string;
+        sourceType?: string;
+        sourceId?: string;
+        title: string;
+        pushNotification: string;
+        content?: string;
+        data?: Record<string, unknown>;
+        createdAt: Date;
+        updatedAt: Date;
+        createdBy: string;
+        sentStats: { recipientCount: number; readCount: number };
+      }>;
+      total: Array<{ count: number }>;
+    }>([
+      { $match: { createdBy: username } },
+      { $sort: { createdAt: -1 } },
+      { $addFields: { id: { $toString: '$_id' } } },
+      {
+        $lookup: {
+          from: this.userNotificationModel.collection.name,
+          let: { notificationId: '$_id' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$notificationId', '$$notificationId'] } } },
+            {
+              $group: {
+                _id: null,
+                recipientCount: { $sum: 1 },
+                readCount: { $sum: { $cond: [{ $ne: ['$readAt', null] }, 1, 0] } },
+              },
+            },
+          ],
+          as: 'stats',
+        },
+      },
+      {
+        $addFields: {
+          sentStats: {
+            recipientCount: { $ifNull: [{ $arrayElemAt: ['$stats.recipientCount', 0] }, 0] },
+            readCount: { $ifNull: [{ $arrayElemAt: ['$stats.readCount', 0] }, 0] },
+          },
+        },
+      },
+      { $project: { stats: 0 } },
+      {
+        $facet: {
+          data: [{ $skip: offset }, { $limit: limit }],
+          total: [{ $count: 'count' }],
+        },
+      },
+    ]);
+
+    const data = result[0]?.data ?? [];
+    const total = result[0]?.total[0]?.count ?? 0;
+
+    const notifications: InboxNotificationDto[] = data.map((item) => ({
+      id: item.id,
+      notificationId: item.id,
+      type: item.type as InboxNotificationDto['type'],
+      sourceType: item.sourceType as InboxNotificationDto['sourceType'],
+      sourceId: item.sourceId,
+      title: item.title,
+      pushNotification: item.pushNotification,
+      content: item.content,
+      data: item.data,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      createdBy: item.createdBy,
+      readAt: null,
+      sentStats: item.sentStats,
+    }));
+
+    return { notifications, total };
+  }
+
+  async getSentNotificationRecipients(notificationId: string, username: string): Promise<NotificationRecipientDto[]> {
+    if (!Types.ObjectId.isValid(notificationId)) {
+      return [];
+    }
+    const objectId = new Types.ObjectId(notificationId);
+
+    const notification = await this.notificationModel.findOne({
+      _id: objectId,
+      createdBy: username,
+    });
+
+    if (!notification) {
+      return [];
+    }
+
+    const recipients = await this.userNotificationModel
+      .find({ notificationId: objectId }, { username: 1, readAt: 1 })
+      .sort({ username: 1 })
+      .exec();
+
+    return recipients.map((r) => ({
+      username: r.username,
+      readAt: r.readAt,
+    }));
   }
 
   async getUnreadCount(username: string): Promise<number> {
@@ -413,6 +530,7 @@ class NotificationsService {
     const result = await this.userNotificationModel.updateOne(
       { _id: objectId, username, readAt: null },
       { $set: { readAt: new Date() } },
+      { timestamps: false },
     );
 
     return { modifiedCount: result.modifiedCount };
@@ -422,6 +540,7 @@ class NotificationsService {
     const result = await this.userNotificationModel.updateMany(
       { username, readAt: null },
       { $set: { readAt: new Date() } },
+      { timestamps: false },
     );
 
     return { modifiedCount: result.modifiedCount };
@@ -437,6 +556,26 @@ class NotificationsService {
 
     await this.userNotificationModel.deleteOne({ _id: objectId, username });
     await this.cleanupOrphanedNotifications([userNotification.notificationId]);
+  }
+
+  async deleteSentNotification(notificationId: string, username: string): Promise<void> {
+    if (!Types.ObjectId.isValid(notificationId)) {
+      return;
+    }
+    const objectId = new Types.ObjectId(notificationId);
+
+    const notification = await this.notificationModel.findOne({ _id: objectId, createdBy: username }).exec();
+    if (!notification) {
+      return;
+    }
+
+    await this.userNotificationModel.deleteMany({ notificationId: objectId });
+    await this.notificationModel.deleteOne({ _id: objectId });
+
+    Logger.log(
+      `Deleted sent notification ${notificationId} and all associated user notifications`,
+      NotificationsService.name,
+    );
   }
 
   private async cleanupOrphanedNotifications(notificationIds: Types.ObjectId[]): Promise<number> {
@@ -489,6 +628,10 @@ class NotificationsService {
       return result.deletedCount;
     }
 
+    if (type === NOTIFICATION_FILTER_TYPE.SENT) {
+      return this.deleteAllSentNotifications(username);
+    }
+
     const userNotificationsData = await this.userNotificationModel.aggregate<{ notificationId: Types.ObjectId }>([
       { $match: { username } },
       {
@@ -515,6 +658,21 @@ class NotificationsService {
     });
 
     await this.cleanupOrphanedNotifications(notificationIds);
+
+    return result.deletedCount;
+  }
+
+  async deleteAllSentNotifications(username: string): Promise<number> {
+    const sentNotifications = await this.notificationModel.find({ createdBy: username }, { _id: 1 }).exec();
+
+    if (sentNotifications.length === 0) {
+      return 0;
+    }
+
+    const notificationIds = sentNotifications.map((n) => new Types.ObjectId(String(n.id)));
+
+    await this.userNotificationModel.deleteMany({ notificationId: { $in: notificationIds } });
+    const result = await this.notificationModel.deleteMany({ _id: { $in: notificationIds } });
 
     return result.deletedCount;
   }

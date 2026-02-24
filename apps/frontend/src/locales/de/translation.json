@@ -28,6 +28,11 @@
     "activeUntilPlaceholder": "unbegrenzt gültig",
     "appTitle": "Info Board",
     "description": "Hier findest du deine aktuellen Mitteilungen",
+    "view": "Ansicht",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Zeile",
+    "viewTwoRows": "2 Zeilen",
+    "viewThreeRows": "3 Zeilen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
@@ -64,6 +69,7 @@
     "categoryName": "Name der Kategorie",
     "bulletinUpdatedSuccessfully": "Mitteilung erfolgreich gespeichert",
     "bulletinCreatedSuccessfully": "Mitteilung erfolgreich erstellt",
+    "pushNotificationSentSuccessfully": "Push-Benachrichtigung erfolgreich gesendet",
     "bulletinsDeletedSuccessfully": "Mitteilungen erfolgreich gelöscht",
     "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
     "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
@@ -79,7 +85,8 @@
       "visibleByUsersAndGroups": "Diese Kategorie mit deinen Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
       "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
-      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
+      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten",
+      "accessGroupsOnlyHint": "Es können nur Zugriffsgruppen zugewiesen werden."
     },
     "errors": {
       "categoryNotFound": "Kategorie nicht gefunden",
@@ -94,8 +101,20 @@
       "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
       "attachmentNotFound": "Anhang nicht gefunden",
-      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
-    }
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen",
+      "pushOnlyMissingFields": "Push-Titel und Push-Nachricht sind für den Modus 'Nur Push' erforderlich"
+    },
+    "pushNotification": "Push-Benachrichtigung",
+    "saveMode": "Veröffentlichungsart",
+    "saveModes": {
+      "pushAndBulletin": "Push & Aushang",
+      "bulletinOnly": "Nur Aushang",
+      "pushOnly": "Nur Push"
+    },
+    "customPushTitle": "Titel der Pushbenachrichtigung",
+    "customPushTitlePlaceholder": "Aushang bereit",
+    "customPushBody": "Push-Nachricht",
+    "customPushBodyPlaceholder": "Neuer Aushang in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Benachrichtigungen",
@@ -123,8 +142,17 @@
     "menu": {
       "all": "Alle",
       "messages": "Nachrichten",
-      "system": "System"
-    }
+      "system": "System",
+      "sent": "Gesendet"
+    },
+    "sentSection": "Gesendete Nachrichten",
+    "noSentNotifications": "Du hast keine Nachrichten gesendet",
+    "deleteAllSent": "Alle gesendeten löschen",
+    "confirmDeleteSent": "Möchtest du wirklich alle {{count}} gesendeten Nachrichten löschen? Diese werden auch bei den Empfängern gelöscht.",
+    "showRecipients": "Empfänger anzeigen",
+    "noRecipients": "Keine Empfänger",
+    "recipientsStats": "{{read}} von {{total}} haben gelesen",
+    "read": "Gelesen"
   },
   "appstore": {
     "title": "App-Store",
@@ -218,7 +246,15 @@
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
       "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen.",
       "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen",
-      "GetLmnVersionFailed": "Abrufen der Linuxmuster-Version fehlgeschlagen."
+      "GetLmnVersionFailed": "Abrufen der Linuxmuster-Version fehlgeschlagen.",
+      "GetUsersByRoleFailed": "Abrufen der Benutzer nach Rolle fehlgeschlagen",
+      "GetManagementListFailed": "Abrufen der Verwaltungsliste fehlgeschlagen",
+      "SaveManagementListFailed": "Speichern der Verwaltungsliste fehlgeschlagen",
+      "SophomorixCheckFailed": "Sophomorix-Check fehlgeschlagen",
+      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen",
+      "GetDevicesFailed": "Geräteliste konnte nicht geladen werden",
+      "SaveDevicesFailed": "Geräteliste konnte nicht gespeichert werden",
+      "ImportDevicesFailed": "Geräte-Import fehlgeschlagen"
     }
   },
   "ticketsystem": {
@@ -419,6 +455,16 @@
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen",
       "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
+    },
+    "singleDownload": {
+      "promptInfo": "Dein Dateidownload wurde gestartet.",
+      "downloadSucceeded": "Wurde die Datei erfolgreich heruntergeladen?",
+      "help": "Hilfe"
+    },
+    "multipleDownload": {
+      "promptInfo": "Dein Browser wird möglicherweise um Erlaubnis zum Herunterladen mehrerer Dateien bitten.",
+      "downloadSucceeded": "Wurden alle Dateien erfolgreich heruntergeladen?",
+      "help": "Hilfe"
     },
     "publicShareFilesPage": {
       "title": "Geteilte Dateien",
@@ -724,6 +770,179 @@
       "title": "Schule auswählen",
       "description": "Bitte wähle die Schule aus, deren Klassen du verwalten möchtest",
       "placeholder": "Schule auswählen"
+    }
+  },
+  "usermanagement": {
+    "title": "BENUTZER",
+    "titleLmn": "SCHULSERVER",
+    "titleGeneric": "SERVER",
+    "menuTitle": "Benutzerverwaltung",
+    "description": "Benutzerkonten, Listen und Rollen anzeigen und verwalten.",
+    "students": "Schüler",
+    "teachers": "Lehrer",
+    "extrastudents": "Extra-Schüler",
+    "parents": "Eltern",
+    "staff": "Mitarbeiter",
+    "schooladmins": "Schuladmins",
+    "schoolbindusers": "Schul Binduser",
+    "globaladmins": "Globaladmins",
+    "globalbindusers": "Globale Binduser",
+    "tabs": {
+      "table": "Benutzer",
+      "list": "Import"
+    },
+    "filterUsers": "Benutzer filtern...",
+    "loginClass": "Login / Klasse",
+    "name": "Name",
+    "status": "Status",
+    "passwordActions": "Passwort Aktionen",
+    "showFirstPassword": "Erstpasswort anzeigen",
+    "restoreFirstPassword": "Erstpasswort wiederherstellen",
+    "setRandomFirstPassword": "Erstpasswort zufällig festlegen",
+    "setCustomPassword": "Benutzerdefiniertes Passwort festlegen",
+    "setCurrentPassword": "Aktuelles Benutzerpasswort festlegen",
+    "userDetails": "Benutzerdetails",
+    "properties": "Eigenschaften",
+    "loginname": "Loginname",
+    "mailAlias": "Mailadresse Alias",
+    "class": "Klasse",
+    "sophomorixStatus": "Sophomorix-Status",
+    "role": "Rolle",
+    "schoolname": "Schulname",
+    "userId": "Benutzer-ID (optional)",
+    "birthdate": "Geburtsdatum",
+    "deactivationDate": "Deaktivierungsdatum",
+    "tolerationDate": "Duldungsdatum",
+    "creationDate": "Erstellungsdatum",
+    "groupMembership": "Gruppenmitgliedschaft",
+    "quota": "Quota",
+    "noQuotaInfo": "Keine Quota-Informationen verfügbar",
+    "noListAvailable": "Für diesen Benutzertyp ist kein Import verfügbar.",
+    "listDescription": "Import für {{school}}/{{list}}.csv",
+    "csvPlaceholder": "CSV-Inhalt wird hier angezeigt...",
+    "addUser": "Benutzer hinzufügen",
+    "check": "Prüfen",
+    "saveConfirmTitle": "Liste speichern",
+    "saveConfirmMessage": "Die Liste muss vor der Prüfung gespeichert werden. Möchten Sie die Liste jetzt speichern und fortfahren?",
+    "apply": "Anwenden",
+    "exportCsv": "CSV exportieren",
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Datei hier hin schieben um sie zu importieren",
+      "download": "CSV Herunterladen"
+    },
+    "validationFailed": "Bitte korrigieren Sie alle ungültigen Felder vor dem Speichern",
+    "listSaved": "Liste erfolgreich gespeichert. Verwende \"Prüfen\", um Änderungen zu überprüfen und anzuwenden.",
+    "checkCompleted": "Prüfung abgeschlossen",
+    "applyCompleted": "Anwendung abgeschlossen",
+    "checkResult": {
+      "title": "Prüfergebnis",
+      "checkFailed": "Prüfung fehlgeschlagen",
+      "overview": "Übersicht",
+      "add": "Hinzufügen",
+      "update": "Aktualisieren",
+      "delete": "Entfernen",
+      "usersToAdd": "Benutzer werden hinzugefügt",
+      "usersToUpdate": "Benutzer werden aktualisiert",
+      "usersToDelete": "Benutzer werden gelöscht",
+      "addNewUsers": "Neue Benutzer hinzufügen",
+      "updateUsers": "Benutzer versetzen",
+      "deleteUsers": "Benutzer entfernen",
+      "apply": "Übernehmen",
+      "noChanges": "Keine Änderungen erkannt. Die aktuellen Daten stimmen mit den vorhandenen Benutzerkonten überein.",
+      "columns": {
+        "class": "Klasse",
+        "login": "Login",
+        "name": "Name",
+        "role": "Rolle",
+        "school": "Schule",
+        "changes": "Änderungen",
+        "file": "Datei",
+        "reason": "Grund"
+      }
+    },
+    "details": "Details",
+    "login": "Login",
+    "list": {
+      "class": "Klasse",
+      "lastName": "Nachname",
+      "firstName": "Vorname",
+      "birthday": "Geburtsdatum",
+      "login": "Gewünschter Login",
+      "loginTooltip": "Dieser Eintrag wird direkt von der CSV-Datei gelesen und kann sich vom eigentlichen Login des Benutzers unterscheiden (in LDAP gespeichert)",
+      "category": "Kategorie",
+      "add": {
+        "students": "Schüler hinzufügen",
+        "teachers": "Lehrer hinzufügen",
+        "extrastudents": "Extra-Schüler hinzufügen",
+        "parents": "Eltern hinzufügen",
+        "staff": "Mitarbeiter hinzufügen"
+      }
+    },
+    "sophomorixStatusValues": {
+      "U": "Verwendbar",
+      "S": "Selbstaktiviert",
+      "E": "Aktiviert",
+      "P": "Permanent",
+      "A": "Reaktiviert",
+      "T": "Toleriert",
+      "D": "Deaktiviert",
+      "F": "Eingefroren",
+      "L": "Gesperrt",
+      "K": "Löschbar",
+      "R": "Entfernbar"
+    }
+  },
+  "deviceManagement": {
+    "menuTitle": "Geräteverwaltung",
+    "title": "Geräte",
+    "description": "Geräte anzeigen und verwalten.",
+    "addDevice": "Gerät hinzufügen",
+    "duplicateDevice": "Gerät duplizieren",
+    "apply": "Anwenden",
+    "applyConfirmTitle": "Geräteliste anwenden",
+    "applyConfirmMessage": "Die Geräteliste wird gespeichert und sofort importiert. Möchten Sie fortfahren?",
+    "applyStarted": "Geräteliste wird angewendet...",
+    "applyCompleted": "Geräteliste erfolgreich angewendet",
+    "listSaved": "Geräteliste erfolgreich gespeichert",
+    "validationFailed": "Bitte korrigieren Sie alle ungültigen Felder vor dem Speichern",
+    "duplicateFound": "Doppelte Einträge für Rechnername, MAC oder IP gefunden",
+    "columns": {
+      "room": "Raum",
+      "hostname": "Rechnername",
+      "group": "Gruppe",
+      "mac": "MAC",
+      "ip": "IP",
+      "sophomorixRole": "Sophomorix-Rolle",
+      "pxeFlag": "PXE"
+    },
+    "roles": {
+      "addc": "Domaincontroller",
+      "byod": "BYOD",
+      "classroom-studentcomputer": "Schüler-PC im Klassenzimmer",
+      "classroom-teachercomputer": "Lehrer-PC im Klassenzimmer",
+      "faculty-teachercomputer": "Fachbereich-Lehrer-PC",
+      "iponly": "IP-Only",
+      "mobile": "Handy",
+      "printer": "Drucker",
+      "router": "Router",
+      "server": "Server",
+      "staffcomputer": "Lehrer-PC",
+      "switch": "Switch",
+      "thinclient": "Thinclient",
+      "voip": "VOIP",
+      "wlan": "WLan"
+    },
+    "pxeFlags": {
+      "0": "Kein PXE",
+      "1": "Linbo-PXE",
+      "2": "Linbo-PXE + OPSI-PXE",
+      "3": "OPSI-PXE"
+    },
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Datei hier hin schieben um sie zu importieren",
+      "download": "CSV Herunterladen"
     }
   },
   "select": "Auswählen",
@@ -1158,7 +1377,21 @@
       "setAdminGroupWarning": "Es muss mindestens eine Administratorengruppe ausgewählt sein."
     },
     "info": {
-      "title": "Info"
+      "title": "Lizenz"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API-Key",
+      "createdAt": "Erstellt am",
+      "select": "Auswahl",
+      "addClient": "Webhook-Client hinzufügen",
+      "deleteClient": "Webhook-Client löschen",
+      "deleteConfirmMessage": "Möchten Sie die ausgewählten Webhook-Clients wirklich löschen?",
+      "selectUserAgent": "User-Agent auswählen",
+      "createSuccess": "Webhook-Client erstellt",
+      "deleteSuccess": "Webhook-Client gelöscht",
+      "filterPlaceholder": "Webhook-Clients filtern..."
     },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
@@ -1540,6 +1773,9 @@
     "showSystemFiles": "Systemdateien anzeigen",
     "expand": "Aufklappen",
     "collapse": "Zuklappen",
+    "hide": "Ausblenden",
+    "show": "Anzeigen",
+    "never": "Nie",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
@@ -1663,6 +1899,7 @@
     "date": "Datum",
     "time": "Uhrzeit",
     "revert": "Zurücksetzen",
+    "duplicate": "Duplizieren",
     "restart": "Neu starten",
     "kill": "Beenden",
     "install": "Installieren",
@@ -1781,8 +2018,15 @@
     "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."
   },
   "linuxmuster": {
-    "title": "LINUXMUSTER",
-    "sidebar": "Linuxmuster"
+    "sidebarLmn": "Schulserver",
+    "sidebarGeneric": "Server",
+    "item": "{{count}} Benutzer",
+    "items": "{{count}} Benutzer",
+    "userManagement": "Benutzerverwaltung",
+    "description": "Verwalte deine Schulserver-Einstellungen und Benutzer.",
+    "versionInfo": "Versionsübersicht",
+    "system": "System",
+    "versionMismatch": "Die Linuxmuster API-Version ist zu alt. Mindestens Version {{version}} wird benötigt."
   },
   "whiteboard": {
     "title": "WHITEBOARD",

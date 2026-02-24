@@ -48,6 +48,14 @@ enum LmnApiErrorMessage {
   GetUsersQuotaFailed = 'lmnApi.errors.GetUsersQuotaFailed',
   GetSchoolsFailed = 'lmnApi.errors.GetSchoolsFailed',
   GetLmnVersionFailed = 'lmnApi.errors.GetLmnVersionFailed',
+  GetUsersByRoleFailed = 'lmnApi.errors.GetUsersByRoleFailed',
+  GetManagementListFailed = 'lmnApi.errors.GetManagementListFailed',
+  SaveManagementListFailed = 'lmnApi.errors.SaveManagementListFailed',
+  SophomorixCheckFailed = 'lmnApi.errors.SophomorixCheckFailed',
+  SophomorixApplyFailed = 'lmnApi.errors.SophomorixApplyFailed',
+  GetDevicesFailed = 'lmnApi.errors.GetDevicesFailed',
+  SaveDevicesFailed = 'lmnApi.errors.SaveDevicesFailed',
+  ImportDevicesFailed = 'lmnApi.errors.ImportDevicesFailed',
 }
 
 export default LmnApiErrorMessage;
