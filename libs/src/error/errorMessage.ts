@@ -36,6 +36,7 @@ import LicenseErrorMessagesType from '@libs/license/types/licenseErrorMessagesTy
 import TGlobalSettingsErrorMessages from '@libs/global-settings/types/globalSettingsErrorMessagesTypes';
 import TLDrawSyncErrorMessagesType from '@libs/tldraw-sync/types/tLDrawSyncErrorMessagesType';
 import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
+import ParentChildPairingErrorMessagesType from '@libs/parent-child-pairing/types/parentChildPairingErrorMessagesType';
 import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
 import WebhookErrorMessages from '@libs/webhook/types/webhookErrorMessages';
 
@@ -58,6 +59,7 @@ type ErrorMessage =
   | LicenseErrorMessagesType
   | TLDrawSyncErrorMessagesType
   | TGlobalSettingsErrorMessages
+  | ParentChildPairingErrorMessagesType
   | PathValidationErrorMessages
   | WireguardErrorMessages
   | WebhookErrorMessages;

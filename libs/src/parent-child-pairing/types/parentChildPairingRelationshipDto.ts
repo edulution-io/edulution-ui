@@ -17,13 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as rootPackage from '../../../../package.json';
+import type ParentChildPairingDto from './parentChildPairingDto';
 
-const UNKNOWN = 'unknown';
+interface ParentChildPairingRelationshipDto extends ParentChildPairingDto {
+  studentFirstName: string;
+  studentLastName: string;
+  parentFirstName: string;
+  parentLastName: string;
+  isGroupActive: boolean;
+}
 
-export default () => ({
-  version: process.env.APP_VERSION || rootPackage.version,
-  commitSha: process.env.COMMIT_SHA || UNKNOWN,
-  buildDate: process.env.BUILD_DATE || UNKNOWN,
-  buildNumber: process.env.BUILD_NUMBER || UNKNOWN,
-});
+export default ParentChildPairingRelationshipDto;

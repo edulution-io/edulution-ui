@@ -17,13 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as rootPackage from '../../../../package.json';
+import { Prop, Schema } from '@nestjs/mongoose';
+import PARENT_CHILD_PAIRING_LOG_ACTION from '@libs/parent-child-pairing/constants/parentChildPairingLogAction';
+import type ParentChildPairingLogActionType from '@libs/parent-child-pairing/types/parentChildPairingLogActionType';
 
-const UNKNOWN = 'unknown';
+@Schema()
+class ParentChildPairingLogEntry {
+  @Prop({ type: String, required: true, enum: Object.values(PARENT_CHILD_PAIRING_LOG_ACTION) })
+  action: ParentChildPairingLogActionType;
 
-export default () => ({
-  version: process.env.APP_VERSION || rootPackage.version,
-  commitSha: process.env.COMMIT_SHA || UNKNOWN,
-  buildDate: process.env.BUILD_DATE || UNKNOWN,
-  buildNumber: process.env.BUILD_NUMBER || UNKNOWN,
-});
+  @Prop({ type: String, required: true })
+  performedBy: string;
+
+  @Prop({ type: Date, required: true, default: () => new Date() })
+  timestamp: Date;
+
+  @Prop({ type: String })
+  details?: string;
+}
+
+export default ParentChildPairingLogEntry;
