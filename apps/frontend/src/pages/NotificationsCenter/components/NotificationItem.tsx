@@ -31,6 +31,7 @@ import {
   faChartBar,
   faVideo,
   faComment,
+  faCircleInfo,
   faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -46,6 +47,8 @@ import useNotificationStore from '@/store/useNotificationStore';
 
 interface NotificationItemProps {
   notification: InboxNotificationDto;
+  isSentView?: boolean;
+  onShowRecipients?: (notificationId: string, title: string) => void;
 }
 
 const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition => {
@@ -65,20 +68,26 @@ const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition 
   }
 };
 
-const NotificationItem = ({ notification }: NotificationItemProps) => {
+const NotificationItem = ({ notification, isSentView = false, onShowRecipients }: NotificationItemProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { markAsRead, deleteNotification, setIsSheetOpen } = useNotificationStore();
+  const { markAsRead, deleteNotification, deleteSentNotification, setIsSheetOpen } = useNotificationStore();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const isUserNotification = notification.type === NOTIFICATION_TYPE.USER;
-  const isUnread = !notification.readAt;
+  const isUnread = !isSentView && !notification.readAt;
   const hasContent = Boolean(notification.content);
   const sourceIcon = getSourceTypeIcon(notification.sourceType);
   const elapsedTime = getElapsedTime(notification.updatedAt);
   const sourceRoute = getNotificationSourceRoute(notification.sourceType, notification.sourceId);
 
   const handleClick = useCallback(() => {
+    if (isSentView) {
+      if (hasContent) {
+        setIsExpanded((prev) => !prev);
+      }
+      return;
+    }
     if (isUnread) {
       void markAsRead(notification.id);
     }
@@ -88,7 +97,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
     } else if (hasContent) {
       setIsExpanded((prev) => !prev);
     }
-  }, [hasContent, isUnread, markAsRead, notification.id, sourceRoute, setIsSheetOpen, navigate]);
+  }, [hasContent, isSentView, isUnread, markAsRead, notification.id, sourceRoute, setIsSheetOpen, navigate]);
 
   const handleMarkAsRead = useCallback(
     (event: React.MouseEvent) => {
@@ -101,9 +110,21 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
   const handleDelete = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation();
-      void deleteNotification(notification.id);
+      if (isSentView) {
+        void deleteSentNotification(notification.id);
+      } else {
+        void deleteNotification(notification.id);
+      }
     },
-    [deleteNotification, notification.id],
+    [deleteNotification, deleteSentNotification, isSentView, notification.id],
+  );
+
+  const handleOpenRecipientsDialog = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      onShowRecipients?.(notification.notificationId, notification.title);
+    },
+    [onShowRecipients, notification.notificationId, notification.title],
   );
 
   return (
@@ -155,7 +176,20 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
         </div>
 
         <div className="flex flex-shrink-0 items-center gap-1">
-          {isUnread && (
+          {isSentView && (
+            <Button
+              type="button"
+              className="hover:bg-primary/10 rounded-full p-2 text-muted-foreground hover:text-primary"
+              onClick={handleOpenRecipientsDialog}
+              title={t('notificationscenter.showRecipients')}
+            >
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                className="h-4 w-4"
+              />
+            </Button>
+          )}
+          {isUnread && !isSentView && (
             <Button
               type="button"
               className="hover:bg-primary/10 rounded-full p-2 text-muted-foreground hover:text-primary"

@@ -69,6 +69,7 @@
     "categoryName": "Nom de la catégorie",
     "bulletinUpdatedSuccessfully": "Message enregistré avec succès",
     "bulletinCreatedSuccessfully": "Créé avec succès",
+    "pushNotificationSentSuccessfully": "Notification push envoyée avec succès",
     "bulletinsDeletedSuccessfully": "Messages supprimé avec succès",
     "categoryCreatedSuccessfully": "Catégorie créée avec succès",
     "categoryUpdatedSuccessfully": "Catégorie mise à jour avec succès",
@@ -95,8 +96,20 @@
       "unauthorizedDeleteCategory": "Aucune autorisation pour supprimer cette catégorie",
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
       "attachmentNotFound": "Pièce jointe introuvable",
-      "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
-    }
+      "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué",
+      "pushOnlyMissingFields": "Le titre et le message push sont requis pour le mode 'Push uniquement'"
+    },
+    "pushNotification": "Notification push",
+    "saveMode": "Type de publication",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin uniquement",
+      "pushOnly": "Push uniquement"
+    },
+    "customPushTitle": "Titre de la notification push",
+    "customPushTitlePlaceholder": "Bulletin prêt",
+    "customPushBody": "Message push",
+    "customPushBodyPlaceholder": "Nouveau bulletin dans {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Notifications",
@@ -124,8 +137,17 @@
     "menu": {
       "all": "Tout",
       "messages": "Messages",
-      "system": "Système"
-    }
+      "system": "Système",
+      "sent": "Envoyés"
+    },
+    "sentSection": "Messages envoyés",
+    "noSentNotifications": "Tu n'as envoyé aucun message",
+    "deleteAllSent": "Supprimer tous les envoyés",
+    "confirmDeleteSent": "Es-tu sûr de vouloir supprimer les {{count}} messages envoyés ? Ils seront également supprimés chez tous les destinataires.",
+    "showRecipients": "Afficher les destinataires",
+    "noRecipients": "Aucun destinataire",
+    "recipientsStats": "{{read}} sur {{total}} ont lu",
+    "read": "Lu"
   },
   "appstore": {
     "title": "App Store",
@@ -700,8 +722,8 @@
     "groupMembership": "Appartenance au groupe",
     "quota": "Quota",
     "noQuotaInfo": "Aucune information de quota disponible",
-    "noListAvailable": "Aucune gestion de liste disponible pour ce type d'utilisateur.",
-    "listDescription": "Gestion des listes pour {{school}}/{{list}}.csv",
+    "noListAvailable": "Aucun import disponible pour ce type d'utilisateur.",
+    "listDescription": "Import pour {{school}}/{{list}}.csv",
     "csvPlaceholder": "Le contenu CSV sera affiché ici...",
     "addUser": "Ajouter un utilisateur",
     "check": "Vérifier",

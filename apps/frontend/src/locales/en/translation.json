@@ -55,6 +55,7 @@
     "categoryName": "Category name",
     "bulletinUpdatedSuccessfully": "Bulletin updated successfully",
     "bulletinCreatedSuccessfully": "Bulletin created successfully",
+    "pushNotificationSentSuccessfully": "Push notification sent successfully",
     "bulletinsDeletedSuccessfully": "Bulletins deleted successfully",
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",
@@ -100,8 +101,20 @@
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
       "attachmentNotFound": "Attachment not found",
-      "attachmentDeletionFailed": "Failed to delete an attachment"
-    }
+      "attachmentDeletionFailed": "Failed to delete an attachment",
+      "pushOnlyMissingFields": "Push title and push message are required for 'Push Only' mode"
+    },
+    "pushNotification": "Push Notification",
+    "saveMode": "Publication Type",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin Only",
+      "pushOnly": "Push Only"
+    },
+    "customPushTitle": "Push Notification Title",
+    "customPushTitlePlaceholder": "Bulletin ready",
+    "customPushBody": "Push Message",
+    "customPushBodyPlaceholder": "New bulletin in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Notifications",
@@ -129,8 +142,17 @@
     "menu": {
       "all": "All",
       "messages": "Messages",
-      "system": "System"
-    }
+      "system": "System",
+      "sent": "Sent"
+    },
+    "sentSection": "Sent messages",
+    "noSentNotifications": "You haven't sent any messages",
+    "deleteAllSent": "Delete all sent",
+    "confirmDeleteSent": "Are you sure you want to delete all {{count}} sent messages? They will also be deleted for all recipients.",
+    "showRecipients": "Show recipients",
+    "noRecipients": "No recipients",
+    "recipientsStats": "{{read}} of {{total}} have read",
+    "read": "Read"
   },
   "mountpoints": {
     "home": "Home",
@@ -794,8 +816,8 @@
     "groupMembership": "Group membership",
     "quota": "Quota",
     "noQuotaInfo": "No quota information available",
-    "noListAvailable": "No list management available for this user type.",
-    "listDescription": "List management for {{school}}/{{list}}.csv",
+    "noListAvailable": "No import available for this user type.",
+    "listDescription": "Import for {{school}}/{{list}}.csv",
     "csvPlaceholder": "CSV content will be displayed here...",
     "addUser": "Add user",
     "check": "Check",
