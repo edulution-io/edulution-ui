@@ -24,13 +24,30 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
 import MarkdownRenderer from '@/components/ui/Renderer/MarkdownRenderer';
+import StreamingText from './StreamingText';
 
 interface ChatBubbleProps {
   message: ChatMessage;
   isOwnMessage: boolean;
+  isStreaming?: boolean;
 }
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
+const renderMessageContent = (content: string, isOwnMessage: boolean, isStreaming: boolean) => {
+  if (isOwnMessage) {
+    return <p className="whitespace-pre-wrap break-words text-sm">{content}</p>;
+  }
+  if (isStreaming) {
+    return <StreamingText text={content} />;
+  }
+  return (
+    <MarkdownRenderer
+      content={content}
+      className="text-sm [&_.wmde-markdown]:!bg-transparent"
+    />
+  );
+};
+
+const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage, isStreaming = false }) => (
   <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
     <div
       className={cn(
@@ -47,14 +64,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
           <span className="truncate">{message.fileName}</span>
         </div>
       )}
-      {isOwnMessage ? (
-        <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
-      ) : (
-        <MarkdownRenderer
-          content={message.content}
-          className="text-sm [&_.wmde-markdown]:!bg-transparent"
-        />
-      )}
+      {renderMessageContent(message.content, isOwnMessage, isStreaming)}
       <div className={cn('mt-1 flex items-center gap-2 text-xs', isOwnMessage ? 'justify-end' : 'justify-between')}>
         {!isOwnMessage && (
           <span className="font-medium opacity-70">

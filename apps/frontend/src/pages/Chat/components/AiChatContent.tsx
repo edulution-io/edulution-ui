@@ -48,6 +48,7 @@ const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
       models={availableModels}
       selectedModelId={selectedModelId}
       onModelChange={setSelectedModelId}
+      showTypingIndicator
     />
   );
 };

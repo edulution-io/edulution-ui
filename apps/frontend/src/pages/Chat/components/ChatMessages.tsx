@@ -18,22 +18,26 @@
  */
 
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import type ChatMessage from '@libs/chat/types/chatMessage';
+import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import useUserStore from '@/store/UserStore/useUserStore';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ChatBubble from './ChatBubble';
 import ChatEmptyState from './ChatEmptyState';
+import AiStatusIndicator from './AiStatusIndicator';
 
 interface ChatMessagesProps {
   messages: ChatMessage[];
   isLoading: boolean;
+  showTypingIndicator?: boolean;
 }
 
-const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
+const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading, showTypingIndicator = false }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const prevIsLoadingRef = useRef(false);
   const prevMessageCountRef = useRef(0);
   const { user } = useUserStore();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -45,34 +49,43 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
     prevMessageCountRef.current = messages.length;
 
     const streamingFinished = wasLoading && !isLoading;
-    const newMessageAdded = messages.length > prevCount && !isLoading;
+    const loadingStarted = !wasLoading && isLoading;
+    const newMessageAdded = messages.length > prevCount;
 
-    if (streamingFinished || newMessageAdded) {
+    if (streamingFinished || newMessageAdded || loadingStarted) {
       container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
     }
-  }, [messages, isLoading]);
+  }, [messages.length, isLoading]);
 
   if (messages.length === 0 && !isLoading) {
     return <ChatEmptyState />;
   }
+
+  const lastMessage = messages[messages.length - 1];
+  const lastAssistantHasContent = lastMessage?.role === CHAT_ROLES.ASSISTANT && lastMessage.content.trim().length > 0;
+  const isStreamingLastMessage = isLoading && lastAssistantHasContent;
+  const isWaitingForResponse = isLoading && !lastAssistantHasContent;
+  const statusLabel = lastAssistantHasContent ? t('chat.aiWriting') : t('chat.aiThinking');
 
   return (
     <div
       ref={containerRef}
       className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin"
     >
-      {messages.map((message) => (
-        <ChatBubble
-          key={message.id}
-          message={message}
-          isOwnMessage={message.createdBy === user?.username}
-        />
-      ))}
-      {isLoading && (
-        <div className="flex justify-center py-4">
-          <CircleLoader />
-        </div>
-      )}
+      {messages.map((message) => {
+        if (isWaitingForResponse && message.id === lastMessage?.id && message.role === CHAT_ROLES.ASSISTANT) {
+          return null;
+        }
+        return (
+          <ChatBubble
+            key={message.id}
+            message={message}
+            isOwnMessage={message.createdBy === user?.username}
+            isStreaming={isStreamingLastMessage && message.id === lastMessage.id}
+          />
+        );
+      })}
+      {isLoading && showTypingIndicator && <AiStatusIndicator label={statusLabel} />}
     </div>
   );
 };

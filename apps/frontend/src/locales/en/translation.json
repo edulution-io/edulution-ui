@@ -36,6 +36,8 @@
     "newChat": "New Chat",
     "startNewAiChat": "Start a new AI conversation",
     "deleteChat": "Delete chat",
+    "aiThinking": "Thinking",
+    "aiWriting": "Writing",
     "aiChatModel": {
       "createNew": "Create AI Chat Model",
       "edit": "Edit AI Chat Model",

@@ -33,9 +33,17 @@ interface ChatViewProps {
   models?: AiChatModelUserDto[];
   selectedModelId?: string | null;
   onModelChange?: (id: string | null) => void;
+  showTypingIndicator?: boolean;
 }
 
-const ChatView: React.FC<ChatViewProps> = ({ adapter, title, models, selectedModelId, onModelChange }) => {
+const ChatView: React.FC<ChatViewProps> = ({
+  adapter,
+  title,
+  models,
+  selectedModelId,
+  onModelChange,
+  showTypingIndicator = false,
+}) => {
   const { t } = useTranslation();
   const { messages, input, setInput, handleSubmit, isLoading, error, selectedFile, setSelectedFile } = adapter;
   const selectedModel = models?.find((model) => model.id === selectedModelId);
@@ -81,6 +89,7 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title, models, selectedMod
       <ChatMessages
         messages={messages}
         isLoading={isLoading}
+        showTypingIndicator={showTypingIndicator}
       />
 
       <ChatInput

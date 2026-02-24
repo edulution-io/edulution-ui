@@ -23,6 +23,9 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -100,28 +103,38 @@ class AiChatController {
     @Res() res: Response,
     @GetCurrentUser() currentUser: JwtUser,
   ) {
-    const { id: conversationId, messages, modelConfigId } = body;
-    const username = currentUser.preferred_username;
+    try {
+      const { id: conversationId, messages, modelConfigId } = body;
+      const username = currentUser.preferred_username;
 
-    const { result } = await this.aiChatService.streamChat(
-      conversationId,
-      messages,
-      username,
-      currentUser.ldapGroups,
-      modelConfigId,
-    );
+      const { result } = await this.aiChatService.streamChat(
+        conversationId,
+        messages,
+        username,
+        currentUser.ldapGroups,
+        modelConfigId,
+      );
 
-    result.pipeUIMessageStreamToResponse(res, {
-      sendReasoning: true,
-      sendSources: true,
-      onFinish: async ({ responseMessage }) => {
-        const textContent = extractTextFromParts(responseMessage.parts);
+      result.pipeUIMessageStreamToResponse(res, {
+        sendReasoning: true,
+        sendSources: true,
+        onFinish: async ({ responseMessage }) => {
+          const textContent = extractTextFromParts(responseMessage.parts);
 
-        if (textContent) {
-          await this.aiChatService.saveMessage(conversationId, CHAT_ROLES.ASSISTANT, textContent, username);
-        }
-      },
-    });
+          if (textContent) {
+            await this.aiChatService.saveMessage(conversationId, CHAT_ROLES.ASSISTANT, textContent, username);
+          }
+        },
+      });
+    } catch (error) {
+      const isHttpException = error instanceof HttpException;
+      const status = isHttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+      const message = isHttpException ? error.message : 'Internal server error';
+      Logger.error(`Chat stream failed: ${message}`, AiChatController.name);
+      if (!res.headersSent) {
+        res.status(status).json({ message });
+      }
+    }
   }
 }
 

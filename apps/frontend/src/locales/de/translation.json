@@ -36,6 +36,8 @@
     "newChat": "Neuer Chat",
     "startNewAiChat": "Starte eine neue KI-Unterhaltung",
     "deleteChat": "Chat löschen",
+    "aiThinking": "Denkt nach",
+    "aiWriting": "Schreibt",
     "aiChatModel": {
       "createNew": "AI-Chat-Modell erstellen",
       "edit": "AI-Chat-Modell bearbeiten",
