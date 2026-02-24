@@ -38,7 +38,7 @@ const cardVariants = cva('shadow-lg', {
         'border-primary bg-primary/5 hover:shadow-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary transition-[border-color,background-color,box-shadow,transform] duration-200 hover:scale-[103%]',
       tile: 'rounded m-1 flex h-32 w-32 flex-col items-center overflow-hidden bg-glass border-white dark:border-black transition-transform duration-300 hover:scale-105 md:w-48',
       tileSelected:
-        'rounded m-1 flex h-32 w-32 flex-col items-center overflow-hidden bg-ciGreenToBlue text-white transition-transform duration-300 hover:scale-105 md:w-48',
+        'rounded m-1 flex h-32 w-32 flex-col items-center overflow-hidden border-0 shadow-none bg-ciGreenToBlue text-white transition-transform duration-300 hover:scale-105 md:w-48',
     },
   },
   defaultVariants: {

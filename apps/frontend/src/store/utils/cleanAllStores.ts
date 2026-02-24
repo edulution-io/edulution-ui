@@ -65,6 +65,7 @@ import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import useAppConfigUpdateCheckerStore from '@/pages/Settings/AppConfig/components/updateChecker/useAppConfigUpdateCheckerStore';
 import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
+import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import useParentAssignmentStore from '@/pages/LinuxmusterPage/ParentAssignment/useParentAssignmentStore';
 import useParentChildPairingStore from '@/pages/UserSettings/ParentChildPairing/useParentChildPairingStore';
 import useNotificationStore from '@/store/useNotificationStore';
@@ -113,6 +114,7 @@ const cleanAllStores = async () => {
   useQuestionsContextMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
   useSelectCreateDockerContainerDialogStore.getState().reset();
+  useSessionFlagsStore.getState().reset();
   useSidebarStore.getState().reset();
   useSseStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
