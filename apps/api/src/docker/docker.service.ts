@@ -41,10 +41,13 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
 import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import MOODLE_GENERATE_SECRETS from '@libs/docker/constants/moodleGenerateSecrets';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import AppConfigService from '../appconfig/appconfig.service';
+import ensureKeycloakClient from '../scripts/keycloak/utilities/ensureKeycloakClient';
 
 @Injectable()
 class DockerService implements OnModuleInit, OnModuleDestroy {
@@ -249,11 +252,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
     switch (applicationName) {
       case APPS.LEARNING_MANAGEMENT: {
-        const passwordKeys = ['MOODLE_DB_PASSWORD', 'MOODLE_DB_ROOT_PASSWORD', 'MOODLE_ADMIN_PASSWORD'];
-        const savedValues = DockerService.readSavedEnvValues(applicationName, passwordKeys);
-        passwordKeys.forEach((key) => {
+        const savedValues = DockerService.readSavedEnvValues(applicationName, [...MOODLE_GENERATE_SECRETS]);
+        MOODLE_GENERATE_SECRETS.forEach((key) => {
           appConfigValues[key] = savedValues[key] || generateSecureToken();
         });
+        const moodleClientId = DOCKER_APPLICATION_LIST.learningmanagement as string;
+        appConfigValues.KEYCLOAK_MOODLE_CLIENT_ID = moodleClientId;
+        await ensureKeycloakClient(moodleClientId, appConfigValues.KEYCLOAK_MOODLE_CLIENT_SECRET);
         break;
       }
       case APPS.WIREGUARD: {
