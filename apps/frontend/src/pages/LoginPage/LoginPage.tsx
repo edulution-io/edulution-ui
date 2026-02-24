@@ -50,6 +50,7 @@ import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import getRandomUUID from '@/utils/getRandomUUID';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
@@ -150,6 +151,7 @@ const LoginPage: React.FC = () => {
 
     const registerUser = async () => {
       await handleRegisterUser();
+      useSessionFlagsStore.getState().setIsJustLoggedIn(true);
       setIsEnterTotpVisible(false);
     };
 
