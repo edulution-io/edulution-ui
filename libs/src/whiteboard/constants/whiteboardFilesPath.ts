@@ -17,11 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const sanitizeFilename = (filename: string): string =>
-  filename
-    .replace(/\.\./g, '')
-    .replace(/\/+/g, '/')
-    .replace(/^\//, '')
-    .replace(/[^a-zA-Z0-9._\-/]/g, '');
+import { join } from 'node:path';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import APPS from '@libs/appconfig/constants/apps';
 
-export default sanitizeFilename;
+const WHITEBOARD_FILES_PATH = join(APPS_FILES_PATH, APPS.WHITEBOARD);
+
+export default WHITEBOARD_FILES_PATH;

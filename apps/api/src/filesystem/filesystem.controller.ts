@@ -66,6 +66,7 @@ class FileSystemController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        APPS_FILES_PATH,
         (req) => `${APPS_FILES_PATH}/${req.params.name}`,
         false,
         (_req, file) => file.originalname,
@@ -80,15 +81,15 @@ class FileSystemController {
   }
 
   @Get('info/*path')
-  getFiles(@Param('path') path: string | string[]) {
+  getFiles(@Param('path', new ValidatePathPipe(APPS_FILES_PATH)) path: string | string[]) {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
   }
 
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   @UseGuards(DynamicAppAccessGuard)
   serveFile(
-    @Param('appName') appName: string,
-    @Param('filename') filename: string | string[],
+    @Param('appName', new ValidatePathPipe(APPS_FILES_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(APPS_FILES_PATH)) filename: string | string[],
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -106,8 +107,8 @@ class FileSystemController {
   @UseGuards(IsPublicAppGuard)
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   servePublicFile(
-    @Param('appName') appName: string,
-    @Param('filename') filename: string | string[],
+    @Param('appName', new ValidatePathPipe(PUBLIC_ASSET_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string | string[],
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -119,7 +120,7 @@ class FileSystemController {
   servePublicAssetWithFallback(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('appName') appName: string,
+    @Param('appName', new ValidatePathPipe(PUBLIC_ASSET_PATH)) appName: string,
     @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string,
     @Query('fallback', new ValidatePathPipe(PUBLIC_ASSET_PATH)) fallbackFilename: string | undefined,
   ) {
@@ -138,7 +139,10 @@ class FileSystemController {
 
   @UseGuards(AdminGuard)
   @Delete(`public/assets/:appName/*filename`)
-  async deletePublicFile(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
+  async deletePublicFile(
+    @Param('appName', new ValidatePathPipe(PUBLIC_ASSET_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string | string[],
+  ) {
     const fileName = FilesystemService.buildPathString(filename);
     const filePath = join(PUBLIC_ASSET_PATH, appName);
     return FilesystemService.deleteFile(filePath, fileName);
@@ -146,7 +150,10 @@ class FileSystemController {
 
   @Delete(':appName/*filename')
   @UseGuards(AdminGuard)
-  deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
+  deleteFile(
+    @Param('appName', new ValidatePathPipe(APPS_FILES_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(APPS_FILES_PATH)) filename: string,
+  ) {
     const appsPath = join(APPS_FILES_PATH, appName);
     return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
   }
@@ -156,6 +163,7 @@ class FileSystemController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: createDiskStorage(
+        PUBLIC_ASSET_PATH,
         (request) => {
           const { body } = request as { body?: UploadGlobalAssetDto };
           if (!body?.destination) {

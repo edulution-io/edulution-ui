@@ -17,22 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
-import WHITEBOARD_FILES_PATH from '@libs/whiteboard/constants/whiteboardFilesPath';
-import APPS_FILES_PATH from './appsFilesPath';
-import PUBLIC_DOWNLOADS_PATH from './publicDownloadsPath';
-import TRAEFIK_CONFIG_FILES_PATH from './traefikConfigPath';
-import TEMP_FILES_PATH from '../../filesystem/constants/tempFilesPath';
-import PUBLIC_ASSET_PATH from './publicAssetPath';
+const sanitizePath = (filename: string): string =>
+  filename
+    .replace(/\.\./g, '')
+    .replace(/\/+/g, '/')
+    .replace(/^\//, '')
+    .replace(/[^a-zA-Z0-9._\-/]/g, '');
 
-const folderPaths = [
-  APPS_FILES_PATH,
-  PUBLIC_DOWNLOADS_PATH,
-  TRAEFIK_CONFIG_FILES_PATH,
-  TEMP_FILES_PATH,
-  PUBLIC_ASSET_PATH,
-  SURVEYS_FILES_PATH,
-  WHITEBOARD_FILES_PATH,
-];
-
-export default folderPaths;
+export default sanitizePath;
