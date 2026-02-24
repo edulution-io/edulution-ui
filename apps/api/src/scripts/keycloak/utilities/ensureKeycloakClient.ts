@@ -22,7 +22,7 @@ import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import getKeycloakToken from './getKeycloakToken';
 import createKeycloakAxiosClient from './createKeycloakAxiosClient';
 
-const ensureKeycloakClient = async (clientId: string, clientSecret: string): Promise<void> => {
+const ensureKeycloakClient = async (clientId: string, clientSecret: string): Promise<string> => {
   try {
     const keycloakAccessToken = await getKeycloakToken();
     const keycloakClient = createKeycloakAxiosClient(keycloakAccessToken);
@@ -30,9 +30,9 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
     const existingClients = await keycloakClient.get<{ id: string }[]>('/clients', { params: { clientId } });
     if (existingClients.data.length > 0) {
       const internalId = existingClients.data[0].id;
-      await keycloakClient.put(`/clients/${internalId}`, { clientId, secret: clientSecret });
-      Logger.log(`Keycloak client '${clientId}' already exists; secret updated.`, ensureKeycloakClient.name);
-      return;
+      const secretResponse = await keycloakClient.get<{ value: string }>(`/clients/${internalId}/client-secret`);
+      Logger.log(`Keycloak client '${clientId}' already exists; using existing secret.`, ensureKeycloakClient.name);
+      return secretResponse.data.value;
     }
 
     const response = await keycloakClient.post('/clients', {
@@ -49,9 +49,10 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
     if (response.status === 201) {
       Logger.log(`Keycloak client '${clientId}' created successfully.`, ensureKeycloakClient.name);
     }
+    return clientSecret;
   } catch (error) {
     Logger.error(
-      `Failed to create Keycloak client '${clientId}': ${getErrorMessage(error)}`,
+      `Failed to ensure Keycloak client '${clientId}': ${getErrorMessage(error)}`,
       ensureKeycloakClient.name,
     );
     throw error;

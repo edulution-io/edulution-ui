@@ -276,7 +276,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           );
         }
         appConfigValues.KEYCLOAK_MOODLE_CLIENT_ID = moodleClientId;
-        await ensureKeycloakClient(moodleClientId, appConfigValues.KEYCLOAK_MOODLE_CLIENT_SECRET);
+        appConfigValues.KEYCLOAK_MOODLE_CLIENT_SECRET = await ensureKeycloakClient(
+          moodleClientId,
+          appConfigValues.KEYCLOAK_MOODLE_CLIENT_SECRET,
+        );
         break;
       }
       case APPS.WIREGUARD: {
