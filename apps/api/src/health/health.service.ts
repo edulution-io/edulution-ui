@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheckService,
@@ -33,7 +33,9 @@ import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 const { KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
 
 @Injectable()
-class HealthService {
+class HealthService implements OnModuleInit {
+  private buildInfo: Record<string, string | undefined> = {};
+
   constructor(
     private health: HealthCheckService,
     private mongoose: MongooseHealthIndicator,
@@ -44,8 +46,8 @@ class HealthService {
     private configService: ConfigService,
   ) {}
 
-  private getBuildInfo() {
-    return {
+  onModuleInit() {
+    this.buildInfo = {
       version: this.configService.get<string>('version'),
       commitSha: this.configService.get<string>('commitSha'),
       buildDate: this.configService.get<string>('buildDate'),
@@ -55,12 +57,12 @@ class HealthService {
 
   async checkEduApiResponding() {
     const result = await this.health.check([() => this.checkMongo()]);
-    return { ...result, ...this.getBuildInfo() };
+    return { ...result, ...this.buildInfo };
   }
 
   async checkEduApiHealth() {
     const result = await this.health.check([() => this.checkMongo(), () => this.checkDiskStorage()]);
-    return { ...result, ...this.getBuildInfo() };
+    return { ...result, ...this.buildInfo };
   }
 
   async getEduApiStats() {
@@ -70,7 +72,7 @@ class HealthService {
       () => this.checkWebDavServer(),
       () => this.checkDiskStorage(),
     ]);
-    return { ...result, ...this.getBuildInfo() };
+    return { ...result, ...this.buildInfo };
   }
 
   private checkMongo(): Promise<HealthIndicatorResult> {
