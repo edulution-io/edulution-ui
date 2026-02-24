@@ -38,12 +38,14 @@ type UseFileSharingStore = {
   currentPath: string;
   downloadProgressList: DownloadFileDto[];
   pathToRestoreSession: string;
+  lastVisitedShareDisplayName: string;
   fileOperationProgress: null | FilesharingProgressDto;
   directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
+  setLastVisitedShareDisplayName: (name: string) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (shareName: string | undefined, path?: string, forceCleanupCache?: boolean) => Promise<void>;
   reset: () => void;
@@ -81,6 +83,7 @@ const initialState = {
   fileOperationProgress: null,
   webdavShares: [],
   selectedWebdavShare: '',
+  lastVisitedShareDisplayName: '',
 };
 
 type PersistedFileManagerStore = (
@@ -209,6 +212,10 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setSelectedWebdavShare: (webdavShare) => {
         set({ selectedWebdavShare: webdavShare });
+      },
+
+      setLastVisitedShareDisplayName: (name) => {
+        set({ lastVisitedShareDisplayName: name });
       },
 
       reset: () => set(initialState),
