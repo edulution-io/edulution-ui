@@ -13,8 +13,23 @@ jobs:
 
     outputs:
       docker-tags: ${{ steps.generate_docker_tags.outputs.docker_tags }}
+      app-version: ${{ steps.app_version.outputs.version }}
+      build-date: ${{ steps.build_date.outputs.date }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ github.token }}
+
+      - name: Extract app version
+        id: app_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Set build date
+        id: build_date
+        run: echo "date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_OUTPUT
+
       - id: generate_docker_tags
         run: |
           docker_registry_path="ghcr.io/edulution-io/edulution-api"
@@ -66,11 +81,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push docker image
-        uses: docker/build-push-action@v6.10.0
+        uses: docker/build-push-action@v6.18.0
         with:
           build-args: |
-            buildId=${{ github.sha }}
-            version=${{ needs.prepare.outputs.docker-tags }}
+            APP_VERSION=${{ needs.prepare.outputs.app-version }}
+            COMMIT_SHA=${{ github.sha }}
+            BUILD_DATE=${{ needs.prepare.outputs.build-date }}
+            BUILD_NUMBER=${{ github.run_number }}
           context: .
           file: apps/api/Dockerfile
           push: true
