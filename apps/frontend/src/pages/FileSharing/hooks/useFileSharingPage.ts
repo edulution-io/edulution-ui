@@ -65,6 +65,7 @@ const useFileSharingPage = () => {
   const previousWebdavShare = useRef<string | undefined>(webdavShare);
   const hasRestoredSession = useRef(false);
   const lastFetchedKey = useRef('');
+  const needsCacheCleanup = useRef(true);
 
   const isChildOfShareRoot = useCallback(
     (filePath: string) => {
@@ -79,6 +80,7 @@ const useFileSharingPage = () => {
     if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
       clearFilesOnShareChange();
       lastFetchedKey.current = '';
+      needsCacheCleanup.current = true;
     }
     previousWebdavShare.current = webdavShare;
   }, [webdavShare, clearFilesOnShareChange]);
@@ -115,7 +117,9 @@ const useFileSharingPage = () => {
     const fetchKey = `${webdavShare}:${path}`;
     if (fetchKey !== lastFetchedKey.current) {
       lastFetchedKey.current = fetchKey;
-      void fetchFiles(webdavShare, path);
+      const forceCleanup = needsCacheCleanup.current;
+      needsCacheCleanup.current = false;
+      void fetchFiles(webdavShare, path, forceCleanup);
     }
     if (path !== '/') setPathToRestoreSession(path);
     if (webdavShare) setLastVisitedShareDisplayName(webdavShare);
