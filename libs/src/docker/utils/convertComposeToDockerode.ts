@@ -23,14 +23,20 @@ import DOCKER_NETWORK_MODE from '../constants/dockerNetworkMode';
 
 const NANOSECONDS_PER_SECOND = 1_000_000_000;
 
-const UNIT_TO_SECONDS: Record<string, number> = { m: 60, ms: 0.001, s: 1 };
+const UNIT_TO_SECONDS: Record<string, number> = { h: 3600, m: 60, s: 1, ms: 0.001 };
 
-const parseDurationToNs = (duration: string | undefined): number | undefined => {
+const parseDurationToSeconds = (duration: string | undefined): number | undefined => {
   if (!duration) return undefined;
-  const match = duration.match(/^(\d+)(s|m|ms)$/);
+  const match = duration.match(/^(\d+)(h|m|ms|s)$/);
   if (!match) return undefined;
   const [, value, unit] = match;
-  return Number(value) * (UNIT_TO_SECONDS[unit] ?? 1) * NANOSECONDS_PER_SECOND;
+  return Math.round(Number(value) * (UNIT_TO_SECONDS[unit] ?? 1));
+};
+
+const parseDurationToNs = (duration: string | undefined): number | undefined => {
+  const seconds = parseDurationToSeconds(duration);
+  if (seconds === undefined) return undefined;
+  return seconds * NANOSECONDS_PER_SECOND;
 };
 
 const normalizeEnvToStringArray = (env: string[] | Record<string, string> | undefined): string[] | undefined => {
@@ -102,8 +108,7 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: object },
     );
 
-    const stopGraceNs = parseDurationToNs(service.stop_grace_period);
-    const stopTimeOut = stopGraceNs !== undefined ? stopGraceNs / NANOSECONDS_PER_SECOND : undefined;
+    const stopTimeOut = parseDurationToSeconds(service.stop_grace_period);
 
     const sysctls = service.sysctls?.reduce(
       (acc, sysctl) => {

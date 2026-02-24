@@ -35,7 +35,7 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
       return secretResponse.data.value;
     }
 
-    const response = await keycloakClient.post('/clients', {
+    await keycloakClient.post('/clients', {
       clientId,
       secret: clientSecret,
       enabled: true,
@@ -45,11 +45,15 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
       directAccessGrantsEnabled: true,
       serviceAccountsEnabled: true,
     });
+    Logger.log(`Keycloak client '${clientId}' created successfully.`, ensureKeycloakClient.name);
 
-    if (response.status === 201) {
-      Logger.log(`Keycloak client '${clientId}' created successfully.`, ensureKeycloakClient.name);
+    const createdClients = await keycloakClient.get<{ id: string }[]>('/clients', { params: { clientId } });
+    const createdId = createdClients.data[0]?.id;
+    if (!createdId) {
+      throw new Error(`Keycloak client '${clientId}' was created but could not be found`);
     }
-    return clientSecret;
+    const secretResponse = await keycloakClient.get<{ value: string }>(`/clients/${createdId}/client-secret`);
+    return secretResponse.data.value;
   } catch (error) {
     Logger.error(
       `Failed to ensure Keycloak client '${clientId}': ${getErrorMessage(error)}`,
