@@ -49,11 +49,8 @@ import {
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import { DEVICE_MANAGEMENT_PATH } from '@libs/deviceManagement/constants/deviceManagementPaths';
-import isLmnVersionSupported from '@libs/lmnApi/utils/isLmnVersionSupported';
 import { LinuxmusterIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import LmnVersionWarning from './components/LmnVersionWarning';
 
 interface UserTypeCard {
   labelKey: string;
@@ -119,9 +116,6 @@ const LinuxmusterEntryPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isLmn } = useDeploymentTarget();
-  const lmnVersions = useLmnApiStore((s) => s.lmnVersions);
-
-  const versionSupported = !isLmn || isLmnVersionSupported(lmnVersions['linuxmuster-api7']);
   const visibleCards = isLmn ? USER_TYPE_CARDS : USER_TYPE_CARDS.filter((card) => !card.lmnOnly);
 
   const nativeAppHeader = {
@@ -133,35 +127,26 @@ const LinuxmusterEntryPage: React.FC = () => {
   return (
     <PageLayout nativeAppHeader={nativeAppHeader}>
       <div className="p-4">
-        {!versionSupported && (
-          <div className="mb-6">
-            <LmnVersionWarning />
-          </div>
-        )}
-        {versionSupported && (
-          <>
-            <h2 className="mb-4 text-xl font-semibold">{t('linuxmuster.userManagement')}</h2>
-            <div className="flex flex-wrap gap-2">
-              {visibleCards.map((card) => (
-                <button
-                  key={card.labelKey}
-                  type="button"
-                  onClick={() => navigate(`/${card.path}/${card.defaultTab}`)}
-                >
-                  <Card variant="tile">
-                    <div className="flex h-full flex-col items-center justify-center gap-2">
-                      <FontAwesomeIcon
-                        icon={card.icon}
-                        className="h-8 w-8 md:h-10 md:w-10"
-                      />
-                      <p>{t(card.labelKey)}</p>
-                    </div>
-                  </Card>
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+        <h2 className="mb-4 text-xl font-semibold">{t('linuxmuster.userManagement')}</h2>
+        <div className="flex flex-wrap gap-2">
+          {visibleCards.map((card) => (
+            <button
+              key={card.labelKey}
+              type="button"
+              onClick={() => navigate(`/${card.path}/${card.defaultTab}`)}
+            >
+              <Card variant="tile">
+                <div className="flex h-full flex-col items-center justify-center gap-2">
+                  <FontAwesomeIcon
+                    icon={card.icon}
+                    className="h-8 w-8 md:h-10 md:w-10"
+                  />
+                  <p>{t(card.labelKey)}</p>
+                </div>
+              </Card>
+            </button>
+          ))}
+        </div>
         <h2 className="mb-4 mt-8 text-xl font-semibold">{t('deviceManagement.menuTitle')}</h2>
         <div className="flex flex-wrap gap-2">
           <button
