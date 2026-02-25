@@ -20,7 +20,6 @@
 import React, { type ComponentType } from 'react';
 import APPS from '@libs/appconfig/constants/apps';
 import FileSharingMenuBarFooter from '@/pages/FileSharing/FileSharingMenuBarFooter';
-import ChatMenuBarFooter from '@/pages/Chat/ChatMenuBarFooter';
 
 interface MenuBarFooterProps {
   isCollapsed: boolean;
@@ -30,7 +29,6 @@ type FooterComponent = ComponentType<MenuBarFooterProps>;
 
 const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
   [APPS.FILE_SHARING]: FileSharingMenuBarFooter,
-  [APPS.CHAT]: ChatMenuBarFooter,
 };
 
 interface Props {
