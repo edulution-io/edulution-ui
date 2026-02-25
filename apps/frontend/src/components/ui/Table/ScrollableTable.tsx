@@ -65,7 +65,6 @@ interface DataTableProps<TData, TValue> {
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
   searchBarAdditionalComponent?: ReactNode;
-  activeFilterCount?: number;
   focusedRowId?: string | null;
   onSortedRowsChange?: (sortedData: TData[]) => void;
   onRowClick?: (item: TData) => void;
@@ -97,7 +96,6 @@ const ScrollableTable = <TData, TValue>({
   enableDragAndDrop = false,
   canDropOnRow,
   searchBarAdditionalComponent,
-  activeFilterCount,
   focusedRowId,
   onSortedRowsChange,
   onRowClick,
@@ -153,7 +151,7 @@ const ScrollableTable = <TData, TValue>({
       )}
 
       <div className="h-full w-full flex-1 overflow-auto pr-1 scrollbar-thin">
-        {(!!data.length || !!activeFilterCount) && showSearchBarAndColumnSelect && (
+        {showSearchBarAndColumnSelect && (
           <div className="flex items-center gap-2 pb-4 pt-2">
             <div className="min-w-0 flex-1">
               <Input
