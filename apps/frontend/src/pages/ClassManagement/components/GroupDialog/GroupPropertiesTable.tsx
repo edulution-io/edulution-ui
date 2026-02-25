@@ -93,7 +93,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
     {
       labelTranslationId: 'classmanagement.sharedMailBox',
       name: 'mailalias',
-      disabled,
+      disabled: !isSuperAdmin,
       component: 'checkbox',
     },
     {
