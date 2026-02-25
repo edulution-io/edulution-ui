@@ -124,7 +124,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
             className="mx-auto w-52 justify-center shadow-xl"
             variant="btn-security"
             size="lg"
-            onClick={() => navigate(LOGIN_ROUTE, { state: { from: location.pathname } })}
+            onClick={() => navigate(LOGIN_ROUTE, { state: { from: `${location.pathname}${location.search}` } })}
           >
             {t('common.toLogin')}
           </Button>

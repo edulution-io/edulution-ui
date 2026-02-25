@@ -126,7 +126,7 @@ const NotificationPanel = () => {
         )}
       >
         <SheetHeader className="pb-1">
-          <div className="flex items-center justify-between">
+          <div className="mr-2.5 flex items-center justify-between">
             <SheetTitle className="text-left text-xl font-bold text-background">
               {t('notificationscenter.appTitle')}
             </SheetTitle>
