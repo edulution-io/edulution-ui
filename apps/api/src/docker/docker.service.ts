@@ -43,6 +43,7 @@ import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createC
 import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import MOODLE_GENERATE_SECRETS from '@libs/docker/constants/moodleGenerateSecrets';
+import DOCKER_COMPOSE_ENV_VAR_PATTERN from '@libs/docker/constants/dockerComposeEnvVarPattern';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
@@ -249,7 +250,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         }
         return acc;
       }, {});
-    } catch {
+    } catch (error) {
+      Logger.debug(`Failed to read saved env values for ${applicationName}: ${error}`, DockerService.name);
       return {};
     }
   }
@@ -293,8 +295,6 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         break;
     }
 
-    const varPattern = /\${([^}]+)}/g;
-
     const resolveVar = (match: string, expr: string): string => {
       const sepIndex = expr.indexOf(':-');
       const varName = sepIndex === -1 ? expr : expr.slice(0, sepIndex);
@@ -307,7 +307,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     };
 
     const resolveVarsInValue = (value: unknown): unknown => {
-      if (typeof value === 'string') return value.replace(varPattern, resolveVar);
+      if (typeof value === 'string') return value.replace(DOCKER_COMPOSE_ENV_VAR_PATTERN, resolveVar);
       if (Array.isArray(value)) return value.map(resolveVarsInValue);
       if (value && typeof value === 'object') {
         return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveVarsInValue(v)]));
