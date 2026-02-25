@@ -1207,7 +1207,8 @@
       "title": "Info"
     },
     "aiServices": {
-      "title": { "items": "KI-Dienste" },
+      "title": "KI-Dienste",
+      "titleItems": "KI-Dienste",
       "provider": "Anbieter",
       "model": "Modell",
       "isActive": "Aktiv",

@@ -1204,7 +1204,8 @@
       "title": "Info"
     },
     "aiServices": {
-      "title": { "items": "AI Services" },
+      "title": "AI Services",
+      "titleItems": "AI Services",
       "provider": "Provider",
       "model": "Model",
       "isActive": "Active",

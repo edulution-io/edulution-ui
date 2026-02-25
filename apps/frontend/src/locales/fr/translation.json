@@ -1067,7 +1067,8 @@
       "title": "Informations"
     },
     "aiServices": {
-      "title": { "items": "Services IA" },
+      "title": "Services IA",
+      "titleItems": "Services IA",
       "provider": "Fournisseur",
       "model": "Modèle",
       "isActive": "Actif",
