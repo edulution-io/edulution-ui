@@ -210,7 +210,7 @@ const TableGridView = <TData, TValue>({
       )}
 
       <div className="h-full w-full flex-1 overflow-auto pr-1 scrollbar-thin">
-        {(!!data.length || !!activeFilterCount) && showSearchBar && (
+        {showSearchBar && (
           <div className="flex items-center gap-2 pb-4 pt-2">
             <div className="min-w-0 flex-1">
               <Input
