@@ -38,6 +38,7 @@ const QuickAccess = () => {
   const {
     createProject,
     updateProject,
+    updateSchoolClass,
     deleteProject,
     userRoom,
     fetchRoom,
@@ -104,6 +105,7 @@ const QuickAccess = () => {
       name: UserGroups.Classes,
       translationId: 'myClasses',
       createFunction: undefined,
+      updateFunction: updateSchoolClass,
       icon: <FontAwesomeIcon icon={faUsers} />,
       isLoading: areSchoolClassesLoading,
       groups: getGroupsWhereUserIsMember(userSchoolClasses),

@@ -262,6 +262,33 @@ class LmnApiService {
     }
   }
 
+  public async updateSchoolClass(
+    lmnApiToken: string,
+    formValues: GroupFormDto,
+    username: string,
+  ): Promise<LmnApiSchoolClass> {
+    try {
+      const data = LmnApiService.getGroupFormData(formValues, username);
+      const response = await this.request<LmnApiSchoolClass>(
+        HttpMethods.PATCH,
+        `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${formValues.name}`,
+        data,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.UpdateSchoolClassFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
     schoolClass: string,
@@ -539,7 +566,7 @@ class LmnApiService {
     }
   }
 
-  private static getProjectFromForm = (formValues: GroupFormDto, username: string) => ({
+  private static getGroupFormData = (formValues: GroupFormDto, username: string) => ({
     admins: formValues.admins,
     displayName: formValues.displayName,
     admingroups: formValues.admingroups,
@@ -606,7 +633,7 @@ class LmnApiService {
 
   public async createProject(lmnApiToken: string, formValues: GroupFormDto, username: string): Promise<LmnApiProject> {
     try {
-      const data = LmnApiService.getProjectFromForm(formValues, username);
+      const data = LmnApiService.getGroupFormData(formValues, username);
       const response = await this.request<LmnApiProject>(
         HttpMethods.POST,
         `${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`,
@@ -631,7 +658,7 @@ class LmnApiService {
 
   public async updateProject(lmnApiToken: string, formValues: GroupFormDto, username: string): Promise<LmnApiProject> {
     try {
-      const data = LmnApiService.getProjectFromForm(formValues, username);
+      const data = LmnApiService.getGroupFormData(formValues, username);
 
       const response = await this.request<LmnApiProject>(
         HttpMethods.PATCH,
