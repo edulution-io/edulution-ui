@@ -101,7 +101,12 @@ const useFileSharingPage = () => {
       return;
     }
 
-    if (!hasRestoredSession.current && pathToRestoreSession !== path && isChildOfShareRoot(pathToRestoreSession)) {
+    if (
+      !hasRestoredSession.current &&
+      !hasPathParam &&
+      pathToRestoreSession !== path &&
+      isChildOfShareRoot(pathToRestoreSession)
+    ) {
       hasRestoredSession.current = true;
       redirectTo(pathToRestoreSession);
       return;
