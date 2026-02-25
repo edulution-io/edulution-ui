@@ -34,6 +34,7 @@ import { DropdownSelect } from '@/components';
 import { Button, cn } from '@edulution-io/ui-kit';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
+import AI_SERVICE_CAPABILITY_OPTIONS from '@libs/aiService/constants/aiServiceCapabilityOptions';
 import AI_SERVICE_PROFICIENCY_COLORS from '@libs/aiService/constants/aiServiceProficiencyColors';
 import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
@@ -164,14 +165,25 @@ const ChatInput: React.FC<ChatInputProps> = ({
             {hasModels && onModelChange && (
               <>
                 {selectedCapabilities.length > 0 && (
-                  <div className="flex gap-1.5">
-                    {selectedCapabilities.map((cap) => (
-                      <FontAwesomeIcon
-                        key={cap.type}
-                        icon={CAPABILITY_ICONS[cap.type]}
-                        className={cn('h-3.5 w-3.5', AI_SERVICE_PROFICIENCY_COLORS[cap.proficiency])}
-                      />
-                    ))}
+                  <div className="flex gap-2">
+                    {selectedCapabilities.map((cap) => {
+                      const option = AI_SERVICE_CAPABILITY_OPTIONS.find((o) => o.id === cap.type);
+                      return (
+                        <span
+                          key={cap.type}
+                          className={cn(
+                            'inline-flex items-center gap-1 text-xs',
+                            AI_SERVICE_PROFICIENCY_COLORS[cap.proficiency],
+                          )}
+                        >
+                          <FontAwesomeIcon
+                            icon={CAPABILITY_ICONS[cap.type]}
+                            className="h-3 w-3"
+                          />
+                          {option ? t(option.translationKey) : cap.type}
+                        </span>
+                      );
+                    })}
                   </div>
                 )}
                 <DropdownSelect

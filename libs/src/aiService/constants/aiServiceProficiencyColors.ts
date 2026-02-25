@@ -22,7 +22,7 @@ import AiServiceProficiencyType from '@libs/aiService/types/aiServiceProficiency
 const AI_SERVICE_PROFICIENCY_COLORS: Record<AiServiceProficiencyType, string> = {
   excellent: 'text-green-500',
   good: 'text-yellow-500',
-  basic: 'text-foreground',
+  basic: 'text-red-500',
 } as const;
 
 export default AI_SERVICE_PROFICIENCY_COLORS;
