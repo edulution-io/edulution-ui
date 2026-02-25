@@ -17,22 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type TApps from '@libs/appconfig/types/appsType';
-import {
-  EDULUTION_MANAGER_APPLICATION_NAME,
-  EDULUTION_MANAGER_CONTAINER_NAME,
-} from '@libs/docker/constants/edulution-manager';
+import React from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
 
-type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
+const LearningManagementPage: React.FC = () => <NativeFrame appName={APPS.LEARNING_MANAGEMENT} />;
 
-const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
-  mail: 'edulution-mail',
-  classmanagement: 'edulution-veyon',
-  desktopdeployment: 'edulution-guacamole',
-  filesharing: 'edulution-onlyoffice',
-  [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
-  wireguard: 'edulution-wireguard',
-  learningmanagement: 'edulution-moodle',
-} as const;
-
-export default DOCKER_APPLICATION_LIST;
+export default LearningManagementPage;
