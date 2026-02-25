@@ -1322,6 +1322,7 @@
         "notFoundError": "Einstellungen konnten nicht geladen werden."
       },
       "deploymentTarget": "Plattform",
+      "organizationType": "Organisationstyp",
       "ldap": {
         "title": "LDAP",
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
@@ -2551,6 +2552,13 @@
     "description": "Hier kann die Plattform ausgewählt werden, an welche {{ appName }} angebunden wird.",
     "linuxmuster": "Linuxmuster",
     "generic": "Generisch"
+  },
+  "organizationType": {
+    "title": "Auswahl",
+    "description": "Hier kann der Organisationstyp ausgewählt werden.",
+    "school": "Schule",
+    "business": "Unternehmen",
+    "public-administration": "Öffentliche Verwaltung"
   },
   "webdavShare": {
     "displayName": "Anzeigename",

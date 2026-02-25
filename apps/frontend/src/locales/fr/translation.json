@@ -1182,7 +1182,8 @@
         "setAdminGroupSelectDescription": "Les groupes peuvent être sélectionnés via le champ de recherche.",
         "setAdminGroupWarning": "Au moins un groupe d’administrateurs doit être sélectionné."
       },
-      "deploymentTarget": "Plate-forme cible de déploiement"
+      "deploymentTarget": "Plate-forme cible de déploiement",
+      "organizationType": "Type d'organisation"
     },
     "info": {
       "title": "Licence"
@@ -2290,6 +2291,13 @@
     "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
     "linuxmuster": "Linuxmuster",
     "generic": "Générique"
+  },
+  "organizationType": {
+    "title": "Sélection",
+    "description": "Ici, on peut choisir le type d'organisation.",
+    "school": "École",
+    "business": "Entreprise",
+    "public-administration": "Administration publique"
   },
 
   "webdavShare": {

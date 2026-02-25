@@ -17,24 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import IORedis from 'ioredis';
-import redisConnection from '../redis.connection';
-import GlobalSettingsService from '../../global-settings/global-settings.service';
+import ORGANIZATION_TYPE from '../constants/organization-type';
+import type OrganizationType from '../types/organization-type';
 
-@Injectable()
-export default class DevCacheFlushService implements OnApplicationBootstrap {
-  constructor(private readonly globalSettings: GlobalSettingsService) {}
+const VALID_TYPES = new Set<OrganizationType>(Object.values(ORGANIZATION_TYPE));
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async onApplicationBootstrap() {
-    if (process.env.NODE_ENV !== 'development') return;
+const { EDUI_ORGANIZATION_TYPE = ORGANIZATION_TYPE.SCHOOL } = process.env;
 
-    const client = new IORedis(redisConnection);
-    await client.flushdb();
-    await client.quit();
+const getOrganizationType = (): OrganizationType =>
+  VALID_TYPES.has(EDUI_ORGANIZATION_TYPE as OrganizationType)
+    ? (EDUI_ORGANIZATION_TYPE as OrganizationType)
+    : ORGANIZATION_TYPE.SCHOOL;
 
-    await this.globalSettings.setDeploymentTargetInCache();
-    await this.globalSettings.setOrganizationTypeInCache();
-  }
-}
+export default getOrganizationType;
