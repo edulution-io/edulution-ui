@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdOutlineDriveFileMove } from 'react-icons/md';
+import { faFileExport } from '@fortawesome/free-solid-svg-icons';
 
 const MoveButton = (onClick: () => void) => ({
-  icon: MdOutlineDriveFileMove,
+  icon: faFileExport,
   text: t('tooltip.move'),
   onClick,
 });

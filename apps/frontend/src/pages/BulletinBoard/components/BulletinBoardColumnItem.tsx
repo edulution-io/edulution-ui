@@ -19,9 +19,10 @@
 
 /* eslint-disable react/no-danger */
 import React, { useEffect } from 'react';
-import { Button } from '@/components/shared/Button';
+import { Button, cn } from '@edulution-io/ui-kit';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import { PiDotsThreeVerticalBold } from 'react-icons/pi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
@@ -30,12 +31,11 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
-import cn from '@libs/common/utils/className';
 import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/BulletinContent';
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
-import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
+import { HIGHLIGHT_DURATION_MS } from '@libs/ui/constants/animationTiming';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -124,7 +124,7 @@ const BulletinBoardColumnItem = ({
 
     const timer = setTimeout(() => {
       element.classList.remove('blinking');
-    }, 3000);
+    }, HIGHLIGHT_DURATION_MS);
 
     return () => clearTimeout(timer);
   }, [bulletinBoardNotifications, bulletin.id, setCollapsed]);
@@ -199,7 +199,7 @@ const BulletinBoardColumnItem = ({
       role="button"
       tabIndex={0}
       className={cn(
-        'relative mx-1 flex items-start justify-between break-all rounded-xl bg-muted-background p-4 pb-2',
+        'bg-glass relative mx-1 flex items-start justify-between break-all rounded-xl  p-4 pb-2 dark:bg-muted-background dark:shadow-none',
         {
           ring: isNew,
           'cursor-pointer': isNew,
@@ -217,7 +217,8 @@ const BulletinBoardColumnItem = ({
             className="flex items-start space-x-2 text-left hover:opacity-75"
             onClick={() => toggleCollapsed(bulletin.id)}
           >
-            <ChevronRightIcon
+            <FontAwesomeIcon
+              icon={faChevronRight}
               className={cn('mt-1 h-3 w-3 flex-shrink-0 transition-transform duration-200', {
                 'rotate-90': !isCollapsed,
               })}
@@ -253,7 +254,10 @@ const BulletinBoardColumnItem = ({
             className="text-white-500 absolute right-2 top-2 ml-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full p-1 hover:bg-primary hover:text-white"
             title={t('common.options')}
           >
-            <PiDotsThreeVerticalBold className="h-6 w-6" />
+            <FontAwesomeIcon
+              icon={faEllipsisVertical}
+              className="h-5 w-5"
+            />
           </Button>
         }
         items={getBulletinDropdownItems()}

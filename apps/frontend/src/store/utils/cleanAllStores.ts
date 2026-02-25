@@ -39,7 +39,6 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
@@ -66,6 +65,12 @@ import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import useAppConfigUpdateCheckerStore from '@/pages/Settings/AppConfig/components/updateChecker/useAppConfigUpdateCheckerStore';
 import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
+import useSessionFlagsStore from '@/store/useSessionFlagsStore';
+import useParentAssignmentStore from '@/pages/LinuxmusterPage/ParentAssignment/useParentAssignmentStore';
+import useParentChildPairingStore from '@/pages/UserSettings/ParentChildPairing/useParentChildPairingStore';
+import useNotificationStore from '@/store/useNotificationStore';
+import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
+import useUserManagementStore from '@/pages/LinuxmusterPage/UserManagement/useUserManagementStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -86,6 +91,7 @@ const cleanAllStores = async () => {
   useCreateConferenceDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useDeviceManagementStore.getState().reset();
   useEduApiStore.getState().reset();
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
@@ -107,20 +113,23 @@ const cleanAllStores = async () => {
   usePublicShareStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
-  useResultDialogStore.getState().reset();
   useSelectCreateDockerContainerDialogStore.getState().reset();
+  useSessionFlagsStore.getState().reset();
   useSidebarStore.getState().reset();
   useSseStore.getState().reset();
-  useSubmittedAnswersDialogStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
   useTLDRawHistoryStore.getState().reset();
   useTemplateMenuStore.getState().reset();
+  useUserManagementStore.getState().reset();
   useVeyonApiStore.getState().reset();
   useVeyonConfigTableStore.getState().reset();
   useWebdavShareConfigTableStore.getState().reset();
   useOpenFileDialogStore.getState().reset();
   useFilesystemStore.getState().reset();
+  useParentChildPairingStore.getState().reset();
+  useParentAssignmentStore.getState().reset();
+  useNotificationStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };

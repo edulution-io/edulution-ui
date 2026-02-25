@@ -24,7 +24,7 @@ import { JwtModule } from '@nestjs/jwt';
 import KeyvRedis from '@keyv/redis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule } from '@nestjs/config';
@@ -65,6 +65,12 @@ import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
+import AccessGuard from '../auth/access.guard';
+import AuthGuard from '../auth/auth.guard';
+import ParentChildPairingModule from '../parent-child-pairing/parent-child-pairing.module';
+import WireguardModule from '../wireguard/wireguard.module';
+import WebhookModule from '../webhook/webhook.module';
+import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
 
 @Module({
   imports: [
@@ -138,8 +144,20 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
     SseModule,
     TLDrawSyncModule,
     ScriptsModule,
+    ParentChildPairingModule,
+    WireguardModule,
+    WebhookModule,
+    WebhookClientsModule,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AccessGuard,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,

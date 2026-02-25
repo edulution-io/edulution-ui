@@ -23,7 +23,7 @@ import { type VariantProps } from 'class-variance-authority';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 type FormFieldProps = {
   value?: string | number;
@@ -53,11 +53,7 @@ const Field = ({
 
   return (
     <>
-      {labelTranslationId && (
-        <Label>
-          <p className="font-bold">{t(labelTranslationId)}</p>
-        </Label>
-      )}
+      {labelTranslationId && <Label>{t(labelTranslationId)}</Label>}
       <Input
         type={type}
         disabled={disabled || isLoading}
@@ -66,7 +62,7 @@ const Field = ({
         value={value || t('common.not-available')}
         placeholder={placeholder}
         onChange={onChange}
-        className={cn(className, { 'italic text-muted': !value })}
+        className={cn(className, { 'text-muted': !value })}
       />
     </>
   );

@@ -26,8 +26,8 @@ import handleApiError from '@/utils/handleApiError';
 import { RowSelectionState } from '@tanstack/react-table';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
-import useFileSharingStore from './useFileSharingStore';
 
 interface UseFileSharingMoveDialogStore {
   activeCollectionOperation: LmnApiCollectOperationsType;
@@ -37,12 +37,13 @@ interface UseFileSharingMoveDialogStore {
   dialogShownDirs: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
-  fetchDialogFiles: (shareName: string | undefined, path?: string) => Promise<void>;
-  fetchDialogDirs: (shareName: string | undefined, path: string) => Promise<void>;
+  fetchDialogFiles: (shareName: string | undefined, path?: string, forceCleanupCache?: boolean) => Promise<void>;
+  fetchDialogDirs: (shareName: string | undefined, path: string, forceCleanupCache?: boolean) => Promise<void>;
   setDialogShownFiles: (files: DirectoryFileDTO[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   setActiveCollectionOperation: (collectionType: LmnApiCollectOperationsType) => void;
+  clearDialogFilesOnShareChange: () => void;
   reset: () => void;
 }
 
@@ -61,17 +62,18 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   setActiveCollectionOperation: (collectionType: LmnApiCollectOperationsType) =>
     set({ activeCollectionOperation: collectionType }),
 
-  fetchDialogFiles: async (shareName, path: string = '/') => {
+  fetchDialogFiles: async (shareName, path: string = '/', forceCleanupCache: boolean = false) => {
     try {
       set({ isLoading: true });
+      const headers: Record<string, string> = {};
+      if (forceCleanupCache) {
+        headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
+      }
       const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
         params: { type: ContentType.FILE, path, share: shareName },
+        headers,
       });
-      const webdavShareType = useFileSharingStore
-        .getState()
-        .webdavShares.find((s) => s.displayName === shareName)?.type;
-      if (!webdavShareType) return;
-      const dialogShownFiles = processWebdavResponse(data, webdavShareType);
+      const dialogShownFiles = processWebdavResponse(data, path);
 
       set({
         dialogShownFiles,
@@ -85,18 +87,19 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
     }
   },
 
-  fetchDialogDirs: async (shareName, path: string) => {
+  fetchDialogDirs: async (shareName, path: string, forceCleanupCache: boolean = false) => {
     try {
       set({ isLoading: true });
+      const headers: Record<string, string> = {};
+      if (forceCleanupCache) {
+        headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
+      }
       const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
         params: { type: ContentType.DIRECTORY, path, share: shareName },
+        headers,
       });
 
-      const webdavShareType = useFileSharingStore
-        .getState()
-        .webdavShares.find((s) => s.displayName === shareName)?.type;
-      if (!webdavShareType) return;
-      const dialogShownDirs = processWebdavResponse(data, webdavShareType);
+      const dialogShownDirs = processWebdavResponse(data, path);
 
       set({ dialogShownDirs });
     } catch (error) {
@@ -110,6 +113,15 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setDialogShownFiles: (files: DirectoryFileDTO[]) => set({ dialogShownFiles: files }),
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+  clearDialogFilesOnShareChange: () => {
+    set({
+      dialogShownFiles: [],
+      dialogShownDirs: [],
+      selectedItems: [],
+      selectedRows: {},
+      isLoading: true,
+    });
+  },
   reset: () => set(initialState),
 }));
 

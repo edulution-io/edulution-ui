@@ -644,7 +644,7 @@ describe('LmnApiService', () => {
   });
 
   describe('createProject', () => {
-    it('should call createProject with formatted data from getProjectFromForm', async () => {
+    it('should call createProject with formatted data from getGroupFormData', async () => {
       const mockResponse = queueResponse({ projectName: 'p_testproject' });
       requestSpy.mockResolvedValue(mockResponse);
 

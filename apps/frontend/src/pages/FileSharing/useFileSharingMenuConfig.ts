@@ -20,7 +20,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { CloudIcon, FileSharingIcon } from '@/assets/icons';
+import { FileSharingIcon } from '@/assets/icons';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import userStore from '@/store/UserStore/useUserStore';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
@@ -33,7 +34,7 @@ import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
   const { pathname } = useLocation();
-  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
+  const { webdavShares, fetchWebdavShares, setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
@@ -90,12 +91,28 @@ const useFileSharingMenuConfig = () => {
     const sharedItem: MenuItem = {
       id: SHARED,
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
-      icon: CloudIcon,
+      icon: faCloud,
       action: () => navigate(`/${APPS.FILE_SHARING}/${SHARED}`, { replace: true }),
     };
 
     setMenuItems([...menuBarItems, sharedItem]);
   }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, webdavShares, navigate, handlePathChange]);
+
+  const onHeaderClick = useCallback(() => {
+    const currentPathParts = pathname.split('/').filter(Boolean);
+    const currentShare = webdavShares.find((s) => s.displayName === currentPathParts[1]) ?? webdavShares[0];
+
+    if (!currentShare || currentShare.isRootServer) return;
+
+    let currentSharePath = currentShare.pathname;
+    if (currentShare.pathVariables) {
+      currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
+    }
+
+    setCurrentPath(currentSharePath);
+    setPathToRestoreSession(currentSharePath);
+    handlePathChange(currentShare.displayName, currentSharePath);
+  }, [pathname, webdavShares, createVariableSharePathname, handlePathChange, setCurrentPath, setPathToRestoreSession]);
 
   return {
     title: 'filesharing.title',
@@ -103,6 +120,7 @@ const useFileSharingMenuConfig = () => {
     color: 'hover:bg-ciGreenToBlue',
     appName: APPS.FILE_SHARING,
     menuItems,
+    onHeaderClick,
   };
 };
 

@@ -19,13 +19,13 @@
 
 import * as React from 'react';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <table
       ref={ref}
-      className={cn('w-full table-fixed text-sm 2xl:table-auto', className)}
+      className={cn('w-full table-fixed text-sm', className)}
       {...props}
     />
   ),
@@ -65,15 +65,24 @@ const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttribut
 );
 TableFooter.displayName = 'TableFooter';
 
-const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
-  ({ className, ...props }, ref) => (
+type TableRowVariant = 'default' | 'dialog' | 'none';
+
+interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  variant?: TableRowVariant;
+}
+
+const TABLE_ROW_VARIANTS: Record<TableRowVariant, string> = {
+  default:
+    'data-[state=selected]:bg-muted-light hover:bg-muted-light dark:data-[state=selected]:bg-muted-background dark:hover:bg-muted-background',
+  dialog: 'data-[state=selected]:bg-muted-light hover:bg-muted-light',
+  none: '',
+};
+
+const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
+  ({ className, variant = 'default', ...props }, ref) => (
     <tr
       ref={ref}
-      className={cn(
-        ' truncate text-foreground transition-colors data-[state=selected]:bg-muted hover:bg-white/10',
-        'py-0',
-        className,
-      )}
+      className={cn('truncate py-0 text-foreground transition-colors', TABLE_ROW_VARIANTS[variant], className)}
       {...props}
     />
   ),
@@ -85,14 +94,14 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        'z-2 sticky top-0 w-full backdrop-blur-md 2xl:w-auto',
+        'sticky top-0 z-10 w-full backdrop-blur-md',
         'mr-4 h-8 px-2 text-left align-middle font-medium text-background [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
     >
       {props.children}
-      <div className="absolute bottom-0 left-0 h-[1px] w-full bg-gray-200" />
+      <div className="absolute bottom-0 left-0 h-[1px] w-full bg-muted" />
     </th>
   ),
 );

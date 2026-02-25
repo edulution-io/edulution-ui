@@ -22,4 +22,5 @@ export const GROUP_WITH_MEMBERS_CACHE_KEY = 'groupWithMembers';
 export const ALL_USERS_CACHE_KEY = 'allUsers-';
 export const ALL_SCHOOLS_CACHE_KEY = 'allSchools';
 export const DEPLOYMENT_TARGET_CACHE_KEY = 'deployment-target';
+export const ORGANIZATION_TYPE_CACHE_KEY = 'organization-type';
 export const ADMIN_GROUPS = 'adminGroups';

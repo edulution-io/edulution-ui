@@ -20,15 +20,15 @@
 import React, { useEffect, useState } from 'react';
 
 import { Card, CardContent } from '@/components/shared/Card';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import Checkbox from '@/components/ui/Checkbox';
-import { MdLock } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock, faGear } from '@fortawesome/free-solid-svg-icons';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { useTranslation } from 'react-i18next';
-import { FaCog } from 'react-icons/fa';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -113,8 +113,21 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
   };
 
   const isActive = isSelected || isHovered;
-  const titleIcon = isEnrolEnabled ? <MdLock className="ml-2 mt-1 h-5 w-5" /> : null;
-  const cardContentIcon = isHovered && type !== UserGroups.Printers ? <FaCog className="ml-2 h-7" /> : icon;
+  const titleIcon = isEnrolEnabled ? (
+    <FontAwesomeIcon
+      icon={faLock}
+      className="ml-2 mt-1 h-5 w-5"
+    />
+  ) : null;
+  const cardContentIcon =
+    isHovered && type !== UserGroups.Printers ? (
+      <FontAwesomeIcon
+        icon={faGear}
+        className="ml-2 h-7"
+      />
+    ) : (
+      icon
+    );
   const cardContentText =
     isHovered && type !== UserGroups.Printers ? (
       <div>{t('details')}</div>
@@ -179,7 +192,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
             <div
               className={cn(
                 'absolute bottom-2 right-2 mt-1 h-[26px] flex-col items-center justify-around rounded-lg px-2 py-0 text-sm',
-                isActive ? 'bg-gray-400' : 'bg-gray-700',
+                isActive ? 'bg-black/40 text-white' : 'bg-black/10',
               )}
             >
               {sophomorixSchoolname}

@@ -43,9 +43,11 @@ import MailTheme from '@libs/mail/constants/mailTheme';
 import SOGO_THEME from '@libs/mail/constants/sogoTheme';
 import { extractTheme, extractVersion } from '@libs/mail/utils/sogoThemeMetadata';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
+import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import CustomHttpException from '../common/CustomHttpException';
 import DockerService from '../docker/docker.service';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -76,7 +78,6 @@ class MailsService implements OnModuleInit {
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
     private readonly dockerService: DockerService,
-    private readonly filesystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly globalSettingsService: GlobalSettingsService,
@@ -174,7 +175,7 @@ class MailsService implements OnModuleInit {
         return;
       }
 
-      await this.filesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
+      await FilesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
       await FilesystemService.writeFile(targetPath, newCss);
       Logger.debug(`SOGo theme updated to '${theme}' at ${targetPath}`, MailsService.name);
 
@@ -191,7 +192,7 @@ class MailsService implements OnModuleInit {
       await this.notifyMailThemeChange(accessGroups, SSE_MESSAGE_TYPE.MAIL_THEME_UPDATED, theme);
       Logger.log(`Restarted Mailcow containers to apply SOGo theme.`, MailsService.name);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       await this.notifyMailThemeChange(
         [{ path: GroupRoles.SUPER_ADMIN }],
         SSE_MESSAGE_TYPE.MAIL_THEME_UPDATE_FAILED,
@@ -241,7 +242,7 @@ class MailsService implements OnModuleInit {
 
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to check SOGo theme version: ${errorMessage}`, MailsService.name);
       return result;
     }
@@ -360,19 +361,32 @@ class MailsService implements OnModuleInit {
     try {
       mailboxLock = await imapClient.getMailboxLock('INBOX');
 
-      const fetchMail = imapClient.fetch({ recent: true }, { envelope: true, labels: true });
+      const unseenMailUids = await imapClient.search({ seen: false }, { uid: true });
+
+      if (!unseenMailUids || unseenMailUids.length === 0) {
+        return [];
+      }
+
+      const newestMailUids = [...unseenMailUids]
+        .sort((a: number, b: number) => b - a)
+        .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
+
+      const uidRange = newestMailUids.join(',');
+      const fetchedMail = imapClient.fetch({ uid: uidRange }, { envelope: true, flags: true, uid: true });
 
       // eslint-disable-next-line no-restricted-syntax
-      for await (const mail of fetchMail) {
+      for await (const mail of fetchedMail) {
         const mailDto: MailDto = {
           id: mail.uid,
           subject: mail.envelope?.subject,
-          labels: mail.labels,
+          flags: mail.flags,
         };
         mails.push(mailDto);
       }
+
+      mails.sort((a, b) => b.id - a.id);
     } catch (e) {
-      Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
+      Logger.error(`Get mails error: ${getErrorMessage(e)}`, MailsService.name);
       return [];
     } finally {
       if (mailboxLock) {
@@ -381,7 +395,7 @@ class MailsService implements OnModuleInit {
       await MailsService.cleanupImapClient(imapClient);
     }
 
-    Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
+    Logger.verbose(`Feed: ${mails.length} unseen mails were fetched (imap)`, MailsService.name);
     return mails;
   }
 

@@ -23,9 +23,9 @@ import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ContainerInfo } from 'dockerode';
 import i18n from '@/i18n';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
@@ -60,7 +60,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
       const isDockerOverview = pathname === `/${APPS.SETTINGS}/${APPS.GENERAL_SETTINGS}/${CONTAINER}`;
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           row={isDockerOverview ? row : undefined}
           icon={<div className={cn('h-2 w-2 rounded-full', badgeClass)} />}
         />
@@ -83,7 +83,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
           <ActionTooltip
             tooltipText={row.original.Image}
             trigger={
-              <SelectableTextCell
+              <SelectableCell
                 onClick={onClick}
                 text={row.original.Names[0].split('/')[1]}
               />
@@ -109,7 +109,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
           <ActionTooltip
             tooltipText={row.original.Image}
             trigger={
-              <SelectableTextCell
+              <SelectableCell
                 onClick={onClick}
                 text={row.original.Image}
               />
@@ -132,7 +132,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     cell: ({ row }) => {
       const onClick = () => {};
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={onClick}
           text={i18n.t(`docker.status.${row.original.State}`)}
           className="cursor-auto"
@@ -152,7 +152,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     cell: ({ row }) => {
       const onClick = () => {};
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={onClick}
           text={row.original.Status}
           className="cursor-auto"
@@ -175,7 +175,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         port.IP === '0.0.0.0' ? `${port.PublicPort}/${port.Type}` : null,
       ).filter((item): item is string => item !== null);
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={onClick}
           text={portArry.join(', ')}
           className="cursor-auto"
@@ -197,7 +197,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
       const date = new Date(row.original.Created * 1000);
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={onClick}
           text={date.toLocaleString()}
         />

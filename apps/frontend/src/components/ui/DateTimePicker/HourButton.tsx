@@ -18,9 +18,8 @@
  */
 
 import React, { useCallback } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-import { Button } from '@/components/shared/Button';
 
 interface HourButtonProps {
   hour: number;
@@ -39,7 +38,7 @@ const HourButton = ({ hour, currentHour, onChangeHour, variant }: HourButtonProp
       className={cn(
         'aspect-square max-h-[25px] max-w-[64px] shrink-0 sm:w-full',
         variant === 'default' && 'bg-background text-foreground',
-        variant === 'dialog' && 'bg-muted text-secondary',
+        variant === 'dialog' && 'bg-white text-background dark:bg-accent dark:text-secondary',
       )}
       onClick={handleClick}
     >

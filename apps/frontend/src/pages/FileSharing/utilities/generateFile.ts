@@ -32,6 +32,7 @@ import OPEN_DOCUMENT_TEMPLATE_PATH from '@libs/filesharing/constants/openDocumen
 import PREDEFINED_EXTENSIONS, { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
 import GenerateFileResult from '@libs/filesharing/types/generateFileResult';
 import buildFilenameWithExtension from '@libs/filesharing/utils/buildFilenameWithExtension';
+import TEXT_EXTENSIONS from '@libs/filesharing/types/textExtensions';
 
 const generateFile = async (
   fileType: TAvailableFileTypes | '',
@@ -90,7 +91,7 @@ const generateFile = async (
         const pptx = new PptxGenJS();
         pptx.title = basename;
         const pptxBlob = await pptx.write({ outputType: 'blob' });
-        file = new File([pptxBlob], `${basename}.${extension}`, {
+        file = new File([pptxBlob as Blob], `${basename}.${extension}`, {
           type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         });
       } else {
@@ -104,7 +105,7 @@ const generateFile = async (
     }
 
     case AVAILABLE_FILE_TYPES.textFile: {
-      extension = OnlyOfficeDocumentTypes.TXT;
+      extension = TEXT_EXTENSIONS.TXT;
       if (onlyReturnExtension) return { success: true, extension };
       const textBlob = new Blob([''], { type: RequestResponseContentType.TEXT_PLAIN });
       file = new File([textBlob], `${basename}.${extension}`, { type: textBlob.type });

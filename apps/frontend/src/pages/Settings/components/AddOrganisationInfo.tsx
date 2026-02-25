@@ -23,7 +23,7 @@ import { Path, UseFormReturn } from 'react-hook-form';
 import { AccordionContent } from '@/components/ui/AccordionSH';
 import FormField from '@/components/shared/FormField';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 type AddOrganisationInfoProps = {
   form: UseFormReturn<GlobalSettingsFormValues>;
@@ -37,7 +37,7 @@ type FieldDef = {
 
 const AddOrganisationInfo: React.FC<AddOrganisationInfoProps> = ({ form }) => {
   const { t } = useTranslation();
-  const { isGeneric } = useDeploymentTarget();
+  const { isBusiness } = useOrganizationType();
 
   const fields: FieldDef[] = [
     {
@@ -71,7 +71,7 @@ const AddOrganisationInfo: React.FC<AddOrganisationInfoProps> = ({ form }) => {
     <AccordionContent className="space-y-2 px-1">
       <p>
         {t(
-          isGeneric
+          isBusiness
             ? 'settings.globalSettings.organisationInfo.descriptionGeneric'
             : 'settings.globalSettings.organisationInfo.descriptionSchool',
         )}

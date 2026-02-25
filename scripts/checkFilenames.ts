@@ -22,7 +22,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 
 const IGNORED_EXTENSIONS = ['.spec.ts', '.mock.ts', '.d.ts'];
-const IGNORED_FILENAMES = ['vite.config.mts'];
+const IGNORED_FILENAMES = ['vite.config.mts', 'vite.config.ts'];
 const IGNORED_PREFIXES = ['migration'];
 const ALLOWED_SUFFIXES = ['decorator', 'schema', 'module', 'service', 'enum'];
 
@@ -57,7 +57,9 @@ function checkFile(filePath: string): boolean {
   }
 
   const content = fs.readFileSync(filePath, 'utf-8');
-  const match = content.match(/export default\s+(?:abstract\s+)?(?:function|class|const|let|var|interface)?\s*(\w+)/);
+  const match = content.match(
+    /export default\s+(?:abstract\s+)?(?:(?:function|class|const|let|var|interface)\s+)?(\w+)/,
+  );
   if (!match) {
     return true;
   }

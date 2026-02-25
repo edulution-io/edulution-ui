@@ -29,7 +29,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import LinuxmusterVersionResponse from '@libs/lmnApi/types/linuxmusterVersionResponse';
 
-const { USER, USERS_QUOTA, AUTH } = LMN_API_EDU_API_ENDPOINTS;
+const { USER, USERS, USERS_QUOTA, AUTH } = LMN_API_EDU_API_ENDPOINTS;
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -46,9 +46,10 @@ interface UseLmnApiStore {
   setLmnApiToken: () => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<LmnUserInfo | null>;
+  fetchUsers: (usernames: string[]) => Promise<LmnUserInfo[]>;
   fetchUsersQuota: (name: string) => Promise<void>;
   patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
-  getLmnVersion: () => Promise<void>;
+  getLmnVersion: (isSilent?: boolean) => Promise<void>;
   reset: () => void;
 }
 
@@ -123,6 +124,27 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
+      fetchUsers: async (usernames): Promise<LmnUserInfo[]> => {
+        if (usernames.length === 0) return [];
+
+        set({ isFetchUserLoading: true, error: null });
+        try {
+          const response = await eduApi.post<LmnUserInfo[]>(
+            USERS,
+            { usernames },
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
+            },
+          );
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return [];
+        } finally {
+          set({ isFetchUserLoading: false });
+        }
+      },
+
       fetchUsersQuota: async (username): Promise<void> => {
         set({ isFetchUserLoading: true, error: null });
         try {
@@ -155,7 +177,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      getLmnVersion: async (): Promise<void> => {
+      getLmnVersion: async (isSilent): Promise<void> => {
         set({ isGetVersionLoading: true, error: null });
         try {
           const { data } = await eduApi.get<LinuxmusterVersionResponse>(
@@ -166,7 +188,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
           );
           set({ lmnVersions: data });
         } catch (error) {
-          handleApiError(error, set);
+          if (!isSilent) {
+            handleApiError(error, set);
+          }
         } finally {
           set({ isGetVersionLoading: false });
         }

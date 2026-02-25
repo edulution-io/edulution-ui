@@ -229,13 +229,7 @@ class FilesharingService {
       username,
       async (user: string, uploadPath: string, file: CustomFile, name: string): Promise<WebdavStatusResponse> => {
         const readableStream = Readable.from(file.buffer);
-        return this.webDavService.uploadFile(
-          user,
-          `${webdavShare.url}${uploadPath}/${name}`,
-          readableStream,
-          share,
-          file.mimetype,
-        );
+        return this.webDavService.uploadFile(user, `${uploadPath}/${name}`, readableStream, share, file.mimetype);
       },
     );
   }
@@ -286,10 +280,19 @@ class FilesharingService {
     }
   }
 
-  async listOwnPublicShares(username: string): Promise<PublicShareResponseDto> {
+  async listPublicShares(currentUser: JwtUser): Promise<PublicShareResponseDto> {
+    const username = currentUser.preferred_username;
+    const userGroups = currentUser.ldapGroups ?? [];
+
     const publicShares = await this.shareModel
-      .find({ 'creator.username': username })
-      .sort({ validUntil: 1 })
+      .find({
+        $or: [
+          { 'creator.username': username },
+          { 'invitedAttendees.username': username },
+          { 'invitedGroups.path': { $in: userGroups } },
+        ],
+      })
+      .sort({ createdAt: -1 })
       .lean()
       .exec();
 
@@ -299,9 +302,12 @@ class FilesharingService {
           ? PUBLIC_SHARE_LINK_SCOPE.RESTRICTED
           : PUBLIC_SHARE_LINK_SCOPE.PUBLIC;
 
+      const isOwner = share.creator.username === username;
+
       return {
-        ...(share as Omit<PublicShareDto, 'scope'>),
+        ...(share as Omit<PublicShareDto, 'scope' | 'isOwner'>),
         scope,
+        isOwner,
       };
     });
 
@@ -336,9 +342,9 @@ class FilesharingService {
       );
     }
 
-    const { invitedAttendees, invitedGroups } = publicShare;
+    const { invitedAttendees, invitedGroups, creator } = publicShare;
 
-    const access = checkFileAccessRights(invitedAttendees, invitedGroups, jwtUser);
+    const access = checkFileAccessRights(invitedAttendees, invitedGroups, jwtUser, creator.username);
 
     if (access === FILE_ACCESS_RESULT.DENIED || access === FILE_ACCESS_RESULT.NO_TOKEN) {
       throw new CustomHttpException(
@@ -349,8 +355,8 @@ class FilesharingService {
     }
 
     const pathWithoutWebdav = getPathWithoutWebdav(publicShare.filePath, webdavShare.pathname);
-    const webDavUrl = new URL(encodeURI(pathWithoutWebdav), webdavShare.url).href;
-    const client = await this.webDavService.getClient(publicShare.creator.username, share);
+    const webDavUrl = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
+    const client = await this.webDavService.getClient(creator.username, share);
 
     const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
 
@@ -378,15 +384,16 @@ class FilesharingService {
 
     const requiresPassword = !!shareDocument.password?.trim();
 
-    const { invitedAttendees, invitedGroups, createdAt, ...publicShareBase } = shareDocument;
+    const { invitedAttendees, invitedGroups, createdAt, creator, ...publicShareBase } = shareDocument;
 
     const scope =
       invitedAttendees.length > 0 || invitedGroups.length > 0
         ? PUBLIC_SHARE_LINK_SCOPE.RESTRICTED
         : PUBLIC_SHARE_LINK_SCOPE.PUBLIC;
 
-    switch (checkFileAccessRights(invitedAttendees, invitedGroups, jwtUser)) {
+    switch (checkFileAccessRights(invitedAttendees, invitedGroups, jwtUser, creator.username)) {
       case FILE_ACCESS_RESULT.PUBLIC:
+      case FILE_ACCESS_RESULT.CREATOR_MATCH:
       case FILE_ACCESS_RESULT.USER_MATCH:
       case FILE_ACCESS_RESULT.GROUP_MATCH:
         return {
@@ -402,6 +409,7 @@ class FilesharingService {
             password: '',
             scope,
             createdAt,
+            creator,
           },
         };
 

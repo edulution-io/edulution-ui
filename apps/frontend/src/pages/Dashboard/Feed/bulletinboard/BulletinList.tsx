@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { NavLink } from 'react-router-dom';
@@ -42,7 +42,7 @@ const BulletinList = (props: BulletinListProps) => {
         <NavLink
           to={`/${APPS.BULLETIN_BOARD}/${bulletin.id}`}
           key={bulletin.id}
-          className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
+          className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-accent"
         >
           <div className="flex w-full flex-col gap-1">
             <span className="text-sm font-semibold">{bulletin.title}</span>

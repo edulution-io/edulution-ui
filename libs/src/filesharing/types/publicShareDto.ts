@@ -35,6 +35,7 @@ interface PublicShareDto {
   invitedAttendees: AttendeeDto[];
   invitedGroups: MultipleSelectorGroup[];
   scope: PublicShareLinkScopeType;
+  isOwner?: boolean;
 }
 
 export default PublicShareDto;

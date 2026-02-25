@@ -18,8 +18,9 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
-import { MdClose } from 'react-icons/md';
+import { cn } from '@edulution-io/ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface CloseButtonProps {
@@ -28,7 +29,7 @@ interface CloseButtonProps {
 }
 
 const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
-  const closeClasses = cn('bg-red-800 hover:bg-red-700', className);
+  const closeClasses = cn('bg-ciRed hover:bg-ciRed/75 text-white', className);
 
   return (
     <WindowControlBaseButton
@@ -36,7 +37,7 @@ const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
       onClick={handleClose}
       className={closeClasses}
     >
-      <MdClose />
+      <FontAwesomeIcon icon={faClose} />
     </WindowControlBaseButton>
   );
 };

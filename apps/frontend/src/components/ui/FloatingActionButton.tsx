@@ -18,23 +18,32 @@
  */
 
 import React from 'react';
-import { Button } from '@/components/shared/Button';
-import { IconContext } from 'react-icons';
+import { Button, cn } from '@edulution-io/ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
+import useFontAwesomeHoverAnimation from '@/hooks/useFontAwesomeHoverAnimation';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
-  icon: Icon,
+  icon,
   text,
   onClick,
   type = 'button',
   variant = 'button',
   dropdownItems = [],
-  iconContextValue = {},
 }) => {
   const { t } = useTranslation();
+  const { animate, triggerAnimation } = useFontAwesomeHoverAnimation();
+
+  const renderIcon = () => (
+    <FontAwesomeIcon
+      icon={icon}
+      className="m-5 h-5 w-5"
+      bounce={animate}
+    />
+  );
 
   const renderContent = () => {
     if (variant === 'dropdown' && dropdownItems.length > 0) {
@@ -45,10 +54,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
               type="button"
               variant="btn-hexagon"
               hexagonIconAltText={t('common.showOptions')}
+              onMouseEnter={triggerAnimation}
             >
-              <IconContext.Provider value={iconContextValue}>
-                <Icon />
-              </IconContext.Provider>
+              {renderIcon()}
             </Button>
           }
           items={dropdownItems}
@@ -62,18 +70,20 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
         variant="btn-hexagon"
         onClick={onClick}
         hexagonIconAltText={text}
+        onMouseEnter={triggerAnimation}
       >
-        <IconContext.Provider value={iconContextValue}>
-          <Icon />
-        </IconContext.Provider>
+        {renderIcon()}
       </Button>
     );
   };
 
   return (
-    <div className="flex flex-col items-center justify-center pr-1 md:pt-1">
+    <div className="group relative mt-1 flex flex-col items-center justify-center">
       {renderContent()}
-      <span className={FLOATING_BUTTON_CLASS_NAME}>{text}</span>
+      <span className={cn(FLOATING_BUTTON_CLASS_NAME, 'group-hover:invisible')}>{text}</span>
+      <span className="invisible absolute bottom-[-1px] left-1/2 z-10 w-max -translate-x-1/2 whitespace-nowrap rounded-sm bg-foreground px-1.5 py-px text-center text-background group-hover:visible">
+        {text}
+      </span>
     </div>
   );
 };

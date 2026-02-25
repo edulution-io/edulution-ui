@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ANSWERED_SURVEYS_PAGE,
@@ -24,54 +25,50 @@ import {
   CREATOR_SURVEYS_PAGE,
   OPEN_SURVEYS_PAGE,
 } from '@libs/survey/constants/surveys-endpoint';
-import { PlusIcon, SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, UserIcon } from '@/assets/icons';
+import { SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysViewOwnIcon } from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveysPageView from '@libs/survey/types/api/page-view';
+import { faAdd } from '@fortawesome/free-solid-svg-icons';
 
-const useSurveysPageMenu = () => {
+const useSurveysPageMenu = (): MenuBarEntry => {
   const navigate = useNavigate();
 
-  const menuBar = (): MenuBarEntry => ({
-    title: 'surveys.title',
-    icon: SurveysMenuIcon,
-    color: 'hover:bg-ciGreenToBlue',
-    appName: APPS.SURVEYS,
-    menuItems: [
-      {
-        id: SurveysPageView.OPEN,
-        label: 'surveys.view.open.menu',
-        icon: SurveysViewOpenIcon,
-        action: () => {
-          navigate(OPEN_SURVEYS_PAGE);
+  return useMemo(
+    () => ({
+      title: 'surveys.title',
+      icon: SurveysMenuIcon,
+      color: 'hover:bg-ciGreenToBlue',
+      appName: APPS.SURVEYS,
+      menuItems: [
+        {
+          id: SurveysPageView.OPEN,
+          label: 'surveys.view.open.menu',
+          icon: SurveysViewOpenIcon,
+          action: () => navigate(OPEN_SURVEYS_PAGE),
         },
-      },
-      {
-        id: SurveysPageView.ANSWERED,
-        label: 'surveys.view.answered.menu',
-        icon: SurveysViewAnsweredIcon,
-        action: () => {
-          navigate(ANSWERED_SURVEYS_PAGE);
+        {
+          id: SurveysPageView.ANSWERED,
+          label: 'surveys.view.answered.menu',
+          icon: SurveysViewAnsweredIcon,
+          action: () => navigate(ANSWERED_SURVEYS_PAGE),
         },
-      },
-      {
-        id: SurveysPageView.CREATED,
-        label: 'surveys.view.created.menu',
-        icon: UserIcon,
-        action: () => {
-          navigate(CREATED_SURVEYS_PAGE);
+        {
+          id: SurveysPageView.CREATED,
+          label: 'surveys.view.created.menu',
+          icon: SurveysViewOwnIcon,
+          action: () => navigate(CREATED_SURVEYS_PAGE),
         },
-      },
-      {
-        id: SurveysPageView.CREATOR,
-        label: 'surveys.view.editor.menu',
-        icon: PlusIcon,
-        action: () => {
-          navigate(CREATOR_SURVEYS_PAGE);
+        {
+          id: SurveysPageView.CREATOR,
+          label: 'surveys.view.editor.menu',
+          icon: faAdd,
+          action: () => navigate(CREATOR_SURVEYS_PAGE),
         },
-      },
-    ],
-  });
-  return menuBar();
+      ],
+    }),
+    [navigate],
+  );
 };
+
 export default useSurveysPageMenu;

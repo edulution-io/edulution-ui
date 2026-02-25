@@ -17,12 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const PUSH_NOTIFICATION_INTERRUPTION_LEVEL = {
+const PUSH_NOTIFICATION_INTERRUPTION_LEVEL = {
   ACTIVE: 'active',
   CRITICAL: 'critical',
   PASSIVE: 'passive',
   TIME_SENSITIVE: 'time-sensitive',
 } as const;
 
-export type PushNotificationInterruptionLevel =
-  (typeof PUSH_NOTIFICATION_INTERRUPTION_LEVEL)[keyof typeof PUSH_NOTIFICATION_INTERRUPTION_LEVEL];
+export default PUSH_NOTIFICATION_INTERRUPTION_LEVEL;

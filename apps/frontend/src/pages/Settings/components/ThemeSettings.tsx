@@ -25,7 +25,7 @@ import defaultValues from '@libs/global-settings/constants/defaultValues';
 import ThemeColors from '@libs/global-settings/types/themeColors';
 import ThemeColorPicker from '@/pages/Settings/GlobalSettings/components/ThemeColorPicker';
 import type { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import applyThemeColors from '@/utils/applyThemeColors';
 import getThemeWithDefaults from '@/utils/getThemeWithDefaults';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';

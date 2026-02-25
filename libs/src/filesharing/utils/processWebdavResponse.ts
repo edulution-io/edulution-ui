@@ -17,17 +17,28 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import WEBDAV_SHARE_TYPE from '../constants/webdavShareType';
 import { DirectoryFileDTO } from '../types/directoryFileDTO';
-import WebdavShareType from '../types/webdavShareType';
 
-const processWebdavResponse = (response: DirectoryFileDTO[], webdavShareType: WebdavShareType) => {
-  let data = response;
-  if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-    data = data.slice(1);
+const normalizeTrailingSlash = (path: string) => path.replace(/\/+$/, '');
+
+const isSelfReference = (filePath: string, currentPath: string): boolean => {
+  const normalizedFilePath = normalizeTrailingSlash(filePath);
+  const normalizedCurrentPath = normalizeTrailingSlash(currentPath);
+
+  if (!normalizedCurrentPath) return false;
+  if (normalizedFilePath === normalizedCurrentPath) return true;
+
+  if (normalizedFilePath.endsWith(normalizedCurrentPath)) {
+    const prefix = normalizedFilePath.slice(0, -normalizedCurrentPath.length);
+    return prefix.startsWith('/') && !prefix.slice(1).includes('/');
   }
-  data = data.sort((a, b) => a.filename.localeCompare(b.filename));
-  return data;
+
+  return false;
+};
+
+const processWebdavResponse = (response: DirectoryFileDTO[], currentPath: string) => {
+  const data = response.filter((file) => !isSelfReference(file.filePath, currentPath));
+  return data.sort((a, b) => a.filename.localeCompare(b.filename));
 };
 
 export default processWebdavResponse;

@@ -20,7 +20,7 @@
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { Position, Rnd } from 'react-rnd';
 import useMedia from '@/hooks/useMedia';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
@@ -31,7 +31,8 @@ import MinimizeButton from '@/components/structure/framing/ResizableWindow/Butto
 import ToggleMaximizeButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleMaximizeButton';
 import CloseButton from '@/components/structure/framing/ResizableWindow/Buttons/CloseButton';
 import RectangleSize from '@libs/ui/types/rectangleSize';
-import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMaximize } from '@fortawesome/free-solid-svg-icons';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 import { MOBILE_TOP_BAR_HEIGHT_PX } from '@libs/ui/constants/sidebar';
@@ -219,9 +220,9 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         });
         setCurrentPosition(position);
       }}
-      className={cn('bg-global overflow-hidden rounded-lg rounded-t-none shadow-lg', {
-        'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized && !isCurrentlySticky,
-        'rounded-none transition-transform active:transition-none': isMinimized,
+      className={cn('bg-global overflow-hidden shadow-lg', {
+        'rounded-xl': !isMaximized && !isMinimized && !isCurrentlySticky,
+        'rounded-lg transition-transform active:transition-none': isMinimized,
       })}
       bounds={`#${APP_LAYOUT_ID}`}
       disableDragging={disableDragging}
@@ -243,7 +244,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
             style={{ marginTop: MAXIMIZED_BAR_HEIGHT }}
             className="h-14 w-14 rounded-full bg-foreground p-2 opacity-0 group-hover:opacity-100"
           >
-            <HiOutlineCursorArrowRipple size={40} />
+            <FontAwesomeIcon icon={faMaximize} />
           </div>
         </div>
       )}
@@ -251,9 +252,9 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         role="button"
         tabIndex={0}
         style={{ height: isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : MAXIMIZED_BAR_HEIGHT }}
-        className={cn('sticky top-0 flex items-center justify-between bg-gray-900 text-background', {
+        className={cn('sticky top-0 flex items-center justify-between bg-accent', {
           'cursor-default': disableDragging,
-          'cursor-move hover:bg-gray-800': isMinimized && !isMobileView,
+          'cursor-move hover:bg-accent': isMinimized && !isMobileView,
         })}
       >
         <div className="drag-handle h-full w-[calc(100%-40px)] overflow-hidden truncate text-ellipsis">

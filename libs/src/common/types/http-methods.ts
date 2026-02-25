@@ -53,6 +53,7 @@ export enum RequestResponseContentType {
   APPLICATION_OCTET_STREAM = 'application/octet-stream',
   APPLICATION_GITHUB_RAW = 'application/vnd.github.v3.raw',
   TEXT_HTML = 'text/html',
+  IMAGE_WEBP = 'image/webp',
 }
 
 export const HTTP_HEADERS = {
@@ -62,9 +63,13 @@ export const HTTP_HEADERS = {
   Authorization: 'Authorization',
   XApiKey: 'x-api-key',
   CONNECTION_UID: 'Connection-Uid',
-  XForwaredFor: 'x-forwarded-for',
-  UserAgent: 'User-Agent',
+  XForwarededFor: 'x-forwarded-for',
+  UserAgent: 'user-agent',
   Depth: 'Depth',
+  CacheControl: 'Cache-Control',
+  ETag: 'ETag',
+  AssetSource: 'X-Asset-Source',
+  XForceCleanupCache: 'X-Force-Cleanup-Cache',
 } as const;
 
 export enum WebdavRequestDepth {

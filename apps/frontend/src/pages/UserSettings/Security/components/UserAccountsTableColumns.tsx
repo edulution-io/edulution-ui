@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { ColumnDef } from '@tanstack/react-table';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
@@ -26,6 +26,7 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLanguage from '@/hooks/useLanguage';
 import getDisplayName from '@/utils/getDisplayName';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import PasswordCell from './PasswordCell';
 
 const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
@@ -37,7 +38,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     },
     accessorFn: (row) => row.accountId,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         isFirstColumn
         row={row}
         className="max-w-0"
@@ -54,15 +55,16 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     cell: ({ row }) => {
       const { appConfigs } = useAppConfigsStore();
       const { language } = useLanguage();
+      const { isSchoolEnvironment } = useOrganizationType();
 
       const displayName = () => {
         const appConfig = appConfigs.find((appCfg) => appCfg.name === row.original.appName);
         if (!appConfig) return row.original.appName;
-        return getDisplayName(appConfig, language);
+        return getDisplayName(appConfig, language, isSchoolEnvironment);
       };
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={() => row.toggleSelected()}
           text={displayName()}
         />
@@ -77,7 +79,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     },
     accessorFn: (row) => row.accountUser,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         onClick={() => copyToClipboard(row.original.accountUser)}
         text={row.original.accountUser}
       />

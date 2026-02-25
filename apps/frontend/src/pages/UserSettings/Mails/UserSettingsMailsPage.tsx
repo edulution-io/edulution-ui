@@ -59,7 +59,7 @@ const UserSettingsMailsPage: React.FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const form = useForm();
   const { appConfigs } = useAppConfigsStore();
-  const isMailConfigured = findAppConfigByName(appConfigs, APPS.MAIL);
+  const isMailConfigured = !!findAppConfigByName(appConfigs, APPS.MAIL);
 
   useEffect(() => {
     if (isMailConfigured) {
@@ -79,6 +79,8 @@ const UserSettingsMailsPage: React.FC = () => {
       setIsDeleteDialogOpen(true);
     }
   };
+
+  if (!isMailConfigured) return null;
 
   const handleConfirmDelete = async () => {
     const syncJobsToDelete = Object.keys(selectedSyncJob);
@@ -133,53 +135,49 @@ const UserSettingsMailsPage: React.FC = () => {
       }}
     >
       <StateLoader isLoading={isEditSyncJobLoading} />
-      {isMailConfigured ? (
-        <>
-          <SectionAccordion defaultOpenAll>
-            <SectionAccordionItem
-              id="mailImporter"
-              label={t('mail.importer.title')}
-            >
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <DropdownSelect
-                    options={externalMailProviderConfig}
-                    selectedVal={t(option)}
-                    handleChange={setOption}
-                    classname="md:w-1/3"
-                    placeholder={t('common.loading')}
-                  />
-                  <Form {...form}>
-                    <form
-                      onSubmit={form.handleSubmit(handleCreateSyncJob)}
-                      className="space-y-4"
-                    >
-                      {renderFormField('email', t('mail.importer.mailAddress'))}
-                      {renderFormField('password', t('common.password'), 'password')}
-                    </form>
-                  </Form>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="text-base font-semibold">{t('mail.importer.syncJobsTable')}</h4>
-                  <MailImporterTable />
-                </div>
+      <>
+        <SectionAccordion defaultOpenAll>
+          <SectionAccordionItem
+            id="mailImporter"
+            label={t('mail.importer.title')}
+          >
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <DropdownSelect
+                  options={externalMailProviderConfig}
+                  selectedVal={t(option)}
+                  handleChange={setOption}
+                  classname="md:w-1/3"
+                  placeholder={t('common.loading')}
+                />
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(handleCreateSyncJob)}
+                    className="space-y-4"
+                  >
+                    {renderFormField('email', t('mail.importer.mailAddress'))}
+                    {renderFormField('password', t('common.password'), 'password')}
+                  </form>
+                </Form>
               </div>
-            </SectionAccordionItem>
-          </SectionAccordion>
 
-          <FloatingButtonsBar config={config} />
-          <DeleteMailSyncJobsDialog
-            isOpen={isDeleteDialogOpen}
-            onOpenChange={setIsDeleteDialogOpen}
-            syncJobIds={Object.keys(selectedSyncJob)}
-            onConfirmDelete={handleConfirmDelete}
-            isLoading={isEditSyncJobLoading}
-          />
-        </>
-      ) : (
-        <p>{t('mail.importer.noMailConfigured')}</p>
-      )}
+              <div className="space-y-2">
+                <h4 className="text-base font-semibold">{t('mail.importer.syncJobsTable')}</h4>
+                <MailImporterTable />
+              </div>
+            </div>
+          </SectionAccordionItem>
+        </SectionAccordion>
+
+        <FloatingButtonsBar config={config} />
+        <DeleteMailSyncJobsDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          syncJobIds={Object.keys(selectedSyncJob)}
+          onConfirmDelete={handleConfirmDelete}
+          isLoading={isEditSyncJobLoading}
+        />
+      </>
     </PageLayout>
   );
 };

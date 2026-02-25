@@ -34,6 +34,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
+import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 
 const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { t } = useTranslation();
@@ -70,7 +71,11 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   }, [member]);
 
   const isVeyonEnabled = useMemo(() => {
-    const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
+    const veyonConfigs = getExtendedOptionsValue<VeyonProxyItem[]>(
+      appConfigs,
+      APPS.CLASS_MANAGEMENT,
+      ExtendedOptionKeys.VEYON_PROXYS,
+    );
     return Array.isArray(veyonConfigs) && veyonConfigs.length > 0;
   }, [appConfigs]);
 

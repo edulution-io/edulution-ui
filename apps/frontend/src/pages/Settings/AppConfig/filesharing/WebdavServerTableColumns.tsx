@@ -22,13 +22,13 @@ import { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
@@ -41,7 +41,7 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
       translationId: 'common.select',
     },
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         row={row}
         className="max-w-0"
       />
@@ -61,7 +61,7 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
       const badgeClass = row.original.status === WEBDAV_SHARE_STATUS.UP ? 'bg-green-500' : 'bg-red-500';
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={() => row.toggleSelected()}
           icon={<div className={cn('h-2 w-2 rounded-full', badgeClass)} />}
         />
@@ -77,7 +77,7 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     accessorFn: (row) => row.displayName,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={row.original.displayName}
         onClick={() => row.toggleSelected()}
       />
@@ -92,7 +92,7 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     accessorFn: (row) => row.url,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={row.original.url}
         onClick={() => row.toggleSelected()}
       />
@@ -109,7 +109,7 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
     cell: ({ row }) => {
       const { t } = useTranslation();
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={t(`webdavShare.type.${row.original.type}`)}
           onClick={() => row.toggleSelected()}
         />

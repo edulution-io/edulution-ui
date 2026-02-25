@@ -18,18 +18,23 @@
  */
 
 import React from 'react';
-import { FaWifi } from 'react-icons/fa';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { useTranslation } from 'react-i18next';
-import { FiPrinter } from 'react-icons/fi';
-import { IconType } from 'react-icons';
-import { MdSchool } from 'react-icons/md';
-import { FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
-import { TbFilterCode } from 'react-icons/tb';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faRightToBracket,
+  faEarthAmericas,
+  faEye,
+  faFilter,
+  faKey,
+  faPrint,
+  faGraduationCap,
+  faWifi,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import cn from '@libs/common/utils/className';
-import { PiEyeFill, PiKey } from 'react-icons/pi';
+import { cn } from '@edulution-io/ui-kit';
 import { useParams } from 'react-router-dom';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
@@ -48,7 +53,7 @@ interface UserCardButtonBarProps {
 }
 
 interface UserCardButton {
-  icon: IconType;
+  icon: IconDefinition;
   value: boolean | null;
   title: ClassmgmtOptionsType;
   variant: 'button' | 'dropdown';
@@ -114,18 +119,18 @@ const UserCardButtonBar = ({
 
   const userCardButtons: UserCardButton[] = [
     {
-      icon: FaWifi,
+      icon: faWifi,
       value: wifi,
       title: CLASSMGMT_OPTIONS.WIFI,
       variant: 'button',
       disabled,
     },
-    { icon: TbFilterCode, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER, variant: 'button', disabled },
-    { icon: FaEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET, variant: 'button', disabled },
-    { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING, variant: 'button', disabled },
-    { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE, variant: 'button', disabled },
+    { icon: faFilter, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER, variant: 'button', disabled },
+    { icon: faEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET, variant: 'button', disabled },
+    { icon: faPrint, value: printing, title: CLASSMGMT_OPTIONS.PRINTING, variant: 'button', disabled },
+    { icon: faGraduationCap, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE, variant: 'button', disabled },
     {
-      icon: PiEyeFill,
+      icon: faEye,
       value: null,
       title: CLASSMGMT_OPTIONS.VEYON,
       variant: 'dropdown',
@@ -134,7 +139,7 @@ const UserCardButtonBar = ({
     },
     isTeacherInSameClass
       ? {
-          icon: PiKey,
+          icon: faKey,
           value: null,
           title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS,
           variant: 'button',
@@ -142,7 +147,7 @@ const UserCardButtonBar = ({
           disabled,
         }
       : {
-          icon: FaArrowRightToBracket,
+          icon: faRightToBracket,
           value: null,
           title: CLASSMGMT_OPTIONS.JOINCLASS,
           variant: 'button',
@@ -168,21 +173,21 @@ const UserCardButtonBar = ({
       >
         <button
           type="button"
-          className={cn(button.disabled && 'cursor-not-allowed', 'relative p-2')}
+          className={cn(button.disabled && 'cursor-not-allowed', 'relative')}
           onClick={(e) => onButtonClick(e, button)}
           disabled={button.disabled}
         >
-          <button.icon
+          <FontAwesomeIcon
+            icon={button.icon}
             className={cn(
-              'text-lg',
-              button.disabled && 'text-ciDarkGrey',
+              button.disabled && 'text-ciGrey dark:text-ciDarkGrey',
               !button.disabled && button.value !== null && 'text-ciGreen',
               !button.disabled && button.value === false && 'text-ciRed',
             )}
           />
           <div
             className={cn(
-              'absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background ',
+              'absolute -right-[5px] top-1/2 hidden -translate-y-1/2 items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 py-1 text-white',
               !button.disabled && 'group-hover:flex',
             )}
           >
@@ -199,13 +204,16 @@ const UserCardButtonBar = ({
           menuContentClassName="z-[600]"
           disabled={!isVeyonButtonEnabled}
           trigger={
-            <div className={cn('relative p-2', !isVeyonButtonEnabled && 'cursor-not-allowed')}>
-              <button.icon
-                className={cn('text-lg', veyonIsActive && !button.disabled ? button.defaultColor : 'text-ciDarkGrey')}
+            <div className={cn('relative', !isVeyonButtonEnabled && 'cursor-not-allowed')}>
+              <FontAwesomeIcon
+                icon={button.icon}
+                className={cn(
+                  veyonIsActive && !button.disabled ? button.defaultColor : 'text-ciGrey dark:text-ciDarkGrey',
+                )}
               />
 
               {isVeyonButtonEnabled && (
-                <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
+                <div className="absolute -right-[5px] top-1/2 hidden -translate-y-1/2 items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 py-1 text-background group-hover:flex">
                   {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
                 </div>
               )}

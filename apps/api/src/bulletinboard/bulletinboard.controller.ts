@@ -32,9 +32,12 @@ import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.BULLETIN_BOARD)
 @Controller(APPS.BULLETIN_BOARD)
 class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
@@ -70,7 +73,10 @@ class BulletinBoardController {
   }
 
   @Get('attachments/:filename')
-  serveBulletinAttachment(@Param('filename') filename: string, @Res() res: Response) {
+  serveBulletinAttachment(
+    @Param('filename', new ValidatePathPipe(BULLETIN_TEMP_ATTACHMENTS_PATH)) filename: string,
+    @Res() res: Response,
+  ) {
     return this.bulletinBoardService.serveBulletinAttachmentIfExists(filename, res);
   }
 
@@ -80,6 +86,7 @@ class BulletinBoardController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        BULLETIN_TEMP_ATTACHMENTS_PATH,
         () => BULLETIN_TEMP_ATTACHMENTS_PATH,
         true,
         (_req, file) => addUuidToFileName(file.originalname, randomUUID()),

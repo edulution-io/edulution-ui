@@ -18,9 +18,9 @@
  */
 
 import React from 'react';
-import { MdOutlineBackspace } from 'react-icons/md';
-import cn from '@libs/common/utils/className';
-import { Button } from '../shared/Button';
+import { cn, Button } from '@edulution-io/ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBackspace } from '@fortawesome/free-solid-svg-icons';
 
 interface NumberPadProps {
   onPress: (digit: string) => void;
@@ -56,7 +56,7 @@ const NumberPad: React.FC<NumberPadProps> = ({ onPress, onClear, variant = 'defa
         )}
         onClick={onClear}
       >
-        <MdOutlineBackspace />
+        <FontAwesomeIcon icon={faBackspace} />
       </Button>
     </div>
   );

@@ -17,17 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Model } from 'mongoose';
 import { Response } from 'express';
+import { Types, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
-import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
+import surveyTemplatesMigrationsList from './migrations/surveyTemplatesMigrationsList';
 import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
@@ -45,14 +46,27 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, name, isActive = true } = surveyTemplate;
-    try {
-      const templateName = name || template.formula.title;
-      return await this.surveyTemplateModel.findOneAndUpdate(
-        { name: templateName },
-        { template, isActive, name: templateName },
-        { new: true, upsert: !name },
+    const { id, template, name: templateName, isActive = true } = surveyTemplate;
+    const trimmedTemplateName = templateName?.trim();
+    const name = trimmedTemplateName || template.formula.title.trim();
+    if (!name) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        SurveysTemplateService.name,
       );
+    }
+    try {
+      if (!id) {
+        return await this.surveyTemplateModel.create({
+          template,
+          name,
+          isActive,
+          isDefaultTemplate: false,
+        });
+      }
+      return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
@@ -65,15 +79,15 @@ class SurveysTemplateService implements OnModuleInit {
 
   async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
-    const documents = await this.surveyTemplateModel.find(
-      getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
-    );
+    const documents = await this.surveyTemplateModel
+      .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true })
+      .exec();
     return res.status(HttpStatus.OK).json(documents);
   }
 
-  async setIsTemplateActive(name: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
-    return this.surveyTemplateModel.findOneAndUpdate(
-      { name },
+  async setIsTemplateActive(id: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
+    return this.surveyTemplateModel.findByIdAndUpdate(
+      id,
       { isActive },
       {
         new: true,
@@ -82,9 +96,15 @@ class SurveysTemplateService implements OnModuleInit {
     );
   }
 
-  async deleteTemplate(name: string): Promise<void> {
+  async deleteTemplate(id: string): Promise<void> {
     try {
-      await this.surveyTemplateModel.deleteOne({ name });
+      const mongoId = new Types.ObjectId(id);
+      const defaultTemplate = await this.surveyTemplateModel.findOne({ _id: mongoId, isDefaultTemplate: true });
+      if (defaultTemplate) {
+        await this.surveyTemplateModel.updateOne({ _id: mongoId }, { isActive: false });
+      } else {
+        await this.surveyTemplateModel.deleteOne({ _id: mongoId });
+      }
     } catch {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_DELETION_FAILED,

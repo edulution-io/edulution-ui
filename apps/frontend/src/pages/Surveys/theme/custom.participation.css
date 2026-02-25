@@ -11,7 +11,7 @@
     white-space: pre-wrap;
   }
   .sd-container-modern__title {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--overlay-transparent);
     border-bottom: 1px solid var(--ring);
   }
   .sd-header__text .sd-title .sv-string-viewer {
@@ -22,7 +22,7 @@
   .sd-header__text .sd-description .sv-string-viewer {
     font-size: 16pt;
     line-height: 16pt;
-    color: var(--muted-foreground);
+    color: var(--accent-foreground);
   }
 
   .sd-container-modern {
@@ -36,7 +36,7 @@
   .sd-body.sd-body--empty,
   .sd-body.sd-completedpage {
     font-size: 16pt;
-    color: var(--primary-foreground) !important;
+    color: var(--input) !important;
   }
 
   .sd-page {
@@ -81,6 +81,10 @@
     .sd-navigation__complete-btn {
       color: var(--primary-foreground);
     }
+  }
+
+  .sd-matrix__table thead tr td:first-child:empty {
+    background-color: transparent;
   }
 }
 

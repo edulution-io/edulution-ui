@@ -19,10 +19,10 @@
 
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInterval } from 'usehooks-ts';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-interval';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import APPS from '@libs/appconfig/constants/apps';
@@ -33,17 +33,20 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
-import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
 import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
 import { toast } from 'sonner';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
+import useNotificationStore from '@/store/useNotificationStore';
 
 const useNotifications = () => {
   const { t } = useTranslation();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
+  const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsAppActive(APPS.CONFERENCES);
@@ -55,6 +58,8 @@ const useNotifications = () => {
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
   const { addRoomHistoryEntry } = useTLDRawHistoryStore();
+  const { fileOperationProgress } = useFileSharingStore();
+  const { fetchUnreadCount, fetchNotifications } = useNotificationStore();
 
   useFileOperationProgress();
 
@@ -62,7 +67,7 @@ const useNotifications = () => {
 
   useFileDownloadProgressToast();
 
-  useFileOperationToast();
+  useFileOperationProgressToast(fileOperationProgress);
 
   useSseHeartbeatMonitor();
 
@@ -83,14 +88,38 @@ const useNotifications = () => {
       if (isConferenceAppActivated) {
         void getConferences();
       }
-    }
-  }, [isAuthReady, isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 
-  useInterval(() => {
-    if (isAuthReady && isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
+      void fetchUnreadCount();
     }
-  }, FEED_PULL_TIME_INTERVAL_SLOW);
+  }, [
+    isAuthReady,
+    isMailsAppActivated,
+    isSuperAdmin,
+    isSurveysAppActivated,
+    isConferenceAppActivated,
+    getMails,
+    updateOpenSurveys,
+    getConferences,
+    fetchUnreadCount,
+  ]);
+
+  const handleNewMail = (e: MessageEvent<string>) => {
+    const notification = JSON.parse(e.data) as MailNewMailNotificationDto;
+    void getMails();
+    toast.info(t('mail.newMail', { count: notification.newMailCount }));
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_NEW_MAIL, handleNewMail, {
+    enabled: isMailsAppActivated && !isSuperAdmin,
+  });
+
+  const handleMailFlagsChanged = () => {
+    void getMails();
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_FLAGS_CHANGED, handleMailFlagsChanged, {
+    enabled: isMailsAppActivated && !isSuperAdmin,
+  });
 
   const handleMailThemeUpdated = () => {
     toast.info(t('mail.themeUpdated.generic'), {
@@ -98,7 +127,7 @@ const useNotifications = () => {
         label: t('common.refreshPage'),
         onClick: () => window.location.reload(),
       },
-      duration: undefined,
+      duration: Infinity,
     });
   };
 
@@ -180,6 +209,26 @@ const useNotifications = () => {
 
   useSseEventListener(SSE_MESSAGE_TYPE.TLDRAW_SYNC_ROOM_LOG_MESSAGE, handleNewHistoryLog, {
     enabled: isWhiteboardActive,
+  });
+
+  const handleAppConfigUpdated = () => {
+    void getAppConfigs();
+    void getPublicAppConfigs();
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.APPCONFIG_UPDATED, handleAppConfigUpdated, {
+    enabled: isAuthReady,
+  });
+
+  const handleNotificationInboxUpdated = () => {
+    void fetchUnreadCount();
+    if (useNotificationStore.getState().isSheetOpen) {
+      void fetchNotifications();
+    }
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED, handleNotificationInboxUpdated, {
+    enabled: isAuthReady,
   });
 };
 

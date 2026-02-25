@@ -18,10 +18,10 @@
  */
 
 import React, { useEffect } from 'react';
+import LearningManagementPage from '@/pages/LearningManagement/LearningManagementPage';
 import MailPage from '@/pages/Mail/MailPage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
-import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import APPS from '@libs/appconfig/constants/apps';
@@ -62,10 +62,10 @@ const NativeFrameManager = () => {
     .filter((appConfig) => isActiveNativeFrame(appConfig, loadedEmbeddedFrames))
     .map((appConfig) => {
       switch (appConfig.name) {
+        case APPS.LEARNING_MANAGEMENT:
+          return <LearningManagementPage key={appConfig.name} />;
         case APPS.MAIL:
           return <MailPage key={appConfig.name} />;
-        case APPS.LINUXMUSTER:
-          return <LinuxmusterPage key={appConfig.name} />;
         default:
           return null;
       }

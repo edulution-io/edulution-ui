@@ -46,8 +46,10 @@ import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
+import EditAppConfigIconDialog from './EditAppConfigIconDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
 import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
@@ -65,6 +67,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   const { searchGroups } = useGroupStore();
   const { postExternalMailProviderConfig } = useMailsStore();
   const { language } = useLanguage();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
     mode: 'onSubmit',
@@ -169,6 +172,17 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   };
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
+
+  const handleIconChange = async (newIcon: string) => {
+    if (!matchingConfig) return;
+
+    const newConfig = {
+      ...matchingConfig,
+      icon: newIcon,
+    };
+
+    await updateAppConfig(newConfig);
+  };
 
   const extendedOptionsToRender = APP_CONFIG_OPTIONS.find((appConfigOption) => {
     if (matchingConfig?.appType === APP_INTEGRATION_VARIANT.NATIVE) return appConfigOption.id === settingLocation;
@@ -304,10 +318,11 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
 
   return (
     <PageLayout
+      isAppIconEditable
       nativeAppHeader={
         matchingConfig
           ? {
-              title: getDisplayName(matchingConfig, language),
+              title: getDisplayName(matchingConfig, language, isSchoolEnvironment),
               iconSrc: matchingConfig.icon,
               description: getHeaderDescription(matchingConfig),
             }
@@ -322,9 +337,17 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       />
       <DeleteAppConfigDialog
         appName={settingLocation}
-        appDisplayName={matchingConfig ? getDisplayName(matchingConfig, language) : settingLocation}
+        appDisplayName={
+          matchingConfig ? getDisplayName(matchingConfig, language, isSchoolEnvironment) : settingLocation
+        }
         handleDeleteSettingsItem={handleDeleteSettingsItem}
       />
+      {matchingConfig && (
+        <EditAppConfigIconDialog
+          currentIcon={matchingConfig.icon}
+          onIconChange={handleIconChange}
+        />
+      )}
       {matchingConfig?.name === APPS.FILE_SHARING && <DeleteWebdavServerWarningDialog />}
     </PageLayout>
   );

@@ -44,16 +44,18 @@ import parseSophomorixMailQuota from '@libs/lmnApi/utils/parseSophomorixMailQuot
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import DeleteGroupDialog from './DeleteGroupDialog';
 
 interface GroupDialogProps {
-  item: GroupColumn;
+  item: Omit<GroupColumn, 'icon'>;
   trigger?: React.ReactNode;
 }
 
 const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const { setOpenDialogType, openDialogType, userGroupToEdit, setUserGroupToEdit, member } = useLessonStore();
   const { user } = useLmnApiStore();
+  const { isSuperAdmin } = useLdapGroups();
   const [isFetching, setIsFetching] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { t } = useTranslation();
@@ -239,6 +241,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
   const isDialogLoading = isProjectLoading || isSchoolClassLoading || isSessionLoading;
+  const isFormDisabled = (item.name === UserGroups.Classes || !item.updateFunction) && !isSuperAdmin;
   const getDialogBody = () => {
     if (isDialogLoading || isFetching) return <CircleLoader className="mx-auto" />;
     return (
@@ -246,7 +249,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
         form={form}
         type={item.name}
         isCreateMode={!userGroupToEdit}
-        disabled={item.name === UserGroups.Classes || !item.updateFunction}
+        disabled={isFormDisabled}
       />
     );
   };
@@ -266,13 +269,13 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     <form onSubmit={handleFormSubmit}>
       <DialogFooterButtons
         handleClose={onClose}
-        handleSubmit={item.createFunction ? () => {} : undefined}
+        handleSubmit={!isFormDisabled && (item.createFunction || item.updateFunction) ? () => {} : undefined}
         handleDelete={item.createFunction && userGroupToEdit ? onDeleteButton : undefined}
         submitButtonType="submit"
         disableSubmit={disableDialogButtons}
         disableCancel={disableDialogButtons}
         disableDelete={disableDialogButtons}
-        cancelButtonText={item.createFunction ? 'cancel' : 'common.close'}
+        cancelButtonText={!isFormDisabled && (item.createFunction || item.updateFunction) ? 'cancel' : 'common.close'}
         submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
       />
     </form>

@@ -8,6 +8,8 @@
   "previewImage": "Aperçu de l'image",
   "imprint": "Mentions légales",
   "public": "Publique",
+  "actions": "Actions",
+  "logo": "Logo",
   "bulletinboard": {
     "settings": "Paramètres",
     "noBulletinsToShow": "Il n'y a actuellement aucun message à afficher, il est préférable de passer à nouveau plus tard!",
@@ -26,6 +28,11 @@
     "activeUntilPlaceholder": "illimité",
     "appTitle": "Tableau d'affichage",
     "description": "Ici, vous trouverez vos messages actuels",
+    "view": "Affichage",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Ligne",
+    "viewTwoRows": "2 Lignes",
+    "viewThreeRows": "3 Lignes",
     "filterPlaceHolderText": "Rechercher des noms de catégorie",
     "sidebar": "Tableau d'affichage",
     "newCategorie": "Nouvelle catégorie",
@@ -53,6 +60,8 @@
     "confirmDelete_other": "Ces {{count}} messages devraient-ils vraiment être supprimés?",
     "rowsSelected": "{{selected}} depuis {{total}} messages sélectionnés",
     "rowSelected": "{{selected}} depuis {{total}} notification sélectionnée",
+    "item": "{{count}} message",
+    "items": "{{count}} messages",
     "cancel": "Annuler",
     "title": "titre",
     "content": "Contenu",
@@ -60,6 +69,7 @@
     "categoryName": "Nom de la catégorie",
     "bulletinUpdatedSuccessfully": "Message enregistré avec succès",
     "bulletinCreatedSuccessfully": "Créé avec succès",
+    "pushNotificationSentSuccessfully": "Notification push envoyée avec succès",
     "bulletinsDeletedSuccessfully": "Messages supprimé avec succès",
     "categoryCreatedSuccessfully": "Catégorie créée avec succès",
     "categoryUpdatedSuccessfully": "Catégorie mise à jour avec succès",
@@ -70,7 +80,8 @@
       "visibleByUsersAndGroups": "Cette catégorie avec ses messages est visible pour les utilisateurs et les groupes sur la page d'accueil",
       "visibleByUsersAndGroupsTitle": "Page d'accueil",
       "editableByUsersAndGroups": "Cette catégorie est éditable par les utilisateurs et les groupes de l'application Bulletin Board",
-      "editableByUsersAndGroupsTitle": "Gérer les messages"
+      "editableByUsersAndGroupsTitle": "Gérer les messages",
+      "accessGroupsOnlyHint": "Seuls les groupes d'accès peuvent être attribués."
     },
     "errors": {
       "categoryNotFound": "Catégorie introuvable",
@@ -85,13 +96,68 @@
       "unauthorizedDeleteCategory": "Aucune autorisation pour supprimer cette catégorie",
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
       "attachmentNotFound": "Pièce jointe introuvable",
-      "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
-    }
+      "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué",
+      "pushOnlyMissingFields": "Le titre et le message push sont requis pour le mode 'Push uniquement'"
+    },
+    "pushNotification": "Notification push",
+    "saveMode": "Type de publication",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin uniquement",
+      "pushOnly": "Push uniquement"
+    },
+    "customPushTitle": "Titre de la notification push",
+    "customPushTitlePlaceholder": "Bulletin prêt",
+    "customPushBody": "Message push",
+    "customPushBodyPlaceholder": "Nouveau bulletin dans {{category}}"
+  },
+  "notificationscenter": {
+    "appTitle": "Notifications",
+    "description": "Ici tu peux trouver toutes tes notifications",
+    "sidebar": "Notifications",
+    "noNotifications": "Tu n'as pas de notifications",
+    "markAllAsRead": "Marquer tout comme lu",
+    "markAsRead": "Marquer comme lu",
+    "from": "de {{ author }}",
+    "systemNotification": "Notification système",
+    "messagesSection": "Messages",
+    "systemSection": "Notifications système",
+    "noMessages": "Pas de messages",
+    "noSystemNotifications": "Pas de notifications système",
+    "deleteAll": "Tout supprimer",
+    "deleteAllMessages": "Supprimer tous les messages",
+    "deleteAllSystem": "Supprimer toutes les notifications système",
+    "confirmDeleteAll": "Es-tu sûr de vouloir supprimer les {{count}} notifications ?",
+    "confirmDeleteMessages": "Es-tu sûr de vouloir supprimer les {{count}} messages ?",
+    "confirmDeleteSystem": "Es-tu sûr de vouloir supprimer les {{count}} notifications système ?",
+    "actionCannotBeUndone": "Cette action ne peut pas être annulée.",
+    "deletedNotifications": "{{count}} notification supprimée",
+    "deletedNotifications_other": "{{count}} notifications supprimées",
+    "loadMore": "Charger plus",
+    "menu": {
+      "all": "Tout",
+      "messages": "Messages",
+      "system": "Système",
+      "sent": "Envoyés"
+    },
+    "sentSection": "Messages envoyés",
+    "noSentNotifications": "Tu n'as envoyé aucun message",
+    "deleteAllSent": "Supprimer tous les envoyés",
+    "confirmDeleteSent": "Es-tu sûr de vouloir supprimer les {{count}} messages envoyés ? Ils seront également supprimés chez tous les destinataires.",
+    "showRecipients": "Afficher les destinataires",
+    "noRecipients": "Aucun destinataire",
+    "recipientsStats": "{{read}} sur {{total}} ont lu",
+    "read": "Lu"
   },
   "appstore": {
     "title": "App Store",
     "description": "Ici tu peux ajouter des applications {{ applicationName }}.",
-    "chooseIcon": "Sélectionner l'icône",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "Plus d'icônes",
+    "searchIcons": "Rechercher des icônes...",
+    "searchIconsHint": "Astuce: Utilisez des termes de recherche en anglais (p.ex. \"house\" au lieu de \"maison\")",
+    "noIconsFound": "Aucune icône trouvée",
+    "iconsAvailable": "icônes disponibles",
     "uploadIcon": "Icône de téléchargement",
     "dropIconDescription": "Glissez une image ici ou cliquez pour sélectionner une image. Formats pris en charge: SVG, webp"
   },
@@ -123,6 +189,7 @@
       "globalQuota": "Cloudquota calculé ",
       "mailQuota": "MailQuota calculé",
       "mibibyte": "Mib",
+      "gbUsed": "{{used}} / {{total}} Go utilisé",
       "remainingLow": "Quota restant bas - {{free}} %",
       "remainingVeryLow": "Quota restant très bas - {{free}} %"
     }
@@ -160,8 +227,10 @@
       "AddManagementGroupFailed": "Echec de l'ajout du groupe de gestion",
       "GetUserSchoolClassesFailed": "Echec d'appel des classes de l'utilisateur",
       "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
+      "UpdateSchoolClassFailed": "Échec de la mise à jour de la classe",
       "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
       "GetUserFailed": "Échec de l'appel",
+      "GetUsersFailed": "L'appel des utilisateurs a échoué",
       "UpdateUserFailed": "La mise à jour a échoué",
       "GetCurrentUserRoomFailed": "Echec d'appel de la salle actuelle",
       "CreateProjectFailed": "La création du projet a échoué",
@@ -173,7 +242,9 @@
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
       "GetSchoolsFailed": "L'appel des écoles a échoué",
-      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué.",
+      "AddParentToStudentFailed": "Échec de l'enregistrement du parent pour l'élève",
+      "DeleteParentFromStudentFailed": "Échec de la suppression du parent de l'élève"
     }
   },
   "ticketsystem": {
@@ -190,10 +261,13 @@
     "encryption": "Chiffrement",
     "rowSelected": "{{selected}} de {{total}} tâche sélectionnée",
     "rowsSelected": "{{selected}} de {{total}} tâches sélectionnées",
+    "item": "{{count}} tâche",
+    "items": "{{count}} tâches",
     "themeUpdated": {
       "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
       "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
     },
+    "newMail": "{{count}} nouveau(x) e-mail(s) reçu(s)",
     "importer": {
       "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
       "title": "Importateur de courrier électronique",
@@ -220,6 +294,7 @@
   "errors": {
     "unexpectedError": "Une erreur inattendue s'est produite",
     "automaticLoginFailed": "La connexion automatique a échoué",
+    "scriptInjectionFailed": "Échec de l'injection du script dans l'iframe",
     "uploadOrFetchAttachmentFailed": "Erreur lors du téléchargement de la pièce jointe",
     "fileGenerationFailed": "Le fichier n'a pas pu être généré",
     "requestTooLarge": "Votre demande dépasse la limite de {{limit}} Ko. Si vous avez joint des fichiers multimédias, essayez de les compresser ou de les supprimer.",
@@ -292,6 +367,8 @@
     "private": "Privé",
     "rowsSelected": "{{selected}} de {{total}} conférences sélectionnées",
     "rowSelected": "{{selected}} de {{total}} conférence sélectionnée",
+    "item": "{{count}} conférence",
+    "items": "{{count}} conférences",
     "cancel": "Annuler",
     "password_required": "Aucun mot de passe saisi",
     "error": "Erreur",
@@ -330,12 +407,15 @@
     "sidebar": "Partage de fichiers",
     "previewTitle": "Aperçu des fichiers",
     "saveFile": "Enregistrer le fichier",
+    "print": "Imprimer",
     "fileEditor": "Editeur de fichier",
     "filePreview": "Aperçu des fichiers",
     "closeEditor": "Ferme l'éditeur",
     "loadingDocument": "Chargement du document ...",
     "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
     "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
+    "item": "{{count}} élément",
+    "items": "{{count}} éléments",
     "fileWithSameNameAlreadyExists": "Un fichier avec ce nom existe déjà.",
     "folderWithSameNameAlreadyExists": "Un dossier avec ce nom existe déjà.",
     "currentName": "Nom actuel",
@@ -368,7 +448,18 @@
       "CopyFailed": "La copie a échoué",
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
+    "singleDownload": {
+      "promptInfo": "Le téléchargement de votre fichier a commencé.",
+      "downloadSucceeded": "Le fichier a-t-il été téléchargé avec succès ?",
+      "help": "Aide"
+    },
+    "multipleDownload": {
+      "promptInfo": "Votre navigateur peut demander l'autorisation de télécharger plusieurs fichiers.",
+      "downloadSucceeded": "Tous les fichiers ont-ils été téléchargés avec succès?",
+      "help": "Aide"
+    },
     "publicFileSharing": {
+      "sharedBy": "Partagé par",
       "errors": {
         "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
       }
@@ -386,11 +477,35 @@
       "fileInfoDeleting": "Le fichier {{filename}} va être supprimé",
       "errorInfo": "{{failed}} Les fichiers n'ont pas pu être distribués"
     },
+    "textEditor": {
+      "unsavedChanges": "Modifications non enregistrées",
+      "unsavedChangesMessage": "Vous avez des modifications non enregistrées. Que voulez-vous faire?",
+      "discard": "Abandonner",
+      "saving": "Enregistrement...",
+      "saveSuccess": "Fichier enregistré avec succès",
+      "saveError": "Échec de l'enregistrement du fichier"
+    },
     "tooltips": {
       "folderNameRequired": "Un nom de dossier est requis",
       "FileNameRequired": "Le nom du fichier est requis",
       "NewFileNameRequired": "Un nouveau nom de fichier est requis",
       "NameRequired": "Nom requis"
+    },
+
+    "webdavInfo": {
+      "title": "Accès WebDAV",
+      "description": "Utilisez cette URL pour vous connecter à vos fichiers via des clients WebDAV",
+      "urlWindowsMac": "URL WebDAV (Windows / macOS)",
+      "urlLinux": "URL WebDAV (Linux)",
+      "username": "Nom d'utilisateur",
+      "passwordHint": "Utilisez votre mot de passe de connexion pour vous authentifier",
+      "tutorialsTitle": "Tutoriels de configuration",
+      "tutorials": {
+        "nextcloud": "Client de bureau Nextcloud",
+        "windows": "Explorateur de fichiers Windows",
+        "macos": "Finder macOS",
+        "linux": "Gestionnaire de fichiers Linux"
+      }
     }
   },
   "forums": {
@@ -431,6 +546,9 @@
       "updateSuccess": "Projet mis à jour avec succès",
       "deleteSuccess": "Projet supprimé avec succès"
     },
+    "schoolClass": {
+      "updateSuccess": "Classe mise à jour avec succès"
+    },
     "sessions": {
       "createSuccess": "Session créée avec succès",
       "updateSuccess": "Session mise à jour avec succès",
@@ -456,6 +574,7 @@
     "createmyProjects": "Créer un projet",
     "detailsmyProjects": "Détails du projet",
     "myClasses": "Mes classes",
+    "editmyClasses": "Modifier la classe",
     "detailsmyClasses": "Détails de la classe",
     "closeSession": "Fermer",
     "session": "Session",
@@ -565,6 +684,132 @@
       "placeholder": "Sélectionner une école"
     }
   },
+  "usermanagement": {
+    "title": "UTILISATEURS",
+    "titleLmn": "SERVEUR SCOLAIRE",
+    "titleGeneric": "SERVEUR",
+    "menuTitle": "Gestion des utilisateurs",
+    "parentAssignment": "Affectation parentale",
+    "description": "Afficher et gérer les comptes utilisateurs, les listes et les rôles.",
+    "students": "Élèves",
+    "teachers": "Enseignants",
+    "extrastudents": "Élèves supplémentaires",
+    "parents": "Parents",
+    "staff": "Personnel",
+    "schooladmins": "Admins d'école",
+    "schoolbindusers": "Utilisateurs Bind d'école",
+    "globaladmins": "Admins globaux",
+    "globalbindusers": "Utilisateurs Bind globaux",
+    "tabs": {
+      "table": "Utilisateurs",
+      "list": "Import"
+    },
+    "filterUsers": "Filtrer les utilisateurs...",
+    "loginClass": "Login / Classe",
+    "name": "Nom",
+    "status": "Statut",
+    "passwordActions": "Actions de mot de passe",
+    "showFirstPassword": "Afficher le premier mot de passe",
+    "restoreFirstPassword": "Restaurer le premier mot de passe",
+    "setRandomFirstPassword": "Définir un premier mot de passe aléatoire",
+    "setCustomPassword": "Définir un mot de passe personnalisé",
+    "setCurrentPassword": "Définir le mot de passe utilisateur actuel",
+    "userDetails": "Détails de l'utilisateur",
+    "properties": "Propriétés",
+    "loginname": "Nom de connexion",
+    "mailAlias": "Alias de messagerie",
+    "class": "Classe",
+    "classBusiness": "Groupe principal",
+    "sophomorixStatus": "Statut Sophomorix",
+    "role": "Rôle",
+    "schoolname": "Nom de l'école",
+    "schoolnameBusiness": "Code d'organisation",
+    "userId": "ID utilisateur (optionnel)",
+    "birthdate": "Date de naissance",
+    "deactivationDate": "Date de désactivation",
+    "tolerationDate": "Date de tolérance",
+    "creationDate": "Date de création",
+    "groupMembership": "Appartenance au groupe",
+    "quota": "Quota",
+    "noQuotaInfo": "Aucune information de quota disponible",
+    "noListAvailable": "Aucun import disponible pour ce type d'utilisateur.",
+    "listDescription": "Import pour {{school}}/{{list}}.csv",
+    "csvPlaceholder": "Le contenu CSV sera affiché ici...",
+    "addUser": "Ajouter un utilisateur",
+    "check": "Vérifier",
+    "saveConfirmTitle": "Sauvegarder la liste",
+    "saveConfirmMessage": "La liste doit être sauvegardée avant la vérification. Voulez-vous sauvegarder la liste maintenant et continuer ?",
+    "apply": "Appliquer",
+    "exportCsv": "Exporter CSV",
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Déposez le fichier ici pour importer",
+      "download": "Télécharger CSV"
+    },
+    "validationFailed": "Veuillez corriger tous les champs invalides avant d'enregistrer",
+    "listSaved": "Liste enregistrée avec succès. Utilisez \"Vérifier\" pour examiner et appliquer les modifications.",
+    "checkCompleted": "Vérification terminée",
+    "applyCompleted": "Application terminée",
+    "checkResult": {
+      "title": "Résultat de la vérification",
+      "checkFailed": "Vérification échouée",
+      "overview": "Aperçu",
+      "add": "Ajouter",
+      "update": "Mettre à jour",
+      "delete": "Supprimer",
+      "usersToAdd": "Utilisateurs à ajouter",
+      "usersToUpdate": "Utilisateurs à mettre à jour",
+      "usersToDelete": "Utilisateurs à supprimer",
+      "addNewUsers": "Ajouter de nouveaux utilisateurs",
+      "updateUsers": "Mettre à jour les utilisateurs",
+      "deleteUsers": "Supprimer les utilisateurs",
+      "apply": "Appliquer",
+      "noChanges": "Aucune modification détectée. Les données actuelles correspondent aux comptes utilisateurs existants.",
+      "columns": {
+        "class": "Classe",
+        "classBusiness": "Groupe principal",
+        "login": "Login",
+        "name": "Nom",
+        "role": "Rôle",
+        "school": "École",
+        "schoolBusiness": "Code d'organisation",
+        "changes": "Modifications",
+        "file": "Fichier",
+        "reason": "Raison"
+      }
+    },
+    "details": "Détails",
+    "login": "Login",
+    "list": {
+      "class": "Classe",
+      "lastName": "Nom de famille",
+      "firstName": "Prénom",
+      "birthday": "Date de naissance",
+      "login": "Login souhaité",
+      "loginTooltip": "Cette entrée est lue directement depuis le fichier CSV et peut différer du login réel de l'utilisateur (stocké dans LDAP)",
+      "category": "Catégorie",
+      "add": {
+        "students": "Ajouter un élève",
+        "teachers": "Ajouter un enseignant",
+        "extrastudents": "Ajouter un élève supplémentaire",
+        "parents": "Ajouter un parent",
+        "staff": "Ajouter un membre du personnel"
+      }
+    },
+    "sophomorixStatusValues": {
+      "U": "Utilisable",
+      "S": "Auto-activé",
+      "E": "Activé",
+      "P": "Permanent",
+      "A": "Réactivé",
+      "T": "Toléré",
+      "D": "Désactivé",
+      "F": "Gelé",
+      "L": "Verrouillé",
+      "K": "Supprimable",
+      "R": "Retirable"
+    }
+  },
   "select": "Choisir",
   "selectAll": "Sélectionnez tout",
   "details": "Détails",
@@ -594,16 +839,24 @@
     "noAnswer": "Aucune réponse n'est encore disponible.",
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
+      "inputFieldTitle": "Champ de saisie",
       "new": "Nouveau (vide)",
+      "fileUploadSuccess": "Le fichier a été enregistré avec succès.",
+      "fileUploadError": "Erreur lors du téléchargement du fichier, veuillez réessayer plus tard.",
+      "fileDeletionSuccess": "Le fichier a été supprimé avec succès.",
+      "fileDeletionError": "Le fichier n'a pas pu être supprimé.",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
-      "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
-      "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
+        "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
+        "previewTabTitle": "Aperçu"
+      },
       "templates": "Modèles",
       "templateMenu": {
         "fetch": "Choisissez l'un des modèles disponibles.",
@@ -637,6 +890,20 @@
         "upperLimit": "limite",
         "upperBackendLimiters": "Options de sélection avec limite supérieure",
         "addChoice": "Ajouter"
+      },
+      "surveyLogo": {
+        "title": "Logo de l'enquête",
+        "width": {
+          "label": "Largeur du logo en pixels (min. 150 px)",
+          "placeholder": "Entrez la largeur du logo en pixels"
+        },
+        "position": {
+          "label": "Position du logo",
+          "placeholder": "Choisissez la position du logo",
+          "left": "À gauche du titre",
+          "right": "À droite du titre",
+          "description": "La position du logo par rapport au titre de l'enquête est visible dans l'onglet 'Tester le sondage'."
+        }
       }
     },
     "participate": {
@@ -665,12 +932,15 @@
       "notAbleToFindSurveyAnswerError": "Aucune réponse disponible.",
       "notAbleToUpdateSurveyAnswerError": "La réponse n'a pas pu être mise à jour.",
       "notAbleToCreateSurveyAnswerError": "La réponse n'a pas pu être créée.",
-      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée."
+      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée.",
+      "alreadyParticipated": "Vous avez déjà participé."
     }
   },
   "surveys": {
     "rowsSelected": "{{selected}} de {{total}} sondages sélectionnés",
     "rowSelected": "{{selected}} de {{total}} sondages sélectionné",
+    "item": "{{count}} sondage",
+    "items": "{{count}} sondages",
     "confirmDelete": "Le sondage devrait-il vraiment être supprimé?",
     "confirmDelete_other": "Ces {{count}} sondages devraient-ils vraiment être supprimés?",
     "deleteSurveys": "Supprimer sondage",
@@ -846,7 +1116,8 @@
       "bulletinboard": "Configurez les groupes d'utilisateurs qui ont accès à l'application Schwarzes Brett. Il est possible de configurer dans les catégories pour contrôler les messages affichés chez les utilisateurs.",
       "forwarding": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
       "frame": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
-      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur."
+      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur.",
+      "wireguard": "Ici, vous pouvez configurer l'accès VPN WireGuard pour les utilisateurs."
     },
     "globalSettings": {
       "title": "Paramètres globaux",
@@ -871,6 +1142,11 @@
         "uploadLightLogo": "Téléverser le logo clair",
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "background": {
+        "title": "Image de fond",
+        "description": "Téléversez des images de fond personnalisées pour les modes clair et sombre. Elles seront affichées dans toute l'application.",
+        "variant": "Arrière-plan (mode {{variant}})"
       },
       "theme": {
         "title": "Personnalisation du thème",
@@ -910,10 +1186,25 @@
         "setAdminGroupSelectDescription": "Les groupes peuvent être sélectionnés via le champ de recherche.",
         "setAdminGroupWarning": "Au moins un groupe d’administrateurs doit être sélectionné."
       },
-      "deploymentTarget": "Plate-forme cible de déploiement"
+      "deploymentTarget": "Plate-forme cible de déploiement",
+      "organizationType": "Type d'organisation"
     },
     "info": {
-      "title": "Informations"
+      "title": "Licence"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "Clé API",
+      "createdAt": "Créé le",
+      "select": "Sélection",
+      "addClient": "Ajouter un client Webhook",
+      "deleteClient": "Supprimer le client Webhook",
+      "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer les clients Webhook sélectionnés?",
+      "selectUserAgent": "Sélectionner le User-Agent",
+      "createSuccess": "Client Webhook créé",
+      "deleteSuccess": "Client Webhook supprimé",
+      "filterPlaceholder": "Filtrer les clients Webhook..."
     },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
@@ -922,6 +1213,10 @@
       "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer cette entrée? Cette action ne peut pas être annulée.",
       "confirmDeleteEntries_other": "Êtes-vous sûr de vouloir supprimer ces {{count}} entrées? Cette action ne peut pas être annulée.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Téléversez votre propre image ici pour remplacer le logo par défaut de {{ applicationName }}. Ou restaurez le logo par défaut de {{ applicationName }}."
+        },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
           "description": ""
@@ -942,7 +1237,10 @@
           "title": "Paramètres généraux",
           "description": ""
         },
-
+        "drawio": {
+          "title": "Intégration Draw.io",
+          "description": "Configurez Draw.io pour créer des diagrammes et des organigrammes."
+        },
         "proxyConfig": {
           "title": "Configuration proxy",
           "description": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible."
@@ -981,13 +1279,19 @@
             "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
           }
         },
+        "wireguard": {
+          "title": "Pairs WireGuard",
+          "description": "Gérez ici les pairs VPN WireGuard et les connexions site-à-site."
+        },
         "files": {
           "title": "Fichiers",
           "description": "Ici, les fichiers affichés dans l'application peuvent être gérés.",
           "uploadSuccess": "Fichiers téléversés avec succès",
           "uploadFailed": "Le téléversement a échoué",
           "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
-          "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés"
+          "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
+          "item": "{{count}} élément",
+          "items": "{{count}} éléments"
         },
         "editor": {
           "title": "Editeur",
@@ -997,11 +1301,35 @@
           "sandboxModeDescription": "Dans le mode \"disposition séparée\", le contenu s'affiche comme une page indépendante, similaire à une fenêtre dans l'application. En plus du contenu réel, des éléments de conception ou des fonctions supplémentaires provenant d'autres sources peuvent également être chargés. En conséquence, la conception est indépendante de l'application, il pourrait donc être différent ou se comporter différemment. Ici, le contenu doit être téléchargé en fichier HTML.",
           "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici.",
           "visibilityDescription": "Vous pouvez ici déterminer si l'application doit être accessible au public. Actif signifie public, inactif signifie que seuls les groupes d'utilisateurs configurés y ont accès. Rendre l'application accessible au public crée un lien dans le pied de page. Pour rendre l'application visible dans la barre latérale pour les utilisateurs enregistrés, leur accès doit être configuré via les groupes d'utilisateurs."
+        },
+        "scripts": {
+          "title": "Scripts",
+          "description": "Configurez les scripts JavaScript à exécuter lors du chargement de l'iframe ou lors de la déconnexion.",
+          "onLoadEnabled": "Activer le script au chargement",
+          "onLoadDescription": "Exécuter un script JavaScript lorsque le contenu de l'iframe est chargé",
+          "onLogoutEnabled": "Activer le script à la déconnexion",
+          "onLogoutDescription": "Exécuter un script JavaScript avant que l'utilisateur ne se déconnecte",
+          "syntaxValid": "La syntaxe du script est valide",
+          "syntaxInvalid": "Le script contient des erreurs de syntaxe",
+          "placeholder": "Entrez le code JavaScript ici"
+        },
+        "urlHandling": {
+          "title": "Gestion des URL",
+          "description": "Synchronise l'URL du navigateur avec la navigation dans le contenu intégré.",
+          "enabled": "Activer la synchronisation d'URL",
+          "enabledDescription": "Met à jour la barre d'adresse du navigateur lors de la navigation dans le contenu intégré. Cela permet les signets et l'historique du navigateur. Remarque : Cette fonctionnalité ne fonctionne que lorsque le contenu intégré est hébergé sur le même domaine que cette application.",
+          "embeddedEnabledDescription": "Met à jour la barre d'adresse du navigateur lors de la navigation dans le contenu intégré. Cela permet les signets et l'historique du navigateur. Remarque : Cette fonctionnalité ne fonctionne qu'en mode \"Disposition séparée\" et lorsque le contenu intégré est hébergé sur le même domaine que cette application.",
+          "preloadBasePage": "Précharger la page de base",
+          "preloadBasePageDescription": "Lorsque cette option est activée, l'URL configurée est toujours chargée en premier avant de naviguer vers les liens profonds. Activez cette option pour les applications nécessitant une authentification ou exécutant des scripts d'initialisation sur l'URL configurée."
         }
       },
       "update": {
         "success": "Application enregistrée avec succès",
         "failed": "La mise à jour a échoué"
+      },
+      "editIcon": {
+        "title": "Modifier l'icône",
+        "description": "Choisissez une icône dans la liste ou téléchargez la vôtre."
       },
       "delete": {
         "success": "L'application a été supprimée",
@@ -1030,6 +1358,8 @@
     },
     "rowsSelected": "{{selected}} de {{total}} conteneurs sélectionnés",
     "rowSelected": "{{selected}} de {{total}} conteneur sélectionné",
+    "item": "{{count}} conteneur",
+    "items": "{{count}} conteneurs",
     "license": {
       "title": "Licence",
       "customerId": "Numéro de client",
@@ -1055,6 +1385,8 @@
     "sidebar": "Mon profil",
     "rowSelected": "{{selected}} de {{total}} compte sélectionné",
     "rowsSelected": "{{selected}} de {{total}} comptes sélectionnés",
+    "item": "{{count}} compte",
+    "items": "{{count}} comptes",
     "details": {
       "title": "Coordonnées",
       "description": "Ici, vous pouvez afficher vos données utilisateur et les modifier en partie.",
@@ -1136,6 +1468,71 @@
       "system": "Langue du système",
       "selectLanguage": "Sélectionner la langue"
     },
+    "themeMode": {
+      "title": "Apparence",
+      "description": "Sélectionnez l'apparence de l'interface utilisateur.",
+      "system": "Système",
+      "dark": "Sombre",
+      "light": "Clair"
+    },
+    "userinterface": {
+      "title": "Interface utilisateur",
+      "description": "Ici, vous pouvez configurer certains aspects de l'interface utilisateur selon vos préférences."
+    },
+    "wireguard": {
+      "title": "Accès VPN",
+      "description": "Ici, vous pouvez consulter et configurer votre accès VPN WireGuard.",
+      "noPeer": "Aucun accès VPN WireGuard n'a encore été configuré pour votre utilisateur. Veuillez contacter un administrateur.",
+      "connectionStatus": "État de la connexion",
+      "connected": "Connecté",
+      "disconnected": "Déconnecté",
+      "lastHandshake": "Dernier handshake",
+      "received": "Reçu",
+      "sent": "Envoyé",
+      "connectionDetails": "Détails de la connexion",
+      "peerName": "Nom",
+      "ipAddress": "Adresse IP",
+      "routes": "Routes",
+      "qrCode": "Code QR",
+      "qrCodeDescription": "Scannez ce code QR avec l'application WireGuard sur votre appareil mobile pour configurer la connexion VPN.",
+      "configDownload": "Fichier de configuration",
+      "configDownloadDescription": "Téléchargez le fichier de configuration WireGuard pour l'importer dans l'application WireGuard sur votre ordinateur.",
+      "downloadButton": "Télécharger la configuration",
+      "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
+    },
+    "parentChildPairing": {
+      "myParents": "Mes Parents",
+      "myChildren": "Mes Enfants",
+      "descriptionStudent": "Ici, vous pouvez créer un lien avec vos parents.",
+      "descriptionParent": "Ici, vous pouvez créer un lien avec vos enfants.",
+      "myCode": "Mon Code d'Affectation",
+      "myCodeDescriptionStudent": "Partagez ce code avec votre parent. Le code est valide 5 minutes.",
+      "myCodeDescriptionParent": "Partagez ce code avec votre enfant. Le code est valide 5 minutes.",
+      "enterCode": "Saisir le Code",
+      "enterCodeDescriptionStudent": "Saisissez le code d'affectation que vous avez reçu de votre parent.",
+      "enterCodeDescriptionParent": "Saisissez le code d'affectation que vous avez reçu de votre enfant.",
+      "enterCodePlaceholder": "Saisir le code d'affectation",
+      "submitCode": "Affecter",
+      "relationships": "Affectations",
+      "noRelationships": "Pas encore d'affectations.",
+      "statusPending": "En attente",
+      "statusAccepted": "Accepté",
+      "statusRejected": "Rejeté",
+      "pairingSuccess": "Demande d'affectation envoyée avec succès!",
+      "regenerateCode": "Régénérer",
+      "codeRefreshed": "Nouveau code d'affectation généré.",
+      "codeExpired": "Le code a expiré. Veuillez demander un nouveau code.",
+      "parent": "Parent",
+      "student": "Élève",
+      "statusColumn": "Statut",
+      "createdAt": "Créé le",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "statusUpdated": "Statut mis à jour avec succès.",
+      "assignment": "Affectation parentale",
+      "assignmentDescription": "Gérer les affectations parent-élève.",
+      "filterPlaceholder": "Rechercher par parent ou élève..."
+    },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
       "qrCodeInstructions": "Scannez le code QR avec une application Authenticator qui prend en charge TOTP (mot de passe unique basé sur le temps).",
@@ -1157,8 +1554,8 @@
     "title": "Généralités"
   },
   "forwardingpage": {
-    "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
-    "description": "L'application s'ouvre dans une nouvelle fenêtre.",
+    "action": "Ce bouton vous mènera au site externe du fournisseur.",
+    "description": "L'application s'ouvre dans un nouvel onglet.",
     "missing_link": "Le lien est manquant"
   },
   "menu": "Menu",
@@ -1189,16 +1586,26 @@
     "less": "Moins",
     "refreshPage": "Actualiser la page",
     "guest": "Invité",
+    "me": "Moi",
     "ok": "OK",
     "next": "Prochain",
     "back": "Précédent",
     "confirm": "Confirmer",
+    "validate": "Valider",
     "share": "Partager",
     "savedToClipboard": "Copié dans le presse-papiers.",
     "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
     "answers": "Répondre",
     "error": "Erreur",
     "entry": "Entrée {{index}}",
+    "filter": "Filtrer",
+    "showHiddenFiles": "Afficher les fichiers cachés",
+    "showSystemFiles": "Afficher les fichiers système",
+    "expand": "Développer",
+    "collapse": "Réduire",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "never": "Jamais",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
@@ -1209,7 +1616,18 @@
       "fileNotFound": "Fichier introuvable",
       "fileNotProvided": "Le fichier n'a pas été fourni",
       "invalidFileType": "Type de fichier non valide",
-      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin"
+      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin",
+      "path": {
+        "noString": "Le chemin doit être une chaîne de caractères",
+        "isEmpty": "Le chemin ne peut pas être vide",
+        "tooLong": "Le chemin est trop long",
+        "traversal": "La traversée de chemin n'est pas autorisée",
+        "absolutePath": "Les chemins absolus ne sont pas autorisés",
+        "subdirectories": "Les sous-répertoires ne sont pas autorisés",
+        "invalidCharacters": "Le chemin contient des caractères non valides",
+        "outsidePublicDirectory": "Le chemin est en dehors du répertoire public",
+        "symlinkOutsidePublicDirectory": "Le chemin inclut un lien symbolique qui pointe en dehors du répertoire public"
+      }
     },
     "cut": "Couper",
     "sortOrder": "Tri",
@@ -1218,6 +1636,12 @@
     "cancel": "Annuler",
     "columns": "Colonnes",
     "table": "Tableau",
+    "tableView": "Vue tableau",
+    "gridView": "Vue grille",
+    "sort": "Trier",
+    "ascending": "croissant",
+    "descending": "décroissant",
+    "selectAll": "Tout sélectionner",
     "copy": {
       "success": "Copié avec succès dans le presse-papiers",
       "error": "Echec de copie dans le presse-papiers",
@@ -1294,6 +1718,7 @@
     "select": "Choisir...",
     "none": "Aucun",
     "edit": "Modifier",
+    "view": "Afficher",
     "participate": "Participer",
     "participated": "Participé",
     "not-available": "Indisponible",
@@ -1415,8 +1840,47 @@
     }
   },
   "linuxmuster": {
-    "title": "Linuxmuster",
-    "sidebar": "Linuxmuster"
+    "sidebarLmn": "Serveur scolaire",
+    "sidebarGeneric": "Serveur",
+    "item": "{{count}} utilisateur",
+    "items": "{{count}} utilisateurs",
+    "userManagement": "Gestion des utilisateurs",
+    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs.",
+    "versionInfo": "Aperçu des versions",
+    "system": "Système",
+    "versionMismatch": "La version de l'API Linuxmuster est trop ancienne. La version {{version}} ou ultérieure est requise."
+  },
+  "parentAssignment": {
+    "item": "{{count}} affectation",
+    "items": "{{count}} affectations",
+    "rowSelected": "{{selected}} sur {{total}} affectation sélectionnée",
+    "rowsSelected": "{{selected}} sur {{total}} affectations sélectionnées"
+  },
+  "parentChildPairing": {
+    "assignment": "Affectation parentale",
+    "assignmentDescription": "Gérer les affectations parent-élève.",
+    "filterPlaceholder": "Rechercher par parent ou élève...",
+    "parent": "Parent",
+    "student": "Élève",
+    "school": "École",
+    "statusColumn": "Statut",
+    "createdAt": "Créé le",
+    "accept": "Accepter",
+    "reject": "Rejeter",
+    "statusAll": "Tous",
+    "statusPending": "En attente",
+    "statusAccepted": "Accepté",
+    "statusRejected": "Rejeté",
+    "statusUpdated": "Statut mis à jour avec succès.",
+    "errors": {
+      "codeNotFound": "Le code d’affectation n’a pas été trouvé.",
+      "codeExpired": "Le code d’affectation a expiré.",
+      "cannotPairWithSelf": "Vous ne pouvez pas vous affecter à vous-même.",
+      "pairingAlreadyExists": "Cette affectation existe déjà.",
+      "pairingNotFound": "L'affectation n'a pas été trouvée.",
+      "invalidRole": "Votre rôle ne permet pas l’affectation.",
+      "incompatibleRoles": "Vous ne pouvez pas être affecté à un autre élève."
+    }
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",
@@ -1431,6 +1895,68 @@
   "whiteboard-collaboration": {
     "title": "Whiteboard",
     "sidebar": "Whiteboard collaboratif"
+  },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "Gérer les pairs VPN WireGuard et les connexions site-à-site",
+    "name": "Nom",
+    "type": "Type",
+    "ip": "Adresse IP",
+    "publicKey": "Clé publique",
+    "routes": "Routes",
+    "allowedIps": "IPs autorisées",
+    "endpoint": "Point de terminaison",
+    "status": "Statut",
+    "lastHandshake": "Dernier handshake",
+    "clientPeer": "Pair client",
+    "siteToSite": "Site-à-site",
+    "addPeer": "Ajouter un pair",
+    "delete": "Supprimer",
+    "searchPlaceholder": "Rechercher par nom...",
+    "namePlaceholder": "Entrer le nom du pair",
+    "routesDescription": "Liste des routes séparées par des virgules (par ex. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Liste des plages IP autorisées séparées par des virgules pour la connexion site-à-site",
+    "endpointDescription": "Adresse et port du point de terminaison distant (par ex. vpn.example.com:51820)",
+    "noSelection": "Veuillez sélectionner au moins un pair à supprimer",
+    "deletePeers": "Supprimer les pairs",
+    "confirmDelete": "Voulez-vous vraiment supprimer ce pair?",
+    "confirmDelete_other": "Voulez-vous vraiment supprimer ces {{count}} pairs?",
+    "deleteSuccess": "Pairs supprimés avec succès",
+    "deleteFailed": "Échec de la suppression des pairs",
+    "peerCreated": "Pair client créé avec succès",
+    "peersCreated": "{{count}} pairs clients créés avec succès",
+    "peersCreatedPartial": "{{successful}} pairs clients créés, {{failed}} échoués",
+    "siteCreated": "Connexion site-à-site créée avec succès",
+    "createFailed": "Échec de la création du pair",
+    "qrCode": "Code QR pour {{name}}",
+    "qrCodeAlt": "Code QR de configuration WireGuard",
+    "qrCodeFailed": "Échec du chargement du code QR",
+    "noQrCode": "Aucun code QR disponible",
+    "peerDetails": "Détails du pair",
+    "showQRCode": "Afficher le code QR",
+    "validation": {
+      "nameRequired": "Le nom est requis",
+      "allowedIpsRequired": "Les IPs autorisées sont requises pour les connexions site-à-site"
+    },
+    "errors": {
+      "getPeersFailed": "Échec du chargement des pairs",
+      "createPeerFailed": "Échec de la création du pair client",
+      "deletePeerFailed": "Échec de la suppression du pair client",
+      "getPeerConfigFailed": "Échec du chargement de la configuration du pair",
+      "getPeerQrFailed": "Échec du chargement du code QR",
+      "getPeerStatusFailed": "Échec du chargement du statut du pair",
+      "getPeersStatusFailed": "Échec du chargement du statut des pairs",
+      "restartFailed": "Échec du redémarrage",
+      "getSitesFailed": "Échec du chargement des sites",
+      "createSiteFailed": "Échec de la création de la connexion site-à-site",
+      "deleteSiteFailed": "Échec de la suppression de la connexion site-à-site",
+      "getSiteConfigFailed": "Échec du chargement de la configuration du site"
+    },
+    "rowSelected": "{{selected}} sur {{total}} pair sélectionné",
+    "rowsSelected": "{{selected}} sur {{total}} pairs sélectionnés",
+    "item": "{{count}} pair",
+    "items": "{{count}} pairs"
   },
   "table": {
     "noDataAvailable": "Aucune donnée disponible"
@@ -1597,7 +2123,8 @@
   "users": {
     "errors": {
       "notFoundError": "L'utilisateur n'existe pas",
-      "updateError": "Les utilisateurs n'ont pas pu être mis à jour"
+      "updateError": "Les utilisateurs n'ont pas pu être mis à jour",
+      "passwordNotSetError": "Le mot de passe n'est pas défini pour cet utilisateur"
     }
   },
   "permission": {
@@ -1629,6 +2156,8 @@
     "onlyOfficeUrlTitle": "URL OnlyOffice",
     "onlyOfficeJwtSecretTitle": "JWT OnlyOffice",
     "onlyOfficeJwtSecretDescription": "Entrez ici la clé secrète JWT OnlyOffice",
+    "drawioUrlTitle": "URL Draw.io",
+    "drawioUrlDescription": "Entrez l'URL de votre instance Draw.io auto-hébergée",
     "overrideDocumentVendorMSWithOOTitle": "Utilisez l'OpenDocument comme format de document standard",
     "overrideDocumentVendorMSWithOODescription": "Le format OpenDocument (ODT, ODS, ODP) devrait-il être utilisé à la place des formats Microsoft Office (DOCX, PPTX, XLSX)?",
     "mailImapUrlTitle": "URL",
@@ -1640,7 +2169,7 @@
     "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
     "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
     "mailSogoThemeTitle": "Thème",
-    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés. L'application ne propose pas de changement de thème individuel. Le thème est défini à l'échelle du système pour tous les utilisateurs.",
     "mailSogoTheme": {
       "light": "Clair",
       "dark": "Sombre"
@@ -1657,6 +2186,11 @@
       "updateNow": "Mettre à jour maintenant",
       "checkVersionSuccess": "Thème vérifié avec succès !",
       "noData": "Aucune information de version disponible."
+    },
+    "appLogo": {
+      "light": "clair",
+      "dark": "sombre",
+      "title": "Logo thématique {{variant}}"
     }
   },
   "preview": {
@@ -1672,6 +2206,34 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "Réseau IP",
+      "description": "Le réseau IP pour la connexion VPN (par ex. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Adresse",
+      "description": "L'adresse IP du serveur VPN."
+    },
+    "EDU_WG_DNS": {
+      "title": "Serveur DNS",
+      "description": "L'adresse du serveur DNS pour la connexion VPN."
+    },
+    "MOODLE_WWWROOT": {
+      "title": "Racine WWW",
+      "description": "L'URL complète où Moodle est accessible (par ex. https://moodle.example.com)."
+    },
+    "MOODLE_ADMIN_EMAIL": {
+      "title": "E-mail administrateur",
+      "description": "L'adresse e-mail de l'administrateur Moodle."
+    },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Mot de passe administrateur",
+      "description": "Le mot de passe de l'administrateur Moodle."
+    },
+    "MOODLE_SITE_NAME": {
+      "title": "Nom du site",
+      "description": "Le nom affiché de l'instance Moodle."
     }
   },
   "edulution-manager": {
@@ -1750,6 +2312,13 @@
     "linuxmuster": "Linuxmuster",
     "generic": "Générique"
   },
+  "organizationType": {
+    "title": "Sélection",
+    "description": "Ici, on peut choisir le type d'organisation.",
+    "school": "École",
+    "business": "Entreprise",
+    "public-administration": "Administration publique"
+  },
 
   "webdavShare": {
     "displayName": "Nom d'affichage",
@@ -1776,6 +2345,7 @@
       "short": "Root",
       "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
     },
+    "noSharesConfigured": "Aucun partage configuré. Veuillez contacter l'administrateur système.",
     "selectPlaceholder": "Sélectionner...",
     "authentication": {
       "title": "Authentification",

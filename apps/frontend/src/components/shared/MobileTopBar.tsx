@@ -18,10 +18,14 @@
  */
 
 import React, { useMemo } from 'react';
-import { MdClose, MdMenu, MdRefresh } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faBell, faClose, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import useNotificationStore from '@/store/useNotificationStore';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 import { MOBILE_TOP_BAR_HEIGHT_PX, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
 import { MobileLogoIcon } from '@/assets/icons';
 
@@ -35,7 +39,12 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
   const { toggleMobileSidebar: onRightButtonClick, isMobileSidebarOpen: isRightMenuOpen } = useSidebarStore();
   const { toggleMobileMenuBar: onLeftButtonClick, isMobileMenuBarOpen: isLeftMenuOpen } = useMenuBarStore();
   const { isEdulutionApp } = usePlatformStore();
-  const iconClassName = useMemo(() => 'h-8 w-8', []);
+  const { unreadCount, setIsSheetOpen } = useNotificationStore();
+  const iconClassName = useMemo(() => 'h-6 w-6', []);
+
+  const handleNotificationClick = () => {
+    setIsSheetOpen(true);
+  };
 
   if (!showLeftButton && !showRightButton) {
     return null;
@@ -53,8 +62,12 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
           <button
             type="button"
             onClick={onLeftButtonClick}
+            className="flex items-center justify-center"
           >
-            <MdMenu className={iconClassName} />
+            <FontAwesomeIcon
+              icon={faBars}
+              className={iconClassName}
+            />
           </button>
         ) : (
           <div />
@@ -64,23 +77,45 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
           <button
             type="button"
             onClick={refreshPage}
-            className="absolute left-1/2 -translate-x-1/2"
+            className="absolute left-1/2 flex -translate-x-1/2 items-center justify-center"
           >
-            <MdRefresh className="h-6 w-6 text-muted hover:text-muted-foreground" />
+            <FontAwesomeIcon
+              icon={faRotateRight}
+              className="h-5 w-5 text-muted hover:text-muted-foreground"
+            />
           </button>
         )}
 
-        {!isAnyMenuOpen && showRightButton ? (
-          <button
-            type="button"
-            onClick={onRightButtonClick}
-          >
-            <MobileLogoIcon
-              className={iconClassName}
-              width={SIDEBAR_ICON_WIDTH}
-              aria-label="edulution-mobile-logo"
-            />
-          </button>
+        {!isAnyMenuOpen ? (
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={handleNotificationClick}
+              className="relative flex items-center justify-center text-background"
+            >
+              <FontAwesomeIcon
+                icon={faBell}
+                className="h-5 w-5 hover:text-muted-foreground"
+              />
+              <NotificationCounter
+                count={unreadCount}
+                variant={NOTIFICATION_COUNTER_VARIANT.NOTIFICATION_PANEL}
+                className="-right-1 -top-1"
+              />
+            </button>
+            {showRightButton && (
+              <button
+                type="button"
+                onClick={onRightButtonClick}
+              >
+                <MobileLogoIcon
+                  className="h-8 w-8"
+                  width={SIDEBAR_ICON_WIDTH}
+                  aria-label="edulution-mobile-logo"
+                />
+              </button>
+            )}
+          </div>
         ) : (
           <div />
         )}
@@ -90,9 +125,13 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
         <button
           type="button"
           onClick={onLeftButtonClick}
-          className="fixed right-4 top-1"
+          className="fixed right-4 flex items-center justify-center"
+          style={{ top: 0, height: MOBILE_TOP_BAR_HEIGHT_PX }}
         >
-          <MdClose className={iconClassName} />
+          <FontAwesomeIcon
+            icon={faClose}
+            className={iconClassName}
+          />
         </button>
       )}
 
@@ -100,9 +139,13 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
         <button
           type="button"
           onClick={onRightButtonClick}
-          className="fixed left-4 top-1"
+          className="fixed left-4 flex items-center justify-center"
+          style={{ top: 0, height: MOBILE_TOP_BAR_HEIGHT_PX }}
         >
-          <MdClose className={iconClassName} />
+          <FontAwesomeIcon
+            icon={faClose}
+            className={iconClassName}
+          />
         </button>
       )}
     </>

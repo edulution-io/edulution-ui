@@ -23,6 +23,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  Headers,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -50,20 +51,25 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { pipeline } from 'stream/promises';
 import { randomUUID } from 'crypto';
+import APPS from '@libs/appconfig/constants/apps';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
+import ThumbnailService from './thumbnail.service';
 import WebdavService from '../webdav/webdav.service';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.FILE_SHARING)
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
   constructor(
     private readonly filesharingService: FilesharingService,
     private readonly webdavService: WebdavService,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   @Get()
@@ -71,12 +77,14 @@ class FilesharingController {
     @Query('type') type: string,
     @Query('path') path: string,
     @Query('share') share: string,
+    @Headers(HTTP_HEADERS.XForceCleanupCache) forceCleanupCacheHeader: string | undefined,
     @GetCurrentUsername() username: string,
   ) {
+    const forceCleanupCache = forceCleanupCacheHeader === 'true';
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.webdavService.getFilesAtPath(username, path, share);
+      return this.webdavService.getFilesAtPath(username, path, share, forceCleanupCache);
     }
-    return this.webdavService.getDirectoryAtPath(username, path, share);
+    return this.webdavService.getDirectoryAtPath(username, path, share, forceCleanupCache);
   }
 
   @Post()
@@ -153,6 +161,21 @@ class FilesharingController {
     }
   }
 
+  @Get(FileSharingApiEndpoints.THUMBNAIL)
+  async getThumbnail(
+    @Query('filePath') filePath: string,
+    @Query('etag') etag: string,
+    @Query('share') share: string,
+    @Res() res: Response,
+    @GetCurrentUsername() username: string,
+  ) {
+    const thumbnail = await this.thumbnailService.getThumbnail(username, filePath, etag, share);
+
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.IMAGE_WEBP);
+    res.setHeader(HTTP_HEADERS.CacheControl, 'public, max-age=31536000, immutable');
+    res.send(thumbnail);
+  }
+
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
   async getDownloadLink(
     @Query('filePath') filePath: string,
@@ -207,8 +230,8 @@ class FilesharingController {
   }
 
   @Get(FileSharingApiEndpoints.PUBLIC_SHARE)
-  async listOwnPublicShares(@GetCurrentUsername() username: string) {
-    return this.filesharingService.listOwnPublicShares(username);
+  async listPublicShares(@GetCurrentUser() currentUser: JWTUser) {
+    return this.filesharingService.listPublicShares(currentUser);
   }
 
   @Post('callback')

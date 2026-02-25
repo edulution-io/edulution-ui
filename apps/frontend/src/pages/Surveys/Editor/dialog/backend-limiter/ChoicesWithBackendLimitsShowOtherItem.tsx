@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Switch from '@/components/ui/Switch';
@@ -27,50 +27,30 @@ import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 
 const ChoicesWithBackendLimitsShowOtherItem = () => {
-  const {
-    selectedQuestion,
-    useBackendLimits,
-    showOtherItem,
-    toggleShowOtherItem,
-    setChoiceLimit,
-    currentChoices,
-    addChoice,
-  } = useQuestionsContextMenuStore();
+  const { useBackendLimits, showOtherItem, toggleShowOtherItem, setChoiceLimit, currentChoices, addChoice } =
+    useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
-
-  const handleToggleShowOtherItem = () => {
-    if (!selectedQuestion) return;
-
-    selectedQuestion.showOtherItem = !showOtherItem;
-
-    toggleShowOtherItem();
-  };
 
   const otherItemsChoiceWithBackendLimit = currentChoices.find((choice) => choice.name === SHOW_OTHER_ITEM);
 
   return (
-    <div className="ml-2 flex-1 items-center text-foreground">
+    <div className="ml-2 flex-1 items-center text-background">
       <div className="ml-2 inline-flex">
         <Switch
           checked={showOtherItem}
-          onCheckedChange={handleToggleShowOtherItem}
-          className={cn(
-            { 'text-muted-foreground': !useBackendLimits },
-            { 'text-primary-foreground': useBackendLimits },
-          )}
+          onCheckedChange={toggleShowOtherItem}
+          className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-background': useBackendLimits })}
         />
-        <p className="ml-2 text-sm font-bold text-primary-foreground">
-          {t('survey.editor.questionSettings.useOtherItem')}
-        </p>
+        <p className="ml-2 text-sm font-bold text-background">{t('survey.editor.questionSettings.useOtherItem')}</p>
       </div>
       {showOtherItem ? (
         <>
-          <p className="ml-4 mt-2 text-sm text-primary-foreground">
+          <p className="ml-4 mt-2 text-sm text-background">
             {t('survey.editor.questionSettings.addBackendLimiterForOtherItem')}
           </p>
           <div className="ml-4 inline-flex items-center">
-            <Label className="text-m flex-0 font-bold text-primary-foreground">
+            <Label className="text-m flex-0 font-bold text-background">
               {t('survey.editor.questionSettings.limit')}:
             </Label>
             <Input
@@ -84,7 +64,7 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
                   : addChoice(SHOW_OTHER_ITEM, SHOW_OTHER_ITEM, Math.max(Number(e.target.value), 0))
               }
               variant="dialog"
-              className="ml-2 mt-2 max-w-[80px] flex-1 text-primary-foreground"
+              className="ml-2 mt-2 max-w-[80px] flex-1 text-background"
             />
           </div>
         </>

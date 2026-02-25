@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -25,6 +25,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharing
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useUserPath from './useUserPath';
+import useVariableSharePathname from './useVariableSharePathname';
 
 const useFileSharingPage = () => {
   const {
@@ -33,33 +34,125 @@ const useFileSharingPage = () => {
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
+    clearFilesOnShareChange,
+    webdavShares,
+    setLastVisitedShareDisplayName,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { webdavShare } = useParams();
   const { homePath } = useUserPath();
-  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
+  const { createVariableSharePathname } = useVariableSharePathname();
 
-  useEffect(() => {
-    if (!isFileProcessing) {
-      if (path === '/') {
-        if (pathToRestoreSession !== '/') {
-          const newSearchParams = new URLSearchParams(searchParams);
-          newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
-          setSearchParams(newSearchParams);
-        } else {
-          void fetchFiles(webdavShare, homePath);
-        }
-      } else {
-        void fetchFiles(webdavShare, path);
-        void fetchShares();
-        setPathToRestoreSession(path);
-      }
+  const currentShare = useMemo(
+    () => webdavShares.find((s) => s.displayName === webdavShare),
+    [webdavShares, webdavShare],
+  );
+
+  const shareRootPath = useMemo(() => {
+    if (currentShare) {
+      return createVariableSharePathname(currentShare.pathname, currentShare.pathVariables);
     }
-  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles, webdavShare]);
+    return homePath;
+  }, [currentShare, createVariableSharePathname, homePath]);
+
+  const shareHasPathVariables = currentShare?.pathVariables && currentShare.pathVariables.length > 0;
+  const isWaitingForUserData = shareHasPathVariables && shareRootPath === currentShare?.pathname;
+
+  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || shareRootPath;
+
+  const previousWebdavShare = useRef<string | undefined>(webdavShare);
+  const hasRestoredSession = useRef(false);
+  const lastFetchedKey = useRef('');
+  const needsCacheCleanup = useRef(true);
+
+  const isChildOfShareRoot = useCallback(
+    (filePath: string) => {
+      if (shareRootPath === '/') return true;
+      const normalizedRoot = shareRootPath.replace(/\/+$/, '');
+      return filePath === shareRootPath || filePath.startsWith(`${normalizedRoot}/`);
+    },
+    [shareRootPath],
+  );
 
   useEffect(() => {
+    if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
+      clearFilesOnShareChange();
+      lastFetchedKey.current = '';
+      needsCacheCleanup.current = true;
+    }
+    previousWebdavShare.current = webdavShare;
+  }, [webdavShare, clearFilesOnShareChange]);
+
+  useEffect(() => {
+    if (isFileProcessing || webdavShares.length === 0 || isWaitingForUserData) return;
+
+    const hasPathParam = searchParams.has(URL_SEARCH_PARAMS.PATH);
+
+    const redirectTo = (targetPath: string) => {
+      const next = new URLSearchParams(searchParams);
+      next.set(URL_SEARCH_PARAMS.PATH, targetPath);
+      setSearchParams(next, { replace: true });
+    };
+
+    if (shareRootPath !== '/' && hasPathParam && !isChildOfShareRoot(path)) {
+      redirectTo(shareRootPath);
+      return;
+    }
+
+    if (
+      !hasRestoredSession.current &&
+      !hasPathParam &&
+      pathToRestoreSession !== path &&
+      isChildOfShareRoot(pathToRestoreSession)
+    ) {
+      hasRestoredSession.current = true;
+      redirectTo(pathToRestoreSession);
+      return;
+    }
+
+    hasRestoredSession.current = true;
+
+    if (!hasPathParam && shareRootPath !== '/') {
+      redirectTo(shareRootPath);
+      return;
+    }
+
+    const fetchKey = `${webdavShare}:${path}`;
+    if (fetchKey !== lastFetchedKey.current) {
+      lastFetchedKey.current = fetchKey;
+      const forceCleanup = needsCacheCleanup.current;
+      needsCacheCleanup.current = false;
+      void fetchFiles(webdavShare, path, forceCleanup);
+    }
+    if (path !== '/') setPathToRestoreSession(path);
+    if (webdavShare) setLastVisitedShareDisplayName(webdavShare);
+  }, [
+    isFileProcessing,
+    path,
+    pathToRestoreSession,
+    shareRootPath,
+    setPathToRestoreSession,
+    setSearchParams,
+    fetchFiles,
+    webdavShare,
+    webdavShares.length,
+    isWaitingForUserData,
+    isChildOfShareRoot,
+    setLastVisitedShareDisplayName,
+  ]);
+
+  useEffect(() => {
+    if (webdavShares.length === 0) return;
+    void fetchShares();
+  }, [webdavShare, fetchShares, webdavShares.length]);
+
+  useEffect(() => {
+    if (previousWebdavShare.current !== webdavShare) {
+      return;
+    }
+
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
@@ -73,7 +166,7 @@ const useFileSharingPage = () => {
     };
 
     void updateFilesAfterSuccess();
-  }, [fileOperationResult, isLoading, fetchFiles, currentPath]);
+  }, [fileOperationResult, isLoading, fetchFiles, fetchShares, currentPath, webdavShare]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
 };

@@ -17,10 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import DEVICE_FIELDS from '@libs/deviceManagement/constants/deviceFields';
 import {
+  DEVICES_LMN_API_ENDPOINT,
   EXAM_MODE_LMN_API_ENDPOINT,
+  LIST_MANAGEMENT_LMN_API_ENDPOINT,
   MANAGEMENT_GROUPS_LMN_API_ENDPOINT,
   PRINT_PASSWORDS_LMN_API_ENDPOINT,
   PRINTERS_LMN_API_ENDPOINT,
@@ -51,6 +54,10 @@ import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
+import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
+import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
+import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
+import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
@@ -255,6 +262,33 @@ class LmnApiService {
     }
   }
 
+  public async updateSchoolClass(
+    lmnApiToken: string,
+    formValues: GroupFormDto,
+    username: string,
+  ): Promise<LmnApiSchoolClass> {
+    try {
+      const data = LmnApiService.getGroupFormData(formValues, username);
+      const response = await this.request<LmnApiSchoolClass>(
+        HttpMethods.PATCH,
+        `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${formValues.name}`,
+        data,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.UpdateSchoolClassFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
     schoolClass: string,
@@ -402,9 +436,9 @@ class LmnApiService {
     }
   }
 
-  public async getUser(lmnApiToken: string, username: string, checkFirstPassword?: boolean): Promise<LmnUserInfo> {
+  public async getUser(lmnApiToken: string, username: string, checkFirstPassword = false): Promise<LmnUserInfo> {
     try {
-      const query = checkFirstPassword ? `?check_first_pw=${checkFirstPassword}` : '';
+      const query = `?check_first_pw=${checkFirstPassword}`;
       const response = await this.request<LmnUserInfo>(
         HttpMethods.GET,
         `${USERS_LMN_API_ENDPOINT}/${username}${query}`,
@@ -417,6 +451,25 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getUsers(lmnApiToken: string, usernames: string[]): Promise<LmnUserInfo[]> {
+    try {
+      return await Promise.all(
+        usernames.map((username) =>
+          this.request<LmnUserInfo>(HttpMethods.GET, `${USERS_LMN_API_ENDPOINT}/${username}`, undefined, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          }).then((response) => response.data),
+        ),
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUsersFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
         LmnApiService.name,
@@ -467,9 +520,9 @@ class LmnApiService {
     }
   }
 
-  public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<LmnUserInfo> {
+  public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<LmnApiRoom> {
     try {
-      const response = await this.request<LmnUserInfo>(
+      const response = await this.request<LmnApiRoom>(
         HttpMethods.GET,
         `${USER_ROOM_LMN_API_ENDPOINT}/${username}`,
         undefined,
@@ -513,7 +566,7 @@ class LmnApiService {
     }
   }
 
-  private static getProjectFromForm = (formValues: GroupFormDto, username: string) => ({
+  private static getGroupFormData = (formValues: GroupFormDto, username: string) => ({
     admins: formValues.admins,
     displayName: formValues.displayName,
     admingroups: formValues.admingroups,
@@ -580,7 +633,7 @@ class LmnApiService {
 
   public async createProject(lmnApiToken: string, formValues: GroupFormDto, username: string): Promise<LmnApiProject> {
     try {
-      const data = LmnApiService.getProjectFromForm(formValues, username);
+      const data = LmnApiService.getGroupFormData(formValues, username);
       const response = await this.request<LmnApiProject>(
         HttpMethods.POST,
         `${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`,
@@ -605,7 +658,7 @@ class LmnApiService {
 
   public async updateProject(lmnApiToken: string, formValues: GroupFormDto, username: string): Promise<LmnApiProject> {
     try {
-      const data = LmnApiService.getProjectFromForm(formValues, username);
+      const data = LmnApiService.getGroupFormData(formValues, username);
 
       const response = await this.request<LmnApiProject>(
         HttpMethods.PATCH,
@@ -802,6 +855,50 @@ class LmnApiService {
     }
   }
 
+  public async addParentToStudent(lmnApiToken: string, studentUsername: string, parentUsername: string): Promise<void> {
+    try {
+      await this.request<void>(
+        HttpMethods.POST,
+        `${USERS_LMN_API_ENDPOINT}/${studentUsername}/parents`,
+        { users: [parentUsername] },
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.AddParentToStudentFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async deleteParentFromStudent(
+    lmnApiToken: string,
+    studentUsername: string,
+    parentUsername: string,
+  ): Promise<void> {
+    try {
+      await this.request<void>(
+        HttpMethods.DELETE,
+        `${USERS_LMN_API_ENDPOINT}/${studentUsername}/parents`,
+        { users: [parentUsername] },
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.DeleteParentFromStudentFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
   public async getSchools(lmnApiToken: string): Promise<string[]> {
     try {
       const response = await this.request<string[]>(HttpMethods.GET, 'schools', undefined, {
@@ -829,6 +926,222 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetLmnVersionFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getUsersByRole(
+    lmnApiToken: string,
+    role: string,
+    school: string,
+    managementList?: string,
+  ): Promise<LmnUserInfo[]> {
+    try {
+      const schoolParam = `?${SOPHOMORIX_QUERY_PARAMS.SCHOOL}=${school}`;
+      const response = await this.request<LmnUserInfo[]>(HttpMethods.GET, `roles/${role}${schoolParam}`, undefined, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+
+      if (managementList) {
+        const filename = `${managementList}.csv`;
+        return response.data.filter(
+          (user) => user.sophomorixAdminFile === filename || user.sophomorixAdminFile?.endsWith(`.${filename}`),
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUsersByRoleFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getManagementList(
+    lmnApiToken: string,
+    school: string,
+    managementList: string,
+  ): Promise<ListManagementEntry[]> {
+    try {
+      const response = await this.request<ListManagementEntry[]>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetManagementListFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async saveManagementList(
+    lmnApiToken: string,
+    school: string,
+    managementList: string,
+    data: ListManagementEntry[],
+  ): Promise<ListManagementEntry[]> {
+    try {
+      const response = await this.request<ListManagementEntry[]>(
+        HttpMethods.POST,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
+        { data },
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SaveManagementListFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async runSophomorixCheck(lmnApiToken: string): Promise<SophomorixCheckResponse> {
+    try {
+      const response = await this.request<SophomorixCheckResponse>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-check`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SophomorixCheckFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async runSophomorixApply(
+    lmnApiToken: string,
+    school: string,
+    add: boolean,
+    update: boolean,
+    kill: boolean,
+  ): Promise<SophomorixCheckResponse> {
+    try {
+      const response = await this.request<SophomorixCheckResponse>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-apply`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          timeout: 120000,
+          params: {
+            [SOPHOMORIX_QUERY_PARAMS.SCHOOL]: school,
+            ...(add && { [SOPHOMORIX_QUERY_PARAMS.ADD]: 'true' }),
+            ...(update && { [SOPHOMORIX_QUERY_PARAMS.UPDATE]: 'true' }),
+            ...(kill && { [SOPHOMORIX_QUERY_PARAMS.KILL]: 'true' }),
+          },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SophomorixApplyFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getDevices(lmnApiToken: string, school: string): Promise<ListManagementEntry[]> {
+    try {
+      const response = await this.request<ListManagementEntry[]>(
+        HttpMethods.GET,
+        `${DEVICES_LMN_API_ENDPOINT}/${school}`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetDevicesFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async saveDevices(
+    lmnApiToken: string,
+    school: string,
+    data: ListManagementEntry[],
+  ): Promise<ListManagementEntry[]> {
+    const endpoint = `${DEVICES_LMN_API_ENDPOINT}/${school}`;
+    const sanitized = data.map((entry) => {
+      const clean: Record<string, string | null> = {};
+      DEVICE_FIELDS.forEach((field) => {
+        clean[field] = entry[field] ?? '';
+      });
+      return clean;
+    });
+    const payload = { data: sanitized };
+    try {
+      const response = await this.request<ListManagementEntry[]>(HttpMethods.POST, endpoint, payload, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        Logger.error(
+          `saveDevices failed: status=${error.response?.status} data=${JSON.stringify(error.response?.data)}`,
+          LmnApiService.name,
+        );
+      } else {
+        Logger.error(`saveDevices failed: ${String(error)}`, LmnApiService.name);
+      }
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SaveDevicesFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getImportDevices(lmnApiToken: string, school: string): Promise<void> {
+    try {
+      await this.request<unknown>(HttpMethods.GET, `${DEVICES_LMN_API_ENDPOINT}/${school}/import-devices`, undefined, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        timeout: 120000,
+      });
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.ImportDevicesFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
         LmnApiService.name,

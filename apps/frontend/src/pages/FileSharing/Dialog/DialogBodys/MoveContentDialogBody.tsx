@@ -55,10 +55,17 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { createVariableSharePathname } = useVariableSharePathname();
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
-  const { fetchDialogFiles, fetchDialogDirs, dialogShownDirs, dialogShownFiles, isLoading } =
-    useFileSharingMoveDialogStore();
+  const {
+    fetchDialogFiles,
+    fetchDialogDirs,
+    dialogShownDirs,
+    dialogShownFiles,
+    isLoading,
+    clearDialogFilesOnShareChange,
+  } = useFileSharingMoveDialogStore();
 
   const firstRender = useRef(true);
+  const lastCleanedDialogShare = useRef<string | undefined>(undefined);
 
   const currentDirItem: DirectoryFileDTO = {
     filePath: currentPath,
@@ -72,19 +79,24 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       firstRender.current = false;
       return;
     }
+    clearDialogFilesOnShareChange();
     const share = webdavShares.find((s) => s.displayName === selectedWebdavShare) || webdavShares[0];
     const newCurrentPath = createVariableSharePathname(share.pathname, share.pathVariables);
     setCurrentPath(newCurrentPath);
-  }, [selectedWebdavShare]);
+  }, [selectedWebdavShare, clearDialogFilesOnShareChange]);
 
   useEffect(() => {
-    if (!selectedWebdavShare && !webdavShare) return;
+    const activeShare = selectedWebdavShare || webdavShare;
+    if (!activeShare) return;
+
+    const needsCleanup = lastCleanedDialogShare.current !== activeShare;
 
     if (showAllFiles) {
-      void fetchDialogFiles(selectedWebdavShare || webdavShare, currentPath);
+      void fetchDialogFiles(activeShare, currentPath, needsCleanup);
     } else {
-      void fetchDialogDirs(selectedWebdavShare || webdavShare, currentPath);
+      void fetchDialogDirs(activeShare, currentPath, needsCleanup);
     }
+    lastCleanedDialogShare.current = activeShare;
   }, [webdavShare, selectedWebdavShare, currentPath, showAllFiles]);
 
   useEffect(() => {
@@ -132,64 +144,61 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     }
   };
 
-  const getHiddenSegments = () =>
-    webdavShares.find((s) => s.displayName === (selectedWebdavShare || webdavShare))?.pathname;
+  const getHiddenSegments = () => {
+    const currentShare = webdavShares.find((s) => s.displayName === (selectedWebdavShare || webdavShare));
+    if (!currentShare) return undefined;
+    const shareRootPath = createVariableSharePathname(currentShare.pathname, currentShare.pathVariables);
+    return shareRootPath.endsWith('/') ? shareRootPath.slice(0, -1) : shareRootPath;
+  };
 
   const selectedInputValue =
     moveOrCopyItemToPath?.filename && showSelectedFile
       ? `${t('moveItemDialog.selectedItem')}: ${decodeURIComponent(moveOrCopyItemToPath.filename)}`
       : t('filesharing.selectFile');
 
-  const footer = (
-    <Input
-      title={t('moveItemDialog.selectedItem')}
-      value={selectedInputValue}
-      variant="dialog"
-      className="h-10"
-    />
-  );
-
   const visibleColumns = [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME];
   const columns: ColumnDef<DirectoryFileDTO>[] = getFileSharingTableColumns(visibleColumns, onFilenameClick);
 
   return (
-    <>
+    <div className="w-full min-w-0 space-y-2 overflow-hidden">
       <WebdavShareSelectDropdown
         webdavShare={webdavShare}
         showRootOnly={showRootOnly}
       />
-      <div className="text-background">
-        <div className="pb-2">
-          <DirectoryBreadcrumb
-            path={currentPath}
-            onNavigate={handleBreadcrumbNavigate}
-            showHome={showHome}
-            hiddenSegments={getHiddenSegments()}
-            showTitle={false}
-          />
-        </div>
-        <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
-        <div className="h-[45vh] max-h-[45vh] overflow-auto scrollbar-thin">
-          <ScrollableTable
-            columns={columns}
-            data={files}
-            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
-            onRowSelectionChange={handleRowSelectionChange}
-            applicationName={APPS.FILE_SHARING}
-            getRowId={(row) => row.filePath}
-            showHeader={false}
-            textColorClassname="text-background"
-            showSelectedCount={false}
-            filterKey="select-filename"
-            filterPlaceHolderText="filesharing.filterPlaceHolderText"
-            enableRowSelection={enableRowSelection}
-            getRowDisabled={getRowDisabled}
-            isDialog
-          />
-        </div>
+
+      <DirectoryBreadcrumb
+        path={currentPath}
+        onNavigate={handleBreadcrumbNavigate}
+        showHome={showHome}
+        hiddenSegments={getHiddenSegments()}
+        showTitle={false}
+      />
+      <div className="w-full">{isLoading ? <HorizontalLoader /> : <div className="h-1" />}</div>
+      <div className="h-[45vh] max-h-[45vh] min-w-0 overflow-y-auto overflow-x-hidden">
+        <ScrollableTable
+          columns={columns}
+          data={files}
+          selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
+          onRowSelectionChange={handleRowSelectionChange}
+          applicationName={APPS.FILE_SHARING}
+          getRowId={(row) => row.filePath}
+          showHeader={false}
+          showSelectedCount={false}
+          filterKey="select-filename"
+          filterPlaceHolderText="filesharing.filterPlaceHolderText"
+          enableRowSelection={enableRowSelection}
+          getRowDisabled={getRowDisabled}
+          isDialog
+        />
       </div>
-      <div className="pt-2">{footer}</div>
-    </>
+      <Input
+        title={t('moveItemDialog.selectedItem')}
+        value={selectedInputValue}
+        variant="dialog"
+        readOnly
+        disabled
+      />
+    </div>
   );
 };
 

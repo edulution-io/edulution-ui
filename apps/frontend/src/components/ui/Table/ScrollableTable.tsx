@@ -17,29 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import {
   ColumnDef,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
   OnChangeFn,
   Row,
   RowSelectionState,
-  useReactTable,
+  Table as TanstackTable,
   VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
+import { cn } from '@edulution-io/ui-kit';
+import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
+import EMPTY_COLUMN_VISIBILITY from '@libs/common/constants/emptyColumnVisibility';
+import pinRowToTop from '@libs/ui/utils/pinRowToTop';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
-import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
-import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 import DraggableTableRow from '@/components/ui/DraggableTableRow';
+import useScrollableTable from '@/components/ui/Table/useScrollableTable';
+import SelectedRowsCount from '@/components/ui/Table/SelectedRowsCount';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,15 +55,22 @@ interface DataTableProps<TData, TValue> {
   initialSorting?: { id: string; desc: boolean }[];
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
   initialColumnVisibility?: VisibilityState;
-  textColorClassname?: string;
   showHeader?: boolean;
   showSelectedCount?: boolean;
   isDialog?: boolean;
   actions?: TableAction<TData>[];
   showSearchBarAndColumnSelect?: boolean;
   getRowDisabled?: (row: Row<TData>) => boolean;
+  getRowExcludedFromCount?: (row: Row<TData>) => boolean;
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
+  searchBarAdditionalComponent?: ReactNode;
+  focusedRowId?: string | null;
+  onSortedRowsChange?: (sortedData: TData[]) => void;
+  onRowClick?: (item: TData) => void;
+  pinnedToTopRowId?: string;
+  externalTable?: TanstackTable<TData>;
+  externalSortedRows?: Row<TData>[];
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -77,82 +85,80 @@ const ScrollableTable = <TData, TValue>({
   applicationName,
   enableRowSelection,
   initialSorting,
-  textColorClassname = 'text-background',
   showHeader = true,
   showSelectedCount = true,
   isDialog = false,
-  initialColumnVisibility = {},
+  initialColumnVisibility = EMPTY_COLUMN_VISIBILITY,
   actions,
   showSearchBarAndColumnSelect = true,
   getRowDisabled,
+  getRowExcludedFromCount,
   enableDragAndDrop = false,
   canDropOnRow,
+  searchBarAdditionalComponent,
+  focusedRowId,
+  onSortedRowsChange,
+  onRowClick,
+  pinnedToTopRowId,
+  externalTable,
+  externalSortedRows,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
 
-  useEffect(() => {
-    setColumnVisibility((prev) => {
-      if (JSON.stringify(initialColumnVisibility) !== JSON.stringify(prev)) {
-        return initialColumnVisibility;
-      }
-      return prev;
-    });
-  }, [initialColumnVisibility]);
-
-  const defaultSorting = columns.some((c) => c.id === DEFAULT_TABLE_SORT_PROPERTY_KEY)
-    ? [{ id: 'position', desc: false }]
-    : [];
-  const [sorting, setSorting] = useState(() => (initialSorting?.length ? initialSorting : defaultSorting));
-
-  const table = useReactTable({
-    data,
+  const { table: internalTable } = useScrollableTable({
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    getFilteredRowModel: getFilteredRowModel(),
-    getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
+    data,
     onRowSelectionChange,
+    selectedRows,
+    getRowId,
     enableRowSelection,
-    onColumnVisibilityChange: setColumnVisibility,
-    state: {
-      rowSelection: selectedRows,
-      sorting,
-      columnVisibility,
-    },
+    initialSorting,
+    initialColumnVisibility,
   });
 
+  const table = externalTable ?? internalTable;
+
+  const { rows } = table.getRowModel();
+  const sortedRows = useMemo(() => {
+    if (externalSortedRows) return externalSortedRows;
+    return pinRowToTop(rows, pinnedToTopRowId);
+  }, [externalSortedRows, rows, pinnedToTopRowId]);
+
+  useEffect(() => {
+    if (onSortedRowsChange) {
+      onSortedRowsChange(sortedRows.map((row) => row.original));
+    }
+  }, [sortedRows, onSortedRowsChange]);
+
+  const filteredRows = table.getFilteredRowModel().rows;
+  const countableRows = getRowExcludedFromCount
+    ? filteredRows.filter((row) => !getRowExcludedFromCount(row))
+    : filteredRows;
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
-  const filteredRowCount = table.getFilteredRowModel().rows.length;
+  const filteredRowCount = countableRows.length;
   const filterValue = String(table.getColumn(filterKey)?.getFilterValue() || '');
 
   return (
     <>
-      {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
+      {isLoading && data?.length === 0 && <LoadingIndicatorDialog isOpen={isLoading} />}
 
       {showSelectedCount && (
-        <div className="text-sm text-muted-foreground">
-          {selectedRowsCount > 0 ? (
-            t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
-              selected: selectedRowsCount,
-              total: filteredRowCount,
-            })
-          ) : (
-            <>&nbsp;</>
-          )}
-        </div>
+        <SelectedRowsCount
+          applicationName={applicationName}
+          selectedRowsCount={selectedRowsCount}
+          filteredRowCount={filteredRowCount}
+        />
       )}
 
-      <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
-        {!!data.length && showSearchBarAndColumnSelect && (
-          <div className="flex items-center gap-2 py-4 pl-1">
+      <div className="h-full w-full flex-1 overflow-auto pr-1 scrollbar-thin">
+        {showSearchBarAndColumnSelect && (
+          <div className="flex items-center gap-2 pb-4 pt-2">
             <div className="min-w-0 flex-1">
               <Input
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(e) => table.getColumn(filterKey)?.setFilterValue(e.target.value)}
-                className={`w-full text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
+                variant={isDialog ? 'dialog' : 'default'}
               />
             </div>
 
@@ -162,13 +168,18 @@ const ScrollableTable = <TData, TValue>({
                 isDialog={isDialog}
               />
             )}
+
+            {searchBarAdditionalComponent}
           </div>
         )}
         <Table>
           {showHeader && (
-            <TableHeader className={`text-foreground ${textColorClassname}`}>
+            <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow
+                  key={headerGroup.id}
+                  variant={isDialog ? 'dialog' : 'default'}
+                >
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
@@ -186,9 +197,9 @@ const ScrollableTable = <TData, TValue>({
               ))}
             </TableHeader>
           )}
-          <TableBody className="container">
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => {
+          <TableBody>
+            {sortedRows.length ? (
+              sortedRows.map((row) => {
                 const isRowDisabled = getRowDisabled?.(row);
 
                 return (
@@ -198,12 +209,14 @@ const ScrollableTable = <TData, TValue>({
                     isRowDisabled={isRowDisabled}
                     enableDragAndDrop={enableDragAndDrop}
                     canDropOnRow={canDropOnRow}
-                    textColorClassname={textColorClassname}
+                    variant={isDialog ? 'dialog' : 'default'}
+                    isKeyboardFocused={focusedRowId === row.id}
+                    onRowClick={onRowClick}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className={`${textColorClassname} ${isRowDisabled ? 'opacity-70' : ''}`}
+                        className={cn(isRowDisabled && 'opacity-70')}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -212,10 +225,10 @@ const ScrollableTable = <TData, TValue>({
                 );
               })
             ) : (
-              <TableRow>
+              <TableRow variant={isDialog ? 'dialog' : 'default'}>
                 <TableCell
                   colSpan={columns?.length}
-                  className={`h-24 text-center ${textColorClassname}`}
+                  className="h-24 text-center"
                 >
                   {t('table.noDataAvailable')}
                 </TableCell>

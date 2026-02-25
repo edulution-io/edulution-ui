@@ -29,6 +29,7 @@ import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
 
 type UseFileSharingStore = {
@@ -37,14 +38,16 @@ type UseFileSharingStore = {
   currentPath: string;
   downloadProgressList: DownloadFileDto[];
   pathToRestoreSession: string;
+  lastVisitedShareDisplayName: string;
   fileOperationProgress: null | FilesharingProgressDto;
   directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
+  setLastVisitedShareDisplayName: (name: string) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
-  fetchFiles: (shareName: string | undefined, path?: string) => Promise<void>;
+  fetchFiles: (shareName: string | undefined, path?: string, forceCleanupCache?: boolean) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
@@ -53,6 +56,7 @@ type UseFileSharingStore = {
   currentlyDisabledFiles: Record<string, boolean>;
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
+  clearFilesOnShareChange: () => void;
   setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
   setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
   updateDownloadProgress: (progress: DownloadFileDto) => void;
@@ -79,6 +83,7 @@ const initialState = {
   fileOperationProgress: null,
   webdavShares: [],
   selectedWebdavShare: '',
+  lastVisitedShareDisplayName: '',
 };
 
 type PersistedFileManagerStore = (
@@ -129,16 +134,31 @@ const useFileSharingStore = create<UseFileSharingStore>(
         set({ isLoading });
       },
 
-      fetchFiles: async (shareName, path: string = '/') => {
+      clearFilesOnShareChange: () => {
+        set({
+          files: [],
+          selectedItems: [],
+          selectedRows: {},
+          isLoading: true,
+          pathToRestoreSession: '/',
+          fileOperationProgress: null,
+          currentPath: '/',
+        });
+      },
+
+      fetchFiles: async (shareName, path: string = '/', forceCleanupCache: boolean = false) => {
         try {
           set({ isLoading: true });
+          const headers: Record<string, string> = {};
+          if (forceCleanupCache) {
+            headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
+          }
           const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
             params: { type: ContentType.FILE, path, share: shareName },
+            headers,
           });
 
-          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
-          if (!webdavShareType) return;
-          const files = processWebdavResponse(data, webdavShareType);
+          const files = processWebdavResponse(data, path);
 
           set({
             currentPath: path,
@@ -192,6 +212,10 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setSelectedWebdavShare: (webdavShare) => {
         set({ selectedWebdavShare: webdavShare });
+      },
+
+      setLastVisitedShareDisplayName: (name) => {
+        set({ lastVisitedShareDisplayName: name });
       },
 
       reset: () => set(initialState),

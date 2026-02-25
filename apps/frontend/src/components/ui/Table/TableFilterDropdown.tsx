@@ -1,0 +1,91 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button, cn } from '@edulution-io/ui-kit';
+import DropdownMenu from '@/components/shared/DropdownMenu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
+import type FilterOption from '@libs/ui/types/filterOption';
+
+interface TableFilterDropdownProps {
+  filterOptions: FilterOption[];
+  isDialog?: boolean;
+  activeFilterCount?: number;
+  onResetFilters?: () => void;
+}
+
+const TableFilterDropdown = ({
+  filterOptions,
+  isDialog,
+  activeFilterCount = 0,
+  onResetFilters,
+}: TableFilterDropdownProps) => {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const dropdownItems = [
+    ...filterOptions.map((option) => ({
+      label: option.isSeparator ? option.key : t(option.translationKey),
+      isCheckbox: !option.isSeparator,
+      isSeparator: option.isSeparator,
+      checked: option.checked,
+      onCheckedChange: (checked: boolean) => option.onChange(checked),
+    })),
+    ...(activeFilterCount > 0 && onResetFilters
+      ? [
+          { label: 'reset-separator', isSeparator: true },
+          { label: t('common.reset'), onClick: onResetFilters, preventClose: true },
+        ]
+      : []),
+  ];
+
+  return (
+    <DropdownMenu
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      trigger={
+        <div className="relative">
+          <Button
+            variant="btn-table"
+            className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
+          >
+            {t('common.filter')}
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
+            />
+          </Button>
+          <NotificationCounter
+            count={activeFilterCount}
+            className="-right-2 -top-2"
+            variant={NOTIFICATION_COUNTER_VARIANTS.PRIMARY}
+          />
+        </div>
+      }
+      items={dropdownItems}
+    />
+  );
+};
+
+export default TableFilterDropdown;

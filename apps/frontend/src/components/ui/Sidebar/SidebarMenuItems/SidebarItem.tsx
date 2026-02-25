@@ -28,6 +28,7 @@ import useTrulyVisible from '@/hooks/useTrulyVisible';
 import DynamicEllipsis from '@/components/shared/DynamicEllipsis';
 import SidebarItemPopover from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemPopover';
 import SidebarItemIcon from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemIcon';
+import { cn } from '@edulution-io/ui-kit';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   menuItem,
@@ -76,11 +77,10 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
       {isSelected && <PageTitle translationId={title} />}
       <NavLink
         to={link}
-        className={`
-          group relative z-40 flex h-14 cursor-pointer items-center
-          justify-end gap-4 px-4 py-2 md:block md:px-0
-          ${isSelected ? color : ''}
-        `}
+        className={cn(
+          'group relative z-40 flex h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-0',
+          isSelected ? `${color} text-white` : '',
+        )}
       >
         <p className="md:hidden">{title}</p>
 
@@ -90,6 +90,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
         >
           <SidebarItemIcon
             isHovered={isHovered}
+            isSelected={isSelected}
             iconSrc={icon}
             title={title}
           />

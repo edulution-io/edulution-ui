@@ -32,4 +32,5 @@ export interface AppConfigExtendedOption {
   options?: { id: string; name: string }[];
   requiredContainers?: string[];
   disabledWarningText?: string;
+  linkedTo?: ExtendedOptionKeysType;
 }

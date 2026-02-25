@@ -26,7 +26,9 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { t } from 'i18next';
-import { MdOutlineTableChart, MdOutlineViewColumn } from 'react-icons/md';
+import { faTable, faColumns, faGrip } from '@fortawesome/free-solid-svg-icons';
+import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
+import FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 
 const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
   const {
@@ -39,13 +41,9 @@ const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
     setSelectedBulletinToEdit,
   } = useBulletinBoardEditorialStore();
 
-  const { isEditorialModeEnabled, setIsEditorialModeEnabled } = useBulletinBoardStore();
+  const { isEditorialModeEnabled, setIsEditorialModeEnabled, gridRows, setGridRows } = useBulletinBoardStore();
 
   const hasTheUserEditPermissionToCategories = categoriesWithEditPermission.length > 0;
-
-  if (!hasTheUserEditPermissionToCategories) {
-    return null;
-  }
 
   const selectedBulletinIds = Object.keys(selectedRows);
 
@@ -54,20 +52,56 @@ const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
     setSelectedRows({});
   };
 
-  const config: FloatingButtonsBarConfig = {
-    buttons: [
+  const gridRowsButton: FloatingButtonConfig = {
+    icon: faGrip,
+    text: t('bulletinboard.view'),
+    variant: 'dropdown',
+    dropdownItems: [
       {
-        icon: isEditorialModeEnabled ? MdOutlineViewColumn : MdOutlineTableChart,
-        text: t(`common.${isEditorialModeEnabled ? 'columns' : 'table'}`),
-        onClick: onSwitchEditorialModeButtonClick,
+        label: t('bulletinboard.viewAuto'),
+        isCheckbox: true,
+        checked: gridRows === BULLETIN_BOARD_GRID_ROWS.AUTO,
+        onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.AUTO).catch(() => {}),
       },
-      DeleteButton(() => setIsDeleteBulletinDialogOpen(true), selectedBulletinIds.length > 0),
-      EditButton(() => {
-        setIsCreateBulletinDialogOpen(true);
-        setSelectedBulletinToEdit(bulletins.find((b) => b.id === selectedBulletinIds[0]) || null);
-      }, selectedBulletinIds.length === 1),
-      CreateButton(() => setIsCreateBulletinDialogOpen(true)),
+      {
+        label: t('bulletinboard.viewOneRow'),
+        isCheckbox: true,
+        checked: gridRows === BULLETIN_BOARD_GRID_ROWS.ONE,
+        onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.ONE).catch(() => {}),
+      },
+      {
+        label: t('bulletinboard.viewTwoRows'),
+        isCheckbox: true,
+        checked: gridRows === BULLETIN_BOARD_GRID_ROWS.TWO,
+        onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.TWO).catch(() => {}),
+      },
+      {
+        label: t('bulletinboard.viewThreeRows'),
+        isCheckbox: true,
+        checked: gridRows === BULLETIN_BOARD_GRID_ROWS.THREE,
+        onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.THREE).catch(() => {}),
+      },
     ],
+  };
+
+  const editorialButtons: FloatingButtonConfig[] = hasTheUserEditPermissionToCategories
+    ? [
+        {
+          icon: isEditorialModeEnabled ? faColumns : faTable,
+          text: t(`common.${isEditorialModeEnabled ? 'columns' : 'table'}`),
+          onClick: onSwitchEditorialModeButtonClick,
+        },
+        DeleteButton(() => setIsDeleteBulletinDialogOpen(true), selectedBulletinIds.length > 0),
+        EditButton(() => {
+          setIsCreateBulletinDialogOpen(true);
+          setSelectedBulletinToEdit(bulletins.find((b) => b.id === selectedBulletinIds[0]) || null);
+        }, selectedBulletinIds.length === 1),
+        CreateButton(() => setIsCreateBulletinDialogOpen(true)),
+      ]
+    : [];
+
+  const config: FloatingButtonsBarConfig = {
+    buttons: [gridRowsButton, ...editorialButtons],
     keyPrefix: 'bulletin-board-page-floating-button_',
   };
 

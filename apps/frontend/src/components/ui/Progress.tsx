@@ -22,7 +22,7 @@
 import * as React from 'react';
 import * as ProgressPrimitive from '@radix-ui/react-progress';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,

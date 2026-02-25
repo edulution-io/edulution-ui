@@ -17,18 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { MdOutlineQrCode } from 'react-icons/md';
+import { QrCodeIcon } from '@/assets/icons';
 import { toast } from 'sonner';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
@@ -42,14 +42,15 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
-import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
-import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import getRandomUUID from '@/utils/getRandomUUID';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
@@ -75,9 +76,8 @@ const LoginPage: React.FC = () => {
   const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { silentLogin } = useSilentLoginWithPassword();
-  const theme = COLOR_SCHEME;
 
-  const logoSrc = getMainLogoUrl(theme);
+  const logoSrc = getAssetUrl(APPS.GENERAL_SETTINGS, ASSET_TYPES.logo);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -85,7 +85,7 @@ const LoginPage: React.FC = () => {
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
   const [sessionID, setSessionID] = useState<string | null>(null);
-  const [useDefaultLogo, setUseDefaultLogo] = useState(false);
+  const hasRegisteredRef = useRef(false);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -142,24 +142,34 @@ const LoginPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const isLoginPrevented = !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username;
-    if (isLoginPrevented) {
+    const isLoginPrevented =
+      !eduApiToken || !auth.isAuthenticated || !auth.user?.profile?.preferred_username || !webdavKey || !encryptKey;
+    if (isLoginPrevented || hasRegisteredRef.current) {
       return;
     }
+    hasRegisteredRef.current = true;
+
     const registerUser = async () => {
       await handleRegisterUser();
-
+      useSessionFlagsStore.getState().setIsJustLoggedIn(true);
       setIsEnterTotpVisible(false);
     };
 
     void registerUser();
-  }, [auth.isAuthenticated, eduApiToken]);
+  }, [auth.isAuthenticated, eduApiToken, webdavKey, encryptKey]);
+
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      hasRegisteredRef.current = false;
+    }
+  }, [auth.isAuthenticated]);
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isGlobalSettingsReady = globalSettings !== null;
   const isDeploymentTargetReady = (isGeneric && !isLmn) || !!(isLmn && lmnApiToken && lmnUser);
   const isAuthenticatedAppReady =
     isAppConfigReady && isAuthenticated && isGlobalSettingsReady && isDeploymentTargetReady;
+  const isWaitingForRedirect = auth.isAuthenticated || !!eduApiToken;
 
   useEffect(() => {
     if (!isAuthenticatedAppReady) return;
@@ -167,17 +177,15 @@ const LoginPage: React.FC = () => {
     const currentUser = auth.user?.profile?.preferred_username;
     const previousUser = sessionStorage.getItem('username');
 
-    if (previousUser && previousUser !== currentUser) {
-      sessionStorage.setItem('username', currentUser ?? '');
-
-      navigate(LANDING_PAGE_ROUTE, { replace: true });
-      return;
-    }
-
     sessionStorage.setItem('username', currentUser ?? '');
 
     if (state?.from) {
       navigate(state.from, { replace: true });
+      return;
+    }
+
+    if (previousUser && previousUser !== currentUser) {
+      navigate(LANDING_PAGE_ROUTE, { replace: true });
       return;
     }
 
@@ -360,59 +368,60 @@ const LoginPage: React.FC = () => {
         variant="modal"
         className="overflow-y-auto bg-white shadow-lg scrollbar-thin"
       >
-        {useDefaultLogo ? (
-          <DesktopLogo className="mx-auto w-64" />
+        <img
+          src={logoSrc}
+          alt={t('logo')}
+          className="mx-auto w-64"
+        />
+        {isWaitingForRedirect ? (
+          <div className="flex flex-col items-center justify-center py-8">
+            <CircleLoader forceLightMode />
+          </div>
         ) : (
-          <img
-            src={logoSrc}
-            alt={t('settings.settings.logo.title')}
-            className="mx-auto w-64"
-            onError={() => setUseDefaultLogo(true)}
-          />
-        )}
-        <Form
-          {...form}
-          data-testid="test-id-login-page-form"
-        >
-          <form
-            onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
-            className="space-y-4"
+          <Form
+            {...form}
             data-testid="test-id-login-page-form"
           >
-            {getMainContent()}
-            {!showQrCode && !form.getFieldState('password').error && <p className="flex h-3" />}
-
-            {!showQrCode && (
-              <Button
-                className="mx-auto w-full justify-center text-white shadow-xl"
-                type="submit"
-                variant="btn-security"
-                size="lg"
-                data-testid="test-id-login-page-submit-button"
-                disabled={isLoading || totpIsLoading}
-              >
-                {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
-              </Button>
-            )}
-            <Button
-              className="mx-auto w-full justify-center border-none text-black shadow-xl hover:bg-ciGrey/10 hover:text-black"
-              type="button"
-              variant="btn-outline"
-              size="lg"
-              disabled={isLoading || totpIsLoading}
-              onClick={handleCancelOrToggleQrCode}
+            <form
+              onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
+              className="space-y-4"
+              data-testid="test-id-login-page-form"
             >
-              {isEnterTotpVisible || showQrCode ? (
-                t('common.cancel')
-              ) : (
-                <>
-                  {t('login.loginWithApp')}
-                  <MdOutlineQrCode size={20} />
-                </>
+              {getMainContent()}
+              {!showQrCode && !form.getFieldState('password').error && <p className="flex h-3" />}
+
+              {!showQrCode && (
+                <Button
+                  className="mx-auto w-full justify-center text-white shadow-xl"
+                  type="submit"
+                  variant="btn-security"
+                  size="lg"
+                  data-testid="test-id-login-page-submit-button"
+                  disabled={isLoading || totpIsLoading}
+                >
+                  {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+                </Button>
               )}
-            </Button>
-          </form>
-        </Form>
+              <Button
+                className="mx-auto w-full justify-center border-none text-black shadow-xl hover:bg-ciGrey/10 hover:text-black"
+                type="button"
+                variant="btn-outline"
+                size="lg"
+                disabled={isLoading || totpIsLoading}
+                onClick={handleCancelOrToggleQrCode}
+              >
+                {isEnterTotpVisible || showQrCode ? (
+                  t('common.cancel')
+                ) : (
+                  <>
+                    {t('login.loginWithApp')}
+                    <QrCodeIcon className="h-6 w-6 text-black" />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
       </Card>
     </PageLayout>
   );

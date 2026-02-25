@@ -22,18 +22,13 @@ import { MobileLogoIcon } from '@/assets/icons';
 import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
-import useSidebarItems from '@/hooks/useSidebarItems';
-import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const LauncherButton: React.FC = () => {
   const { t } = useTranslation();
   const { toggleLauncher } = useLauncherStore();
-  const sidebarItems = useSidebarItems();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
-
-  const totalNotifications = sidebarItems.reduce((sum, item) => sum + (item.notificationCounter ?? 0), 0);
 
   const buttonClassName = isEdulutionApp ? '' : 'lg:block lg:px-3';
   const titleClassName = isEdulutionApp ? '' : 'lg:hidden';
@@ -43,7 +38,7 @@ const LauncherButton: React.FC = () => {
       type="button"
       onClick={toggleLauncher}
       className={cn(
-        'group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2',
+        'group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
         buttonClassName,
       )}
     >
@@ -54,8 +49,6 @@ const LauncherButton: React.FC = () => {
         width={SIDEBAR_ICON_WIDTH}
         aria-label="edulution-mobile-logo"
       />
-
-      <NotificationCounter count={totalNotifications} />
     </button>
   );
 };

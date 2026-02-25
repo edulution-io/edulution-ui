@@ -20,6 +20,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Model } from 'mongoose';
 import axios from 'axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -116,6 +117,8 @@ describe(ConferencesService.name, () => {
   beforeEach(async () => {
     const notificationMock = {
       notifyUsernames: jest.fn().mockResolvedValue(undefined),
+      upsertNotificationForSource: jest.fn().mockResolvedValue(undefined),
+      cascadeDeleteBySourceId: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -142,6 +145,10 @@ describe(ConferencesService.name, () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -233,7 +240,7 @@ describe(ConferencesService.name, () => {
 
       await service.toggleConferenceIsRunning('mockMeetingId', false, mockCreator.username);
 
-      expect(service.startConference).toHaveBeenCalledWith(mockConferenceDocument, false);
+      expect(service.startConference).toHaveBeenCalledWith(mockConferenceDocument, false, mockCreator.username);
       expect(service.stopConference).not.toHaveBeenCalled();
     });
 
@@ -296,7 +303,7 @@ describe(ConferencesService.name, () => {
       });
       jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
 
-      await service.startConference(mockConferenceDocument, false);
+      await service.startConference(mockConferenceDocument, false, mockCreator.username);
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: true }));
     });

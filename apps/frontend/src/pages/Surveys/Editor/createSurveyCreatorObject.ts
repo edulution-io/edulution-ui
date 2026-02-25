@@ -42,18 +42,20 @@ const createSurveyCreatorObject = (language = 'en') => {
 
   const locale = editorLocalization.getLocale(language) as TEditorLocale;
 
-  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
-  locale.ed.surveyPlaceholderDescription = t('survey.editor.surveyPlaceholderDescription');
-  locale.ed.surveyPlaceholderDescriptionMobile = t('survey.editor.surveyPlaceholderDescription');
-  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
-  locale.ed.pagePlaceHolder = t('survey.editor.pagePlaceHolder');
-  locale.ed.panelPlaceHolder = t('survey.editor.panelPlaceHolder');
+  locale.ed.surveyPlaceHolder = t('survey.editor.customTranslations.surveyPlaceHolder');
+  locale.ed.surveyPlaceholderDescription = t('survey.editor.customTranslations.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceholderDescriptionMobile = t(
+    'survey.editor.customTranslations.surveyPlaceholderDescriptionMobile',
+  );
+  locale.ed.pagePlaceHolder = t('survey.editor.customTranslations.pagePlaceHolder');
+  locale.ed.panelPlaceHolder = t('survey.editor.customTranslations.panelPlaceHolder');
+  locale.tabs.preview = t('survey.editor.customTranslations.previewTabTitle');
 
   const creatorOptions = {
     generateValidJSON: true,
     isAutoSave: true,
     showJSONEditorTab: true,
-    showPreviewTab: false,
+    showPreviewTab: true,
     showLogicTab: false,
     questionTypes: [
       'radiogroup',

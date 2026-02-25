@@ -23,7 +23,6 @@ import { useTranslation } from 'react-i18next';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { MdGroups } from 'react-icons/md';
 import ClassList from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassList';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import Input from '@/components/shared/Input';
@@ -64,11 +63,10 @@ const PrintPasswordsPage: React.FC = () => {
     schoolClass.member?.find((member) => (isSuperAdmin ? true : userRegex.test(member))) &&
     (schoolClass.cn.includes(filterKeyWord) || schoolClass.displayName.includes(filterKeyWord));
 
-  const groupRows: GroupColumn[] = [
+  const groupRows: Omit<GroupColumn, 'icon'>[] = [
     {
       name: UserGroups.Classes,
       translationId: 'myClasses',
-      icon: <MdGroups className="h-7 w-7" />,
       groups: userSchoolClasses.filter(filterSchoolClasses),
     },
   ];
@@ -77,7 +75,7 @@ const PrintPasswordsPage: React.FC = () => {
 
   return (
     <PageLayout>
-      <div className="mb-2 flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-4">
+      <div className="mb-2 flex w-full flex-col gap-2 pt-1 md:flex-row md:items-center md:gap-4">
         <div className="min-w-0 flex-1">
           <Input
             className="h-10 w-full"
@@ -90,14 +88,14 @@ const PrintPasswordsPage: React.FC = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
       </div>
 
-      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto text-background scrollbar-thin">
         <p className="mt-2 min-w-full">{t('classmanagement.printPasswordsPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h3 className="text-background">{t(`classmanagement.printPasswords`)}</h3>
+            <h3>{t(`classmanagement.printPasswords`)}</h3>
             <ClassList
               row={row}
               selectedClasses={selectedClasses}

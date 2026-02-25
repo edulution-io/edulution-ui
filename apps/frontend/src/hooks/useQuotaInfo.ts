@@ -17,35 +17,45 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
-import type { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
+import formatQuotaInGb from '@libs/common/utils/formatQuotaInGb';
+import getProgressBarColor from '@libs/common/utils/getProgressBarColor';
+import QuotaResponse, { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
+import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 
-const useQuotaInfo = (): {
+interface UseQuotaInfoResult {
   quotaUsed: number | string;
   quotaHardLimit: number | string;
+  quotaUsedInGb: string;
+  quotaHardLimitInGb: string;
   mailQuota: string;
   percentageUsed: number;
+  progressBarColor: string;
   isLoading: boolean;
-  refetchUsersQuota: () => void;
-} => {
+}
+
+const useQuotaInfo = (externalUser?: LmnUserInfo, externalQuota?: QuotaResponse): UseQuotaInfoResult => {
   const { user: lmnUser, lmnApiToken, usersQuota, fetchUsersQuota } = useLmnApiStore();
-
   const { user } = useUserStore();
-  const school = lmnUser?.school ?? 'default-school';
 
-  const refetch = () => {
-    if (lmnApiToken && user?.username) {
+  const effectiveUser = externalUser ?? lmnUser;
+  const effectiveQuota = externalQuota ?? usersQuota;
+  const school = effectiveUser?.school ?? DEFAULT_SCHOOL;
+
+  useEffect(() => {
+    if (!externalUser && !externalQuota && lmnApiToken && user?.username) {
       void fetchUsersQuota(user.username);
     }
-  };
+  }, [lmnApiToken, user?.username, externalUser, externalQuota]);
 
   return useMemo(() => {
-    const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
+    const quota = effectiveQuota?.[effectiveUser?.school || DEFAULT_SCHOOL] as QuotaInfo | undefined;
     const quotaUsed = quota?.used ?? '--';
     const quotaHardLimit = quota?.hard_limit ?? '--';
-    const mailQuota = lmnUser?.sophomorixMailQuotaCalculated?.[0] ?? '--';
+    const mailQuota = effectiveUser?.sophomorixMailQuotaCalculated?.[0] ?? '--';
 
     const percentageUsed =
       typeof quotaUsed === 'number' && typeof quotaHardLimit === 'number' ? (quotaUsed / quotaHardLimit) * 100 : 0;
@@ -53,12 +63,14 @@ const useQuotaInfo = (): {
     return {
       quotaUsed,
       quotaHardLimit,
+      quotaUsedInGb: formatQuotaInGb(quotaUsed),
+      quotaHardLimitInGb: formatQuotaInGb(quotaHardLimit),
       mailQuota,
       percentageUsed,
+      progressBarColor: getProgressBarColor(percentageUsed),
       isLoading: !quota,
-      refetchUsersQuota: refetch,
     };
-  }, [usersQuota, school, lmnUser, lmnApiToken]);
+  }, [effectiveQuota, school, effectiveUser, lmnApiToken]);
 };
 
 export default useQuotaInfo;

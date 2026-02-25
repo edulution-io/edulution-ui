@@ -33,23 +33,22 @@ import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettings
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import { toast } from 'sonner';
 import APPS from '@libs/appconfig/constants/apps';
+import type TabOption from '@libs/userManagement/types/tabOption';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
 import useGlobalSettingsApiStore from '../GlobalSettings/useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from '../GlobalSettings/GlobalSettingsFloatingButtons';
-import InfoPage from '../Info/InfoPage';
+import LicensePage from '../License/LicensePage';
 
-interface TabOption {
-  id: string;
-  nameKey: string;
+interface SettingsTabOption extends TabOption {
   component: (props: {
     form: UseFormReturn<GlobalSettingsFormValues>;
     onSubmit: SubmitHandler<GlobalSettingsDto>;
   }) => React.ReactNode;
 }
 
-const TAB_OPTIONS: TabOption[] = [
+const TAB_OPTIONS: SettingsTabOption[] = [
   {
     id: GLOBAL_SETTINGS_TABS.CONTAINER,
     nameKey: 'dockerOverview.container-view',
@@ -75,7 +74,7 @@ const TAB_OPTIONS: TabOption[] = [
       />
     ),
   },
-  { id: GLOBAL_SETTINGS_TABS.INFO, nameKey: 'settings.info.title', component: () => <InfoPage /> },
+  { id: GLOBAL_SETTINGS_TABS.INFO, nameKey: 'settings.info.title', component: () => <LicensePage /> },
 ];
 
 const showFloatingButtonsTabList: Set<string> = new Set([
@@ -152,7 +151,7 @@ const SettingsOverviewPage: React.FC = () => {
       <>
         <Tabs
           value={tabValue}
-          className="flex h-full flex-col"
+          className="flex h-full flex-col pt-1"
         >
           <div className="sticky top-0 z-20 backdrop-blur-xl">
             <TabsList
@@ -186,7 +185,7 @@ const SettingsOverviewPage: React.FC = () => {
             </TabsContent>
           ))}
         </Tabs>
-        {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}{' '}
+        {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}
       </>
     );
 

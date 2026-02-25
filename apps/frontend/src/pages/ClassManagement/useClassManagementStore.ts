@@ -302,6 +302,28 @@ const useClassManagementStore = create<ClassManagementStore>(
         }
       },
 
+      updateSchoolClass: async (form) => {
+        set({ isSchoolClassLoading: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const formValues = form.getValues();
+          await eduApi.patch(
+            SCHOOL_CLASSES,
+            {
+              formValues: minimizeFormValues(formValues),
+            },
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            },
+          );
+          toast.success(i18n.t('classmanagement.schoolClass.updateSuccess'));
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isSchoolClassLoading: false });
+        }
+      },
+
       fetchUserSchoolClasses: async () => {
         if (get().areSchoolClassesLoading) return;
         try {

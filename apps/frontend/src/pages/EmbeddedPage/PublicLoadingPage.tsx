@@ -43,9 +43,9 @@ const PublicLoadingPage = () => {
 
     navigate(LOGIN_ROUTE, {
       replace: true,
-      state: { from: location.pathname },
+      state: { from: `${location.pathname}${location.search}` },
     });
-  }, [isGetPublicAppConfigsLoading, publicAppConfigs, location.pathname]);
+  }, [isGetPublicAppConfigsLoading, publicAppConfigs, location.pathname, location.search]);
 
   return <div />;
 };

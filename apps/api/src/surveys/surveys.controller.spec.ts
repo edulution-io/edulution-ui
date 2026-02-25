@@ -18,14 +18,18 @@
  */
 
 import { Model } from 'mongoose';
-import { HttpStatus } from '@nestjs/common';
-import { getModelToken } from '@nestjs/mongoose';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
+import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
+import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
+import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -66,6 +70,7 @@ import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 import { SurveysTemplate } from './surveys-template.schema';
 
 describe(SurveysController.name, () => {
@@ -74,7 +79,11 @@ describe(SurveysController.name, () => {
   let surveyAnswersService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
-  const pushMock = { notify: jest.fn() };
+  const pushMock = {
+    notify: jest.fn(),
+    upsertNotificationForSource: jest.fn().mockResolvedValue(undefined),
+    cascadeDeleteBySourceId: jest.fn().mockResolvedValue(undefined),
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SurveysController],
@@ -90,6 +99,10 @@ describe(SurveysController.name, () => {
         SurveysAttachmentService,
         SurveyAnswersService,
         SurveysTemplateService,
+        {
+          provide: getConnectionToken(),
+          useValue: jest.fn(),
+        },
         SurveyAnswerAttachmentsService,
         {
           provide: getModelToken(SurveyAnswer.name),
@@ -114,6 +127,10 @@ describe(SurveysController.name, () => {
         { provide: NotificationsService, useValue: pushMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -370,6 +387,62 @@ describe(SurveysController.name, () => {
         firstUsersMockedAnswerForAnsweredSurveys01,
         attendee,
       );
+    });
+  });
+
+  describe('path validation for survey files', () => {
+    describe('survey attachment paths', () => {
+      const pipe = new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH);
+
+      it('should accept a valid surveyId param', () => {
+        expect(pipe.transform('507f1f77bcf86cd799439011')).toBe('507f1f77bcf86cd799439011');
+      });
+
+      it('should accept a valid questionId param', () => {
+        expect(pipe.transform('q-12345')).toBe('q-12345');
+      });
+
+      it('should accept a valid attachment filename', () => {
+        expect(pipe.transform('chart-results.png')).toBe('chart-results.png');
+      });
+
+      it('should block traversal via surveyId param', () => {
+        const result = pipe.transform('../../secrets');
+        expect(result).not.toContain('..');
+      });
+    });
+
+    describe('survey answer temporary attachment paths', () => {
+      const pipe = new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH);
+
+      it('should accept a valid username param', () => {
+        expect(pipe.transform('teacher01')).toBe('teacher01');
+      });
+
+      it('should accept a filename with underscores', () => {
+        expect(pipe.transform('answer_screenshot_01.jpg')).toBe('answer_screenshot_01.jpg');
+      });
+
+      it('should throw for empty surveyId', () => {
+        expect(() => pipe.transform('')).toThrow(BadRequestException);
+      });
+
+      it('should sanitize username with special characters', () => {
+        const result = pipe.transform('user@domain.com');
+        expect(result).toBe('userdomain.com');
+      });
+    });
+
+    describe('survey temp file paths', () => {
+      const pipe = new ValidatePathPipe(SURVEYS_TEMP_FILES_PATH);
+
+      it('should accept a temp upload filename', () => {
+        expect(pipe.transform('1706789012345-upload.png')).toBe('1706789012345-upload.png');
+      });
+
+      it('should return undefined for null input', () => {
+        expect(pipe.transform(null as unknown as string)).toBeUndefined();
+      });
     });
   });
 });

@@ -63,13 +63,16 @@ const ResetMfaForm: React.FC = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-2"
+      >
         <FormFieldSH
           control={control}
           name="selectedUsers"
           render={() => (
             <FormItem>
-              <p className="font-bold">{t('settings.userAdministration.selectUsersTitle')}</p>
+              <p className="font-bold text-background">{t('settings.userAdministration.selectUsersTitle')}</p>
               <FormControl>
                 <AsyncMultiSelect
                   value={getValues('selectedUsers')}

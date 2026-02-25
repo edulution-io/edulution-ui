@@ -45,6 +45,7 @@ import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import buildNormalizedWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -151,8 +152,10 @@ class WebdavService {
   }
 
   async ensureFolderExists(username: string, basePath: string, folderName: string, share: string) {
-    const exists = await this.checkIfFolderExists(username, basePath, folderName, share);
+    const directories = await this.getDirectoryAtPath(username, `${basePath}/`, share);
+    const exists = directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === folderName);
     if (!exists) {
+      Logger.verbose(`Creating folder '${folderName}' at '${basePath}'`, WebdavService.name);
       await this.createFolder(username, basePath, folderName, share);
     }
   }
@@ -161,7 +164,9 @@ class WebdavService {
     try {
       const cleanedPath = (path || '').replace(/^\/+/, '').replace(/\/+$/, '');
 
-      const finalPath = cleanedPath ? `${cleanedPath}/` : '';
+      const encodedPath = cleanedPath.split('/').filter(Boolean).map(encodeURIComponent).join('/');
+
+      const finalPath = encodedPath ? `${encodedPath}/` : '';
 
       return new URL(finalPath, base).href;
     } catch (err) {
@@ -170,11 +175,24 @@ class WebdavService {
     }
   }
 
-  async getFilesAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
+  async getFilesAtPath(
+    username: string,
+    path: string,
+    share: string,
+    forceCleanupCache: boolean = false,
+  ): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
+
+    const headers: Record<string, string> = {
+      [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+    };
+
+    if (forceCleanupCache) {
+      headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
+    }
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -182,20 +200,31 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
-        headers: {
-          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
-        },
+        headers,
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
     )) as DirectoryFileDTO[];
   }
 
-  async getDirectoryAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
+  async getDirectoryAtPath(
+    username: string,
+    path: string,
+    share: string,
+    forceCleanupCache: boolean = false,
+  ): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
+
+    const headers: Record<string, string> = {
+      [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+    };
+
+    if (forceCleanupCache) {
+      headers[HTTP_HEADERS.XForceCleanupCache] = 'true';
+    }
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -203,9 +232,7 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
-        headers: {
-          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
-        },
+        headers,
       },
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
@@ -294,13 +321,17 @@ class WebdavService {
     }
   }
 
-  async deletePath(username: string, fullPath: string, share: string): Promise<WebdavStatusResponse> {
+  async deletePath(username: string, relativePath: string, share: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const encodedPath = buildNormalizedWebdavPath(relativePath);
+    const url = `${webdavShare.url.replace(/\/+$/, '')}/${encodedPath.replace(/^\/+/, '')}`;
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.DELETE,
-        url: encodeURI(fullPath),
+        url,
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.DeletionFailed,
@@ -319,17 +350,19 @@ class WebdavService {
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-    let destinationUrl = destFullPath;
+    const encodedDest = buildNormalizedWebdavPath(destFullPath);
+    let destinationUrl = encodedDest;
     if (webdavShare.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${encodedDest.replace(/^\/+/, '')}`;
     }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
-        url: encodeURI(originFullPath),
+        url: buildNormalizedWebdavPath(originFullPath),
         headers: {
-          Destination: encodeURI(destinationUrl),
+          Destination: destinationUrl,
+          Overwrite: 'T',
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
@@ -349,17 +382,18 @@ class WebdavService {
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-    let destinationUrl = destFullPath;
+    const encodedDest = buildNormalizedWebdavPath(destFullPath);
+    let destinationUrl = encodedDest;
     if (webdavShare.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${encodedDest.replace(/^\/+/, '')}`;
     }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
-        url: encodeURI(originFullPath),
+        url: buildNormalizedWebdavPath(originFullPath),
         headers: {
-          Destination: encodeURI(destinationUrl),
+          Destination: destinationUrl,
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
@@ -371,26 +405,12 @@ class WebdavService {
     );
   }
 
-  async checkIfFolderExists(username: string, parentPath: string, name: string, share: string): Promise<boolean> {
-    const directories = await this.getDirectoryAtPath(username, `${parentPath}/`, share);
-    return directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === name);
-  }
-
   async createCollectFolderIfNotExists(username: string, destinationPath: string, share: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
 
-    const folderAlreadyExistis = await this.checkIfFolderExists(
-      username,
-      `${pathWithoutFilename}/`,
-      FILE_PATHS.COLLECT,
-      share,
-    );
-
-    if (folderAlreadyExistis) return;
-
     try {
-      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT, share);
+      await this.ensureFolderExists(username, `${pathWithoutFilename}/`, FILE_PATHS.COLLECT, share);
     } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.CreationFailed,

@@ -23,7 +23,7 @@ import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptio
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useAppConfigTableDialogStore from './table/useAppConfigTableDialogStore';
@@ -37,10 +37,15 @@ interface UploadFileDialogProps {
 const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, tableId }) => {
   const { t } = useTranslation();
   const { isLoading, uploadFile } = useAppConfigsStore();
-  const { filesToUpload, setFilesToUpload } = useHandleUploadFileStore();
+  const { filesToUpload, updateFilesToUpload } = useHandleUploadFileStore();
 
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const isOpen = isDialogOpen === tableId;
+
+  const handleClose = () => {
+    updateFilesToUpload(() => []);
+    setDialogOpen('');
+  };
 
   const getDialogBody = () => (
     <>
@@ -62,9 +67,7 @@ const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, ta
       );
 
       toast.success(t('settings.appconfig.sections.files.uploadSuccess'));
-
-      setFilesToUpload([]);
-      setDialogOpen('');
+      handleClose();
     } catch (error) {
       toast.error(t('settings.appconfig.sections.files.uploadFailed'));
     }
@@ -76,7 +79,7 @@ const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, ta
         variant="btn-outline"
         size="lg"
         type="button"
-        onClick={() => setDialogOpen('')}
+        onClick={handleClose}
         disabled={isLoading}
       >
         {t('common.cancel')}
@@ -99,7 +102,7 @@ const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, ta
       isOpen={isOpen}
       body={getDialogBody()}
       footer={getDialogFooter()}
-      handleOpenChange={() => setDialogOpen('')}
+      handleOpenChange={handleClose}
     />
   );
 };

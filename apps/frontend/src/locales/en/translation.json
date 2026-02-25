@@ -8,6 +8,8 @@
   "not-set": "Not set",
   "imprint": "Imprint",
   "public": "Public",
+  "actions": "Actions",
+  "logo": "Logo",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -26,6 +28,11 @@
     "activeUntilPlaceholder": "unlimited",
     "appTitle": "Info Board",
     "description": "Here you can find your latest bulletins",
+    "view": "View",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Row",
+    "viewTwoRows": "2 Rows",
+    "viewThreeRows": "3 Rows",
     "sidebar": "Info Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -48,6 +55,7 @@
     "categoryName": "Category name",
     "bulletinUpdatedSuccessfully": "Bulletin updated successfully",
     "bulletinCreatedSuccessfully": "Bulletin created successfully",
+    "pushNotificationSentSuccessfully": "Push notification sent successfully",
     "bulletinsDeletedSuccessfully": "Bulletins deleted successfully",
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",
@@ -61,6 +69,8 @@
     "confirmDelete_other": "Do you really want to delete these {{count}} bulletins?",
     "rowsSelected": "{{selected}} out of {{total}} bulletins selected",
     "rowSelected": "{{selected}} out of {{total}} bulletin selected",
+    "item": "{{count}} bulletin",
+    "items": "{{count}} bulletins",
     "cancel": "Cancel",
     "title": "Title",
     "content": "Content",
@@ -75,7 +85,8 @@
       "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
       "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
-      "editableByUsersAndGroupsTitle": "Manage Bulletins"
+      "editableByUsersAndGroupsTitle": "Manage Bulletins",
+      "accessGroupsOnlyHint": "Only access groups can be assigned."
     },
     "errors": {
       "categoryNotFound": "Category not found",
@@ -90,8 +101,58 @@
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
       "attachmentNotFound": "Attachment not found",
-      "attachmentDeletionFailed": "Failed to delete an attachment"
-    }
+      "attachmentDeletionFailed": "Failed to delete an attachment",
+      "pushOnlyMissingFields": "Push title and push message are required for 'Push Only' mode"
+    },
+    "pushNotification": "Push Notification",
+    "saveMode": "Publication Type",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin Only",
+      "pushOnly": "Push Only"
+    },
+    "customPushTitle": "Push Notification Title",
+    "customPushTitlePlaceholder": "Bulletin ready",
+    "customPushBody": "Push Message",
+    "customPushBodyPlaceholder": "New bulletin in {{category}}"
+  },
+  "notificationscenter": {
+    "appTitle": "Notifications",
+    "description": "Here you can find all your notifications",
+    "sidebar": "Notifications",
+    "noNotifications": "You have no notifications",
+    "markAllAsRead": "Mark all as read",
+    "markAsRead": "Mark as read",
+    "from": "from {{ author }}",
+    "systemNotification": "System notification",
+    "messagesSection": "Messages",
+    "systemSection": "System Notifications",
+    "noMessages": "No messages",
+    "noSystemNotifications": "No system notifications",
+    "deleteAll": "Delete all",
+    "deleteAllMessages": "Delete all messages",
+    "deleteAllSystem": "Delete all system notifications",
+    "confirmDeleteAll": "Are you sure you want to delete all {{count}} notifications?",
+    "confirmDeleteMessages": "Are you sure you want to delete all {{count}} messages?",
+    "confirmDeleteSystem": "Are you sure you want to delete all {{count}} system notifications?",
+    "actionCannotBeUndone": "This action cannot be undone.",
+    "deletedNotifications": "{{count}} notification deleted",
+    "deletedNotifications_other": "{{count}} notifications deleted",
+    "loadMore": "Load more",
+    "menu": {
+      "all": "All",
+      "messages": "Messages",
+      "system": "System",
+      "sent": "Sent"
+    },
+    "sentSection": "Sent messages",
+    "noSentNotifications": "You haven't sent any messages",
+    "deleteAllSent": "Delete all sent",
+    "confirmDeleteSent": "Are you sure you want to delete all {{count}} sent messages? They will also be deleted for all recipients.",
+    "showRecipients": "Show recipients",
+    "noRecipients": "No recipients",
+    "recipientsStats": "{{read}} of {{total}} have read",
+    "read": "Read"
   },
   "mountpoints": {
     "home": "Home",
@@ -105,7 +166,12 @@
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
-    "chooseIcon": "Choose icon",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "More icons",
+    "searchIcons": "Search icons...",
+    "searchIconsHint": "Tip: Use English search terms",
+    "noIconsFound": "No icons found",
+    "iconsAvailable": "icons available",
     "uploadIcon": "Upload icon",
     "dropIconDescription": "Drag an image here or click to select an image. Supported formats: SVG, WEBP"
   },
@@ -136,6 +202,7 @@
       "globalQuota": "Cloud quota calculated",
       "mailQuota": "E-Mail quota calculated",
       "mibibyte": "MiB",
+      "gbUsed": "{{used}} / {{total}} GB used",
       "remainingLow": "Remaining quota low – {{free}} %",
       "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
@@ -174,8 +241,10 @@
       "AddManagementGroupFailed": "Add management group failed",
       "GetUserSchoolClassesFailed": "Failed to get user school classes",
       "GetUserSchoolClassFailed": "Failed to get user school class",
+      "UpdateSchoolClassFailed": "Failed to update school class",
       "GetUserProjectsFailed": "Failed to get user projects",
       "GetUserFailed": "Fetching failed",
+      "GetUsersFailed": "Failed to get users",
       "UpdateUserFailed": "Update failed",
       "GetCurrentUserRoomFailed": "Failed to get current user room",
       "CreateProjectFailed": "Create project failed",
@@ -187,7 +256,18 @@
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
       "GetSchoolsFailed": "Failed to get schools",
-      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version.",
+      "GetUsersByRoleFailed": "Failed to get users by role",
+      "GetManagementListFailed": "Failed to get management list",
+      "SaveManagementListFailed": "Failed to save management list",
+      "SophomorixCheckFailed": "Sophomorix check failed",
+      "SophomorixApplyFailed": "Sophomorix apply failed",
+      "GetSophomorixStatusFailed": "Failed to get sophomorix status",
+      "AddParentToStudentFailed": "Failed to register parent for student",
+      "DeleteParentFromStudentFailed": "Failed to remove parent from student group",
+      "GetDevicesFailed": "Failed to load device list",
+      "SaveDevicesFailed": "Failed to save device list",
+      "ImportDevicesFailed": "Device import failed"
     }
   },
   "ticketsystem": {
@@ -204,10 +284,13 @@
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
+    "item": "{{count}} job",
+    "items": "{{count}} jobs",
     "themeUpdated": {
       "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
       "failed": "The mail theme could not be updated."
     },
+    "newMail": "{{count}} new email(s) received",
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
@@ -233,6 +316,7 @@
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
+    "scriptInjectionFailed": "Failed to inject script into iframe",
     "unexpectedError": "An unexpected error occurred",
     "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
     "fileGenerationFailed": "File generation failed",
@@ -304,6 +388,8 @@
     "private": "Private",
     "rowsSelected": "{{selected}} of {{total}} conferences selected",
     "rowSelected": "{{selected}} of {{total}} conference selected",
+    "item": "{{count}} conference",
+    "items": "{{count}} conferences",
     "cancel": "Cancel",
     "password_required": "No password entered",
     "error": "Error",
@@ -336,10 +422,13 @@
     "selectFile": "Select file",
     "filePreview": "File preview",
     "saveFile": "Save file",
+    "print": "Print",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
     "rowsSelected": "{{selected}} of {{total}} files selected",
     "rowSelected": "{{selected}} of {{total}} file selected",
+    "item": "{{count}} element",
+    "items": "{{count}} elements",
     "fileWithSameNameAlreadyExists": "A file with the same name already exists.",
     "folderWithSameNameAlreadyExists": "A folder with the same name already exists.",
     "currentName": "Current name",
@@ -372,6 +461,16 @@
       "CopyFailed": "Copy failed",
       "FileFormatNotSupported": "File format is not supported"
     },
+    "singleDownload": {
+      "promptInfo": "Your file download has started.",
+      "downloadSucceeded": "Did the file download successfully?",
+      "help": "Help"
+    },
+    "multipleDownload": {
+      "promptInfo": "Your browser may ask for permission to download multiple files.",
+      "downloadSucceeded": "Did all files download successfully?",
+      "help": "Help"
+    },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
@@ -403,6 +502,14 @@
       "zipFilesAreUploading": "Files are uploading",
       "fileIsUploading": "{{filename}} is uploading"
     },
+    "textEditor": {
+      "unsavedChanges": "Unsaved Changes",
+      "unsavedChangesMessage": "You have unsaved changes. What would you like to do?",
+      "discard": "Discard",
+      "saving": "Saving...",
+      "saveSuccess": "File saved successfully",
+      "saveError": "Failed to save file"
+    },
 
     "publicShareFilesPage": {
       "title": "Shared Files",
@@ -431,7 +538,7 @@
       "createNewFileLink": "Create new share link",
       "editPublicShareFile": "Edit share link",
       "sharePublicFile": "Share public content",
-      "sharedBy": "Shared by: ",
+      "sharedBy": "Shared by",
       "getFileAccess": "Please enter the password for this share to access the contents.",
       "downloadPublicFile": "Download content",
       "nameOfContent": "Content name:",
@@ -479,6 +586,22 @@
       "aboutDays_other": "about {{count}} days remaining",
       "moreThanDays_one": "more than {{count}} day remaining",
       "moreThanDays_other": "more than {{count}} days remaining"
+    },
+
+    "webdavInfo": {
+      "title": "WebDAV Access",
+      "description": "Use this URL to connect to your files via WebDAV clients",
+      "urlWindowsMac": "WebDAV URL (Windows / macOS)",
+      "urlLinux": "WebDAV URL (Linux)",
+      "username": "Username",
+      "passwordHint": "Use your login password to authenticate",
+      "tutorialsTitle": "Setup Tutorials",
+      "tutorials": {
+        "nextcloud": "Nextcloud Desktop Client",
+        "windows": "Windows File Explorer",
+        "macos": "macOS Finder",
+        "linux": "Linux File Manager"
+      }
     }
   },
   "forums": {
@@ -526,6 +649,9 @@
       "updateSuccess": "Project updated successfully",
       "deleteSuccess": "Project deleted successfully"
     },
+    "schoolClass": {
+      "updateSuccess": "School class updated successfully"
+    },
     "sessions": {
       "createSuccess": "Session created successfully",
       "updateSuccess": "Session updated successfully",
@@ -543,6 +669,7 @@
     "createmyProjects": "Create project",
     "detailsmyProjects": "Details of project",
     "myClasses": "My classes",
+    "editmyClasses": "Edit school class",
     "detailsmyClasses": "Details of school class",
     "session": "Session",
     "startSession": "Start session",
@@ -652,6 +779,185 @@
     "filesSharingStarted": "Sharing files started",
     "filesCollectingStarted": "Collecting files started"
   },
+  "usermanagement": {
+    "title": "USERS",
+    "titleLmn": "SCHOOL SERVER",
+    "titleGeneric": "SERVER",
+    "menuTitle": "User management",
+    "parentAssignment": "Parent Assignment",
+    "description": "View and manage user accounts, lists, and roles.",
+    "students": "Students",
+    "teachers": "Teachers",
+    "extrastudents": "Extra Students",
+    "parents": "Parents",
+    "staff": "Staff",
+    "schooladmins": "School Admins",
+    "schoolbindusers": "School Bind Users",
+    "globaladmins": "Global Admins",
+    "globalbindusers": "Global Bind Users",
+    "tabs": {
+      "table": "Users",
+      "list": "Import"
+    },
+    "filterUsers": "Filter users...",
+    "loginClass": "Login / Class",
+    "name": "Name",
+    "status": "Status",
+    "passwordActions": "Password Actions",
+    "showFirstPassword": "Show first password",
+    "restoreFirstPassword": "Restore first password",
+    "setRandomFirstPassword": "Set random first password",
+    "setCustomPassword": "Set custom password",
+    "setCurrentPassword": "Set current user password",
+    "userDetails": "User Details",
+    "properties": "Properties",
+    "loginname": "Login name",
+    "mailAlias": "Mail Alias",
+    "class": "Class",
+    "classBusiness": "Primary Group",
+    "sophomorixStatus": "Sophomorix Status",
+    "role": "Role",
+    "schoolname": "School name",
+    "schoolnameBusiness": "Organization Code",
+    "userId": "User ID (optional)",
+    "birthdate": "Date of birth",
+    "deactivationDate": "Deactivation date",
+    "tolerationDate": "Toleration date",
+    "creationDate": "Creation date",
+    "groupMembership": "Group membership",
+    "quota": "Quota",
+    "noQuotaInfo": "No quota information available",
+    "noListAvailable": "No import available for this user type.",
+    "listDescription": "Import for {{school}}/{{list}}.csv",
+    "csvPlaceholder": "CSV content will be displayed here...",
+    "addUser": "Add user",
+    "check": "Check",
+    "saveConfirmTitle": "Save list",
+    "saveConfirmMessage": "The list must be saved before checking. Do you want to save the list now and continue?",
+    "apply": "Apply",
+    "exportCsv": "Export CSV",
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Drop file here to import",
+      "download": "CSV Download"
+    },
+    "validationFailed": "Please fix all invalid fields before saving",
+    "listSaved": "List saved successfully. Use \"Check\" to review and apply changes.",
+    "checkCompleted": "Check completed",
+    "applyCompleted": "Apply completed",
+    "checkResult": {
+      "title": "Check Result",
+      "checkFailed": "Check failed",
+      "overview": "Overview",
+      "add": "Add",
+      "update": "Update",
+      "delete": "Remove",
+      "usersToAdd": "Users to be added",
+      "usersToUpdate": "Users to be updated",
+      "usersToDelete": "Users to be removed",
+      "addNewUsers": "Add new users",
+      "updateUsers": "Update users",
+      "deleteUsers": "Remove users",
+      "apply": "Apply",
+      "noChanges": "No changes detected. The current data matches the existing user accounts.",
+      "columns": {
+        "class": "Class",
+        "classBusiness": "Primary Group",
+        "login": "Login",
+        "name": "Name",
+        "role": "Role",
+        "school": "School",
+        "schoolBusiness": "Organization Code",
+        "changes": "Changes",
+        "file": "File",
+        "reason": "Reason"
+      }
+    },
+    "details": "Details",
+    "login": "Login",
+    "list": {
+      "class": "Class",
+      "lastName": "Last Name",
+      "firstName": "First Name",
+      "birthday": "Birthday",
+      "login": "Desired Login",
+      "loginTooltip": "This entry is read directly from the CSV file and may differ from the actual login of the user (stored in LDAP)",
+      "category": "Category",
+      "add": {
+        "students": "Add Student",
+        "teachers": "Add Teacher",
+        "extrastudents": "Add Extra Student",
+        "parents": "Add Parent",
+        "staff": "Add Staff"
+      }
+    },
+    "sophomorixStatusValues": {
+      "U": "Usable",
+      "S": "Self-activated",
+      "E": "Enabled",
+      "P": "Permanent",
+      "A": "Activated",
+      "T": "Tolerated",
+      "D": "Deactivated",
+      "F": "Frozen",
+      "L": "Locked",
+      "K": "Killable",
+      "R": "Removable"
+    }
+  },
+  "deviceManagement": {
+    "menuTitle": "Device Management",
+    "title": "Devices",
+    "description": "View and manage devices.",
+    "addDevice": "Add device",
+    "duplicateDevice": "Duplicate device",
+    "apply": "Apply",
+    "applyConfirmTitle": "Apply device list",
+    "applyConfirmMessage": "The device list will be saved and immediately imported. Do you want to continue?",
+    "applyStarted": "Applying device list...",
+    "applyCompleted": "Device list applied successfully",
+    "listSaved": "Device list saved successfully",
+    "validationFailed": "Please fix all invalid fields before saving",
+    "duplicateFound": "Duplicate entries found for hostname, MAC, or IP",
+    "columns": {
+      "room": "Room",
+      "hostname": "Hostname",
+      "group": "Group",
+      "mac": "MAC",
+      "ip": "IP",
+      "sophomorixRole": "Sophomorix Role",
+      "pxeFlag": "PXE"
+    },
+    "roles": {
+      "addc": "Domain Controller",
+      "byod": "BYOD",
+      "classroom-studentcomputer": "Classroom Student Computer",
+      "classroom-teachercomputer": "Classroom Teacher Computer",
+      "faculty-teachercomputer": "Faculty Teacher Computer",
+      "iponly": "IP-Only",
+      "mobile": "Mobile",
+      "printer": "Printer",
+      "router": "Router",
+      "server": "Server",
+      "staffcomputer": "Staff Computer",
+      "staffcomputerBusiness": "Computer",
+      "switch": "Switch",
+      "thinclient": "Thin Client",
+      "voip": "VOIP",
+      "wlan": "WLan"
+    },
+    "pxeFlags": {
+      "0": "No PXE",
+      "1": "Linbo-PXE",
+      "2": "Linbo-PXE + OPSI-PXE",
+      "3": "OPSI-PXE"
+    },
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Drop file here to import",
+      "download": "CSV Download"
+    }
+  },
   "select": "Select",
   "selectAll": "Select all",
   "details": "Details",
@@ -693,15 +999,19 @@
       "fileUploadSuccess": "Saved the file successfully.",
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",
+      "fileDeletionError": "The file could not be deleted.",
       "saveSurveySuccess": "Saved the survey.",
-      "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
-      "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
-      "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
-      "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
-      "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
+        "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
+        "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
+        "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
+        "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
+        "previewTabTitle": "Preview"
+      },
       "templates": "Templates",
       "templateMenu": {
         "submit": "Save Survey as template.",
@@ -748,6 +1058,20 @@
         "filterPlaceHolderText": "Search for option",
         "imageWidth": "Width of one image in pixel [px]",
         "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
+      },
+      "surveyLogo": {
+        "title": "Survey Logo",
+        "width": {
+          "label": "Width of the logo in pixels (min. 150 px)",
+          "placeholder": "Enter the width of the logo in pixels"
+        },
+        "position": {
+          "label": "Position of the logo",
+          "placeholder": "Choose the position of the logo",
+          "left": "Left of the title",
+          "right": "Right of the title",
+          "description": "The Position for the logo relative to the title of the survey is visible in the 'Preview' tab."
+        }
       }
     },
     "participate": {
@@ -786,12 +1110,15 @@
       "notAbleToUpdateSurveyAnswerError": "Unable to update the submitted survey answer.",
       "notAbleToCreateSurveyAnswerError": "Unable to create the user's survey answer.",
       "notAbleToDeleteSurveyAnswerError": "Unable to delete the user's survey answer.",
-      "notAbleToCountChoices": "Unable to count the choices."
+      "notAbleToCountChoices": "Unable to count the choices.",
+      "alreadyParticipated": "You have already participated."
     }
   },
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "item": "{{count}} survey",
+    "items": "{{count}} surveys",
     "confirmDelete": "Should this survey really be deleted?",
     "confirmDelete_other": "Should these {{count}} surveys really be deleted?",
     "deleteSurveys": "Delete survey",
@@ -978,7 +1305,8 @@
       "bulletinboard": "Configure the user groups that have access to the Info Board app here. The categories can be used to control which messages are displayed to users.",
       "forwarding": "Forwarding: Simply enter the link to the web application under URL.",
       "frame": "Frame: Simply enter the link to the web application under URL.",
-      "embedded": "Embedded: Here you can create your own web application in the editor."
+      "embedded": "Embedded: Here you can create your own web application in the editor.",
+      "wireguard": "Setup and manage WireGuard VPN connections for secure remote access to your network."
     },
     "globalSettings": {
       "title": "Global Settings",
@@ -996,6 +1324,7 @@
         "notFoundError": "Settings could not be loaded."
       },
       "deploymentTarget": "Target platform",
+      "organizationType": "Organization type",
       "ldap": {
         "title": "LDAP",
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
@@ -1014,6 +1343,11 @@
         "uploadLightLogo": "Upload light logo",
         "uploadDarkLogo": "Upload dark logo",
         "deleteSuccessful": "Logo deleted successfully."
+      },
+      "background": {
+        "title": "Background Image",
+        "description": "Upload custom background images for light and dark mode. They will be shown across the entire application.",
+        "variant": "Background ({{variant}} mode)"
       },
       "theme": {
         "title": "Theme Customization",
@@ -1055,7 +1389,21 @@
       "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
-      "title": "Info"
+      "title": "License"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API Key",
+      "createdAt": "Created at",
+      "select": "Select",
+      "addClient": "Add Webhook Client",
+      "deleteClient": "Delete Webhook Client",
+      "deleteConfirmMessage": "Are you sure you want to delete the selected webhook clients?",
+      "selectUserAgent": "Select User-Agent",
+      "createSuccess": "Webhook client created",
+      "deleteSuccess": "Webhook client deleted",
+      "filterPlaceholder": "Filter webhook clients..."
     },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
@@ -1068,6 +1416,10 @@
       "confirmDeleteEntries": "Are you sure you want to delete this entry? This action cannot be undone.",
       "confirmDeleteEntries_other": "Are you sure you want to delete these {{count}} entries? This action cannot be undone.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Upload your own image here to override the default logo of {{ applicationName }}. Or restore the default logo of {{ applicationName }}."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""
@@ -1088,7 +1440,10 @@
           "title": "General settings",
           "description": ""
         },
-
+        "drawio": {
+          "title": "Draw.io Integration",
+          "description": "Configure Draw.io for creating diagrams and flowcharts."
+        },
         "proxyConfig": {
           "title": "Proxy Configuration",
           "description": "You can store your own proxy configuration for Traefik here. You can either work via the input fields using a template or create a configuration in YAML format directly in expert mode. <br/><strong>Warning:</strong> A wrong configuration could lead to the application being unreachable."
@@ -1127,27 +1482,57 @@
             "description": "The WebDAV server '{{serverName}}' is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
           }
         },
+        "wireguard": {
+          "title": "WireGuard Peers",
+          "description": "Manage WireGuard VPN peers and site-to-site connections here."
+        },
         "files": {
           "title": "Files",
           "description": "The files that are displayed in the app can be managed here.",
           "uploadSuccess": "Upload successful",
           "uploadFailed": "Upload failed",
           "rowSelected": "{{selected}} of {{total}} files selected",
-          "rowsSelected": "{{selected}} of {{total}} files selected"
+          "rowsSelected": "{{selected}} of {{total}} files selected",
+          "item": "{{count}} element",
+          "items": "{{count}} elements"
         },
         "editor": {
           "title": "Editor",
           "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
-          "sandboxModeDescription": "In “Separate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
-          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
+          "sandboxModeDescription": "In \"Separate layout\" mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "nativeModeDescription": "In \"Integrated layout\" mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
           "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
+        },
+        "scripts": {
+          "title": "Scripts",
+          "description": "Configure JavaScript scripts to be executed in the iframe on load or logout.",
+          "onLoadEnabled": "Enable script on load",
+          "onLoadDescription": "Execute a JavaScript script when the iframe content finishes loading",
+          "onLogoutEnabled": "Enable script on logout",
+          "onLogoutDescription": "Execute a JavaScript script before the user logs out",
+          "syntaxValid": "Script syntax is valid",
+          "syntaxInvalid": "Script has syntax errors",
+          "placeholder": "Enter JavaScript code here"
+        },
+        "urlHandling": {
+          "title": "URL Handling",
+          "description": "Synchronize the browser URL with the embedded content navigation.",
+          "enabled": "Enable URL synchronization",
+          "enabledDescription": "Updates the browser address bar when navigating within the embedded content. This enables bookmarking and browser history. Note: This feature only works when the embedded content is hosted on the same domain as this application.",
+          "embeddedEnabledDescription": "Updates the browser address bar when navigating within the embedded content. This enables bookmarking and browser history. Note: This feature only works with \"Separate Layout\" mode and when the embedded content is hosted on the same domain as this application.",
+          "preloadBasePage": "Preload base page",
+          "preloadBasePageDescription": "When enabled, the configured URL is always loaded first before navigating to deep links. Enable this for applications that require authentication or run initialization scripts on the configured URL."
         }
       },
       "update": {
         "success": "App saved successfully",
         "failed": "Update failed"
+      },
+      "editIcon": {
+        "title": "Edit icon",
+        "description": "Choose an icon from the list or upload your own."
       },
       "delete": {
         "success": "App removed",
@@ -1177,6 +1562,8 @@
     },
     "rowsSelected": "{{selected}} of {{total}} Container selected",
     "rowSelected": "{{selected}} of {{total}} Container selected",
+    "item": "{{count}} container",
+    "items": "{{count}} containers",
     "license": {
       "title": "License Overview",
       "customerId": "Customer No",
@@ -1202,6 +1589,8 @@
     "sidebar": "My Profile",
     "rowSelected": "{{selected}} of {{total}} accounts selected",
     "rowsSelected": "{{selected}} of {{total}} accounts selected",
+    "item": "{{count}} account",
+    "items": "{{count}} accounts",
     "details": {
       "title": "User details",
       "description": "Here you see and edit some of your personal information.",
@@ -1285,6 +1674,71 @@
       "system": "System language",
       "selectLanguage": "Select Language"
     },
+    "themeMode": {
+      "title": "Appearance",
+      "description": "Select the appearance of the user interface.",
+      "system": "System",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "userinterface": {
+      "title": "User Interface",
+      "description": "Here you can customize the user interface settings according to your preferences."
+    },
+    "wireguard": {
+      "title": "VPN Access",
+      "description": "Here you can view and configure your WireGuard VPN access.",
+      "noPeer": "No WireGuard VPN access has been set up for your user yet. Please contact an administrator.",
+      "connectionStatus": "Connection Status",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "lastHandshake": "Last Handshake",
+      "received": "Received",
+      "sent": "Sent",
+      "connectionDetails": "Connection Details",
+      "peerName": "Name",
+      "ipAddress": "IP Address",
+      "routes": "Routes",
+      "qrCode": "QR Code",
+      "qrCodeDescription": "Scan this QR code with the WireGuard app on your mobile device to set up the VPN connection.",
+      "configDownload": "Configuration File",
+      "configDownloadDescription": "Download the WireGuard configuration file to import it into the WireGuard app on your computer.",
+      "downloadButton": "Download Configuration",
+      "error": "The VPN service is currently unavailable. Please try again later or contact an administrator."
+    },
+    "parentChildPairing": {
+      "myParents": "My Parents",
+      "myChildren": "My Children",
+      "descriptionStudent": "Here you can create a link with your parents.",
+      "descriptionParent": "Here you can create a link with your children.",
+      "myCode": "My Assignment Code",
+      "myCodeDescriptionStudent": "Share this code with your parent. The code is valid for 5 minutes.",
+      "myCodeDescriptionParent": "Share this code with your child. The code is valid for 5 minutes.",
+      "enterCode": "Enter Code",
+      "enterCodeDescriptionStudent": "Enter the assignment code you received from your parent.",
+      "enterCodeDescriptionParent": "Enter the assignment code you received from your child.",
+      "enterCodePlaceholder": "Enter assignment code",
+      "submitCode": "Assign",
+      "relationships": "Assignments",
+      "noRelationships": "No assignments yet.",
+      "statusPending": "Pending",
+      "statusAccepted": "Accepted",
+      "statusRejected": "Rejected",
+      "pairingSuccess": "Assignment request sent successfully!",
+      "regenerateCode": "Regenerate",
+      "codeRefreshed": "New assignment code generated.",
+      "codeExpired": "The code has expired. Please request a new code.",
+      "parent": "Parent",
+      "student": "Student",
+      "statusColumn": "Status",
+      "createdAt": "Created at",
+      "accept": "Accept",
+      "reject": "Reject",
+      "statusUpdated": "Status updated successfully.",
+      "assignment": "Parent Assignment",
+      "assignmentDescription": "Manage parent-student assignments.",
+      "filterPlaceholder": "Search by parent or student..."
+    },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
@@ -1307,8 +1761,8 @@
     "title": "General"
   },
   "forwardingpage": {
-    "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window.",
+    "action": "This button will take you to the external site of the provider.",
+    "description": "The application opens in a new tab.",
     "missing_link": "Missing link"
   },
   "menu": "Menu",
@@ -1346,11 +1800,13 @@
     "visibility": "Visibility",
     "offline": "Offline",
     "guest": "Guest",
+    "me": "Me",
     "ok": "OK",
     "next": "Next",
     "back": "Back",
     "of": "of",
     "confirm": "Confirm",
+    "validate": "Validate",
     "creator": "Creator",
     "chooseFile": "Choose file",
     "changeFile": "Change file",
@@ -1358,6 +1814,14 @@
     "answers": "Answers",
     "error": "Error",
     "entry": "Entry {{index}}",
+    "filter": "Filter",
+    "showHiddenFiles": "Show hidden files",
+    "showSystemFiles": "Show system files",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "hide": "Hide",
+    "show": "Show",
+    "never": "Never",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
@@ -1371,7 +1835,18 @@
       "invalidFileType": "Invalid file type",
       "startDateBeforeEndDate": "The start date must be before the end date",
       "invalidRequestData": "Invalid request data",
-      "wrongServerConfig": "Incorrect server configuration"
+      "wrongServerConfig": "Incorrect server configuration",
+      "path": {
+        "noString": "Path must be a string",
+        "isEmpty": "Path cannot be empty",
+        "tooLong": "Path is too long",
+        "traversal": "Path traversal is not allowed",
+        "absolutePath": "Absolute paths are not allowed",
+        "subdirectories": "Subdirectories are not allowed",
+        "invalidCharacters": "Path contains invalid characters",
+        "outsidePublicDirectory": "Path is outside the public directory",
+        "symlinkOutsidePublicDirectory": "Path includes a symlink that links outside the public directory"
+      }
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
@@ -1380,6 +1855,12 @@
     "cancel": "Cancel",
     "columns": "Columns",
     "table": "Table",
+    "tableView": "Table view",
+    "gridView": "Grid view",
+    "sort": "Sort",
+    "ascending": "ascending",
+    "descending": "descending",
+    "selectAll": "Select all",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
@@ -1457,12 +1938,14 @@
     "select": "Select...",
     "none": "None",
     "edit": "Edit",
+    "view": "View",
     "participate": "Participate",
     "participated": "Participated",
     "not-available": "Not available",
     "date": "Date",
     "time": "Time",
     "revert": "Revert",
+    "duplicate": "Duplicate",
     "restart": "Restart",
     "kill": "Kill",
     "install": "Install",
@@ -1580,8 +2063,47 @@
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
   },
   "linuxmuster": {
-    "title": "LINUXMUSTER",
-    "sidebar": "Linuxmuster"
+    "sidebarLmn": "School server",
+    "sidebarGeneric": "Server",
+    "item": "{{count}} user",
+    "items": "{{count}} users",
+    "userManagement": "User Management",
+    "description": "Manage your school server settings and users.",
+    "versionInfo": "Version overview",
+    "system": "System",
+    "versionMismatch": "The Linuxmuster API version is too old. At least version {{version}} is required."
+  },
+  "parentAssignment": {
+    "item": "{{count}} assignment",
+    "items": "{{count}} assignments",
+    "rowSelected": "{{selected}} of {{total}} assignment selected",
+    "rowsSelected": "{{selected}} of {{total}} assignments selected"
+  },
+  "parentChildPairing": {
+    "assignment": "Parent Assignment",
+    "assignmentDescription": "Manage parent-student assignments.",
+    "filterPlaceholder": "Search by parent or student...",
+    "parent": "Parent",
+    "student": "Student",
+    "school": "School",
+    "statusColumn": "Status",
+    "createdAt": "Created at",
+    "accept": "Accept",
+    "reject": "Reject",
+    "statusAll": "All",
+    "statusPending": "Pending",
+    "statusAccepted": "Accepted",
+    "statusRejected": "Rejected",
+    "statusUpdated": "Status updated successfully.",
+    "errors": {
+      "codeNotFound": "The assignment code was not found.",
+      "codeExpired": "The assignment code has expired.",
+      "cannotPairWithSelf": "You cannot assign yourself.",
+      "pairingAlreadyExists": "This assignment already exists.",
+      "pairingNotFound": "The assignment was not found.",
+      "invalidRole": "Your role does not allow assignments.",
+      "incompatibleRoles": "You cannot be assigned to another student."
+    }
   },
   "whiteboard": {
     "title": "WHITEBOARD",
@@ -1600,6 +2122,68 @@
     "dropdownPlaceholder": "Choose your current room",
     "historyTitle": "History",
     "historyNoMore": "No more entries"
+  },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "Manage WireGuard VPN peers and site-to-site connections",
+    "name": "Name",
+    "type": "Type",
+    "ip": "IP Address",
+    "publicKey": "Public Key",
+    "routes": "Routes",
+    "allowedIps": "Allowed IPs",
+    "endpoint": "Endpoint",
+    "status": "Status",
+    "lastHandshake": "Last Handshake",
+    "clientPeer": "Client Peer",
+    "siteToSite": "Site-to-Site",
+    "addPeer": "Add Peer",
+    "delete": "Delete",
+    "searchPlaceholder": "Search by name...",
+    "namePlaceholder": "Enter peer name",
+    "routesDescription": "Comma-separated list of routes (e.g. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Comma-separated list of allowed IP ranges for site-to-site connection",
+    "endpointDescription": "Remote endpoint address and port (e.g. vpn.example.com:51820)",
+    "noSelection": "Please select at least one peer to delete",
+    "deletePeers": "Delete Peers",
+    "confirmDelete": "Do you really want to delete this peer?",
+    "confirmDelete_other": "Do you really want to delete these {{count}} peers?",
+    "deleteSuccess": "Peers deleted successfully",
+    "deleteFailed": "Failed to delete peers",
+    "peerCreated": "Client peer created successfully",
+    "peersCreated": "{{count}} client peers created successfully",
+    "peersCreatedPartial": "{{successful}} client peers created, {{failed}} failed",
+    "siteCreated": "Site-to-site connection created successfully",
+    "createFailed": "Failed to create peer",
+    "qrCode": "QR Code for {{name}}",
+    "qrCodeAlt": "WireGuard configuration QR code",
+    "qrCodeFailed": "Failed to load QR code",
+    "noQrCode": "No QR code available",
+    "peerDetails": "Peer Details",
+    "showQRCode": "Show QR Code",
+    "validation": {
+      "nameRequired": "Name is required",
+      "allowedIpsRequired": "Allowed IPs are required for site-to-site connections"
+    },
+    "errors": {
+      "getPeersFailed": "Failed to load peers",
+      "createPeerFailed": "Failed to create client peer",
+      "deletePeerFailed": "Failed to delete client peer",
+      "getPeerConfigFailed": "Failed to load peer configuration",
+      "getPeerQrFailed": "Failed to load QR code",
+      "getPeerStatusFailed": "Failed to load peer status",
+      "getPeersStatusFailed": "Failed to load peers status",
+      "restartFailed": "Restart failed",
+      "getSitesFailed": "Failed to load sites",
+      "createSiteFailed": "Failed to create site-to-site connection",
+      "deleteSiteFailed": "Failed to delete site-to-site connection",
+      "getSiteConfigFailed": "Failed to load site configuration"
+    },
+    "rowSelected": "{{selected}} of {{total}} peer selected",
+    "rowsSelected": "{{selected}} of {{total}} peers selected",
+    "item": "{{count}} peer",
+    "items": "{{count}} peers"
   },
   "table": {
     "noDataAvailable": "No data available"
@@ -1795,7 +2379,8 @@
   "users": {
     "errors": {
       "notFoundError": "User does not exist",
-      "updateError": "Not able to update the user"
+      "updateError": "Not able to update the user",
+      "passwordNotSetError": "Password is not set for this user"
     }
   },
   "permission": {
@@ -1808,6 +2393,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "drawioUrlTitle": "Draw.io URL",
+    "drawioUrlDescription": "Enter the URL of your self-hosted Draw.io instance",
     "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
     "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
@@ -1819,7 +2406,7 @@
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
     "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?",
     "mailSogoThemeTitle": "Theme",
-    "mailSogoThemeDescription": "Select the theme for the Mail app. Changing the theme restarts related containers.",
+    "mailSogoThemeDescription": "Select the theme for the Mail app. Changing the theme restarts related containers. The app does not offer individual theme switching. The theme is set system-wide for all users.",
     "mailSogoTheme": {
       "light": "Light",
       "dark": "Dark"
@@ -1836,6 +2423,11 @@
       "updateNow": "Update Now",
       "checkVersionSuccess": "Theme successfully checked!",
       "noData": "No version information available."
+    },
+    "appLogo": {
+      "light": "light",
+      "dark": "dark",
+      "title": "Logo for the {{variant}} color scheme"
     }
   },
   "mails": {
@@ -1870,6 +2462,34 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname of the mail server. This could be different from the edulution domain name."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "IP Network",
+      "description": "The IP network for the VPN connection (e.g. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Address",
+      "description": "The IP address of the VPN server."
+    },
+    "EDU_WG_DNS": {
+      "title": "DNS Server",
+      "description": "The DNS server address for the VPN connection."
+    },
+    "MOODLE_WWWROOT": {
+      "title": "WWW Root",
+      "description": "The full URL where Moodle is accessible (e.g. https://moodle.example.com)."
+    },
+    "MOODLE_ADMIN_EMAIL": {
+      "title": "Admin Email",
+      "description": "The email address of the Moodle administrator."
+    },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Admin Password",
+      "description": "The password of the Moodle administrator."
+    },
+    "MOODLE_SITE_NAME": {
+      "title": "Site Name",
+      "description": "The displayed name of the Moodle instance."
     }
   },
   "edulution-manager": {
@@ -1952,6 +2572,13 @@
     "linuxmuster": "Linuxmuster",
     "generic": "Generic"
   },
+  "organizationType": {
+    "title": "Selection",
+    "description": "Here you can select the type of your organization.",
+    "school": "School",
+    "business": "Business",
+    "public-administration": "Public Administration"
+  },
   "webdavShare": {
     "displayName": "Display name",
     "accessGroups": {
@@ -1977,6 +2604,7 @@
       "short": "Root",
       "notConfigured": "No root path configured. Please contact the system administrator."
     },
+    "noSharesConfigured": "No shares configured. Please contact the system administrator.",
     "selectPlaceholder": "Select...",
     "authentication": {
       "title": "Authentication",

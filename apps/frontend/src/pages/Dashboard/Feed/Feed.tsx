@@ -24,7 +24,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import { AccordionSH } from '@/components/ui/AccordionSH';
 import { Card, CardContent } from '@/components/shared/Card';
 import FeedAccordionItem from '@/pages/Dashboard/Feed/components/FeedAccordionItem';
-import { BulletinBoardIcon, ConferencesIcon, MailIcon, SurveysMenuIcon } from '@/assets/icons';
+import { InfoBoardIcon, ConferencesIcon, MailIcon, SurveysMenuIcon } from '@/assets/icons';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinList from '@/pages/Dashboard/Feed/bulletinboard/BulletinList';
 import ConferencesList from '@/pages/Dashboard/Feed/conferences/ConferencesList';
@@ -47,7 +47,7 @@ const Feed = () => {
     <FeedAccordionItem
       key={APPS.BULLETIN_BOARD}
       appKey={APPS.BULLETIN_BOARD}
-      icon={BulletinBoardIcon}
+      icon={InfoBoardIcon}
       listItems={bulletinBoardNotifications}
       ListComponent={BulletinList}
     />,

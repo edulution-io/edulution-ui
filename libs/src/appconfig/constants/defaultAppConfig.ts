@@ -18,21 +18,21 @@
  */
 
 import {
-  BulletinBoardIcon,
   DashboardIcon,
   ClassManagementIcon,
   FilesharingIcon,
+  InfoBoardIcon,
   SurveysIcon,
   WhiteboardIcon,
 } from '@libs/assets';
+import getImageUrl from '@libs/assets/getImageUrl';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariant';
+import { ALL_DISPLAY_LOCATIONS } from './appDisplayLocations';
 
 const { BULLETIN_BOARD, DASHBOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
-
-const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
 
 const defaultAppConfig: AppConfigDto[] = [
   {
@@ -43,15 +43,17 @@ const defaultAppConfig: AppConfigDto[] = [
     accessGroups: [],
     extendedOptions: {},
     position: 1,
+    displayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     name: BULLETIN_BOARD,
-    icon: getImageUrl(BulletinBoardIcon),
+    icon: getImageUrl(InfoBoardIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],
     extendedOptions: {},
     position: 2,
+    displayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     name: FILE_SHARING,
@@ -63,6 +65,7 @@ const defaultAppConfig: AppConfigDto[] = [
     accessGroups: [],
     extendedOptions: {},
     position: 3,
+    displayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     name: SURVEYS,
@@ -72,6 +75,7 @@ const defaultAppConfig: AppConfigDto[] = [
     accessGroups: [],
     extendedOptions: {},
     position: 4,
+    displayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     name: CLASS_MANAGEMENT,
@@ -81,6 +85,7 @@ const defaultAppConfig: AppConfigDto[] = [
     accessGroups: [],
     extendedOptions: {},
     position: 5,
+    displayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     name: WHITEBOARD,
@@ -90,6 +95,7 @@ const defaultAppConfig: AppConfigDto[] = [
     accessGroups: [],
     extendedOptions: {},
     position: 6,
+    displayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
 ];
 

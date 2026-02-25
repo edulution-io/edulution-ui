@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { SidebarArrowButtonProps } from '@libs/ui/types/sidebar/sidebarArrowButtonProps';
 import { SIDEBAR_ARROW_BUTTON_HEIGHT } from '@libs/ui/constants/sidebar';
 
@@ -27,7 +28,7 @@ export interface ArrowButtonProps extends SidebarArrowButtonProps {
 }
 
 const SidebarArrowButton: React.FC<ArrowButtonProps> = ({ direction, onClick }) => {
-  const ArrowIcon = direction === 'up' ? MdArrowDropUp : MdArrowDropDown;
+  const arrowIcon = direction === 'up' ? faCaretUp : faCaretDown;
 
   const borderClass = direction === 'up' ? 'border-b-2' : 'border-t-2';
 
@@ -35,11 +36,14 @@ const SidebarArrowButton: React.FC<ArrowButtonProps> = ({ direction, onClick }) 
     <button
       type="button"
       style={{ height: SIDEBAR_ARROW_BUTTON_HEIGHT }}
-      className={`relative z-50 w-full cursor-pointer ${borderClass} border-muted bg-foreground px-4 py-2 hover:bg-stone-900 md:block md:px-2`}
+      className={`relative z-50 w-full cursor-pointer ${borderClass} border-muted bg-secondary-foreground px-4 py-2 hover:bg-accent dark:bg-foreground dark:hover:bg-stone-900 md:block md:px-2`}
       onClick={onClick}
     >
       <div className="absolute inset-0 flex items-center justify-center">
-        <ArrowIcon className="h-8 w-8" />
+        <FontAwesomeIcon
+          icon={arrowIcon}
+          className="h-5 w-5"
+        />
       </div>
     </button>
   );

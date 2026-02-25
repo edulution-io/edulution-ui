@@ -26,13 +26,18 @@ import { join } from 'path';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import BULLETIN_BOARD_ERROR_MESSAGE from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import BULLETIN_SAVE_MODE from '@libs/bulletinBoard/constants/bulletinSaveMode';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -63,7 +68,7 @@ class BulletinBoardService implements OnModuleInit {
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   async onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+    void FilesystemService.ensureDirectoryExists(this.attachmentsPath);
 
     await MigrationService.runMigrations<BulletinDocument>(this.bulletinModel, bulletinsMigrationList);
   }
@@ -88,7 +93,7 @@ class BulletinBoardService implements OnModuleInit {
       return res;
     }
     throw new CustomHttpException(
-      BulletinBoardErrorMessage.ATTACHMENT_NOT_FOUND,
+      BULLETIN_BOARD_ERROR_MESSAGE.ATTACHMENT_NOT_FOUND,
       HttpStatus.NOT_FOUND,
       undefined,
       BulletinBoardService.name,
@@ -217,10 +222,26 @@ class BulletinBoardService implements OnModuleInit {
   }
 
   async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
+    const isPushOnly = dto.saveMode === BULLETIN_SAVE_MODE.PUSH_ONLY;
+
+    if (isPushOnly) {
+      if (!dto.customPushTitle || !dto.customPushBody) {
+        throw new CustomHttpException(
+          BULLETIN_BOARD_ERROR_MESSAGE.PUSH_ONLY_MISSING_FIELDS,
+          HttpStatus.BAD_REQUEST,
+          undefined,
+          BulletinBoardService.name,
+        );
+      }
+
+      await this.notifyPushOnly(dto, currentUser);
+      return null;
+    }
+
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        BULLETIN_BOARD_ERROR_MESSAGE.INVALID_CATEGORY,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         BulletinBoardService.name,
@@ -237,7 +258,7 @@ class BulletinBoardService implements OnModuleInit {
     );
     if (!hasUserPermission) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN,
+        BULLETIN_BOARD_ERROR_MESSAGE.UNAUTHORIZED_CREATE_BULLETIN,
         HttpStatus.FORBIDDEN,
         undefined,
         BulletinBoardService.name,
@@ -249,7 +270,7 @@ class BulletinBoardService implements OnModuleInit {
       lastName: currentUser.family_name,
       username: currentUser.preferred_username,
     };
-    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content ?? '');
     const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames, []);
 
     const createdBulletin = await this.bulletinModel.create({
@@ -275,7 +296,7 @@ class BulletinBoardService implements OnModuleInit {
     const bulletin = await this.bulletinModel.findById(id).exec();
     if (!bulletin) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        BULLETIN_BOARD_ERROR_MESSAGE.BULLETIN_NOT_FOUND,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         BulletinBoardService.name,
@@ -287,7 +308,7 @@ class BulletinBoardService implements OnModuleInit {
     const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (bulletin.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
+        BULLETIN_BOARD_ERROR_MESSAGE.UNAUTHORIZED_UPDATE_BULLETIN,
         HttpStatus.UNAUTHORIZED,
         undefined,
         BulletinBoardService.name,
@@ -297,7 +318,7 @@ class BulletinBoardService implements OnModuleInit {
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        BULLETIN_BOARD_ERROR_MESSAGE.INVALID_CATEGORY,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         BulletinBoardService.name,
@@ -312,7 +333,7 @@ class BulletinBoardService implements OnModuleInit {
     );
     if (!hasUserPermissionToCategory) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
+        BULLETIN_BOARD_ERROR_MESSAGE.UNAUTHORIZED_UPDATE_BULLETIN,
         HttpStatus.FORBIDDEN,
         undefined,
         BulletinBoardService.name,
@@ -325,14 +346,14 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content ?? '');
     const attachmentFileNames = await this.updateBulletinAttachments(
       content,
       dto.attachmentFileNames,
       bulletin.attachmentFileNames,
     );
 
-    bulletin.title = dto.title;
+    bulletin.title = dto.title ?? '';
     bulletin.isActive = dto.isActive;
     bulletin.content = content;
     bulletin.category = new Types.ObjectId(dto.category.id);
@@ -346,6 +367,37 @@ class BulletinBoardService implements OnModuleInit {
     await this.notifyUsers(dto, updatedBulletin, currentUser);
 
     return updatedBulletin;
+  }
+
+  private async notifyPushOnly(dto: CreateBulletinDto, currentUser: JwtUser) {
+    let invitedMembersList = await this.groupsService.getInvitedMembers(
+      [...dto.category.visibleForGroups, ...dto.category.editableByGroups],
+      [...dto.category.visibleForUsers, ...dto.category.editableByUsers],
+    );
+
+    invitedMembersList = invitedMembersList.filter((username) => username !== currentUser.preferred_username);
+
+    const title = dto.customPushTitle!;
+    const pushNotification = dto.customPushBody!;
+
+    await this.notificationService.notifyUsernames(
+      invitedMembersList,
+      {
+        title,
+        body: pushNotification,
+        data: {
+          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+        },
+      },
+      currentUser.preferred_username,
+      {
+        type: NOTIFICATION_TYPE.USER,
+        sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
+        title,
+        pushNotification,
+        createdBy: currentUser.preferred_username,
+      },
+    );
   }
 
   async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument, currentUser?: JwtUser) {
@@ -366,16 +418,36 @@ class BulletinBoardService implements OnModuleInit {
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
 
-      // TODO: #1152
-      const title = `Aushang bereit: ${dto.title}`;
+      const saveMode = dto.saveMode || BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN;
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        data: {
-          bulletinId: resultingBulletin.id,
-          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
-        },
-      });
+      if (saveMode !== BULLETIN_SAVE_MODE.BULLETIN_ONLY) {
+        const title = dto.customPushTitle || NOTIFICATION_TEMPLATES.BULLETIN.CREATED.title(dto.title || '');
+        const pushNotification = dto.customPushBody || NOTIFICATION_TEMPLATES.BULLETIN.CREATED.body(dto.category.name);
+        const bulletinId = String(resultingBulletin.id);
+
+        const persistOptions = {
+          type: NOTIFICATION_TYPE.SYSTEM,
+          sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
+          sourceId: bulletinId,
+          title,
+          pushNotification,
+          createdBy: NOTIFICATION_CREATOR_SYSTEM,
+        };
+
+        await this.notificationService.upsertNotificationForSource(
+          invitedMembersList,
+          {
+            title,
+            body: pushNotification,
+            data: {
+              bulletinId,
+              type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+            },
+          },
+          currentUser?.preferred_username,
+          persistOptions,
+        );
+      }
     }
   }
 
@@ -384,7 +456,7 @@ class BulletinBoardService implements OnModuleInit {
 
     if (bulletins.length !== ids.length) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        BULLETIN_BOARD_ERROR_MESSAGE.BULLETIN_NOT_FOUND,
         HttpStatus.NOT_FOUND,
         undefined,
         BulletinBoardService.name,
@@ -400,7 +472,7 @@ class BulletinBoardService implements OnModuleInit {
     const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN,
+        BULLETIN_BOARD_ERROR_MESSAGE.UNAUTHORIZED_DELETE_BULLETIN,
         HttpStatus.UNAUTHORIZED,
         undefined,
         BulletinBoardService.name,
@@ -425,6 +497,17 @@ class BulletinBoardService implements OnModuleInit {
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
 
+      await Promise.all(
+        ids.map((bulletinId) =>
+          this.notificationService.cascadeDeleteBySourceId(bulletinId).catch((error) => {
+            Logger.error(
+              `Failed to cascade delete notifications for bulletin ${bulletinId}: ${error}`,
+              BulletinBoardService.name,
+            );
+          }),
+        ),
+      );
+
       try {
         await this.userPreferencesService.unsetCollapsedForBulletins(ids);
       } catch (error) {
@@ -432,7 +515,7 @@ class BulletinBoardService implements OnModuleInit {
       }
     } catch (error) {
       throw new CustomHttpException(
-        BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
+        BULLETIN_BOARD_ERROR_MESSAGE.ATTACHMENT_DELETION_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         BulletinBoardService.name,

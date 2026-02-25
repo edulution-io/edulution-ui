@@ -8544,6 +8544,11 @@ sv-components-container,
   display: block;
 }
 
+.sjs_sp_placeholder .sv-string-viewer {
+  color: var(--background, #fff);
+  opacity: 0.7;
+}
+
 .sjs_sp__background-image {
   position: absolute;
   top: 0;

@@ -20,11 +20,12 @@
 'use client';
 
 import * as React from 'react';
-import { DashIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinus } from '@fortawesome/free-solid-svg-icons';
 import { OTPInput, OTPInputContext } from 'input-otp';
 import { type VariantProps } from 'class-variance-authority';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { inputOTPSlotVariants, inputOTPCaretVariants } from '@libs/ui/constants/commonClassNames';
 
 const InputOTPSH = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
@@ -86,7 +87,10 @@ const InputOTPSeparatorSH = React.forwardRef<React.ElementRef<'div'>, React.Comp
       role="separator"
       {...props}
     >
-      <DashIcon />
+      <FontAwesomeIcon
+        icon={faMinus}
+        className="w-1"
+      />
     </div>
   ),
 );

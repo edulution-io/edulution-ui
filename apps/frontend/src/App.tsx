@@ -35,6 +35,7 @@ import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppA
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 import LazyErrorBoundary from './components/LazyErrorBoundary';
 import usePlatformStore from './store/EduApiStore/usePlatformStore';
+import ThemeToggle from './components/structure/layout/ThemeToggle';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
@@ -79,6 +80,7 @@ const App = () => {
             <HelmetProvider>
               <TooltipProvider>
                 <AppRouter />
+                <ThemeToggle />
               </TooltipProvider>
             </HelmetProvider>
             <Toaster />

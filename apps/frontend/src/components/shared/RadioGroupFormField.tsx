@@ -22,8 +22,10 @@ import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/co
 import React from 'react';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
+import defaultIconList from '@/pages/Settings/AppConfig/components/defaultIconList';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 
 interface RadioGroupProps<T extends FieldValues> {
   control: Control<T>;
@@ -57,7 +59,7 @@ const RadioGroupFormField = <T extends FieldValues>({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn('space-y-3 text-background', formClassname)}>
+        <FormItem className={cn('space-y-3', formClassname)}>
           <h3 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h3>
           <FormControl>
             <RadioGroupSH
@@ -70,7 +72,7 @@ const RadioGroupFormField = <T extends FieldValues>({
                   <FormLabel
                     htmlFor={`${name}-${titleTranslationId}-${item.value}`}
                     className={cn(
-                      'flex flex-col items-center space-x-3 space-y-0 text-base text-background',
+                      'flex flex-col items-center space-x-3 space-y-0 text-base',
                       disabled || item.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
                     )}
                   >
@@ -94,7 +96,10 @@ const RadioGroupFormField = <T extends FieldValues>({
                             <img
                               src={item.icon}
                               width={imagePixelWidth}
-                              className={fixedImageSize ? 'h-24 w-24 object-contain' : ''}
+                              className={cn(
+                                defaultIconList.includes(item.icon) && getAppIconClassName(item.icon),
+                                fixedImageSize ? 'h-24 w-24 object-contain' : '',
+                              )}
                               aria-label={item.value}
                               alt={item.value}
                             />

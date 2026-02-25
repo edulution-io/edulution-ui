@@ -22,10 +22,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import AdminGuard from '../common/guards/admin.guard';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)
 @ApiBearerAuth()
@@ -84,7 +86,7 @@ class AppConfigController {
 
   @Get(EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG)
   @UseGuards(AdminGuard)
-  getConfigFile(@Query('filePath') filePath: string) {
+  getConfigFile(@Query('filePath', new ValidatePathPipe(APPS_FILES_PATH)) filePath: string) {
     return this.appConfigService.getFileAsBase64(filePath);
   }
 }

@@ -19,7 +19,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -28,9 +28,9 @@ import useSidebarItems from '@/hooks/useSidebarItems';
 import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
-import cn from '@libs/common/utils/className';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
+import IconWrapper from '@/components/shared/IconWrapper';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -40,7 +40,13 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const [search, setSearch] = useState('');
   const sidebarItems = useSidebarItems();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isMobileView, isTabletView } = useMedia();
+
+  const currentAppPath = useMemo(() => {
+    const segments = location.pathname.split('/').filter(Boolean);
+    return segments.length > 0 ? `/${segments[0]}` : '';
+  }, [location.pathname]);
 
   const filteredApps = useMemo(() => {
     const searchString = search.trim().toLowerCase();
@@ -90,42 +96,33 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"
-        className="mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]"
+        className="mx-auto min-w-[250px] focus:border-ring md:w-[400px]"
       />
 
-      <div
-        className="mx-auto grid max-h-[full] w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center
-        gap-x-3 gap-y-2 overflow-auto pb-10 scrollbar-thin md:max-h-full
-        md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4"
-      >
+      <div className="mx-auto flex max-h-full w-full flex-wrap justify-center gap-2 overflow-y-auto pb-10 scrollbar-thin md:pb-4">
         {filteredApps.length ? (
-          filteredApps.map((app, index) => (
+          filteredApps.map((app) => (
             <NavLink
               key={app.link}
               to={app.link}
               onClick={onClose}
             >
-              <Card
-                className={cn(
-                  'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
-                  {
-                    'bg-muted': index === 0,
-                  },
-                )}
-                variant="text"
-              >
-                <img
-                  src={app.icon}
-                  alt={app.title}
-                  className="h-10 w-10 md:h-14 md:w-14"
-                />
-
-                <p>{app.title}</p>
-
-                <NotificationCounter
-                  count={app.notificationCounter || 0}
-                  className="top-[10px]"
-                />
+              <Card variant={app.link === currentAppPath ? 'tileSelected' : 'tile'}>
+                <div className="relative m-4 flex flex-col items-center">
+                  <IconWrapper
+                    iconSrc={app.icon}
+                    alt={app.title}
+                    className="h-12 w-12 md:h-14 md:w-14"
+                    width={48}
+                    height={48}
+                    applyLegacyFilter={app.link !== currentAppPath}
+                  />
+                  <p>{app.title}</p>
+                  <NotificationCounter
+                    count={app.notificationCounter || 0}
+                    className="top-[-8px]"
+                  />
+                </div>
               </Card>
             </NavLink>
           ))
@@ -137,12 +134,12 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
       {!isMobileView && !isTabletView && (
         <div className="text-center text-sm text-muted-foreground">
           <span>{t('launcher.pressShortKey')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
+          <span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">
             {modKeyLabel}
           </span>{' '}
-          +<span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">K</span>
+          +<span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">K</span>
           <span className="ml-8">{t('launcher.pressEnterToStartApp')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
+          <span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">
             {t('enterKey')}
           </span>
         </div>

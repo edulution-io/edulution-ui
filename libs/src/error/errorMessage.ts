@@ -29,12 +29,16 @@ import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
-import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import { BulletinBoardErrorMessage } from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import VeyonErrorMessages from '@libs/veyon/types/veyonErrorMessages';
 import LicenseErrorMessagesType from '@libs/license/types/licenseErrorMessagesType';
 import TGlobalSettingsErrorMessages from '@libs/global-settings/types/globalSettingsErrorMessagesTypes';
 import TLDrawSyncErrorMessagesType from '@libs/tldraw-sync/types/tLDrawSyncErrorMessagesType';
+import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
+import ParentChildPairingErrorMessagesType from '@libs/parent-child-pairing/types/parentChildPairingErrorMessagesType';
+import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
+import WebhookErrorMessages from '@libs/webhook/types/webhookErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -54,6 +58,10 @@ type ErrorMessage =
   | VeyonErrorMessages
   | LicenseErrorMessagesType
   | TLDrawSyncErrorMessagesType
-  | TGlobalSettingsErrorMessages;
+  | TGlobalSettingsErrorMessages
+  | ParentChildPairingErrorMessagesType
+  | PathValidationErrorMessages
+  | WireguardErrorMessages
+  | WebhookErrorMessages;
 
 export default ErrorMessage;

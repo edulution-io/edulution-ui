@@ -26,15 +26,16 @@ import {
   Param,
   Post,
   Query,
+  Req,
   Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import WHITEBOARD_FILES_PATH from '@libs/whiteboard/constants/whiteboardFilesPath';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import APPS from '@libs/appconfig/constants/apps';
 import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
@@ -46,9 +47,12 @@ import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import CustomHttpException from '../common/CustomHttpException';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.WHITEBOARD)
 @Controller(TLDRAW_SYNC_ENDPOINTS.BASE)
 class TLDrawSyncController {
   constructor(
@@ -62,7 +66,8 @@ class TLDrawSyncController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
-        () => `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
+        WHITEBOARD_FILES_PATH,
+        () => WHITEBOARD_FILES_PATH,
         false,
         (_req, file) => file.originalname,
       ),
@@ -75,19 +80,18 @@ class TLDrawSyncController {
     return res.status(200).json(file.filename);
   }
 
-  @Get(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`) serveFiles(
-    @Param('filename') filename: string | string[],
+  @Get(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
+  serveFiles(
+    @Param('filename', new ValidatePathPipe(WHITEBOARD_FILES_PATH)) filename: string | string[],
+    @Req() req: Request,
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFiles(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.serveFile(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), req, res);
   }
 
   @Delete(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
-  deleteFile(@Param('filename') filename: string) {
-    return FilesystemService.deleteFile(
-      `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
-      FilesystemService.buildPathString(filename),
-    );
+  deleteFile(@Param('filename', new ValidatePathPipe(WHITEBOARD_FILES_PATH)) filename: string) {
+    return FilesystemService.deleteFile(WHITEBOARD_FILES_PATH, FilesystemService.buildPathString(filename));
   }
 
   @Get(`${TLDRAW_SYNC_ENDPOINTS.HISTORY}/:${ROOM_ID_PARAM}`)

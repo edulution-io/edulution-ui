@@ -21,9 +21,12 @@ import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@
 import Docker from 'dockerode';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { ensureDirSync, writeFileSync } from 'fs-extra';
+import { ensureDirSync, existsSync, readFileSync, writeFileSync } from 'fs-extra';
 import { join } from 'path';
+import { parse } from 'yaml';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import generateSecureToken from '@libs/common/utils/generateSecureToken';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
@@ -38,8 +41,14 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
 import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import MOODLE_GENERATE_SECRETS from '@libs/docker/constants/moodleGenerateSecrets';
+import DOCKER_COMPOSE_ENV_VAR_PATTERN from '@libs/docker/constants/dockerComposeEnvVarPattern';
+import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
+import AppConfigService from '../appconfig/appconfig.service';
+import ensureKeycloakClient from '../scripts/keycloak/utilities/ensureKeycloakClient';
 
 @Injectable()
 class DockerService implements OnModuleInit, OnModuleDestroy {
@@ -50,7 +59,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   private eventSubscription: Subscription;
 
-  constructor(private readonly sseService: SseService) {}
+  constructor(
+    private readonly sseService: SseService,
+    private readonly appConfigService: AppConfigService,
+  ) {}
 
   onModuleInit() {
     this.listenToDockerEvents();
@@ -206,14 +218,106 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  static replaceEnvVariables(createContainersDto: Docker.ContainerCreateOptions[]) {
-    let newCreateContainersDto: Docker.ContainerCreateOptions[] = [];
-    newCreateContainersDto = createContainersDto.map((service) => ({
-      ...service,
-      Env: service.Env?.map((env) =>
-        env.replace(/\${([^}]+)}/g, (match, varName: string) => process.env[varName] || match),
-      ),
-    }));
+  private static readSavedEnvValues(applicationName: string, keys: string[]): Record<string, string> {
+    const filePath = join(APPS_FILES_PATH, applicationName, 'docker-compose.yml');
+    if (!existsSync(filePath)) return {};
+
+    try {
+      const content = readFileSync(filePath, 'utf-8');
+      const doc = parse(content) as {
+        services?: Record<string, { environment?: string[] | Record<string, string> }>;
+      };
+      if (!doc.services) return {};
+
+      const allEnvs = Object.values(doc.services).reduce<Record<string, string>>((acc, svc) => {
+        if (!svc.environment) return acc;
+        if (Array.isArray(svc.environment)) {
+          svc.environment.forEach((entry) => {
+            const eqIndex = entry.indexOf('=');
+            if (eqIndex !== -1) {
+              acc[entry.slice(0, eqIndex)] = entry.slice(eqIndex + 1);
+            }
+          });
+        } else {
+          Object.assign(acc, svc.environment);
+        }
+        return acc;
+      }, {});
+
+      return keys.reduce<Record<string, string>>((acc, key) => {
+        if (key in allEnvs) {
+          acc[key] = allEnvs[key];
+        }
+        return acc;
+      }, {});
+    } catch (error) {
+      Logger.debug(`Failed to read saved env values for ${applicationName}: ${error}`, DockerService.name);
+      return {};
+    }
+  }
+
+  async replaceEnvVariables(
+    createContainersDto: Docker.ContainerCreateOptions[],
+    applicationName: string,
+  ): Promise<Docker.ContainerCreateOptions[]> {
+    const appConfigValues: Record<string, string> = {};
+
+    switch (applicationName) {
+      case APPS.LEARNING_MANAGEMENT: {
+        const savedValues = DockerService.readSavedEnvValues(applicationName, [...MOODLE_GENERATE_SECRETS]);
+        MOODLE_GENERATE_SECRETS.forEach((key) => {
+          appConfigValues[key] = savedValues[key] || generateSecureToken();
+        });
+        const moodleClientId = DOCKER_APPLICATION_LIST.learningmanagement;
+        if (!moodleClientId) {
+          throw new CustomHttpException(
+            DockerErrorMessages.DOCKER_CREATION_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            undefined,
+            DockerService.name,
+          );
+        }
+        appConfigValues.KEYCLOAK_MOODLE_CLIENT_ID = moodleClientId;
+        appConfigValues.KEYCLOAK_MOODLE_CLIENT_SECRET = await ensureKeycloakClient(
+          moodleClientId,
+          appConfigValues.KEYCLOAK_MOODLE_CLIENT_SECRET,
+        );
+        break;
+      }
+      case APPS.WIREGUARD: {
+        const wireguardConfig = await this.appConfigService.getAppConfigByName(APPS.WIREGUARD);
+        if (wireguardConfig?.options?.apiKey) {
+          appConfigValues.EDU_WG_API_KEY = wireguardConfig.options.apiKey;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+
+    const resolveVar = (match: string, expr: string): string => {
+      const sepIndex = expr.indexOf(':-');
+      const varName = sepIndex === -1 ? expr : expr.slice(0, sepIndex);
+      const defaultValue = sepIndex === -1 ? undefined : expr.slice(sepIndex + 2);
+      if (varName in appConfigValues) return appConfigValues[varName];
+      const envValue = process.env[varName];
+      if (envValue !== undefined) return envValue;
+      if (defaultValue !== undefined) return defaultValue;
+      return match;
+    };
+
+    const resolveVarsInValue = (value: unknown): unknown => {
+      if (typeof value === 'string') return value.replace(DOCKER_COMPOSE_ENV_VAR_PATTERN, resolveVar);
+      if (Array.isArray(value)) return value.map(resolveVarsInValue);
+      if (value && typeof value === 'object') {
+        return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveVarsInValue(v)]));
+      }
+      return value;
+    };
+
+    const newCreateContainersDto = createContainersDto.map(
+      (service) => resolveVarsInValue(service) as Docker.ContainerCreateOptions,
+    );
 
     return newCreateContainersDto;
   }
@@ -237,17 +341,14 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       Logger.log(`Docker compose file saved: ${filePath}`, DockerService.name);
     } catch (error) {
-      Logger.error(
-        `Failed to save docker-compose.yml: ${error instanceof Error ? error.message : String(error)}`,
-        DockerService.name,
-      );
+      Logger.error(`Failed to save docker-compose.yml: ${getErrorMessage(error)}`, DockerService.name);
     }
   }
 
   async createContainer(createContainerDto: CreateContainerDto) {
     const { applicationName, containers, originalComposeConfig } = createContainerDto;
 
-    const newContainers = DockerService.replaceEnvVariables(containers);
+    const newContainers = await this.replaceEnvVariables(containers, applicationName);
 
     try {
       await Promise.all(
@@ -259,18 +360,17 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         }),
       );
 
-      await Promise.all(
-        newContainers.map(async (containerDto) => {
-          this.sseService.sendEventToUsers(
-            [SPECIAL_USERS.GLOBAL_ADMIN],
-            { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
-            SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
-          );
-          const container = await this.docker.createContainer(containerDto);
-          await container.start();
-          Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
-        }),
-      );
+      await newContainers.reduce(async (prev, containerDto) => {
+        await prev;
+        this.sseService.sendEventToUsers(
+          [SPECIAL_USERS.GLOBAL_ADMIN],
+          { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
+          SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
+        );
+        const container = await this.docker.createContainer(containerDto);
+        await container.start();
+        Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
+      }, Promise.resolve());
 
       if (applicationName && newContainers && originalComposeConfig) {
         DockerService.saveDockerCompose(applicationName, newContainers, originalComposeConfig);
@@ -461,10 +561,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       return inspections.find((name) => name !== null) || null;
     } catch (error) {
-      Logger.error(
-        `Failed to lookup container by IP: ${error instanceof Error ? error.message : String(error)}`,
-        DockerService.name,
-      );
+      Logger.error(`Failed to lookup container by IP: ${getErrorMessage(error)}`, DockerService.name);
       return null;
     }
   }

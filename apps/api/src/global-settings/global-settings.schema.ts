@@ -43,7 +43,7 @@ export class GlobalSettings {
   @Prop({ type: ThemeSettingsSchema, required: true })
   theme: ThemeSettings;
 
-  @Prop({ default: 7 })
+  @Prop({ default: 9 })
   schemaVersion: number;
 }
 

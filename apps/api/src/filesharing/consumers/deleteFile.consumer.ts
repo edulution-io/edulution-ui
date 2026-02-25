@@ -50,7 +50,7 @@ class DeleteFileConsumer extends WorkerHost {
 
     const failedPaths: string[] = [];
     try {
-      await this.webDavService.deletePath(username, originFilePath, share);
+      await this.webDavService.deletePath(username, webdavFilePath, share);
       await this.shareModel.deleteMany({ filePath: sanitizedPathRegex });
     } catch (error) {
       failedPaths.push(originFilePath);

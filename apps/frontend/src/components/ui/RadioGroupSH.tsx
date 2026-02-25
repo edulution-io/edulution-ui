@@ -20,10 +20,10 @@
 'use client';
 
 import * as React from 'react';
-import { CheckIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const RadioGroupSH = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -50,7 +50,10 @@ const RadioGroupItemSH = React.forwardRef<
     {...props}
   >
     <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-      <CheckIcon className="h-3.5 w-3.5 fill-primary" />
+      <FontAwesomeIcon
+        icon={faCheck}
+        className="h-3"
+      />
     </RadioGroupPrimitive.Indicator>
   </RadioGroupPrimitive.Item>
 ));
