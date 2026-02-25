@@ -85,9 +85,6 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v6.18.0
         with:
-          build-args: |
-            buildId=${{ github.sha }}
-            version=${{ steps.generate_docker_tags_fe.outputs.docker_tags_fe }}
           context: .
           file: apps/frontend/Dockerfile
           push: false
@@ -141,9 +138,6 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v6.18.0
         with:
-          build-args: |
-            buildId=${{ github.sha }}
-            version=${{ steps.generate_docker_tags_api.outputs.docker_tags_api }}
           context: .
           file: apps/api/Dockerfile
           push: false

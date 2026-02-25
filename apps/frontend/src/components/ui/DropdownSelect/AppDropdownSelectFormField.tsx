@@ -26,6 +26,7 @@ import { DropdownSelect } from '@/components';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 type AppDropdownSelectFormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
@@ -43,6 +44,7 @@ const AppDropdownSelectFormField = <T extends FieldValues>({
   const { getAppConfigs, appConfigs } = useAppConfigsStore();
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   useEffect(() => {
     void getAppConfigs();
@@ -50,7 +52,7 @@ const AppDropdownSelectFormField = <T extends FieldValues>({
 
   const appNameOptions = appConfigs.map((appConfig) => ({
     id: appConfig.name,
-    name: getDisplayName(appConfig, language),
+    name: getDisplayName(appConfig, language, isSchoolEnvironment),
   }));
 
   return (

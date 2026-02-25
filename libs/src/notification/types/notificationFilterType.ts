@@ -22,6 +22,7 @@ import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 const NOTIFICATION_FILTER_TYPE = {
   ALL: 'all',
   ...NOTIFICATION_TYPE,
+  SENT: 'sent',
 } as const;
 
 type NotificationFilterType = (typeof NOTIFICATION_FILTER_TYPE)[keyof typeof NOTIFICATION_FILTER_TYPE];

@@ -51,6 +51,11 @@
     "activeUntilPlaceholder": "unlimited",
     "appTitle": "Info Board",
     "description": "Here you can find your latest bulletins",
+    "view": "View",
+    "viewAuto": "Auto",
+    "viewOneRow": "1 Row",
+    "viewTwoRows": "2 Rows",
+    "viewThreeRows": "3 Rows",
     "sidebar": "Info Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -73,6 +78,7 @@
     "categoryName": "Category name",
     "bulletinUpdatedSuccessfully": "Bulletin updated successfully",
     "bulletinCreatedSuccessfully": "Bulletin created successfully",
+    "pushNotificationSentSuccessfully": "Push notification sent successfully",
     "bulletinsDeletedSuccessfully": "Bulletins deleted successfully",
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",
@@ -102,7 +108,8 @@
       "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
       "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
-      "editableByUsersAndGroupsTitle": "Manage Bulletins"
+      "editableByUsersAndGroupsTitle": "Manage Bulletins",
+      "accessGroupsOnlyHint": "Only access groups can be assigned."
     },
     "errors": {
       "categoryNotFound": "Category not found",
@@ -117,8 +124,20 @@
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
       "attachmentNotFound": "Attachment not found",
-      "attachmentDeletionFailed": "Failed to delete an attachment"
-    }
+      "attachmentDeletionFailed": "Failed to delete an attachment",
+      "pushOnlyMissingFields": "Push title and push message are required for 'Push Only' mode"
+    },
+    "pushNotification": "Push Notification",
+    "saveMode": "Publication Type",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin Only",
+      "pushOnly": "Push Only"
+    },
+    "customPushTitle": "Push Notification Title",
+    "customPushTitlePlaceholder": "Bulletin ready",
+    "customPushBody": "Push Message",
+    "customPushBodyPlaceholder": "New bulletin in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Notifications",
@@ -146,8 +165,17 @@
     "menu": {
       "all": "All",
       "messages": "Messages",
-      "system": "System"
-    }
+      "system": "System",
+      "sent": "Sent"
+    },
+    "sentSection": "Sent messages",
+    "noSentNotifications": "You haven't sent any messages",
+    "deleteAllSent": "Delete all sent",
+    "confirmDeleteSent": "Are you sure you want to delete all {{count}} sent messages? They will also be deleted for all recipients.",
+    "showRecipients": "Show recipients",
+    "noRecipients": "No recipients",
+    "recipientsStats": "{{read}} of {{total}} have read",
+    "read": "Read"
   },
   "mountpoints": {
     "home": "Home",
@@ -236,6 +264,7 @@
       "AddManagementGroupFailed": "Add management group failed",
       "GetUserSchoolClassesFailed": "Failed to get user school classes",
       "GetUserSchoolClassFailed": "Failed to get user school class",
+      "UpdateSchoolClassFailed": "Failed to update school class",
       "GetUserProjectsFailed": "Failed to get user projects",
       "GetUserFailed": "Fetching failed",
       "GetUsersFailed": "Failed to get users",
@@ -250,7 +279,18 @@
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
       "GetSchoolsFailed": "Failed to get schools",
-      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version.",
+      "GetUsersByRoleFailed": "Failed to get users by role",
+      "GetManagementListFailed": "Failed to get management list",
+      "SaveManagementListFailed": "Failed to save management list",
+      "SophomorixCheckFailed": "Sophomorix check failed",
+      "SophomorixApplyFailed": "Sophomorix apply failed",
+      "GetSophomorixStatusFailed": "Failed to get sophomorix status",
+      "AddParentToStudentFailed": "Failed to register parent for student",
+      "DeleteParentFromStudentFailed": "Failed to remove parent from student group",
+      "GetDevicesFailed": "Failed to load device list",
+      "SaveDevicesFailed": "Failed to save device list",
+      "ImportDevicesFailed": "Device import failed"
     }
   },
   "ticketsystem": {
@@ -440,6 +480,16 @@
       "CopyFailed": "Copy failed",
       "FileFormatNotSupported": "File format is not supported"
     },
+    "singleDownload": {
+      "promptInfo": "Your file download has started.",
+      "downloadSucceeded": "Did the file download successfully?",
+      "help": "Help"
+    },
+    "multipleDownload": {
+      "promptInfo": "Your browser may ask for permission to download multiple files.",
+      "downloadSucceeded": "Did all files download successfully?",
+      "help": "Help"
+    },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
@@ -618,6 +668,9 @@
       "updateSuccess": "Project updated successfully",
       "deleteSuccess": "Project deleted successfully"
     },
+    "schoolClass": {
+      "updateSuccess": "School class updated successfully"
+    },
     "sessions": {
       "createSuccess": "Session created successfully",
       "updateSuccess": "Session updated successfully",
@@ -635,6 +688,7 @@
     "createmyProjects": "Create project",
     "detailsmyProjects": "Details of project",
     "myClasses": "My classes",
+    "editmyClasses": "Edit school class",
     "detailsmyClasses": "Details of school class",
     "session": "Session",
     "startSession": "Start session",
@@ -743,6 +797,185 @@
     "filesShared": "Files shared",
     "filesSharingStarted": "Sharing files started",
     "filesCollectingStarted": "Collecting files started"
+  },
+  "usermanagement": {
+    "title": "USERS",
+    "titleLmn": "SCHOOL SERVER",
+    "titleGeneric": "SERVER",
+    "menuTitle": "User management",
+    "parentAssignment": "Parent Assignment",
+    "description": "View and manage user accounts, lists, and roles.",
+    "students": "Students",
+    "teachers": "Teachers",
+    "extrastudents": "Extra Students",
+    "parents": "Parents",
+    "staff": "Staff",
+    "schooladmins": "School Admins",
+    "schoolbindusers": "School Bind Users",
+    "globaladmins": "Global Admins",
+    "globalbindusers": "Global Bind Users",
+    "tabs": {
+      "table": "Users",
+      "list": "Import"
+    },
+    "filterUsers": "Filter users...",
+    "loginClass": "Login / Class",
+    "name": "Name",
+    "status": "Status",
+    "passwordActions": "Password Actions",
+    "showFirstPassword": "Show first password",
+    "restoreFirstPassword": "Restore first password",
+    "setRandomFirstPassword": "Set random first password",
+    "setCustomPassword": "Set custom password",
+    "setCurrentPassword": "Set current user password",
+    "userDetails": "User Details",
+    "properties": "Properties",
+    "loginname": "Login name",
+    "mailAlias": "Mail Alias",
+    "class": "Class",
+    "classBusiness": "Primary Group",
+    "sophomorixStatus": "Sophomorix Status",
+    "role": "Role",
+    "schoolname": "School name",
+    "schoolnameBusiness": "Organization Code",
+    "userId": "User ID (optional)",
+    "birthdate": "Date of birth",
+    "deactivationDate": "Deactivation date",
+    "tolerationDate": "Toleration date",
+    "creationDate": "Creation date",
+    "groupMembership": "Group membership",
+    "quota": "Quota",
+    "noQuotaInfo": "No quota information available",
+    "noListAvailable": "No import available for this user type.",
+    "listDescription": "Import for {{school}}/{{list}}.csv",
+    "csvPlaceholder": "CSV content will be displayed here...",
+    "addUser": "Add user",
+    "check": "Check",
+    "saveConfirmTitle": "Save list",
+    "saveConfirmMessage": "The list must be saved before checking. Do you want to save the list now and continue?",
+    "apply": "Apply",
+    "exportCsv": "Export CSV",
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Drop file here to import",
+      "download": "CSV Download"
+    },
+    "validationFailed": "Please fix all invalid fields before saving",
+    "listSaved": "List saved successfully. Use \"Check\" to review and apply changes.",
+    "checkCompleted": "Check completed",
+    "applyCompleted": "Apply completed",
+    "checkResult": {
+      "title": "Check Result",
+      "checkFailed": "Check failed",
+      "overview": "Overview",
+      "add": "Add",
+      "update": "Update",
+      "delete": "Remove",
+      "usersToAdd": "Users to be added",
+      "usersToUpdate": "Users to be updated",
+      "usersToDelete": "Users to be removed",
+      "addNewUsers": "Add new users",
+      "updateUsers": "Update users",
+      "deleteUsers": "Remove users",
+      "apply": "Apply",
+      "noChanges": "No changes detected. The current data matches the existing user accounts.",
+      "columns": {
+        "class": "Class",
+        "classBusiness": "Primary Group",
+        "login": "Login",
+        "name": "Name",
+        "role": "Role",
+        "school": "School",
+        "schoolBusiness": "Organization Code",
+        "changes": "Changes",
+        "file": "File",
+        "reason": "Reason"
+      }
+    },
+    "details": "Details",
+    "login": "Login",
+    "list": {
+      "class": "Class",
+      "lastName": "Last Name",
+      "firstName": "First Name",
+      "birthday": "Birthday",
+      "login": "Desired Login",
+      "loginTooltip": "This entry is read directly from the CSV file and may differ from the actual login of the user (stored in LDAP)",
+      "category": "Category",
+      "add": {
+        "students": "Add Student",
+        "teachers": "Add Teacher",
+        "extrastudents": "Add Extra Student",
+        "parents": "Add Parent",
+        "staff": "Add Staff"
+      }
+    },
+    "sophomorixStatusValues": {
+      "U": "Usable",
+      "S": "Self-activated",
+      "E": "Enabled",
+      "P": "Permanent",
+      "A": "Activated",
+      "T": "Tolerated",
+      "D": "Deactivated",
+      "F": "Frozen",
+      "L": "Locked",
+      "K": "Killable",
+      "R": "Removable"
+    }
+  },
+  "deviceManagement": {
+    "menuTitle": "Device Management",
+    "title": "Devices",
+    "description": "View and manage devices.",
+    "addDevice": "Add device",
+    "duplicateDevice": "Duplicate device",
+    "apply": "Apply",
+    "applyConfirmTitle": "Apply device list",
+    "applyConfirmMessage": "The device list will be saved and immediately imported. Do you want to continue?",
+    "applyStarted": "Applying device list...",
+    "applyCompleted": "Device list applied successfully",
+    "listSaved": "Device list saved successfully",
+    "validationFailed": "Please fix all invalid fields before saving",
+    "duplicateFound": "Duplicate entries found for hostname, MAC, or IP",
+    "columns": {
+      "room": "Room",
+      "hostname": "Hostname",
+      "group": "Group",
+      "mac": "MAC",
+      "ip": "IP",
+      "sophomorixRole": "Sophomorix Role",
+      "pxeFlag": "PXE"
+    },
+    "roles": {
+      "addc": "Domain Controller",
+      "byod": "BYOD",
+      "classroom-studentcomputer": "Classroom Student Computer",
+      "classroom-teachercomputer": "Classroom Teacher Computer",
+      "faculty-teachercomputer": "Faculty Teacher Computer",
+      "iponly": "IP-Only",
+      "mobile": "Mobile",
+      "printer": "Printer",
+      "router": "Router",
+      "server": "Server",
+      "staffcomputer": "Staff Computer",
+      "staffcomputerBusiness": "Computer",
+      "switch": "Switch",
+      "thinclient": "Thin Client",
+      "voip": "VOIP",
+      "wlan": "WLan"
+    },
+    "pxeFlags": {
+      "0": "No PXE",
+      "1": "Linbo-PXE",
+      "2": "Linbo-PXE + OPSI-PXE",
+      "3": "OPSI-PXE"
+    },
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Drop file here to import",
+      "download": "CSV Download"
+    }
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -1110,6 +1343,7 @@
         "notFoundError": "Settings could not be loaded."
       },
       "deploymentTarget": "Target platform",
+      "organizationType": "Organization type",
       "ldap": {
         "title": "LDAP",
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
@@ -1174,7 +1408,21 @@
       "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
-      "title": "Info"
+      "title": "License"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "userAgent": "User-Agent",
+      "apiKey": "API Key",
+      "createdAt": "Created at",
+      "select": "Select",
+      "addClient": "Add Webhook Client",
+      "deleteClient": "Delete Webhook Client",
+      "deleteConfirmMessage": "Are you sure you want to delete the selected webhook clients?",
+      "selectUserAgent": "Select User-Agent",
+      "createSuccess": "Webhook client created",
+      "deleteSuccess": "Webhook client deleted",
+      "filterPlaceholder": "Filter webhook clients..."
     },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
@@ -1477,6 +1725,39 @@
       "downloadButton": "Download Configuration",
       "error": "The VPN service is currently unavailable. Please try again later or contact an administrator."
     },
+    "parentChildPairing": {
+      "myParents": "My Parents",
+      "myChildren": "My Children",
+      "descriptionStudent": "Here you can create a link with your parents.",
+      "descriptionParent": "Here you can create a link with your children.",
+      "myCode": "My Assignment Code",
+      "myCodeDescriptionStudent": "Share this code with your parent. The code is valid for 5 minutes.",
+      "myCodeDescriptionParent": "Share this code with your child. The code is valid for 5 minutes.",
+      "enterCode": "Enter Code",
+      "enterCodeDescriptionStudent": "Enter the assignment code you received from your parent.",
+      "enterCodeDescriptionParent": "Enter the assignment code you received from your child.",
+      "enterCodePlaceholder": "Enter assignment code",
+      "submitCode": "Assign",
+      "relationships": "Assignments",
+      "noRelationships": "No assignments yet.",
+      "statusPending": "Pending",
+      "statusAccepted": "Accepted",
+      "statusRejected": "Rejected",
+      "pairingSuccess": "Assignment request sent successfully!",
+      "regenerateCode": "Regenerate",
+      "codeRefreshed": "New assignment code generated.",
+      "codeExpired": "The code has expired. Please request a new code.",
+      "parent": "Parent",
+      "student": "Student",
+      "statusColumn": "Status",
+      "createdAt": "Created at",
+      "accept": "Accept",
+      "reject": "Reject",
+      "statusUpdated": "Status updated successfully.",
+      "assignment": "Parent Assignment",
+      "assignmentDescription": "Manage parent-student assignments.",
+      "filterPlaceholder": "Search by parent or student..."
+    },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
@@ -1557,6 +1838,9 @@
     "showSystemFiles": "Show system files",
     "expand": "Expand",
     "collapse": "Collapse",
+    "hide": "Hide",
+    "show": "Show",
+    "never": "Never",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
@@ -1680,6 +1964,7 @@
     "date": "Date",
     "time": "Time",
     "revert": "Revert",
+    "duplicate": "Duplicate",
     "restart": "Restart",
     "kill": "Kill",
     "install": "Install",
@@ -1797,8 +2082,47 @@
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
   },
   "linuxmuster": {
-    "title": "LINUXMUSTER",
-    "sidebar": "Linuxmuster"
+    "sidebarLmn": "School server",
+    "sidebarGeneric": "Server",
+    "item": "{{count}} user",
+    "items": "{{count}} users",
+    "userManagement": "User Management",
+    "description": "Manage your school server settings and users.",
+    "versionInfo": "Version overview",
+    "system": "System",
+    "versionMismatch": "The Linuxmuster API version is too old. At least version {{version}} is required."
+  },
+  "parentAssignment": {
+    "item": "{{count}} assignment",
+    "items": "{{count}} assignments",
+    "rowSelected": "{{selected}} of {{total}} assignment selected",
+    "rowsSelected": "{{selected}} of {{total}} assignments selected"
+  },
+  "parentChildPairing": {
+    "assignment": "Parent Assignment",
+    "assignmentDescription": "Manage parent-student assignments.",
+    "filterPlaceholder": "Search by parent or student...",
+    "parent": "Parent",
+    "student": "Student",
+    "school": "School",
+    "statusColumn": "Status",
+    "createdAt": "Created at",
+    "accept": "Accept",
+    "reject": "Reject",
+    "statusAll": "All",
+    "statusPending": "Pending",
+    "statusAccepted": "Accepted",
+    "statusRejected": "Rejected",
+    "statusUpdated": "Status updated successfully.",
+    "errors": {
+      "codeNotFound": "The assignment code was not found.",
+      "codeExpired": "The assignment code has expired.",
+      "cannotPairWithSelf": "You cannot assign yourself.",
+      "pairingAlreadyExists": "This assignment already exists.",
+      "pairingNotFound": "The assignment was not found.",
+      "invalidRole": "Your role does not allow assignments.",
+      "incompatibleRoles": "You cannot be assigned to another student."
+    }
   },
   "whiteboard": {
     "title": "WHITEBOARD",
@@ -2169,6 +2493,22 @@
     "EDU_WG_DNS": {
       "title": "DNS Server",
       "description": "The DNS server address for the VPN connection."
+    },
+    "MOODLE_WWWROOT": {
+      "title": "WWW Root",
+      "description": "The full URL where Moodle is accessible (e.g. https://moodle.example.com)."
+    },
+    "MOODLE_ADMIN_EMAIL": {
+      "title": "Admin Email",
+      "description": "The email address of the Moodle administrator."
+    },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Admin Password",
+      "description": "The password of the Moodle administrator."
+    },
+    "MOODLE_SITE_NAME": {
+      "title": "Site Name",
+      "description": "The displayed name of the Moodle instance."
     }
   },
   "edulution-manager": {
@@ -2250,6 +2590,13 @@
     "description": "Here you can select the platform to which {{ appName }} will be connected.",
     "linuxmuster": "Linuxmuster",
     "generic": "Generic"
+  },
+  "organizationType": {
+    "title": "Selection",
+    "description": "Here you can select the type of your organization.",
+    "school": "School",
+    "business": "Business",
+    "public-administration": "Public Administration"
   },
   "webdavShare": {
     "displayName": "Display name",

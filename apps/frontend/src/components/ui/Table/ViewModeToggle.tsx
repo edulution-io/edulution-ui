@@ -21,7 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import ViewModeType from '@libs/common/types/viewModeType';
-import { cn, Button } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faList } from '@fortawesome/free-solid-svg-icons';
@@ -44,7 +44,7 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
             size="icon"
             onClick={() => onViewModeChange(VIEW_MODE.table)}
             className={cn(
-              'rounded-r-none',
+              'h-[38px] w-[38px] rounded-r-none',
               viewMode === VIEW_MODE.table && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
             )}
           >

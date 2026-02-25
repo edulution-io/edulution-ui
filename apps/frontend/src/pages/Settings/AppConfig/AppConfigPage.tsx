@@ -46,6 +46,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import EditAppConfigIconDialog from './EditAppConfigIconDialog';
@@ -66,6 +67,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   const { searchGroups } = useGroupStore();
   const { postExternalMailProviderConfig } = useMailsStore();
   const { language } = useLanguage();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
     mode: 'onSubmit',
@@ -320,7 +322,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       nativeAppHeader={
         matchingConfig
           ? {
-              title: getDisplayName(matchingConfig, language),
+              title: getDisplayName(matchingConfig, language, isSchoolEnvironment),
               iconSrc: matchingConfig.icon,
               description: getHeaderDescription(matchingConfig),
             }
@@ -335,7 +337,9 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       />
       <DeleteAppConfigDialog
         appName={settingLocation}
-        appDisplayName={matchingConfig ? getDisplayName(matchingConfig, language) : settingLocation}
+        appDisplayName={
+          matchingConfig ? getDisplayName(matchingConfig, language, isSchoolEnvironment) : settingLocation
+        }
         handleDeleteSettingsItem={handleDeleteSettingsItem}
       />
       {matchingConfig && (

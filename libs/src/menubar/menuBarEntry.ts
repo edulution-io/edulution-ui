@@ -19,14 +19,16 @@
 
 import TApps from '@libs/appconfig/types/appsType';
 import MenuItem from '@libs/menubar/menuItem';
+import MenuBarIcon from '@libs/menubar/menuBarIcon';
 
 interface MenuBarEntry {
   menuItems: MenuItem[];
   title: string;
   disabled?: boolean;
-  icon: string;
+  icon: MenuBarIcon;
   color: string;
   appName: TApps;
+  onHeaderClick?: () => void;
 }
 
 export default MenuBarEntry;

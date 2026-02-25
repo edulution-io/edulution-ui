@@ -20,16 +20,13 @@
 import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
 import GroupForm from '@libs/groups/types/groupForm';
+import formatSophomorixDate from '@libs/userManagement/utils/formatSophomorixDate';
 import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/shared/Input';
 import { FormMessage } from '@/components/ui/Form';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useClassManagementStore from '../../useClassManagementStore';
-
-dayjs.extend(customParseFormat);
 
 type GroupProperty = {
   labelTranslationId: string;
@@ -78,25 +75,25 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
     {
       labelTranslationId: 'classmanagement.hide',
       name: 'hide',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'classmanagement.isJoinable',
       name: 'join',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'common.mailList',
       name: 'maillist',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'classmanagement.sharedMailBox',
       name: 'mailalias',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
@@ -132,15 +129,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
           />
         );
       case 'date':
-        return (
-          <div className="ml-2">
-            {watch(groupProperty.name)
-              ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]')
-                  .toDate()
-                  .toLocaleString()
-              : '-'}
-          </div>
-        );
+        return <div className="ml-2">{formatSophomorixDate(watch(groupProperty.name) as string | undefined, '-')}</div>;
       case 'number':
         if (groupProperty.disabled) {
           return <div className="ml-2">{watch(groupProperty.name)}</div>;

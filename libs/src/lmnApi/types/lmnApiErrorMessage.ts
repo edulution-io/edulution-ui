@@ -33,6 +33,7 @@ enum LmnApiErrorMessage {
   TogglePrinterJoinedFailed = 'lmnApi.errors.TogglePrinterJoinedFailed',
   GetPrintersFailed = 'lmnApi.errors.GetPrintersFailed',
   GetUserSchoolClassFailed = 'lmnApi.errors.GetUserSchoolClassFailed',
+  UpdateSchoolClassFailed = 'lmnApi.errors.UpdateSchoolClassFailed',
   GetUserProjectsFailed = 'lmnApi.errors.GetUserProjectsFailed',
   GetUserFailed = 'lmnApi.errors.GetUserFailed',
   GetUsersFailed = 'lmnApi.errors.GetUsersFailed',
@@ -48,6 +49,16 @@ enum LmnApiErrorMessage {
   GetUsersQuotaFailed = 'lmnApi.errors.GetUsersQuotaFailed',
   GetSchoolsFailed = 'lmnApi.errors.GetSchoolsFailed',
   GetLmnVersionFailed = 'lmnApi.errors.GetLmnVersionFailed',
+  GetUsersByRoleFailed = 'lmnApi.errors.GetUsersByRoleFailed',
+  GetManagementListFailed = 'lmnApi.errors.GetManagementListFailed',
+  SaveManagementListFailed = 'lmnApi.errors.SaveManagementListFailed',
+  AddParentToStudentFailed = 'lmnApi.errors.AddParentToStudentFailed',
+  DeleteParentFromStudentFailed = 'lmnApi.errors.DeleteParentFromStudentFailed',
+  SophomorixCheckFailed = 'lmnApi.errors.SophomorixCheckFailed',
+  SophomorixApplyFailed = 'lmnApi.errors.SophomorixApplyFailed',
+  GetDevicesFailed = 'lmnApi.errors.GetDevicesFailed',
+  SaveDevicesFailed = 'lmnApi.errors.SaveDevicesFailed',
+  ImportDevicesFailed = 'lmnApi.errors.ImportDevicesFailed',
 }
 
 export default LmnApiErrorMessage;

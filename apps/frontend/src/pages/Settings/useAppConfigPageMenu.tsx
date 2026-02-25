@@ -26,11 +26,13 @@ import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
 import CONTAINER from '@libs/docker/constants/container';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
   const { appConfigs } = useAppConfigsStore();
   const { language } = useLanguage();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   const globalSettingsMenuItem = {
     id: APPS.GENERAL_SETTINGS,
@@ -48,7 +50,7 @@ const useAppConfigPageMenu = () => {
 
   const appConfigMenuItems = appConfigs.map((item) => ({
     id: item.name,
-    label: getDisplayName(item, language),
+    label: getDisplayName(item, language, isSchoolEnvironment),
     icon: item.icon,
     action: () => navigate(`/${SETTINGS_PATH}/${item.name}`),
   }));

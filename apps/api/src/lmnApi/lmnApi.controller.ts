@@ -43,9 +43,13 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
+import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
+import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
+import type JwtUser from '@libs/user/types/jwt/jwtUser';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
 
 const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
@@ -113,6 +117,15 @@ export class LmnApiController {
   @Get('school-classes')
   async getUserSchoolClasses(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
     return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
+  }
+
+  @Patch('school-classes')
+  async updateSchoolClass(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { formValues: GroupFormDto },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.lmnApiService.updateSchoolClass(lmnApiToken, body.formValues, username);
   }
 
   @Put('school-classes/:schoolClass/:action')
@@ -309,6 +322,66 @@ export class LmnApiController {
   @Get('server/lmnversion')
   async getLmnVersion(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
     return this.lmnApiService.getLmnVersion(lmnApiToken);
+  }
+
+  @Get('roles/:role')
+  async getUsersByRole(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param('role') role: string,
+    @GetCurrentUser() user: JwtUser,
+    @Query(SOPHOMORIX_QUERY_PARAMS.SCHOOL) school?: string,
+    @Query(SOPHOMORIX_QUERY_PARAMS.MANAGEMENT_LIST) managementList?: string,
+  ) {
+    return this.lmnApiService.getUsersByRole(lmnApiToken, role, school ?? user.school, managementList);
+  }
+
+  @Get('listmanagement/sophomorix-check')
+  async runSophomorixCheck(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.runSophomorixCheck(lmnApiToken);
+  }
+
+  @Post('listmanagement/sophomorix-apply')
+  async runSophomorixApply(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { school: string; add: boolean; update: boolean; kill: boolean },
+  ) {
+    return this.lmnApiService.runSophomorixApply(lmnApiToken, body.school, body.add, body.update, body.kill);
+  }
+
+  @Get('devices/:school')
+  async getDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getDevices(lmnApiToken, school);
+  }
+
+  @Post('devices/:school')
+  async saveDevices(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param('school') school: string,
+    @Body() body: { data: ListManagementEntry[] },
+  ) {
+    return this.lmnApiService.saveDevices(lmnApiToken, school, body.data);
+  }
+
+  @Get('devices/:school/import-devices')
+  async getImportDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getImportDevices(lmnApiToken, school);
+  }
+
+  @Get('listmanagement/:school/:managementList')
+  async getManagementList(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param() params: { school: string; managementList: string },
+  ) {
+    return this.lmnApiService.getManagementList(lmnApiToken, params.school, params.managementList);
+  }
+
+  @Post('listmanagement/:school/:managementList')
+  async saveManagementList(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param() params: { school: string; managementList: string },
+    @Body() body: { data: ListManagementEntry[] },
+  ) {
+    return this.lmnApiService.saveManagementList(lmnApiToken, params.school, params.managementList, body.data);
   }
 }
 

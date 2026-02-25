@@ -21,6 +21,7 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
 import UserPreferencesDto from '@libs/user-preferences/types/user-preferences.dto';
+import UpdateBulletinBoardGridRowsDto from '@libs/user-preferences/types/update-bulletin-board-grid-rows.dto';
 import handleApiError from '@/utils/handleApiError';
 
 interface UserPreferencesStore {
@@ -28,6 +29,7 @@ interface UserPreferencesStore {
   error: Error | null;
   preferences: UserPreferencesDto | null;
   getUserPreferences: (fields: string[]) => Promise<UserPreferencesDto | null>;
+  updateBulletinBoardGridRows: (gridRows: string) => Promise<void>;
 }
 
 const useUserPreferencesStore = create<UserPreferencesStore>((set) => ({
@@ -47,6 +49,15 @@ const useUserPreferencesStore = create<UserPreferencesStore>((set) => ({
       return null;
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  updateBulletinBoardGridRows: async (gridRows) => {
+    try {
+      const dto: UpdateBulletinBoardGridRowsDto = { gridRows };
+      await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-board-grid-rows`, dto);
+    } catch (error) {
+      handleApiError(error, set);
     }
   },
 }));
