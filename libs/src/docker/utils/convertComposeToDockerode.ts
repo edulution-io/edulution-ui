@@ -19,9 +19,63 @@
 
 import { type ContainerCreateOptions } from 'dockerode';
 import type DockerCompose from '../types/dockerCompose';
+import DOCKER_NETWORK_MODE from '../constants/dockerNetworkMode';
+
+const NANOSECONDS_PER_SECOND = 1_000_000_000;
+
+const UNIT_TO_SECONDS: Record<string, number> = { h: 3600, m: 60, s: 1, ms: 0.001 };
+
+const parseDurationToSeconds = (duration: string | undefined): number | undefined => {
+  if (!duration) return undefined;
+  const match = duration.match(/^(\d+)(h|m|ms|s)$/);
+  if (!match) return undefined;
+  const [, value, unit] = match;
+  return Math.round(Number(value) * (UNIT_TO_SECONDS[unit] ?? 1));
+};
+
+const parseDurationToNs = (duration: string | undefined): number | undefined => {
+  const seconds = parseDurationToSeconds(duration);
+  if (seconds === undefined) return undefined;
+  return seconds * NANOSECONDS_PER_SECOND;
+};
+
+const normalizeEnvToStringArray = (env: string[] | Record<string, string> | undefined): string[] | undefined => {
+  if (!env) return undefined;
+  if (Array.isArray(env)) return env;
+  return Object.entries(env).map(([k, v]) => `${k}=${v}`);
+};
+
+const topologicalSort = (services: DockerCompose['services']): string[] => {
+  const visited = new Set<string>();
+  const inProgress = new Set<string>();
+  const result: string[] = [];
+
+  const visit = (name: string): void => {
+    if (visited.has(name)) return;
+    if (inProgress.has(name)) {
+      throw new Error(`Circular dependency detected for service '${name}'`);
+    }
+    if (!(name in services)) {
+      throw new Error(`Unknown service dependency '${name}'`);
+    }
+    inProgress.add(name);
+
+    const deps = services[name]?.depends_on;
+    const depNames = Array.isArray(deps) ? deps : Object.keys(deps ?? {});
+    depNames.forEach(visit);
+
+    inProgress.delete(name);
+    visited.add(name);
+    result.push(name);
+  };
+
+  Object.keys(services).forEach(visit);
+  return result;
+};
 
 const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptions[] =>
-  Object.entries(compose.services).map(([serviceName, service]) => {
+  topologicalSort(compose.services).map((serviceName) => {
+    const service = compose.services[serviceName];
     const volumes = service.volumes?.reduce(
       (acc, volume) => {
         const [, containerPath] = volume.split(':');
@@ -54,7 +108,7 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: object },
     );
 
-    const stopTimeOut = service.stop_grace_period ? Number(service.stop_grace_period.split('s')[0]) : undefined;
+    const stopTimeOut = parseDurationToSeconds(service.stop_grace_period);
 
     const sysctls = service.sysctls?.reduce(
       (acc, sysctl) => {
@@ -65,18 +119,36 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: string },
     );
 
+    const parseCommand = (): string[] | undefined => {
+      if (Array.isArray(service.command)) return service.command;
+      if (service.command) return ['/bin/sh', '-c', service.command];
+      return undefined;
+    };
+    const cmd = parseCommand();
+
+    const healthcheck = service.healthcheck
+      ? {
+          Test: service.healthcheck.test,
+          Interval: parseDurationToNs(service.healthcheck.interval),
+          Timeout: parseDurationToNs(service.healthcheck.timeout),
+          StartPeriod: parseDurationToNs(service.healthcheck.start_period),
+          Retries: service.healthcheck.retries,
+        }
+      : undefined;
+
     const containerOptions: ContainerCreateOptions = {
-      name: service.container_name,
+      name: service.container_name || serviceName,
       Image: service.image,
       OpenStdin: service.stdin_open,
       StopTimeout: stopTimeOut,
-      Env: service.environment || undefined,
-      Cmd: service.command ? service.command.split(' ') : undefined,
+      Env: normalizeEnvToStringArray(service.environment),
+      Cmd: cmd,
+      Healthcheck: healthcheck,
       HostConfig: {
         Binds: binds,
         PortBindings: portBindings,
         RestartPolicy: service.restart ? { Name: service.restart } : undefined,
-        NetworkMode: 'edulution-ui_default',
+        NetworkMode: DOCKER_NETWORK_MODE,
         CapAdd: service.cap_add,
         Sysctls: sysctls,
       },

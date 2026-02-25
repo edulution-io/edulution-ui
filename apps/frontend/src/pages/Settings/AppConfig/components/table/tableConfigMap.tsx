@@ -56,7 +56,7 @@ import WireguardTableColumns from '../../wireguard/WireguardTableColumns';
 import useWireguardConfigTableStore from '../../wireguard/useWireguardConfigTableStore';
 import AddWireguardPeerDialog from '../../wireguard/AddWireguardPeerDialog';
 
-const DOCKER_CONTAINER_TABLE_COLUMS = {
+const DOCKER_CONTAINER_TABLE_COLUMN_CONFIG = {
   hideColumnsInMobileView: [
     DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_IMAGE,
     DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_PORT,
@@ -103,7 +103,7 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-      ...DOCKER_CONTAINER_TABLE_COLUMS,
+      ...DOCKER_CONTAINER_TABLE_COLUMN_CONFIG,
     }),
     createAppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>({
       columns: VeyonConfigTableColumns,
@@ -115,6 +115,23 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       type: ExtendedOptionKeys.VEYON_PROXYS,
       hideColumnsInMobileView: [],
       hideColumnsInTabletView: [],
+    }),
+  ],
+  [APPS.LEARNING_MANAGEMENT]: [
+    createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
+      columns: DockerContainerTableColumns,
+      useStore: useDockerApplicationStore,
+      dialogBody: (
+        <CreateDockerContainerDialog
+          settingLocation={APPS.LEARNING_MANAGEMENT}
+          tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
+        />
+      ),
+      showAddButton: true,
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
+      filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
+      type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMN_CONFIG,
     }),
   ],
   [APPS.MAIL]: [
@@ -131,7 +148,7 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-      ...DOCKER_CONTAINER_TABLE_COLUMS,
+      ...DOCKER_CONTAINER_TABLE_COLUMN_CONFIG,
     }),
   ],
   [APPS.DESKTOP_DEPLOYMENT]: [
@@ -148,7 +165,7 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-      ...DOCKER_CONTAINER_TABLE_COLUMS,
+      ...DOCKER_CONTAINER_TABLE_COLUMN_CONFIG,
     }),
   ],
   [APPS.FILE_SHARING]: [
@@ -165,7 +182,7 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-      ...DOCKER_CONTAINER_TABLE_COLUMS,
+      ...DOCKER_CONTAINER_TABLE_COLUMN_CONFIG,
     }),
     createAppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>({
       columns: WebdavServerTableColumns,
@@ -211,7 +228,7 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-      ...DOCKER_CONTAINER_TABLE_COLUMS,
+      ...DOCKER_CONTAINER_TABLE_COLUMN_CONFIG,
     }),
     createAppConfigTableEntry<WireguardPeer, WireguardTableStore>({
       columns: WireguardTableColumns,

@@ -24,18 +24,18 @@ const extractEnvPlaceholders = (containerConfig: Dockerode.ContainerCreateOption
 
   return containerConfig.reduce(
     (acc, service) => {
-      const envObj = service.Env;
-      if (envObj && typeof envObj === 'object') {
-        Object.values(envObj).forEach((value) => {
-          if (typeof value === 'string') {
-            const match = value.match(placeholderPattern);
-            if (match) {
-              const [, placeholder] = match;
-              acc[placeholder] = placeholder;
-            }
-          }
-        });
-      }
+      const envArr = service.Env;
+      if (!Array.isArray(envArr)) return acc;
+
+      envArr.forEach((entry) => {
+        const eqIndex = entry.indexOf('=');
+        const value = eqIndex !== -1 ? entry.slice(eqIndex + 1) : entry;
+        const match = value.match(placeholderPattern);
+        if (match) {
+          const [, placeholder] = match;
+          acc[placeholder] = placeholder;
+        }
+      });
       return acc;
     },
     {} as Record<string, string>,

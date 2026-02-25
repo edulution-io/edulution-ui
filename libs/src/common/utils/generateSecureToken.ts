@@ -17,22 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type TApps from '@libs/appconfig/types/appsType';
-import {
-  EDULUTION_MANAGER_APPLICATION_NAME,
-  EDULUTION_MANAGER_CONTAINER_NAME,
-} from '@libs/docker/constants/edulution-manager';
+import { randomBytes } from 'node:crypto';
 
-type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
+const SECURE_TOKEN_BYTE_LENGTH = 16;
 
-const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
-  mail: 'edulution-mail',
-  classmanagement: 'edulution-veyon',
-  desktopdeployment: 'edulution-guacamole',
-  filesharing: 'edulution-onlyoffice',
-  [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
-  wireguard: 'edulution-wireguard',
-  learningmanagement: 'edulution-moodle',
-} as const;
+const generateSecureToken = (): string => randomBytes(SECURE_TOKEN_BYTE_LENGTH).toString('hex');
 
-export default DOCKER_APPLICATION_LIST;
+export default generateSecureToken;
