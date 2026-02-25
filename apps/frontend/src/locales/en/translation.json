@@ -241,6 +241,7 @@
       "AddManagementGroupFailed": "Add management group failed",
       "GetUserSchoolClassesFailed": "Failed to get user school classes",
       "GetUserSchoolClassFailed": "Failed to get user school class",
+      "UpdateSchoolClassFailed": "Failed to update school class",
       "GetUserProjectsFailed": "Failed to get user projects",
       "GetUserFailed": "Fetching failed",
       "GetUsersFailed": "Failed to get users",
@@ -648,6 +649,9 @@
       "updateSuccess": "Project updated successfully",
       "deleteSuccess": "Project deleted successfully"
     },
+    "schoolClass": {
+      "updateSuccess": "School class updated successfully"
+    },
     "sessions": {
       "createSuccess": "Session created successfully",
       "updateSuccess": "Session updated successfully",
@@ -665,6 +669,7 @@
     "createmyProjects": "Create project",
     "detailsmyProjects": "Details of project",
     "myClasses": "My classes",
+    "editmyClasses": "Edit school class",
     "detailsmyClasses": "Details of school class",
     "session": "Session",
     "startSession": "Start session",

@@ -227,6 +227,7 @@
       "AddManagementGroupFailed": "Echec de l'ajout du groupe de gestion",
       "GetUserSchoolClassesFailed": "Echec d'appel des classes de l'utilisateur",
       "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
+      "UpdateSchoolClassFailed": "Échec de la mise à jour de la classe",
       "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
       "GetUserFailed": "Échec de l'appel",
       "GetUsersFailed": "L'appel des utilisateurs a échoué",
@@ -545,6 +546,9 @@
       "updateSuccess": "Projet mis à jour avec succès",
       "deleteSuccess": "Projet supprimé avec succès"
     },
+    "schoolClass": {
+      "updateSuccess": "Classe mise à jour avec succès"
+    },
     "sessions": {
       "createSuccess": "Session créée avec succès",
       "updateSuccess": "Session mise à jour avec succès",
@@ -570,6 +574,7 @@
     "createmyProjects": "Créer un projet",
     "detailsmyProjects": "Détails du projet",
     "myClasses": "Mes classes",
+    "editmyClasses": "Modifier la classe",
     "detailsmyClasses": "Détails de la classe",
     "closeSession": "Fermer",
     "session": "Session",
