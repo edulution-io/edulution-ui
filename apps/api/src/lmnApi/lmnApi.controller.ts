@@ -123,8 +123,9 @@ export class LmnApiController {
   async updateSchoolClass(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { formValues: GroupFormDto },
+    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.updateSchoolClass(lmnApiToken, body.formValues);
+    return this.lmnApiService.updateSchoolClass(lmnApiToken, body.formValues, username);
   }
 
   @Put('school-classes/:schoolClass/:action')
