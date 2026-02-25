@@ -47,7 +47,7 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
           onClick={() => onClick()}
           type="button"
           variant="btn-outline"
-          size="lg"
+          size="md"
           disabled={disabled}
         >
           <FontAwesomeIcon

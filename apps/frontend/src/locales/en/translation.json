@@ -2483,6 +2483,10 @@
       "title": "Admin Email",
       "description": "The email address of the Moodle administrator."
     },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Admin Password",
+      "description": "The password of the Moodle administrator."
+    },
     "MOODLE_SITE_NAME": {
       "title": "Site Name",
       "description": "The displayed name of the Moodle instance."

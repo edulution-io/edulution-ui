@@ -2485,6 +2485,10 @@
       "title": "Admin E-Mail",
       "description": "Die E-Mail-Adresse des Moodle-Administrators."
     },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Admin Passwort",
+      "description": "Das Passwort des Moodle-Administrators."
+    },
     "MOODLE_SITE_NAME": {
       "title": "Website-Name",
       "description": "Der angezeigte Name der Moodle-Instanz."

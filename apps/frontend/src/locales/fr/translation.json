@@ -2227,6 +2227,10 @@
       "title": "E-mail administrateur",
       "description": "L'adresse e-mail de l'administrateur Moodle."
     },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Mot de passe administrateur",
+      "description": "Le mot de passe de l'administrateur Moodle."
+    },
     "MOODLE_SITE_NAME": {
       "title": "Nom du site",
       "description": "Le nom affiché de l'instance Moodle."
