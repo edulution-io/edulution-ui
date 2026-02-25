@@ -33,6 +33,7 @@ import { deviceEntriesToRows, deviceRowsToEntries } from '@libs/deviceManagement
 import { findDuplicates } from '@libs/deviceManagement/utils/deviceValidation';
 import type DeviceRow from '@libs/deviceManagement/types/deviceRow';
 import EditableTable, { type CellCallbacks } from '@/pages/LinuxmusterPage/components/EditableTable';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import useDeviceManagementStore from './useDeviceManagementStore';
 import getDeviceColumns from './components/getDeviceColumns';
 import DeviceFloatingButtons from './components/DeviceFloatingButtons';
@@ -43,6 +44,7 @@ const DeviceManagementPage: React.FC = () => {
   const { selectedSchool } = useClassManagementStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { setSections } = useSubMenuStore();
+  const { isBusiness } = useOrganizationType();
   const effectiveSchool = isSuperAdmin ? selectedSchool : selectedSchool || user?.school || '';
   const {
     devices,
@@ -167,11 +169,12 @@ const DeviceManagementPage: React.FC = () => {
   const getColumns = useCallback(
     (callbacks: CellCallbacks) =>
       getDeviceColumns({
+        isBusiness,
         ...callbacks,
         isDuplicate: (rowId: string, columnKey: string) => duplicateCellsRef.current.has(`${rowId}-${columnKey}`),
         onDuplicateRow: (rowIndex: number) => handleDuplicateRowRef.current(rowIndex),
       }),
-    [],
+    [isBusiness],
   );
 
   const nativeAppHeader = {

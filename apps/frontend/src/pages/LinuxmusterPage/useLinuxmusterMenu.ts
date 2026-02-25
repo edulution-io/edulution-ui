@@ -38,12 +38,12 @@ import {
 } from '@libs/deviceManagement/constants/deviceManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 const useLinuxmusterMenu = (): MenuBarEntry => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment, isBusiness } = useOrganizationType();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
   const navigateToParentAssignment = useCallback(() => navigate(`/${PARENT_ASSIGNMENT_PATH}`), [navigate]);
@@ -56,7 +56,7 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
 
   return useMemo(
     () => ({
-      title: isLmn ? 'usermanagement.titleLmn' : 'usermanagement.titleGeneric',
+      title: isSchoolEnvironment ? 'usermanagement.titleLmn' : 'usermanagement.titleGeneric',
       appName: APPS.LINUXMUSTER,
       icon: LinuxmusterIcon,
       color: 'hover:bg-ciGreenToBlue',
@@ -79,12 +79,16 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faDesktop,
           action: navigateToDevices,
         },
-        {
-          id: PARENT_ASSIGNMENT_LOCATION,
-          label: 'usermanagement.parentAssignment',
-          icon: faUserGroup,
-          action: navigateToParentAssignment,
-        },
+        ...(!isBusiness
+          ? [
+              {
+                id: PARENT_ASSIGNMENT_LOCATION,
+                label: 'usermanagement.parentAssignment',
+                icon: faUserGroup,
+                action: navigateToParentAssignment,
+              },
+            ]
+          : []),
         {
           id: LINUXMUSTER_INFO_LOCATION,
           label: 'linuxmuster.versionInfo',
@@ -94,7 +98,8 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
       ],
     }),
     [
-      isLmn,
+      isSchoolEnvironment,
+      isBusiness,
       t,
       navigateToLinuxmuster,
       navigateToUserManagement,

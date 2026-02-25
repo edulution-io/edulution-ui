@@ -24,20 +24,28 @@ import isLmnVersionSupported from '@libs/lmnApi/utils/isLmnVersionSupported';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { LinuxmusterIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import LmnVersionWarning from './LmnVersionWarning';
 
 const LmnVersionGuard: React.FC = () => {
   const { t } = useTranslation();
   const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
   const lmnVersions = useLmnApiStore((s) => s.lmnVersions);
-  const versionSupported = !isLmn || isLmnVersionSupported(lmnVersions['linuxmuster-api7']);
+  const apiVersion = lmnVersions['linuxmuster-api7'];
+  const versionLoaded = !isLmn || !!apiVersion;
+  const versionSupported = !isLmn || isLmnVersionSupported(apiVersion);
+
+  if (!versionLoaded) {
+    return null;
+  }
 
   if (!versionSupported) {
     return (
       <PageLayout
         nativeAppHeader={{
-          title: t(isLmn ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric'),
+          title: t(isSchoolEnvironment ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric'),
           description: t('linuxmuster.description'),
           iconSrc: LinuxmusterIcon,
         }}

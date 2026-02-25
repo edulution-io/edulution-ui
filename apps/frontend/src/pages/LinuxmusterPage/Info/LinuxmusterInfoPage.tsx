@@ -21,15 +21,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { LinuxmusterIcon } from '@/assets/icons';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import LmnVersionInfo from './LmnVersionInfo';
 
 const LinuxmusterInfoPage: React.FC = () => {
   const { t } = useTranslation();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   const nativeAppHeader = {
-    title: t(isLmn ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric'),
+    title: t(isSchoolEnvironment ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric'),
     description: t('linuxmuster.description'),
     iconSrc: LinuxmusterIcon,
   };

@@ -17,6 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+const SCHOOL_ONLY_ROLE_IDS: ReadonlySet<string> = new Set([
+  'classroom-studentcomputer',
+  'classroom-teachercomputer',
+  'faculty-teachercomputer',
+]);
+
 const SOPHOMORIX_ROLES = [
   { id: 'addc', name: 'deviceManagement.roles.addc' },
   { id: 'byod', name: 'deviceManagement.roles.byod' },
@@ -34,5 +40,7 @@ const SOPHOMORIX_ROLES = [
   { id: 'voip', name: 'deviceManagement.roles.voip' },
   { id: 'wlan', name: 'deviceManagement.roles.wlan' },
 ] as const;
+
+export { SCHOOL_ONLY_ROLE_IDS };
 
 export default SOPHOMORIX_ROLES;

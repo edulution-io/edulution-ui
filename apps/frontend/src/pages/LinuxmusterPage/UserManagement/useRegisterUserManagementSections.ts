@@ -38,11 +38,11 @@ import {
   USER_MANAGEMENT_TEACHERS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import useSubMenuStore from '@/store/useSubMenuStore';
 import { useTranslation } from 'react-i18next';
 
-const LMN_SPECIFIC_LOCATIONS: string[] = [
+const SCHOOL_SPECIFIC_LOCATIONS: string[] = [
   USER_MANAGEMENT_STUDENTS_LOCATION,
   USER_MANAGEMENT_TEACHERS_LOCATION,
   USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
@@ -52,7 +52,7 @@ const LMN_SPECIFIC_LOCATIONS: string[] = [
 
 const useRegisterUserManagementSections = () => {
   const navigate = useNavigate();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
   const { setSections } = useSubMenuStore();
   const { t } = useTranslation();
 
@@ -98,8 +98,8 @@ const useRegisterUserManagementSections = () => {
   );
 
   const visibleSections = useMemo(
-    () => (isLmn ? allSections : allSections.filter((s) => !LMN_SPECIFIC_LOCATIONS.includes(s.id))),
-    [isLmn, allSections],
+    () => (isSchoolEnvironment ? allSections : allSections.filter((s) => !SCHOOL_SPECIFIC_LOCATIONS.includes(s.id))),
+    [isSchoolEnvironment, allSections],
   );
 
   useEffect(() => {

@@ -26,8 +26,9 @@ const useOrganizationType = () => {
   const isSchool = globalSettings?.general.organizationType === ORGANIZATION_TYPE.SCHOOL;
   const isBusiness = globalSettings?.general.organizationType === ORGANIZATION_TYPE.BUSINESS;
   const isPublicAdministration = globalSettings?.general.organizationType === ORGANIZATION_TYPE.PUBLIC_ADMINISTRATION;
+  const isSchoolEnvironment = isSchool || isPublicAdministration;
 
-  return { isSchool, isBusiness, isPublicAdministration };
+  return { isSchool, isBusiness, isPublicAdministration, isSchoolEnvironment };
 };
 
 export default useOrganizationType;
