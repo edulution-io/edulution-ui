@@ -29,6 +29,7 @@ import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import useLinuxmusterMenu from '@/pages/LinuxmusterPage/useLinuxmusterMenu';
+import useChatMenu from '@/pages/Chat/useChatMenu';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
@@ -56,6 +57,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const surveysMenuConfig = useSurveysPageMenu();
   const classManagementMenuConfig = useClassManagementMenu();
   const linuxmusterMenuConfig = useLinuxmusterMenu();
+  const chatMenuConfig = useChatMenu();
   const { sections, parentId } = useSubMenuStore();
   const { scrollToSection } = useScrollToSection();
 
@@ -65,6 +67,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
       [APPS.SURVEYS]: surveysMenuConfig,
       [APPS.CLASS_MANAGEMENT]: classManagementMenuConfig,
       [APPS.LINUXMUSTER]: linuxmusterMenuConfig,
+      [APPS.CHAT]: chatMenuConfig,
       [USER_SETTINGS_PATH]: userSettingsMenuConfig,
       ...(isSuperAdmin ? { [SETTINGS_PATH]: settingsMenuConfig } : {}),
     }),
@@ -73,6 +76,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
       surveysMenuConfig,
       classManagementMenuConfig,
       linuxmusterMenuConfig,
+      chatMenuConfig,
       userSettingsMenuConfig,
       isSuperAdmin,
       settingsMenuConfig,
