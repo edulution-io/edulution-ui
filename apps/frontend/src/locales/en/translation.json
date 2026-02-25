@@ -41,6 +41,8 @@
     "aiThinking": "Thinking",
     "aiWriting": "Writing",
     "aiDisclaimer": "AI can hallucinate. Please verify important information.",
+    "selectFileFromFileManager": "Select from File Manager",
+    "selectLocalFile": "Select local file",
     "aiChatModel": {
       "createNew": "Create AI Assistant Model",
       "edit": "Edit AI Assistant Model",

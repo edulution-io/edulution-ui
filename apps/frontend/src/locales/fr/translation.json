@@ -41,6 +41,8 @@
     "aiThinking": "Réfléchit",
     "aiWriting": "Écrit",
     "aiDisclaimer": "L'IA peut halluciner. Veuillez vérifier les informations importantes.",
+    "selectFileFromFileManager": "Sélectionner depuis le gestionnaire de fichiers",
+    "selectLocalFile": "Sélectionner un fichier local",
     "aiChatModel": {
       "createNew": "Créer un modèle d'Assistant IA",
       "edit": "Modifier le modèle d'Assistant IA",

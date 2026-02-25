@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useRef, useEffect, useCallback, ChangeEvent, KeyboardEvent, FormEvent } from 'react';
+import React, { useRef, useEffect, KeyboardEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -54,6 +54,7 @@ interface ChatInputProps {
   onModelChange?: (id: string | null) => void;
   selectedFile?: File | null;
   onFileSelect?: (file: File | null) => void;
+  onFileManagerOpen?: () => void;
   isPrivacyCompliant?: boolean;
 }
 
@@ -68,26 +69,15 @@ const ChatInput: React.FC<ChatInputProps> = ({
   onModelChange,
   selectedFile,
   onFileSelect,
+  onFileManagerOpen,
   isPrivacyCompliant = true,
 }) => {
   const { t } = useTranslation();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const hasModels = models && models.length > 0;
   const modelOptions = hasModels ? models.map((model) => ({ id: model.id, name: model.name })) : [];
   const selectedModel = models?.find((model) => model.id === selectedModelId);
   const selectedCapabilities = selectedModel?.capabilities ?? [];
-
-  const handleFileChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0] ?? null;
-      onFileSelect?.(file);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    },
-    [onFileSelect],
-  );
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -152,28 +142,20 @@ const ChatInput: React.FC<ChatInputProps> = ({
           disabled={isLoading}
         />
         <div className="flex items-center justify-between px-3 pb-2">
-          {onFileSelect && (
-            <>
-              <input
-                ref={fileInputRef}
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
+          {onFileManagerOpen && (
+            <Button
+              type="button"
+              variant="btn-ghost"
+              size="icon"
+              disabled={isLoading}
+              className={cn('h-8 w-8 shrink-0 rounded-lg', isLoading && 'opacity-50')}
+              onClick={onFileManagerOpen}
+            >
+              <FontAwesomeIcon
+                icon={faPaperclip}
+                className="h-3.5 w-3.5"
               />
-              <Button
-                type="button"
-                variant="btn-ghost"
-                size="icon"
-                disabled={isLoading}
-                className={cn('h-8 w-8 shrink-0 rounded-lg', isLoading && 'opacity-50')}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <FontAwesomeIcon
-                  icon={faPaperclip}
-                  className="h-3.5 w-3.5"
-                />
-              </Button>
-            </>
+            </Button>
           )}
           <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
             {hasModels && onModelChange && (
@@ -207,7 +189,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
               variant="btn-collaboration"
               size="icon"
               disabled={!canSubmit}
-              className={cn('h-8 w-8 shrink-0 rounded-lg', !canSubmit && 'opacity-50')}
+              className={cn('h-10 w-10 shrink-0 rounded-lg', !canSubmit && 'opacity-50')}
             >
               <FontAwesomeIcon
                 icon={faPaperPlane}

@@ -41,6 +41,8 @@
     "aiThinking": "Denkt nach",
     "aiWriting": "Schreibt",
     "aiDisclaimer": "KI kann halluzinieren. Bitte überprüfe wichtige Informationen.",
+    "selectFileFromFileManager": "Aus Dateimanager auswählen",
+    "selectLocalFile": "Lokale Datei auswählen",
     "aiChatModel": {
       "createNew": "KI-Assistenten-Modell erstellen",
       "edit": "KI-Assistenten-Modell bearbeiten",

@@ -17,13 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
+import ChatFileSelectorDialog from './ChatFileSelectorDialog';
 
 interface ChatViewProps {
   adapter: ChatAdapter;
@@ -45,6 +46,18 @@ const ChatView: React.FC<ChatViewProps> = ({
   const selectedModel = models?.find((model) => model.id === selectedModelId);
   const isPrivacyCompliant = selectedModel?.isDataPrivacyCompliant ?? true;
   const prevErrorRef = useRef<string | null>(null);
+  const [isFileSelectorOpen, setIsFileSelectorOpen] = useState(false);
+
+  const handleFileManagerOpen = useCallback(() => {
+    setIsFileSelectorOpen(true);
+  }, []);
+
+  const handleFileManagerSelect = useCallback(
+    (file: File) => {
+      setSelectedFile(file);
+    },
+    [setSelectedFile],
+  );
 
   useEffect(() => {
     if (error && error.message !== prevErrorRef.current) {
@@ -77,7 +90,13 @@ const ChatView: React.FC<ChatViewProps> = ({
         onModelChange={onModelChange}
         selectedFile={selectedFile}
         onFileSelect={setSelectedFile}
+        onFileManagerOpen={handleFileManagerOpen}
         isPrivacyCompliant={isPrivacyCompliant}
+      />
+      <ChatFileSelectorDialog
+        isOpen={isFileSelectorOpen}
+        onClose={() => setIsFileSelectorOpen(false)}
+        onFileSelected={handleFileManagerSelect}
       />
       {models && models.length > 0 && (
         <p className="pb-2 text-center text-xs font-light text-muted-foreground">{t('chat.aiDisclaimer')}</p>
