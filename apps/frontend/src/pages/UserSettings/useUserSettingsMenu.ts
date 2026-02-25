@@ -52,6 +52,7 @@ import getIsParent from '@libs/user/utils/getIsParent';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 const useUserSettingsMenu = () => {
   const navigate = useNavigate();
@@ -62,7 +63,8 @@ const useUserSettingsMenu = () => {
   const isWireguardConfigured = !!findAppConfigByName(appConfigs, APPS.WIREGUARD);
   const isStudent = ldapGroups.includes(GroupRoles.STUDENT);
   const isParent = getIsParent(ldapGroups);
-  const isStudentOrParent = isStudent || isParent;
+  const { isSchoolEnvironment } = useOrganizationType();
+  const isStudentOrParent = isSchoolEnvironment && (isStudent || isParent);
 
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = useMemo(
     () => ({
