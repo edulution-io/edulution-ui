@@ -18,6 +18,7 @@
  */
 
 import React, { useEffect } from 'react';
+import LearningManagementPage from '@/pages/LearningManagement/LearningManagementPage';
 import MailPage from '@/pages/Mail/MailPage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
@@ -61,6 +62,8 @@ const NativeFrameManager = () => {
     .filter((appConfig) => isActiveNativeFrame(appConfig, loadedEmbeddedFrames))
     .map((appConfig) => {
       switch (appConfig.name) {
+        case APPS.LEARNING_MANAGEMENT:
+          return <LearningManagementPage key={appConfig.name} />;
         case APPS.MAIL:
           return <MailPage key={appConfig.name} />;
         default:
