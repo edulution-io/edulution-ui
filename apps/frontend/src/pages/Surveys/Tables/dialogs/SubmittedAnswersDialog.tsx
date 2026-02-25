@@ -58,7 +58,11 @@ const SubmittedAnswersDialog = () => {
     }
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
     if (!selectedSurvey?.formula) {
-      return <h3 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h3>;
+      return (
+        <div className="relative mt-4 w-full text-center">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">{t('survey.notFound')}</div>
+        </div>
+      );
     }
     return (
       <ScrollArea>

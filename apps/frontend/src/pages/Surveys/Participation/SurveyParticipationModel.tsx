@@ -26,13 +26,13 @@ import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSi
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import { SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
-import updateSignaturePadTheme from '@libs/survey/utils/updateSignaturePadTheme';
 import useLanguage from '@/hooks/useLanguage';
 import useThemeStore from '@/store/useThemeStore';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
+import updateSignaturePadTheme from '@/pages/Surveys/utils/updateSignaturePadTheme';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyComponents';
@@ -248,11 +248,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     updateSignaturePadTheme(surveyParticipationModel, getResolvedTheme);
 
-    if (surveyParticipationModel.logo !== `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`) return;
-    if (!surveyParticipationModel.calculatedValues) {
-      surveyParticipationModel.calculatedValues = [];
-    }
-    surveyParticipationModel.setVariable('theme', getResolvedTheme().toString());
+    if (!surveyParticipationModel.logo?.startsWith(`${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-`)) return;
+
+    surveyParticipationModel.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-${getResolvedTheme()}.webp`;
   }, [surveyParticipationModel, theme, getResolvedTheme]);
 
   if (isFetching) {

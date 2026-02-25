@@ -21,7 +21,7 @@ import React, { useEffect, useRef } from 'react';
 import { Model, Survey } from 'survey-react-ui';
 import useLanguage from '@/hooks/useLanguage';
 import useThemeStore from '@/store/useThemeStore';
-import updateSignaturePadTheme from '@libs/survey/utils/updateSignaturePadTheme';
+import updateSignaturePadTheme from '@/pages/Surveys/utils/updateSignaturePadTheme';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';

@@ -23,7 +23,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { faRotateLeft, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
-import { CalculatedValue } from 'survey-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import APPS from '@libs/appconfig/constants/apps';
 import { ReactElementFactory } from 'survey-react-ui';
@@ -233,17 +232,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     if (!creator) return;
 
     if (creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) {
-      creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`;
-      const newVariable = new CalculatedValue();
-      newVariable.name = 'theme';
-      newVariable.expression = getResolvedTheme().toString();
-      newVariable.includeIntoResult = true;
-
-      if (!creator.survey.calculatedValues) {
-        creator.survey.calculatedValues = [];
-      }
-
-      creator.survey.setVariable('theme', getResolvedTheme().toString());
+      creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-${getResolvedTheme().toString()}.webp`;
     }
 
     const formula = creator.JSON as SurveyFormula;
