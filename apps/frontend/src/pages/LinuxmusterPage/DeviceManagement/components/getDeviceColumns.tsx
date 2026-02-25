@@ -26,7 +26,7 @@ import { Button, cn } from '@edulution-io/ui-kit';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { validateDeviceCell } from '@libs/deviceManagement/utils/deviceValidation';
 import DEVICE_COLUMNS from '@libs/deviceManagement/constants/deviceColumns';
-import SOPHOMORIX_ROLES from '@libs/deviceManagement/constants/sophomorixRoles';
+import SOPHOMORIX_ROLES, { SCHOOL_ONLY_ROLE_IDS } from '@libs/deviceManagement/constants/sophomorixRoles';
 import PXE_FLAGS from '@libs/deviceManagement/constants/pxeFlags';
 import type DeviceRow from '@libs/deviceManagement/types/deviceRow';
 import type DeviceColumnConfig from '@libs/deviceManagement/types/deviceColumnConfig';
@@ -34,7 +34,10 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import Input from '@/components/shared/Input';
 import { DropdownSelect } from '@/components';
 
+const STAFFCOMPUTER_BUSINESS_TRANSLATION_KEY = 'deviceManagement.roles.staffcomputerBusiness';
+
 interface DeviceColumnsProps {
+  isBusiness: boolean;
   isNewRow: (rowId: string) => boolean;
   isCellChanged: (rowId: string, columnKey: string) => boolean;
   isDuplicate: (rowId: string, columnKey: string) => boolean;
@@ -45,6 +48,7 @@ interface DeviceColumnsProps {
 }
 
 const getDeviceColumns = ({
+  isBusiness,
   isNewRow,
   isCellChanged,
   isDuplicate,
@@ -74,7 +78,14 @@ const getDeviceColumns = ({
       );
 
       if (config.type === 'dropdown') {
-        const dropdownOptions = config.key === 'sophomorixRole' ? [...SOPHOMORIX_ROLES] : [...PXE_FLAGS];
+        const dropdownOptions =
+          config.key === 'sophomorixRole'
+            ? SOPHOMORIX_ROLES.filter((role) => !isBusiness || !SCHOOL_ONLY_ROLE_IDS.has(role.id)).map((role) =>
+                isBusiness && role.id === 'staffcomputer'
+                  ? { ...role, name: STAFFCOMPUTER_BUSINESS_TRANSLATION_KEY }
+                  : role,
+              )
+            : [...PXE_FLAGS];
 
         return (
           <DropdownSelect

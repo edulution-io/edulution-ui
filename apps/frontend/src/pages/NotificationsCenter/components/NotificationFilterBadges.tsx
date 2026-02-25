@@ -75,7 +75,7 @@ const NotificationFilterBadges = ({
             type="button"
             variant="btn-ghost"
             className={cn(
-              'rounded-lg px-2 py-1 text-sm font-medium',
+              'rounded-lg px-2 py-1 text-sm font-medium md:px-3',
               isActive
                 ? 'hover:bg-primary/90 bg-primary px-3 text-white'
                 : 'bg-muted-foreground/10 text-background hover:bg-muted-background',

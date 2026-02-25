@@ -30,6 +30,7 @@ import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTyp
 import USER_TYPE_TO_ROLE from '@libs/userManagement/constants/userTypeToRole';
 import USER_MANAGEMENT_COLUMN_IDS from '@libs/userManagement/constants/userManagementColumnIds';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import useUserManagementStore from '../../useUserManagementStore';
 import getUserTableColumns from './getUserTableColumns';
 
@@ -45,6 +46,7 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
   const { selectedSchool } = useClassManagementStore();
   const { currentUser, setCurrentUser } = UseLmnApiPasswordStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
+  const { isBusiness } = useOrganizationType();
 
   useEffect(() => {
     if (!isAuthReady) return;
@@ -59,11 +61,12 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
   const columns = useMemo(
     () =>
       getUserTableColumns({
+        isBusiness,
         userType,
         onShowDetails: (user) => setSelectedUserDetails(user),
         setCurrentUser,
       }),
-    [userType, setSelectedUserDetails, setCurrentUser],
+    [isBusiness, userType, setSelectedUserDetails, setCurrentUser],
   );
 
   return (
