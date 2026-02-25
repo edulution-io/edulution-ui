@@ -45,6 +45,7 @@ import useThemeStore from '@/store/useThemeStore';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import WebhookClientsTable from '@/pages/Settings/Webhooks/WebhookClientsTable';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
+import OrganizationTypeDropdownSelectFormField from '../components/OrganizationTypeDropdownSelectFormField';
 
 type GlobalSettingsProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
@@ -104,6 +105,11 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
               <div className="space-y-2">
                 <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
                 <DeploymentTargetDropdownSelectFormField form={form} />
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xl font-bold">{t('settings.globalSettings.organizationType')}</p>
+                <OrganizationTypeDropdownSelectFormField form={form} />
               </div>
 
               <div className="space-y-2">

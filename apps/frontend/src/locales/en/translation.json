@@ -1319,6 +1319,7 @@
         "notFoundError": "Settings could not be loaded."
       },
       "deploymentTarget": "Target platform",
+      "organizationType": "Organization type",
       "ldap": {
         "title": "LDAP",
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
@@ -2561,6 +2562,13 @@
     "description": "Here you can select the platform to which {{ appName }} will be connected.",
     "linuxmuster": "Linuxmuster",
     "generic": "Generic"
+  },
+  "organizationType": {
+    "title": "Selection",
+    "description": "Here you can select the type of your organization.",
+    "school": "School",
+    "business": "Business",
+    "public-administration": "Public Administration"
   },
   "webdavShare": {
     "displayName": "Display name",
