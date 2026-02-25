@@ -19,6 +19,7 @@
 
 import MenuItem from './menuItem';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
+type Section = Pick<MenuItem, 'id' | 'label'> &
+  Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName' | 'onDelete'>;
 
 export default Section;

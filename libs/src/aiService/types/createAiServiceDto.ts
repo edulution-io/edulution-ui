@@ -18,7 +18,7 @@
  */
 
 import AiProviderType from '@libs/aiService/types/aiProviderType';
-import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
+import AiServiceCapabilityWithProficiency from '@libs/aiService/types/aiServiceCapabilityWithProficiency';
 import AiServicePurposeType from '@libs/aiService/types/aiServicePurposeType';
 
 interface CreateAiServiceDto {
@@ -30,7 +30,7 @@ interface CreateAiServiceDto {
   purpose: AiServicePurposeType;
   isActive: boolean;
   isDataPrivacyCompliant: boolean;
-  capabilities: AiServiceCapabilityType[];
+  capabilities: AiServiceCapabilityWithProficiency[];
 }
 
 export default CreateAiServiceDto;

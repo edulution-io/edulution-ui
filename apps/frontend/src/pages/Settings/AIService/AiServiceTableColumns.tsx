@@ -23,22 +23,25 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faAlignLeft,
   faEye,
   faEyeSlash,
+  faImage,
   faScrewdriverWrench,
   faShieldHalved,
-  faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons';
 import AiServiceResponseDto from '@libs/aiService/types/aiServiceResponseDto';
 import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
+import AI_SERVICE_PROFICIENCY_COLORS from '@libs/aiService/constants/aiServiceProficiencyColors';
 import AI_SERVICE_TABLE_COLUMNS from '@libs/aiService/constants/aiServiceTableColumns';
 import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import useAiServiceTableStore from '@/pages/Settings/AIService/useAiServiceTableStore';
 
 const CAPABILITY_ICONS: Record<AiServiceCapabilityType, typeof faScrewdriverWrench> = {
+  [AI_SERVICE_CAPABILITIES.TEXT_GENERATION]: faAlignLeft,
   [AI_SERVICE_CAPABILITIES.TOOL_EXECUTION]: faScrewdriverWrench,
   [AI_SERVICE_CAPABILITIES.VISION]: faEye,
-  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faWandMagicSparkles,
+  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faImage,
 };
 
 const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
@@ -197,7 +200,7 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
     meta: {
       translationId: 'settings.aiServices.capabilities',
     },
-    accessorFn: (row) => row.capabilities?.join(', ') ?? '',
+    accessorFn: (row) => row.capabilities?.map((cap) => cap.type).join(', ') ?? '',
     cell: ({ row }) => {
       const { setSelectedAiService, setIsDialogOpen } = useAiServiceTableStore();
       const handleRowClick = () => {
@@ -214,9 +217,9 @@ const AiServiceTableColumns: ColumnDef<AiServiceResponseDto>[] = [
               <div className="flex gap-2">
                 {capabilities.map((cap) => (
                   <FontAwesomeIcon
-                    key={cap}
-                    icon={CAPABILITY_ICONS[cap]}
-                    className="text-ciDarkGrey"
+                    key={cap.type}
+                    icon={CAPABILITY_ICONS[cap.type]}
+                    className={AI_SERVICE_PROFICIENCY_COLORS[cap.proficiency]}
                   />
                 ))}
               </div>

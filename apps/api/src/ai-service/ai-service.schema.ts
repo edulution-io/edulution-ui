@@ -21,7 +21,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import AI_PROVIDERS from '@libs/aiService/constants/aiProviders';
 import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
+import AI_SERVICE_PROFICIENCY_LEVELS from '@libs/aiService/constants/aiServiceProficiencyLevels';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
+import AiServiceCapabilityWithProficiency from '@libs/aiService/types/aiServiceCapabilityWithProficiency';
 
 export type AiServiceDocument = AiService & Document;
 
@@ -51,10 +53,18 @@ export class AiService {
   @Prop({ type: Boolean, default: false })
   isDataPrivacyCompliant: boolean;
 
-  @Prop({ type: [String], enum: Object.values(AI_SERVICE_CAPABILITIES), default: [] })
-  capabilities: string[];
+  @Prop({
+    type: [
+      {
+        type: { type: String, enum: Object.values(AI_SERVICE_CAPABILITIES), required: true },
+        proficiency: { type: String, enum: Object.values(AI_SERVICE_PROFICIENCY_LEVELS), required: true },
+      },
+    ],
+    default: [],
+  })
+  capabilities: AiServiceCapabilityWithProficiency[];
 
-  @Prop({ default: 2 })
+  @Prop({ default: 3 })
   schemaVersion: number;
 }
 

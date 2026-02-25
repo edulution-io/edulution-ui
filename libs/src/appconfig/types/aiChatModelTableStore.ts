@@ -20,12 +20,12 @@
 import AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
 import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
-import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
+import AiServiceCapabilityWithProficiency from '@libs/aiService/types/aiServiceCapabilityWithProficiency';
 
 interface AiServiceOption {
   id: string;
   name: string;
-  capabilities: AiServiceCapabilityType[];
+  capabilities: AiServiceCapabilityWithProficiency[];
 }
 
 export interface AiChatModelTableStore extends AppConfigTable<AiChatModelResponseDto> {

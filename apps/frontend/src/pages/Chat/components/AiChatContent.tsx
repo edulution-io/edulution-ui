@@ -20,8 +20,8 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
-import { cn } from '@edulution-io/ui-kit';
+import { faShieldHalved, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Button, cn } from '@edulution-io/ui-kit';
 import ChatView from '@/pages/Chat/components/ChatView';
 import useAiChat from '@/pages/Chat/hooks/useAiChat';
 import useAiChatStore from '@/store/useAiChatStore';
@@ -37,6 +37,7 @@ const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
   const availableModels = useAiChatStore((state) => state.availableModels);
   const selectedModelId = useAiChatStore((state) => state.selectedModelId);
   const setSelectedModelId = useAiChatStore((state) => state.setSelectedModelId);
+  const deleteConversation = useAiChatStore((state) => state.deleteConversation);
   const fetchAvailableModels = useAiChatStore((state) => state.fetchAvailableModels);
   const title = conversations.find((conversation) => conversation.id === chatId)?.title ?? t('chat.newChat');
   const selectedModel = availableModels.find((model) => model.id === selectedModelId);
@@ -48,26 +49,41 @@ const AiChatContent: React.FC<AiChatContentProps> = ({ chatId }) => {
 
   return (
     <>
-      <div className="flex w-full flex-col px-6 pb-2 pt-2">
-        <p className="text-background">{title}</p>
-        {selectedModel && (
-          <div
-            className={cn(
-              'flex items-center gap-1.5 text-xs font-medium',
-              isPrivacyCompliant ? 'text-green-700' : 'text-red-700',
-            )}
-          >
-            <FontAwesomeIcon
-              icon={faShieldHalved}
-              className="h-3 w-3"
-            />
-            <span>
-              {isPrivacyCompliant
-                ? t('settings.aiServices.dataPrivacyCompliant')
-                : t('settings.aiServices.dataPrivacyNotCompliant')}
-            </span>
-          </div>
-        )}
+      <div className="flex w-full items-start justify-between px-6 pb-2 pt-2">
+        <div className="flex flex-col">
+          <p className="text-background">{title}</p>
+          {selectedModel && (
+            <div
+              className={cn(
+                'flex items-center gap-1.5 text-xs font-medium',
+                isPrivacyCompliant ? 'text-green-700' : 'text-red-700',
+              )}
+            >
+              <FontAwesomeIcon
+                icon={faShieldHalved}
+                className="h-3 w-3"
+              />
+              <span>
+                {isPrivacyCompliant
+                  ? t('settings.aiServices.dataPrivacyCompliant')
+                  : t('settings.aiServices.dataPrivacyNotCompliant')}
+              </span>
+            </div>
+          )}
+        </div>
+        <Button
+          type="button"
+          variant="btn-ghost"
+          size="icon"
+          className="h-8 w-8 shrink-0 text-muted-foreground hover:text-red-600"
+          onClick={() => deleteConversation(chatId)}
+          title={t('chat.deleteChat')}
+        >
+          <FontAwesomeIcon
+            icon={faTrash}
+            className="h-3.5 w-3.5"
+          />
+        </Button>
       </div>
       <ChatView
         adapter={adapter}

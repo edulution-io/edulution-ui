@@ -283,7 +283,7 @@ const MenuBar: React.FC = () => {
                           child.action?.();
                         }}
                         className={cn(
-                          'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
+                          'group flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
                           'transition-all duration-150',
                           'hover:pl-5',
                           isChildActive && 'bg-accent font-bold',

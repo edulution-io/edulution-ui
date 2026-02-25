@@ -17,11 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AI_SERVICE_CAPABILITIES = {
-  TEXT_GENERATION: 'text_generation',
-  TOOL_EXECUTION: 'tool_execution',
-  VISION: 'vision',
-  IMAGE_GENERATION: 'image_generation',
-} as const;
+import AI_SERVICE_PROFICIENCY_LEVELS from '@libs/aiService/constants/aiServiceProficiencyLevels';
 
-export default AI_SERVICE_CAPABILITIES;
+type AiServiceProficiencyType = (typeof AI_SERVICE_PROFICIENCY_LEVELS)[keyof typeof AI_SERVICE_PROFICIENCY_LEVELS];
+
+export default AiServiceProficiencyType;

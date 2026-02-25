@@ -44,7 +44,7 @@ const useRegisterChatSections = () => {
   const { pathname } = useLocation();
   const { groupType } = useParams<{ groupType: string; groupName: string }>();
   const { userGroups, fetchUserGroups } = useChatStore();
-  const { conversations, fetchConversations, createConversation } = useAiChatStore();
+  const { conversations, fetchConversations, createConversation, deleteConversation } = useAiChatStore();
   const { setSections } = useSubMenuStore();
 
   const isAiChat = pathname.startsWith(`/${CHAT_AICHAT_PATH}`);
@@ -79,6 +79,7 @@ const useRegisterChatSections = () => {
         id: conv.id,
         label: conv.title,
         action: () => navigate(`/${CHAT_AICHAT_PATH}/${conv.id}`),
+        onDelete: () => deleteConversation(conv.id).catch(() => {}),
       }));
 
       return [newChatSection, ...conversationSections];
@@ -93,7 +94,7 @@ const useRegisterChatSections = () => {
       label: group.name,
       action: () => navigate(`/${CHAT_PATH}/${groupType}/${encodeURIComponent(group.name)}`),
     }));
-  }, [isAiChat, conversations, userGroups, groupType, navigate]);
+  }, [isAiChat, conversations, userGroups, groupType, navigate, deleteConversation]);
 
   useEffect(() => {
     setSections(sections);

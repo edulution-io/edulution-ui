@@ -93,6 +93,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
         icon: section.icon ?? '',
         iconClassName: section.iconClassName,
         action: section.action ?? (() => scrollToSection(section.id)),
+        onDelete: section.onDelete,
         disableTranslation: true,
       })),
     [sections, scrollToSection],

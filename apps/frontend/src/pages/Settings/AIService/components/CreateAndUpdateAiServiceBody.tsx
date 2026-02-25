@@ -26,16 +26,16 @@ import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { DropdownSelect } from '@/components';
-import Checkbox from '@/components/ui/Checkbox';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import useAiServiceTableStore from '@/pages/Settings/AIService/useAiServiceTableStore';
 import CreateAiServiceDto from '@libs/aiService/types/createAiServiceDto';
 import AiProviderType from '@libs/aiService/types/aiProviderType';
-import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import AiServicePurposeType from '@libs/aiService/types/aiServicePurposeType';
 import AI_PROVIDER_OPTIONS from '@libs/aiService/constants/aiProviderOptions';
 import AI_SERVICE_CAPABILITY_OPTIONS from '@libs/aiService/constants/aiServiceCapabilityOptions';
+import AI_SERVICE_PROFICIENCY_LEVELS from '@libs/aiService/constants/aiServiceProficiencyLevels';
 import AI_SERVICE_PURPOSE_OPTIONS from '@libs/aiService/constants/aiServicePurposeOptions';
+import AiServiceProficiencyType from '@libs/aiService/types/aiServiceProficiencyType';
 
 interface CreateAndUpdateAiServiceBodyProps {
   handleFormSubmit: (e: React.FormEvent) => void;
@@ -200,19 +200,41 @@ const CreateAndUpdateAiServiceBody = ({
           <div className="mt-2 space-y-2">
             {AI_SERVICE_CAPABILITY_OPTIONS.map((option) => {
               const capabilities = watch('capabilities') ?? [];
-              const isChecked = capabilities.includes(option.id);
+              const existing = capabilities.find((c) => c.type === option.id);
+              const proficiencyOptions = [
+                { id: '', name: t('settings.aiServices.disabled') },
+                { id: AI_SERVICE_PROFICIENCY_LEVELS.EXCELLENT, name: t('settings.aiServices.proficiency_excellent') },
+                { id: AI_SERVICE_PROFICIENCY_LEVELS.GOOD, name: t('settings.aiServices.proficiency_good') },
+                { id: AI_SERVICE_PROFICIENCY_LEVELS.BASIC, name: t('settings.aiServices.proficiency_basic') },
+              ];
               return (
-                <Checkbox
+                <div
                   key={option.id}
-                  label={t(option.translationKey)}
-                  checked={isChecked}
-                  onCheckedChange={(checked: boolean) => {
-                    const updated = checked
-                      ? [...capabilities, option.id]
-                      : capabilities.filter((c: AiServiceCapabilityType) => c !== option.id);
-                    setValue('capabilities', updated, { shouldValidate: true });
-                  }}
-                />
+                  className="flex items-center justify-between gap-4"
+                >
+                  <span className="text-sm">{t(option.translationKey)}</span>
+                  <div className="w-40">
+                    <DropdownSelect
+                      options={proficiencyOptions}
+                      selectedVal={existing?.proficiency ?? ''}
+                      handleChange={(value) => {
+                        const filtered = capabilities.filter((c) => c.type !== option.id);
+                        const updated = value
+                          ? [
+                              ...filtered,
+                              {
+                                type: option.id,
+                                proficiency: value as AiServiceProficiencyType,
+                              },
+                            ]
+                          : filtered;
+                        setValue('capabilities', updated, { shouldValidate: true });
+                      }}
+                      variant="dialog"
+                      translate={false}
+                    />
+                  </div>
+                </div>
               );
             })}
           </div>

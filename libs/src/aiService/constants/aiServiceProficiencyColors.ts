@@ -17,11 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AI_SERVICE_CAPABILITIES = {
-  TEXT_GENERATION: 'text_generation',
-  TOOL_EXECUTION: 'tool_execution',
-  VISION: 'vision',
-  IMAGE_GENERATION: 'image_generation',
+import AiServiceProficiencyType from '@libs/aiService/types/aiServiceProficiencyType';
+
+const AI_SERVICE_PROFICIENCY_COLORS: Record<AiServiceProficiencyType, string> = {
+  excellent: 'text-green-500',
+  good: 'text-yellow-500',
+  basic: 'text-foreground',
 } as const;
 
-export default AI_SERVICE_CAPABILITIES;
+export default AI_SERVICE_PROFICIENCY_COLORS;

@@ -1067,7 +1067,7 @@
       "title": "Informations"
     },
     "aiServices": {
-      "title": "Services IA",
+      "title": { "items": "Services IA" },
       "provider": "Fournisseur",
       "model": "Modèle",
       "isActive": "Actif",
@@ -1092,9 +1092,15 @@
       "dataPrivacyCompliant": "Conforme à la protection des données",
       "dataPrivacyNotCompliant": "Non conforme à la protection des données",
       "capabilities": "Capacités",
+      "capability_text_generation": "Génération de texte",
       "capability_tool_execution": "Exécution d'outils",
       "capability_vision": "Vision",
-      "capability_image_generation": "Génération d'images"
+      "capability_image_generation": "Génération d'images",
+      "proficiency": "Compétence",
+      "proficiency_excellent": "Excellent",
+      "proficiency_good": "Bon",
+      "proficiency_basic": "Basique",
+      "disabled": "Désactivé"
     },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {

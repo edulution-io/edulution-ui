@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faScrewdriverWrench, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faAlignLeft, faEye, faImage, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { Textarea } from '@/components/ui/Textarea';
@@ -32,8 +32,10 @@ import useGroupStore from '@/store/GroupStore';
 import useAiChatModelTableStore from '@/pages/Settings/AppConfig/chat/useAiChatModelTableStore';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
+import { cn } from '@edulution-io/ui-kit';
 import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
 import AI_SERVICE_CAPABILITY_OPTIONS from '@libs/aiService/constants/aiServiceCapabilityOptions';
+import AI_SERVICE_PROFICIENCY_COLORS from '@libs/aiService/constants/aiServiceProficiencyColors';
 import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 
 interface CreateAndUpdateAiChatModelBodyProps {
@@ -42,9 +44,10 @@ interface CreateAndUpdateAiChatModelBodyProps {
 }
 
 const CAPABILITY_ICONS: Record<AiServiceCapabilityType, typeof faScrewdriverWrench> = {
+  [AI_SERVICE_CAPABILITIES.TEXT_GENERATION]: faAlignLeft,
   [AI_SERVICE_CAPABILITIES.TOOL_EXECUTION]: faScrewdriverWrench,
   [AI_SERVICE_CAPABILITIES.VISION]: faEye,
-  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faWandMagicSparkles,
+  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faImage,
 };
 
 const CreateAndUpdateAiChatModelBody = ({ handleFormSubmit, form }: CreateAndUpdateAiChatModelBodyProps) => {
@@ -98,14 +101,17 @@ const CreateAndUpdateAiChatModelBody = ({ handleFormSubmit, form }: CreateAndUpd
         {selectedCapabilities.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {selectedCapabilities.map((cap) => {
-              const option = AI_SERVICE_CAPABILITY_OPTIONS.find((o) => o.id === cap);
+              const option = AI_SERVICE_CAPABILITY_OPTIONS.find((o) => o.id === cap.type);
               return (
                 <span
-                  key={cap}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
+                  key={cap.type}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-1 text-xs',
+                    AI_SERVICE_PROFICIENCY_COLORS[cap.proficiency],
+                  )}
                 >
-                  <FontAwesomeIcon icon={CAPABILITY_ICONS[cap]} />
-                  {option ? t(option.translationKey) : cap}
+                  <FontAwesomeIcon icon={CAPABILITY_ICONS[cap.type]} />
+                  {option ? t(option.translationKey) : cap.type}
                 </span>
               );
             })}

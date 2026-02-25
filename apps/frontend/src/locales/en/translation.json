@@ -1204,7 +1204,7 @@
       "title": "Info"
     },
     "aiServices": {
-      "title": "AI Services",
+      "title": { "items": "AI Services" },
       "provider": "Provider",
       "model": "Model",
       "isActive": "Active",
@@ -1229,9 +1229,15 @@
       "dataPrivacyCompliant": "Data privacy compliant",
       "dataPrivacyNotCompliant": "Not data privacy compliant",
       "capabilities": "Capabilities",
+      "capability_text_generation": "Text Generation",
       "capability_tool_execution": "Tool Execution",
       "capability_vision": "Vision",
-      "capability_image_generation": "Image Generation"
+      "capability_image_generation": "Image Generation",
+      "proficiency": "Proficiency",
+      "proficiency_excellent": "Excellent",
+      "proficiency_good": "Good",
+      "proficiency_basic": "Basic",
+      "disabled": "Disabled"
     },
     "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {

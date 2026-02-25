@@ -21,6 +21,7 @@ import { TFunction } from 'i18next';
 import { z } from 'zod';
 import AI_PROVIDERS from '@libs/aiService/constants/aiProviders';
 import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
+import AI_SERVICE_PROFICIENCY_LEVELS from '@libs/aiService/constants/aiServiceProficiencyLevels';
 import AI_SERVICE_PURPOSES from '@libs/aiService/constants/aiServicePurposes';
 
 const getCreateAiServiceSchema = (t: TFunction<'translation', undefined>) =>
@@ -44,11 +45,19 @@ const getCreateAiServiceSchema = (t: TFunction<'translation', undefined>) =>
     isDataPrivacyCompliant: z.boolean().default(false),
     capabilities: z
       .array(
-        z.enum([
-          AI_SERVICE_CAPABILITIES.TOOL_EXECUTION,
-          AI_SERVICE_CAPABILITIES.VISION,
-          AI_SERVICE_CAPABILITIES.IMAGE_GENERATION,
-        ]),
+        z.object({
+          type: z.enum([
+            AI_SERVICE_CAPABILITIES.TEXT_GENERATION,
+            AI_SERVICE_CAPABILITIES.TOOL_EXECUTION,
+            AI_SERVICE_CAPABILITIES.VISION,
+            AI_SERVICE_CAPABILITIES.IMAGE_GENERATION,
+          ]),
+          proficiency: z.enum([
+            AI_SERVICE_PROFICIENCY_LEVELS.EXCELLENT,
+            AI_SERVICE_PROFICIENCY_LEVELS.GOOD,
+            AI_SERVICE_PROFICIENCY_LEVELS.BASIC,
+          ]),
+        }),
       )
       .default([]),
   });

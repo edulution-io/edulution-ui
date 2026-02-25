@@ -17,13 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
+import AiServiceCapabilityWithProficiency from '@libs/aiService/types/aiServiceCapabilityWithProficiency';
 
 interface AiChatModelUserDto {
   id: string;
   name: string;
   isDataPrivacyCompliant: boolean;
-  capabilities: AiServiceCapabilityType[];
+  capabilities: AiServiceCapabilityWithProficiency[];
 }
 
 export default AiChatModelUserDto;

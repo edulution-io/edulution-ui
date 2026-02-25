@@ -1207,7 +1207,7 @@
       "title": "Info"
     },
     "aiServices": {
-      "title": "KI-Dienste",
+      "title": { "items": "KI-Dienste" },
       "provider": "Anbieter",
       "model": "Modell",
       "isActive": "Aktiv",
@@ -1232,9 +1232,15 @@
       "dataPrivacyCompliant": "Datenschutzkonform",
       "dataPrivacyNotCompliant": "Nicht datenschutzkonform",
       "capabilities": "Fähigkeiten",
+      "capability_text_generation": "Texterzeugung",
       "capability_tool_execution": "Tool-Ausführung",
       "capability_vision": "Vision",
-      "capability_image_generation": "Bilderzeugung"
+      "capability_image_generation": "Bilderzeugung",
+      "proficiency": "Leistung",
+      "proficiency_excellent": "Exzellent",
+      "proficiency_good": "Gut",
+      "proficiency_basic": "Grundlegend",
+      "disabled": "Deaktiviert"
     },
     "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {

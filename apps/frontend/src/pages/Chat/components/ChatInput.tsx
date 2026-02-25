@@ -21,11 +21,12 @@ import React, { useRef, useEffect, KeyboardEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faAlignLeft,
   faEye,
+  faImage,
   faPaperPlane,
   faPaperclip,
   faScrewdriverWrench,
-  faWandMagicSparkles,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
@@ -33,14 +34,16 @@ import { DropdownSelect } from '@/components';
 import { Button, cn } from '@edulution-io/ui-kit';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
 import AI_SERVICE_CAPABILITIES from '@libs/aiService/constants/aiServiceCapabilities';
+import AI_SERVICE_PROFICIENCY_COLORS from '@libs/aiService/constants/aiServiceProficiencyColors';
 import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
 import TEXTAREA_MAX_HEIGHT_PX from '@libs/chat/constants/textareaMaxHeightPx';
 
 const CAPABILITY_ICONS: Record<AiServiceCapabilityType, typeof faScrewdriverWrench> = {
+  [AI_SERVICE_CAPABILITIES.TEXT_GENERATION]: faAlignLeft,
   [AI_SERVICE_CAPABILITIES.TOOL_EXECUTION]: faScrewdriverWrench,
   [AI_SERVICE_CAPABILITIES.VISION]: faEye,
-  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faWandMagicSparkles,
+  [AI_SERVICE_CAPABILITIES.IMAGE_GENERATION]: faImage,
 };
 
 interface ChatInputProps {
@@ -164,9 +167,9 @@ const ChatInput: React.FC<ChatInputProps> = ({
                   <div className="flex gap-1.5">
                     {selectedCapabilities.map((cap) => (
                       <FontAwesomeIcon
-                        key={cap}
-                        icon={CAPABILITY_ICONS[cap]}
-                        className="h-3.5 w-3.5 text-muted-foreground"
+                        key={cap.type}
+                        icon={CAPABILITY_ICONS[cap.type]}
+                        className={cn('h-3.5 w-3.5', AI_SERVICE_PROFICIENCY_COLORS[cap.proficiency])}
                       />
                     ))}
                   </div>

@@ -24,7 +24,6 @@ import CreateAiChatModelDto from '@libs/aiChatModel/types/createAiChatModelDto';
 import AiChatModelResponseDto from '@libs/aiChatModel/types/aiChatModelResponseDto';
 import AI_CHAT_MODEL_ERROR_MESSAGES from '@libs/aiChatModel/constants/aiChatModelErrorMessages';
 import AiChatModelUserDto from '@libs/aiChatModel/types/aiChatModelUserDto';
-import AiServiceCapabilityType from '@libs/aiService/types/aiServiceCapabilityType';
 import CustomHttpException from '../common/CustomHttpException';
 import AiServiceService from '../ai-service/ai-service.service';
 import { AiChatModel, AiChatModelDocument } from './ai-chat-model.schema';
@@ -98,7 +97,7 @@ class AiChatModelService {
         id: model.id as string,
         name: model.name,
         isDataPrivacyCompliant: service?.isDataPrivacyCompliant ?? false,
-        capabilities: (service?.capabilities ?? []) as AiServiceCapabilityType[],
+        capabilities: service?.capabilities ?? [],
       };
     });
   }
