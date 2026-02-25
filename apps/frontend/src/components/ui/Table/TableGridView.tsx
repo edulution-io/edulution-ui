@@ -180,7 +180,6 @@ const TableGridView = <TData, TValue>({
             {viewModeToggle}
           </>
         }
-        activeFilterCount={activeFilterCount}
         focusedRowId={focusedRowId}
         onRowClick={onGridItemClick}
         onSortedRowsChange={onSortedRowsChange}
