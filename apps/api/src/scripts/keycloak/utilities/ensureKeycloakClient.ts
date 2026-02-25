@@ -18,9 +18,63 @@
  */
 
 import { Logger } from '@nestjs/common';
+import type { AxiosInstance } from 'axios';
 import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import getKeycloakToken from './getKeycloakToken';
 import createKeycloakAxiosClient from './createKeycloakAxiosClient';
+
+const SERVICE_ACCOUNT_ROLES = ['query-groups', 'query-users', 'view-users'] as const;
+const ACCOUNT_ROLES = ['view-groups'] as const;
+
+const assignServiceAccountRoles = async (
+  keycloakClient: AxiosInstance,
+  internalClientId: string,
+  clientId: string,
+): Promise<void> => {
+  const { data: serviceAccountUser } = await keycloakClient.get(`/clients/${internalClientId}/service-account-user`);
+  if (!serviceAccountUser?.id) {
+    Logger.warn(
+      `No service account user found for '${clientId}'; skipping role assignment.`,
+      ensureKeycloakClient.name,
+    );
+    return;
+  }
+
+  const [realmMgmtClient, accountClient] = await Promise.all([
+    keycloakClient.get<{ id: string }[]>('/clients', { params: { clientId: 'realm-management' } }),
+    keycloakClient.get<{ id: string }[]>('/clients', { params: { clientId: 'account' } }),
+  ]);
+  const realmMgmtClientId = realmMgmtClient.data[0]?.id;
+  const accountClientId = accountClient.data[0]?.id;
+
+  const realmRoles = await Promise.all(
+    SERVICE_ACCOUNT_ROLES.map((role) => keycloakClient.get(`/clients/${realmMgmtClientId}/roles/${role}`)),
+  );
+  const realmRolesToAdd = realmRoles.map(({ data: { id, name } }) => ({ id, name }));
+
+  await keycloakClient.post(
+    `/users/${serviceAccountUser.id}/role-mappings/clients/${realmMgmtClientId}`,
+    realmRolesToAdd,
+  );
+  Logger.debug(
+    `Assigned realm-management roles [${realmRolesToAdd.map((r) => r.name).join(', ')}] to '${clientId}'.`,
+    ensureKeycloakClient.name,
+  );
+
+  const accountRoles = await Promise.all(
+    ACCOUNT_ROLES.map((role) => keycloakClient.get(`/clients/${accountClientId}/roles/${role}`)),
+  );
+  const accountRolesToAdd = accountRoles.map(({ data: { id, name } }) => ({ id, name }));
+
+  await keycloakClient.post(
+    `/users/${serviceAccountUser.id}/role-mappings/clients/${accountClientId}`,
+    accountRolesToAdd,
+  );
+  Logger.debug(
+    `Assigned account roles [${accountRolesToAdd.map((r) => r.name).join(', ')}] to '${clientId}'.`,
+    ensureKeycloakClient.name,
+  );
+};
 
 const ensureKeycloakClient = async (clientId: string, clientSecret: string): Promise<string> => {
   try {
@@ -30,6 +84,7 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
     const existingClients = await keycloakClient.get<{ id: string }[]>('/clients', { params: { clientId } });
     if (existingClients.data.length > 0) {
       const internalId = existingClients.data[0].id;
+      await assignServiceAccountRoles(keycloakClient, internalId, clientId);
       const secretResponse = await keycloakClient.get<{ value: string }>(`/clients/${internalId}/client-secret`);
       Logger.log(`Keycloak client '${clientId}' already exists; using existing secret.`, ensureKeycloakClient.name);
       return secretResponse.data.value;
@@ -52,6 +107,8 @@ const ensureKeycloakClient = async (clientId: string, clientSecret: string): Pro
     if (!createdId) {
       throw new Error(`Keycloak client '${clientId}' was created but could not be found`);
     }
+
+    await assignServiceAccountRoles(keycloakClient, createdId, clientId);
     const secretResponse = await keycloakClient.get<{ value: string }>(`/clients/${createdId}/client-secret`);
     return secretResponse.data.value;
   } catch (error) {
