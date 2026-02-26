@@ -17,13 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
-import GENERIC_CHAT_GROUP_TYPE from '@libs/chat/constants/genericChatGroupType';
+const GENERIC_CHAT_GROUP_TYPE = 'group';
 
-const ALLOWED_CHAT_SOPHOMORIX_TYPES = [
-  SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS,
-  SOPHOMORIX_GROUP_TYPES.PROJECT,
-  GENERIC_CHAT_GROUP_TYPE,
-] as const;
-
-export default ALLOWED_CHAT_SOPHOMORIX_TYPES;
+export default GENERIC_CHAT_GROUP_TYPE;

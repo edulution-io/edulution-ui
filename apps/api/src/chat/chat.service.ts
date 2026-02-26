@@ -30,6 +30,7 @@ import type AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomor
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
+import GENERIC_CHAT_GROUP_TYPE from '@libs/chat/constants/genericChatGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import PUSH_NOTIFICATION_CHANNEL_ID from '@libs/notification/constants/pushNotificationChannelId';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
@@ -144,6 +145,7 @@ class ChatService {
   private static readonly CACHE_PATH_PREFIX: Record<AllowedChatSophomorixType, string> = {
     [SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS]: '/',
     [SOPHOMORIX_GROUP_TYPES.PROJECT]: PROJECTS_PREFIX,
+    [GENERIC_CHAT_GROUP_TYPE]: '/',
   };
 
   private async verifyGroupAccess(groupName: string, sophomorixType: string, username: string): Promise<string[]> {

@@ -30,8 +30,10 @@ import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import {
   ALL_GROUPS_CACHE_KEY,
   ALL_SCHOOLS_CACHE_KEY,
+  DEPLOYMENT_TARGET_CACHE_KEY,
   GROUP_WITH_MEMBERS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
@@ -568,6 +570,17 @@ class GroupsService {
       )
     ).filter((group): group is Group => group !== null);
 
+    const deploymentTarget = await this.cacheManager.get<string>(DEPLOYMENT_TARGET_CACHE_KEY);
+
+    if (deploymentTarget === DEPLOYMENT_TARGET.GENERIC) {
+      const groups = memberGroups.map((group) => ({
+        name: group.path.startsWith('/') ? group.path.substring(1) : group.name,
+        path: group.path,
+      }));
+
+      return { classes: [], projects: [], groups };
+    }
+
     const classes = memberGroups
       .filter((group) => !group.path.startsWith(PROJECTS_PREFIX) && GroupsService.isSchoolClass(group.name))
       .map((group) => ({
@@ -582,7 +595,7 @@ class GroupsService {
         path: group.path,
       }));
 
-    return { classes, projects };
+    return { classes, projects, groups: [] };
   }
 
   private static isSchoolClass(groupName: string): boolean {

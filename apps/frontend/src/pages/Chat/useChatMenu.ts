@@ -20,44 +20,58 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
-import { ContactIcon } from '@/assets/icons';
+import { ChatIcon } from '@/assets/icons';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import {
   CHAT_CLASSES_LOCATION,
   CHAT_CLASSES_PATH,
+  CHAT_GROUPS_LOCATION,
+  CHAT_GROUPS_PATH,
   CHAT_PROJECTS_LOCATION,
   CHAT_PROJECTS_PATH,
 } from '@libs/chat/constants/chatPaths';
 
 const useChatMenu = (): MenuBarEntry => {
   const navigate = useNavigate();
+  const { isGeneric } = useDeploymentTarget();
 
   const navigateToClasses = useCallback(() => navigate(`/${CHAT_CLASSES_PATH}`), [navigate]);
   const navigateToProjects = useCallback(() => navigate(`/${CHAT_PROJECTS_PATH}`), [navigate]);
+  const navigateToGroups = useCallback(() => navigate(`/${CHAT_GROUPS_PATH}`), [navigate]);
 
   return useMemo(
     () => ({
       title: 'chat.title',
-      icon: ContactIcon,
+      icon: ChatIcon,
       color: 'hover:bg-ciGreenToBlue',
       appName: APPS.CHAT,
-      menuItems: [
-        {
-          id: CHAT_CLASSES_LOCATION,
-          label: 'chat.schoolClasses',
-          icon: faUsers,
-          action: navigateToClasses,
-        },
-        {
-          id: CHAT_PROJECTS_LOCATION,
-          label: 'chat.projects',
-          icon: faUserGear,
-          action: navigateToProjects,
-        },
-      ],
+      menuItems: isGeneric
+        ? [
+            {
+              id: CHAT_GROUPS_LOCATION,
+              label: 'chat.groups',
+              icon: faUsers,
+              action: navigateToGroups,
+            },
+          ]
+        : [
+            {
+              id: CHAT_CLASSES_LOCATION,
+              label: 'chat.schoolClasses',
+              icon: faUsers,
+              action: navigateToClasses,
+            },
+            {
+              id: CHAT_PROJECTS_LOCATION,
+              label: 'chat.projects',
+              icon: faUserGear,
+              action: navigateToProjects,
+            },
+          ],
     }),
-    [navigateToClasses, navigateToProjects],
+    [isGeneric, navigateToClasses, navigateToProjects, navigateToGroups],
   );
 };
 

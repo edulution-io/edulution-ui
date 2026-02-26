@@ -22,6 +22,7 @@ import ChatGroup from './chatGroup';
 interface UserChatGroups {
   classes: ChatGroup[];
   projects: ChatGroup[];
+  groups: ChatGroup[];
 }
 
 export default UserChatGroups;

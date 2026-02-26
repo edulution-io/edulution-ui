@@ -21,7 +21,6 @@ import {
   InfoBoardIcon,
   ClassManagementIcon,
   ConferencesIcon,
-  ContactIcon,
   Dashboard,
   DesktopDeploymentIcon,
   FrameIcon,
@@ -34,6 +33,7 @@ import {
   SurveysMenuIcon,
   WhiteBoardIcon,
   VPNIcon,
+  ChatIcon,
 } from '@/assets/icons';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
@@ -163,7 +163,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   {
     id: APPS.CHAT,
-    icon: ContactIcon,
+    icon: ChatIcon,
     isNativeApp: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },

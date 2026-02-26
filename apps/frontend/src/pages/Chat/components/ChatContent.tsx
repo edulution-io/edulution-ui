@@ -32,7 +32,12 @@ interface ChatContentProps {
 const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
   const { t } = useTranslation();
   const adapter = useGroupChat(groupName, groupType);
-  const groupTypeLabel = groupType === CHAT_GROUP_TYPE_LOCATIONS.CLASSES ? t('chat.schoolClass') : t('chat.project');
+  const groupTypeLabelMap: Record<string, string> = {
+    [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: t('chat.schoolClass'),
+    [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: t('chat.project'),
+    [CHAT_GROUP_TYPE_LOCATIONS.GROUPS]: t('chat.group'),
+  };
+  const groupTypeLabel = groupTypeLabelMap[groupType] ?? t('chat.group');
 
   return (
     <ChatView

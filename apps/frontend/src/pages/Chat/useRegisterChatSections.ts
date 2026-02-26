@@ -20,7 +20,7 @@
 import { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type Section from '@libs/menubar/section';
-import { CHAT_CLASSES_LOCATION, CHAT_PATH } from '@libs/chat/constants/chatPaths';
+import { CHAT_CLASSES_LOCATION, CHAT_GROUPS_LOCATION, CHAT_PATH } from '@libs/chat/constants/chatPaths';
 import isValidGroupTypeLocation from '@libs/chat/utils/isValidGroupTypeLocation';
 import useChatStore from '@/store/useChatStore';
 import useSubMenuStore from '@/store/useSubMenuStore';
@@ -40,7 +40,14 @@ const useRegisterChatSections = () => {
   const sections: Section[] = useMemo(() => {
     if (!userGroups || !isValidGroupTypeLocation(groupType)) return [];
 
-    const groups = groupType === CHAT_CLASSES_LOCATION ? userGroups.classes : userGroups.projects;
+    let groups;
+    if (groupType === CHAT_CLASSES_LOCATION) {
+      groups = userGroups.classes;
+    } else if (groupType === CHAT_GROUPS_LOCATION) {
+      groups = userGroups.groups;
+    } else {
+      groups = userGroups.projects;
+    }
 
     return groups.map((group) => ({
       id: group.name,
