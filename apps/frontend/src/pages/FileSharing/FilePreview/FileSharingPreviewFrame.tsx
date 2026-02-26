@@ -123,9 +123,19 @@ const FileSharingPreviewFrame = () => {
 
   const performOpenInNewTab = () => {
     if (!currentlyEditingFile) return;
+    const { filename } = currentlyEditingFile;
     addFileToOpenInNewTab(currentlyEditingFile);
     window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
     resetPreview();
+
+    const handleReturnFromNewTab = () => {
+      if (document.visibilityState === 'visible') {
+        document.removeEventListener('visibilitychange', handleReturnFromNewTab);
+        void fetchFiles(webdavShare, currentPath);
+        void setFileIsCurrentlyDisabled(filename, true, 5000);
+      }
+    };
+    document.addEventListener('visibilitychange', handleReturnFromNewTab);
   };
 
   const openInNewTab = () => {
