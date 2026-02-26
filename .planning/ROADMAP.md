@@ -53,13 +53,17 @@ Plans:
 3. Previously untested services (mail, file sharing, conferences, notifications, docker, LDAP-Keycloak sync, license, health, mobileApp, user-preferences, wireguard, webdav) each have spec files with behavioral assertions beyond "should be defined"
 4. No API spec file has `it('should be defined')` as its sole test -- every spec file contains at least one behavioral assertion testing actual method output or side effects
 5. Controller tests verify HTTP status codes and service delegation for all major endpoints
-   **Plans**: TBD
+   **Plans**: 7 plans, 2 waves
 
 Plans:
 
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01: Shared test helpers (ExecutionContext mock, ArgumentsHost mock, JWTUser factory) + all 7 guard specs (Wave 1)
+- [ ] 02-02: All 3 pipe specs + all 5 exception filter specs (Wave 1, parallel with 02-01)
+- [ ] 02-03: Surveys service deepening + file sharing service rewrite + controller specs (Wave 2)
+- [ ] 02-04: Mail service + notifications service + conference deepening + controller specs (Wave 2, parallel with 02-03)
+- [ ] 02-05: Infrastructure services (Docker, LDAP-Keycloak, Wireguard, etc.) + remaining controllers + spec deepening (Wave 2, parallel with 02-03/02-04)
+- [ ] 02-06: Simple infrastructure services (License, Health, MobileApp, UserPreferences, WebdavShares) + controller specs (Wave 2, parallel with 02-03/02-04/02-05)
+- [ ] 02-07: Auth, Webhooks, remaining controllers (BulletinCategory, ParentChildPairing, Metrics) + groups/sse deepening + APIT-13 verification (Wave 2, parallel with 02-03/02-04/02-05/02-06)
 
 ### Phase 3: Frontend Unit Tests
 
@@ -130,7 +134,7 @@ Note: Phase 2 and Phase 3 both depend only on Phase 1 and could execute in paral
 | Phase                                 | Plans Complete | Status      | Completed |
 | ------------------------------------- | -------------- | ----------- | --------- |
 | 1. Test Foundation and Infrastructure | 0/3            | Not started | -         |
-| 2. API Unit Test Expansion            | 0/3            | Not started | -         |
+| 2. API Unit Test Expansion            | 0/7            | Planned     | -         |
 | 3. Frontend Unit Tests                | 0/3            | Not started | -         |
 | 4. Frontend Components and E2E        | 0/3            | Not started | -         |
 | 5. Advanced Quality and CI Hardening  | 0/3            | Not started | -         |
