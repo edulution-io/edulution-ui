@@ -63,7 +63,7 @@ const FileSharingPreviewFrame = () => {
     setIsFilePreviewDocked,
   } = useFileEditorStore();
   const { loadDownloadUrl } = useFileSharingDownloadStore();
-  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { setFileIsCurrentlyDisabled, fetchFiles, currentPath } = useFileSharingStore();
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const {
     hasUnsavedChanges,
@@ -161,6 +161,7 @@ const FileSharingPreviewFrame = () => {
     const { filename } = currentlyEditingFile;
     setIsEditMode(false);
     resetPreview();
+    await fetchFiles(webdavShare, currentPath, true);
     await setFileIsCurrentlyDisabled(filename, true, 5000);
     closingRef.current = false;
   };

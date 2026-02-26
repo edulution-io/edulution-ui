@@ -105,6 +105,11 @@ import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
     ServeStaticModule.forRoot({
       rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
+      serveStaticOptions: {
+        setHeaders: (res: Response) => {
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        },
+      },
     }),
     ServeStaticModule.forRoot({
       rootPath: PUBLIC_ASSET_PATH,

@@ -85,7 +85,7 @@ class OnlyofficeService implements OnModuleInit {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const uniqueFileName = `${randomUUID()}-${filename}`;
 
-    if (callbackData.status !== 2 && callbackData.status !== 4) {
+    if (callbackData.status !== 2 && callbackData.status !== 4 && callbackData.status !== 6) {
       return res.status(HttpStatus.OK).json({ error: 0 });
     }
 
