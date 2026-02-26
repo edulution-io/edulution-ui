@@ -18,11 +18,12 @@
  */
 
 import AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
+import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
 
 const validateChatSophomorixType = (value: string): AllowedChatSophomorixType => {
   if (!isAllowedChatSophomorixType(value)) {
-    throw new Error(`Invalid sophomorixType: ${value}`);
+    throw new Error(CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE);
   }
   return value;
 };

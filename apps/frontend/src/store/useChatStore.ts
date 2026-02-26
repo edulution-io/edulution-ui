@@ -136,6 +136,9 @@ const useChatStore = create<ChatStore>((set, get) => ({
 
       const newMessage = response.data;
 
+      const { currentSophomorixType, currentGroupName } = get();
+      if (currentSophomorixType !== sophomorixType || currentGroupName !== groupName) return null;
+
       set((state) => ({
         messages: [...state.messages, newMessage],
       }));

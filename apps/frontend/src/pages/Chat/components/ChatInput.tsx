@@ -64,7 +64,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder || t('chat.inputPlaceholder')}
-        className="max-h-30 min-h-10 flex-1 resize-none rounded-xl py-2 [field-sizing:content]"
+        className="max-h-32 min-h-10 flex-1 resize-none rounded-xl py-2 [field-sizing:content]"
         rows={1}
         maxLength={CHAT_MESSAGE_MAX_LENGTH}
         disabled={isLoading}

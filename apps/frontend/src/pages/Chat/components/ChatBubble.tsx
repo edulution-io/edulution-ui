@@ -27,27 +27,28 @@ interface ChatBubbleProps {
   isOwnMessage: boolean;
 }
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
-  <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
-    <div
-      className={cn(
-        'max-w-[75%] rounded-2xl px-4 py-2',
-        isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
-      )}
-    >
-      <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
-      <div className={cn('mt-1 flex items-center gap-2 text-xs', isOwnMessage ? 'justify-end' : 'justify-between')}>
-        {!isOwnMessage && (
-          <span className="font-medium opacity-70">
-            {message.createdByUserFirstName} {message.createdByUserLastName}
-          </span>
+const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => {
+  const nameParts = [message.createdByUserFirstName, message.createdByUserLastName].filter(Boolean);
+  const displayName = nameParts.length > 0 ? nameParts.join(' ') : message.createdBy;
+
+  return (
+    <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
+      <div
+        className={cn(
+          'max-w-[75%] rounded-2xl px-4 py-2',
+          isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
         )}
-        <span className={isOwnMessage ? 'text-white/70' : 'text-muted-foreground'}>
-          {formatIsoDateToLocaleString(message.createdAt)}
-        </span>
+      >
+        <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
+        <div className={cn('mt-1 flex items-center gap-2 text-xs', isOwnMessage ? 'justify-end' : 'justify-between')}>
+          {!isOwnMessage && displayName && <span className="font-medium opacity-70">{displayName}</span>}
+          <span className={isOwnMessage ? 'text-white/70' : 'text-muted-foreground'}>
+            {formatIsoDateToLocaleString(message.createdAt)}
+          </span>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default ChatBubble;
