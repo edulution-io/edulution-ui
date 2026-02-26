@@ -128,14 +128,19 @@ const FileSharingPreviewFrame = () => {
     window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
     resetPreview();
 
-    const handleReturnFromNewTab = () => {
-      if (document.visibilityState === 'visible') {
-        document.removeEventListener('visibilitychange', handleReturnFromNewTab);
-        void fetchFiles(webdavShare, currentPath);
-        void setFileIsCurrentlyDisabled(filename, true, 5000);
-      }
+    const listeners: { focus?: () => void; visibility?: () => void } = {};
+    const onReturn = () => {
+      if (listeners.focus) window.removeEventListener('focus', listeners.focus);
+      if (listeners.visibility) document.removeEventListener('visibilitychange', listeners.visibility);
+      void fetchFiles(webdavShare, currentPath);
+      void setFileIsCurrentlyDisabled(filename, true, 5000);
     };
-    document.addEventListener('visibilitychange', handleReturnFromNewTab);
+    listeners.focus = () => onReturn();
+    listeners.visibility = () => {
+      if (document.visibilityState === 'visible') onReturn();
+    };
+    window.addEventListener('focus', listeners.focus);
+    document.addEventListener('visibilitychange', listeners.visibility);
   };
 
   const openInNewTab = () => {
