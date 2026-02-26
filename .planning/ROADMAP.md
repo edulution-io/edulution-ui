@@ -14,7 +14,7 @@ This roadmap takes edulution-ui from near-zero test coverage to a production-rea
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Test Foundation and Infrastructure** - Shared factories, MSW setup, Vitest upgrade, mock consolidation, and CI frontend test job
-- [ ] **Phase 2: API Unit Test Expansion** - Guards, pipes, filters, services, and controllers across all untested API modules
+- [x] **Phase 2: API Unit Test Expansion** - Guards, pipes, filters, services, and controllers across all untested API modules
 - [ ] **Phase 3: Frontend Unit Tests** - Utility functions, Zustand store tests with MSW, and custom hook tests
 - [ ] **Phase 4: Frontend Components and E2E** - Component tests for critical UI, Playwright setup, Keycloak auth, Page Object Model, E2E journeys
 - [ ] **Phase 5: Advanced Quality and CI Hardening** - API integration tests, visual regression, accessibility scans, coverage reporting, diff-coverage gates
@@ -57,13 +57,13 @@ Plans:
 
 Plans:
 
-- [ ] 02-01: Shared test helpers (ExecutionContext mock, ArgumentsHost mock, JWTUser factory) + all 7 guard specs (Wave 1)
-- [ ] 02-02: All 3 pipe specs + all 5 exception filter specs (Wave 1, parallel with 02-01)
-- [ ] 02-03: Surveys service deepening + file sharing service rewrite + controller specs (Wave 2)
-- [ ] 02-04: Mail service + notifications service + conference deepening + controller specs (Wave 2, parallel with 02-03)
-- [ ] 02-05: Infrastructure services (Docker, LDAP-Keycloak, Wireguard, etc.) + remaining controllers + spec deepening (Wave 2, parallel with 02-03/02-04)
-- [ ] 02-06: Simple infrastructure services (License, Health, MobileApp, UserPreferences, WebdavShares) + controller specs (Wave 2, parallel with 02-03/02-04/02-05)
-- [ ] 02-07: Auth, Webhooks, remaining controllers (BulletinCategory, ParentChildPairing, Metrics) + groups/sse deepening + APIT-13 verification (Wave 2, parallel with 02-03/02-04/02-05/02-06)
+- [x] 02-01: Shared test helpers (ExecutionContext mock, ArgumentsHost mock, JWTUser factory) + all 7 guard specs (Wave 1)
+- [x] 02-02: All 3 pipe specs + all 5 exception filter specs (Wave 1, parallel with 02-01)
+- [x] 02-03: Surveys service deepening + file sharing service rewrite + controller specs (Wave 2)
+- [x] 02-04: Mail service + notifications service + conference deepening + controller specs (Wave 2, parallel with 02-03)
+- [x] 02-05: Infrastructure services (Docker, LDAP-Keycloak, Wireguard, etc.) + remaining controllers + spec deepening (Wave 2, parallel with 02-03/02-04)
+- [x] 02-06: Simple infrastructure services (License, Health, MobileApp, UserPreferences, WebdavShares) + controller specs (Wave 2, parallel with 02-03/02-04/02-05)
+- [x] 02-07: Auth, Webhooks, remaining controllers (BulletinCategory, ParentChildPairing, Metrics) + groups/sse deepening + APIT-13 verification (Wave 2, parallel with 02-03/02-04/02-05/02-06)
 
 ### Phase 3: Frontend Unit Tests
 
@@ -131,10 +131,10 @@ Plans:
 Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 Note: Phase 2 and Phase 3 both depend only on Phase 1 and could execute in parallel.
 
-| Phase                                 | Plans Complete | Status      | Completed |
-| ------------------------------------- | -------------- | ----------- | --------- |
-| 1. Test Foundation and Infrastructure | 0/3            | Not started | -         |
-| 2. API Unit Test Expansion            | 0/7            | Planned     | -         |
-| 3. Frontend Unit Tests                | 0/3            | Not started | -         |
-| 4. Frontend Components and E2E        | 0/3            | Not started | -         |
-| 5. Advanced Quality and CI Hardening  | 0/3            | Not started | -         |
+| Phase                                 | Plans Complete | Status      | Completed  |
+| ------------------------------------- | -------------- | ----------- | ---------- |
+| 1. Test Foundation and Infrastructure | 0/3            | Not started | -          |
+| 2. API Unit Test Expansion            | 7/7            | Complete    | 2026-02-26 |
+| 3. Frontend Unit Tests                | 0/3            | Not started | -          |
+| 4. Frontend Components and E2E        | 0/3            | Not started | -          |
+| 5. Advanced Quality and CI Hardening  | 0/3            | Not started | -          |
