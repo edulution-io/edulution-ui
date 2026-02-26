@@ -28,7 +28,7 @@ export class Conversation {
   @Prop({ type: String, required: true, index: true })
   type: ChatType;
 
-  @Prop({ type: String, required: true, unique: true, index: true })
+  @Prop({ type: String, required: true })
   groupName: string;
 
   @Prop({ type: String, required: true })
@@ -42,6 +42,8 @@ export class Conversation {
 }
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation);
+
+ConversationSchema.index({ groupName: 1, sophomorixType: 1 }, { unique: true });
 
 ConversationSchema.set('toJSON', {
   virtuals: true,

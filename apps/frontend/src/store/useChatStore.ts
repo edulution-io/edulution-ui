@@ -39,6 +39,7 @@ interface ChatStore {
   sendMessage: (sophomorixType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
   setCurrentConversation: (sophomorixType: string, groupName: string) => void;
   addMessage: (message: ChatMessage) => void;
+  reset: () => void;
 }
 
 const DEFAULT_LIMIT = 50;
@@ -135,6 +136,8 @@ const useChatStore = create<ChatStore>((set, get) => ({
       return { messages: [...state.messages, message] };
     });
   },
+
+  reset: () => set(initialState),
 }));
 
 export default useChatStore;

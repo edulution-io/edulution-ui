@@ -59,7 +59,7 @@ class ChatService {
   ): Promise<ConversationDocument> {
     await this.verifyGroupAccess(groupName, sophomorixType, username);
 
-    const conversation = await this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName });
+    const conversation = await this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName, sophomorixType });
 
     if (!conversation) {
       throw new CustomHttpException(
@@ -81,7 +81,7 @@ class ChatService {
     const members = await this.verifyGroupAccess(groupName, sophomorixType, username);
 
     const conversation = await this.conversationModel.findOneAndUpdate(
-      { type: CHAT_TYPES.GROUP, groupName },
+      { type: CHAT_TYPES.GROUP, groupName, sophomorixType },
       {
         $setOnInsert: {
           type: CHAT_TYPES.GROUP,
