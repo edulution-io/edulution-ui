@@ -555,30 +555,32 @@ class GroupsService {
   async getUserGroupsAndProjects(username: string): Promise<UserChatGroups> {
     const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
 
-    const classes: { name: string; path: string }[] = [];
-    const projects: { name: string; path: string }[] = [];
+    const memberGroups = (
+      await Promise.all(
+        allGroups.map(async (group) => {
+          const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+            `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+          );
 
-    await Promise.all(
-      allGroups.map(async (group) => {
-        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-        );
+          const isMember = groupWithMembers?.members?.some((m) => m.username === username);
+          return isMember ? group : null;
+        }),
+      )
+    ).filter((group): group is Group => group !== null);
 
-        const isMember = groupWithMembers?.members?.some((m) => m.username === username);
-        if (!isMember) return;
+    const classes = memberGroups
+      .filter((group) => !group.path.startsWith(PROJECTS_PREFIX) && GroupsService.isSchoolClass(group.name))
+      .map((group) => ({
+        name: group.path.startsWith('/') ? group.path.substring(1) : group.name,
+        path: group.path,
+      }));
 
-        if (group.path.startsWith(PROJECTS_PREFIX)) {
-          const projectName = group.path.replace(PROJECTS_PREFIX, '');
-          projects.push({ name: projectName, path: group.path });
-          return;
-        }
-
-        if (GroupsService.isSchoolClass(group.name)) {
-          const className = group.path.startsWith('/') ? group.path.substring(1) : group.name;
-          classes.push({ name: className, path: group.path });
-        }
-      }),
-    );
+    const projects = memberGroups
+      .filter((group) => group.path.startsWith(PROJECTS_PREFIX))
+      .map((group) => ({
+        name: group.path.replace(PROJECTS_PREFIX, ''),
+        path: group.path,
+      }));
 
     return { classes, projects };
   }
