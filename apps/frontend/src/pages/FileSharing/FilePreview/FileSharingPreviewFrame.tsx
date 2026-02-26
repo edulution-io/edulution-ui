@@ -132,7 +132,7 @@ const FileSharingPreviewFrame = () => {
     const onReturn = () => {
       if (listeners.focus) window.removeEventListener('focus', listeners.focus);
       if (listeners.visibility) document.removeEventListener('visibilitychange', listeners.visibility);
-      void fetchFiles(webdavShare, currentPath);
+      void fetchFiles(webdavShare, currentPath, true);
       void setFileIsCurrentlyDisabled(filename, true, 5000);
     };
     listeners.focus = () => onReturn();
