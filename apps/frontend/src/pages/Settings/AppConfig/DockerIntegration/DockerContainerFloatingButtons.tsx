@@ -18,7 +18,7 @@
  */
 
 import React, { useState } from 'react';
-import { faRotateRight, faBan, faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faRotateRight, faBan, faArrowUpFromBracket, faTerminal } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -33,12 +33,18 @@ import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DeleteDockerContainersDialog from './DeleteDockerContainersDialog';
+import useSSHTerminalStore from './SSHTerminal/useSSHTerminalStore';
 
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
   const { setDialogOpen } = useSelectCreateDockerContainerDialogStore();
+  const { setIsCredentialsDialogOpen } = useSSHTerminalStore();
+  const { appConfigs } = useAppConfigsStore();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const {
     containers,
@@ -49,6 +55,15 @@ const DockerContainerFloatingButtons: React.FC = () => {
     deleteDockerContainer,
     updateContainer,
   } = useDockerApplicationStore();
+
+  const desktopDeploymentConfig = appConfigs.find((config) => config.name === APPS.DESKTOP_DEPLOYMENT);
+  const hasDesktopDeploymentUrl = Boolean(desktopDeploymentConfig?.options?.url);
+  const guacamoleContainerName = DOCKER_APPLICATION_LIST.desktopdeployment;
+  const isGuacamoleRunning = containers.some(
+    (container) =>
+      container.Names?.[0]?.split('/')[1] === guacamoleContainerName && container.State === DOCKER_STATES.RUNNING,
+  );
+  const isGuacamoleConfigured = hasDesktopDeploymentUrl && isGuacamoleRunning;
   const selectedContainerId = Object.keys(selectedRows);
   const selectedContainers = containers.filter((container) => selectedContainerId.includes(container.Id));
   const containerNames = selectedContainers.map((container) => container.Names?.[0].split('/')[1]) || [''];
@@ -84,6 +99,10 @@ const DockerContainerFloatingButtons: React.FC = () => {
     setSelectedRows({});
   };
 
+  const handleTerminalClick = () => {
+    setIsCredentialsDialogOpen(true);
+  };
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       CreateButton(() => setDialogOpen(true), selectedContainerId.length === 0),
@@ -110,6 +129,12 @@ const DockerContainerFloatingButtons: React.FC = () => {
         text: t(`common.update`),
         onClick: () => handleUpdateClick(),
         isVisible: isButtonVisible,
+      },
+      {
+        icon: faTerminal,
+        text: t('ssh.terminal'),
+        onClick: handleTerminalClick,
+        isVisible: isGuacamoleConfigured,
       },
     ],
     keyPrefix: 'docker-table-floating-button_',
