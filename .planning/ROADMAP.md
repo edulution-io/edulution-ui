@@ -37,9 +37,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01: Vitest upgrade, MSW setup, factories, renderWithProviders, sample test
+- [ ] 01-02: API test infrastructure (Mongoose mock, cacheManager, TestingModuleBuilder preset)
+- [ ] 01-03: CI pipeline split, cleanAllStores audit + validation test
 
 ### Phase 2: API Unit Test Expansion
 
