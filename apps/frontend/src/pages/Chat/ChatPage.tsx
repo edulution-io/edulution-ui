@@ -24,15 +24,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@edulution-io/ui-kit';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useChatStore from '@/store/useChatStore';
-import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
-import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
+import isValidGroupTypeLocation from '@libs/chat/utils/isValidGroupTypeLocation';
 import ChatContent from './components/ChatContent';
 import useRegisterChatSections from './useRegisterChatSections';
-
-const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
-  Object.values(CHAT_GROUP_TYPE_LOCATIONS).includes(value as GroupTypeLocation);
 
 const ChatPage = () => {
   const { t } = useTranslation();
@@ -42,35 +38,40 @@ const ChatPage = () => {
 
   return (
     <PageLayout hasFullWidthMain>
-      <LoadingIndicatorDialog isOpen={isLoadingGroups} />
       <div className="flex h-full flex-col">
-        {groupName && isValidGroupType(groupType) ? (
+        {groupName && isValidGroupTypeLocation(groupType) ? (
           <ChatContent
             groupName={groupName}
             groupType={groupType}
           />
         ) : (
           <div className="bg-glass flex flex-1 flex-col items-center justify-center ">
-            <FontAwesomeIcon
-              icon={faComments}
-              className="mb-4 h-16 w-16 text-muted-foreground opacity-30"
-            />
-            <p className="text-lg text-muted-foreground">{t('chat.selectConversation')}</p>
-            <p className="mt-2 text-sm text-muted-foreground opacity-70">{t('chat.selectFromSidebar')}</p>
-            <Button
-              type="button"
-              variant="btn-ghost"
-              disabled={isLoadingGroups}
-              onClick={() => fetchUserGroups()}
-              className="mt-4 flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted-background disabled:opacity-50"
-            >
-              <FontAwesomeIcon
-                icon={faRotate}
-                className="h-4 w-4"
-                spin={isLoadingGroups}
-              />
-              <span className="text-sm">{t('chat.refreshGroups')}</span>
-            </Button>
+            {isLoadingGroups ? (
+              <CircleLoader />
+            ) : (
+              <>
+                <FontAwesomeIcon
+                  icon={faComments}
+                  className="mb-4 h-16 w-16 text-muted-foreground opacity-30"
+                />
+                <p className="text-lg text-muted-foreground">{t('chat.selectConversation')}</p>
+                <p className="mt-2 text-sm text-muted-foreground opacity-70">{t('chat.selectFromSidebar')}</p>
+                <Button
+                  type="button"
+                  variant="btn-ghost"
+                  disabled={isLoadingGroups}
+                  onClick={() => fetchUserGroups()}
+                  className="mt-4 flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted-background disabled:opacity-50"
+                >
+                  <FontAwesomeIcon
+                    icon={faRotate}
+                    className="h-4 w-4"
+                    spin={isLoadingGroups}
+                  />
+                  <span className="text-sm">{t('chat.refreshGroups')}</span>
+                </Button>
+              </>
+            )}
           </div>
         )}
       </div>

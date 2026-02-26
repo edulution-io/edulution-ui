@@ -18,31 +18,34 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import type ChatAdapter from '@/pages/Chat/types/chatAdapter';
+import { BadgeSH } from '@/components/ui/BadgeSH';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 
 interface ChatViewProps {
   adapter: ChatAdapter;
   title?: string;
+  subtitle?: string;
 }
 
-const ChatView: React.FC<ChatViewProps> = ({ adapter, title }) => {
-  const { t } = useTranslation();
+const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle }) => {
   const { messages, input, setInput, handleSubmit, isLoading, error } = adapter;
+  const hasError = !!error;
 
   return (
     <div className="flex h-full flex-col pb-2 ">
       {title && (
-        <div className="border-b border-muted px-4 py-3">
+        <div className="flex w-full flex-col border-b border-muted px-4 pb-2 pt-2">
           <h3 className="font-semibold text-background">{title}</h3>
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-destructive/10 mx-4 mt-4 rounded-lg p-3 text-sm text-destructive">
-          {t('chat.error')}: {error.message}
+          {subtitle && (
+            <BadgeSH
+              variant="secondary"
+              className="mt-1 h-auto w-fit px-1.5 py-0 text-[10px]"
+            >
+              {subtitle}
+            </BadgeSH>
+          )}
         </div>
       )}
 
@@ -51,12 +54,14 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title }) => {
         isLoading={isLoading}
       />
 
-      <ChatInput
-        value={input}
-        onChange={setInput}
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-      />
+      {!hasError && (
+        <ChatInput
+          value={input}
+          onChange={setInput}
+          onSubmit={handleSubmit}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   );
 };

@@ -17,15 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useRef, useEffect, KeyboardEvent, FormEvent } from 'react';
+import React, { KeyboardEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button, cn } from '@edulution-io/ui-kit';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
-
-const TEXTAREA_MAX_HEIGHT_PX = 120;
 
 interface ChatInputProps {
   value: string;
@@ -37,14 +35,6 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoading, placeholder }) => {
   const { t } = useTranslation();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, TEXTAREA_MAX_HEIGHT_PX)}px`;
-    }
-  }, [value]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -70,12 +60,11 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
       className="bg-background/80 flex items-end gap-2 border-t p-4 backdrop-blur-sm"
     >
       <Textarea
-        ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder || t('chat.inputPlaceholder')}
-        className="max-h-30 min-h-10 flex-1 resize-none rounded-xl py-2"
+        className="max-h-30 min-h-10 flex-1 resize-none rounded-xl py-2 [field-sizing:content]"
         rows={1}
         maxLength={CHAT_MESSAGE_MAX_LENGTH}
         disabled={isLoading}

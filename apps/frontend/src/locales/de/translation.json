@@ -31,7 +31,8 @@
       "messageSendFailed": "Nachricht konnte nicht gesendet werden",
       "invalidGroupType": "Ungültiger Gruppentyp"
     },
-    "refreshGroups": "Gruppen aktualisieren"
+    "refreshGroups": "Gruppen aktualisieren",
+    "loadOlderMessages": "Ältere Nachrichten laden"
   },
   "bulletinboard": {
     "settings": "Einstellungen",

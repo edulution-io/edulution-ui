@@ -22,6 +22,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
+import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import validateChatSophomorixType from '@libs/chat/utils/validateChatSophomorixType';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
@@ -48,11 +49,11 @@ class ChatController {
     @Param('sophomorixType') rawSophomorixType: string,
     @Param('groupName') groupName: string,
     @GetCurrentUser() currentUser: JwtUser,
-    @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
+    @Query('limit', new DefaultValuePipe(CHAT_MESSAGES_DEFAULT_LIMIT), ParseIntPipe) limit: number,
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
   ): Promise<ChatMessageDocument[]> {
     const sophomorixType = validateChatSophomorixType(rawSophomorixType);
-    const conversation = await this.chatService.getAuthorizedConversation(
+    const { conversation } = await this.chatService.getOrCreateAuthorizedConversation(
       groupName,
       sophomorixType,
       currentUser.preferred_username,

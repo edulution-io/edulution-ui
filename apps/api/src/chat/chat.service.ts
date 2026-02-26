@@ -52,27 +52,6 @@ class ChatService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  async getAuthorizedConversation(
-    groupName: string,
-    sophomorixType: string,
-    username: string,
-  ): Promise<ConversationDocument> {
-    await this.verifyGroupAccess(groupName, sophomorixType, username);
-
-    const conversation = await this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName, sophomorixType });
-
-    if (!conversation) {
-      throw new CustomHttpException(
-        CHAT_ERROR_MESSAGES.CONVERSATION_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        { groupName, sophomorixType },
-        ChatService.name,
-      );
-    }
-
-    return conversation;
-  }
-
   async getOrCreateAuthorizedConversation(
     groupName: string,
     sophomorixType: string,

@@ -17,30 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import ChatView from '@/pages/Chat/components/ChatView';
-import useGroupChat from '@/pages/Chat/hooks/useGroupChat';
-import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
+import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 
-interface ChatContentProps {
-  groupName: string;
-  groupType: GroupTypeLocation;
-}
+const isValidGroupTypeLocation = (value: string | undefined): value is GroupTypeLocation =>
+  Object.values(CHAT_GROUP_TYPE_LOCATIONS).includes(value as GroupTypeLocation);
 
-const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
-  const { t } = useTranslation();
-  const adapter = useGroupChat(groupName, groupType);
-  const groupTypeLabel = groupType === CHAT_GROUP_TYPE_LOCATIONS.CLASSES ? t('chat.schoolClass') : t('chat.project');
-
-  return (
-    <ChatView
-      adapter={adapter}
-      title={groupName}
-      subtitle={groupTypeLabel}
-    />
-  );
-};
-
-export default ChatContent;
+export default isValidGroupTypeLocation;

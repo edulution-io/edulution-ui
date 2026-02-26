@@ -20,19 +20,12 @@
 import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
+import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
+import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import useChatStore from '@/store/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
-
-import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
-import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
-
-const locationToSophomorixType: Record<GroupTypeLocation, string> = {
-  [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS,
-  [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: SOPHOMORIX_GROUP_TYPES.PROJECT,
-};
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
   const [input, setInput] = useState('');
@@ -41,7 +34,7 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   const user = useUserStore((state) => state.user);
   const currentUsername = user?.username;
 
-  const sophomorixType = locationToSophomorixType[groupTypeLocation];
+  const sophomorixType = LOCATION_TO_GROUP_TYPE[groupTypeLocation];
 
   const groupNameRef = useRef(groupName);
   const sophomorixTypeRef = useRef(sophomorixType);

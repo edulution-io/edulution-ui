@@ -31,7 +31,8 @@
       "messageSendFailed": "Failed to send message",
       "invalidGroupType": "Invalid group type"
     },
-    "refreshGroups": "Refresh groups"
+    "refreshGroups": "Refresh groups",
+    "loadOlderMessages": "Load older messages"
   },
   "bulletinboard": {
     "settings": "Settings",

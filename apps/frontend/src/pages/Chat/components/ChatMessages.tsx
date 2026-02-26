@@ -17,12 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@edulution-io/ui-kit';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useChatStore from '@/store/useChatStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ChatBubble from './ChatBubble';
 import ChatEmptyState from './ChatEmptyState';
+
+const SCROLL_THRESHOLD_PX = 150;
 
 interface ChatMessagesProps {
   messages: ChatMessage[];
@@ -30,19 +35,72 @@ interface ChatMessagesProps {
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
+  const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const shouldAutoScrollRef = useRef(true);
+  const prevScrollHeightRef = useRef(0);
   const { user } = useUserStore();
+  const { error, hasMoreMessages, isLoadingOlderMessages, fetchOlderMessages } = useChatStore();
+
+  const handleScroll = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    shouldAutoScrollRef.current = distanceFromBottom <= SCROLL_THRESHOLD_PX;
+  }, []);
+
+  const handleLoadOlder = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      prevScrollHeightRef.current = container.scrollHeight;
+    }
+    void fetchOlderMessages();
+  }, [fetchOlderMessages]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    if (prevScrollHeightRef.current > 0) {
+      const newScrollHeight = container.scrollHeight;
+      container.scrollTop = newScrollHeight - prevScrollHeightRef.current;
+      prevScrollHeightRef.current = 0;
+    } else if (shouldAutoScrollRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages]);
 
-  if (messages.length === 0 && !isLoading) {
+  if (messages.length === 0 && !isLoading && !error) {
     return <ChatEmptyState />;
   }
 
   return (
-    <div className="flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin">
+    <div
+      ref={scrollContainerRef}
+      className="flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin"
+      onScroll={handleScroll}
+    >
+      {hasMoreMessages && (
+        <div className="flex justify-center py-2">
+          <Button
+            type="button"
+            variant="btn-ghost"
+            disabled={isLoadingOlderMessages}
+            onClick={handleLoadOlder}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            {isLoadingOlderMessages ? (
+              <CircleLoader
+                height="h-5"
+                width="w-5"
+              />
+            ) : (
+              t('chat.loadOlderMessages')
+            )}
+          </Button>
+        </div>
+      )}
       {messages.map((message) => (
         <ChatBubble
           key={message.id}

@@ -21,6 +21,7 @@ import { create } from 'zustand';
 import ChatMessage from '@libs/chat/types/chatMessage';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import { CHAT_USER_GROUPS_ENDPOINT, CHAT_CONVERSATIONS_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
+import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -33,16 +34,17 @@ interface ChatStore {
   currentGroupName: string | null;
   userGroups: UserChatGroups | null;
   isLoadingGroups: boolean;
+  hasMoreMessages: boolean;
+  isLoadingOlderMessages: boolean;
 
   fetchUserGroups: () => Promise<void>;
   fetchMessages: (sophomorixType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
+  fetchOlderMessages: () => Promise<void>;
   sendMessage: (sophomorixType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
   setCurrentConversation: (sophomorixType: string, groupName: string) => void;
   addMessage: (message: ChatMessage) => void;
   reset: () => void;
 }
-
-const DEFAULT_LIMIT = 50;
 
 const initialState = {
   messages: [],
@@ -53,6 +55,8 @@ const initialState = {
   currentGroupName: null,
   userGroups: null,
   isLoadingGroups: false,
+  hasMoreMessages: false,
+  isLoadingOlderMessages: false,
 };
 
 const useChatStore = create<ChatStore>((set, get) => ({
@@ -73,7 +77,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  fetchMessages: async (sophomorixType, groupName, limit = DEFAULT_LIMIT, offset = 0) => {
+  fetchMessages: async (sophomorixType, groupName, limit = CHAT_MESSAGES_DEFAULT_LIMIT, offset = 0) => {
     set({ isLoading: true, error: null });
 
     try {
@@ -87,11 +91,39 @@ const useChatStore = create<ChatStore>((set, get) => ({
 
       const messages = [...response.data].reverse();
 
-      set({ messages });
+      set({ messages, hasMoreMessages: response.data.length === limit });
     } catch (error) {
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  fetchOlderMessages: async () => {
+    const { currentSophomorixType, currentGroupName, messages, isLoadingOlderMessages } = get();
+    if (!currentSophomorixType || !currentGroupName || isLoadingOlderMessages) return;
+
+    set({ isLoadingOlderMessages: true, error: null });
+
+    try {
+      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${currentSophomorixType}/${encodeURIComponent(currentGroupName)}/messages`;
+      const response = await eduApi.get<ChatMessage[]>(endpoint, {
+        params: { limit: CHAT_MESSAGES_DEFAULT_LIMIT, offset: messages.length },
+      });
+
+      const { currentSophomorixType: currentType, currentGroupName: currentName } = get();
+      if (currentType !== currentSophomorixType || currentName !== currentGroupName) return;
+
+      const olderMessages = [...response.data].reverse();
+
+      set((state) => ({
+        messages: [...olderMessages, ...state.messages],
+        hasMoreMessages: response.data.length === CHAT_MESSAGES_DEFAULT_LIMIT,
+      }));
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoadingOlderMessages: false });
     }
   },
 
@@ -125,6 +157,8 @@ const useChatStore = create<ChatStore>((set, get) => ({
         currentSophomorixType: sophomorixType,
         currentGroupName: groupName,
         messages: [],
+        hasMoreMessages: false,
+        isLoadingOlderMessages: false,
       });
     }
   },
