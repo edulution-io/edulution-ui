@@ -128,8 +128,11 @@ const FileSharingPreviewFrame = () => {
     window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
     resetPreview();
 
+    let hasReturned = false;
     const listeners: { focus?: () => void; visibility?: () => void } = {};
     const onReturn = () => {
+      if (hasReturned) return;
+      hasReturned = true;
       if (listeners.focus) window.removeEventListener('focus', listeners.focus);
       if (listeners.visibility) document.removeEventListener('visibilitychange', listeners.visibility);
       void fetchFiles(webdavShare, currentPath, true);
