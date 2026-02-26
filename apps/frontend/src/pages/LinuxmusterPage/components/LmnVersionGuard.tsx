@@ -33,11 +33,11 @@ const LmnVersionGuard: React.FC = () => {
   const { isLmn } = useDeploymentTarget();
   const { isSchoolEnvironment } = useOrganizationType();
   const lmnVersions = useLmnApiStore((s) => s.lmnVersions);
+  const isGetVersionLoading = useLmnApiStore((s) => s.isGetVersionLoading);
   const apiVersion = lmnVersions['linuxmuster-api7'];
-  const versionLoaded = !isLmn || !!apiVersion;
   const versionSupported = !isLmn || isLmnVersionSupported(apiVersion);
 
-  if (!versionLoaded) {
+  if (isLmn && isGetVersionLoading) {
     return null;
   }
 
