@@ -26,6 +26,7 @@ import eduApi from '@/api/eduApi';
 import { type ContainerInfo } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
+import DOCKER_COMMAND_TRANSLATION_KEYS from '@libs/docker/constants/dockerCommandTranslationKeys';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
 import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
@@ -125,6 +126,11 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
           eduApi.put(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}/${containerName}/${operation}`),
         ),
       );
+      const translationKey = DOCKER_COMMAND_TRANSLATION_KEYS[operation];
+      if (translationKey) {
+        toast.success(i18n.t(translationKey));
+      }
+      await get().getContainers();
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -140,6 +146,10 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
           eduApi.delete(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}/${containerName}`),
         ),
       );
+      containerNames.forEach((containerName) => {
+        toast.success(i18n.t('docker.events.containerDeleted', { containerName }));
+      });
+      await get().getContainers();
     } catch (error) {
       handleApiError(error, set);
     } finally {
