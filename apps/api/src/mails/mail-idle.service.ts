@@ -197,19 +197,21 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     };
 
     client.on('error', (err: Error) => {
-      Logger.error(`IMAP IDLE error for ${username}: ${err.message}`, MailIdleService.name);
-      if (!connection.isErrorHandled) {
-        connection.isErrorHandled = true;
-        void this.handleConnectionError(username);
+      if (connection.isErrorHandled) {
+        return;
       }
+      Logger.error(`IMAP IDLE error for ${username}: ${err.message}`, MailIdleService.name);
+      connection.isErrorHandled = true;
+      void this.handleConnectionError(username);
     });
 
     client.on('close', () => {
-      Logger.debug(`IMAP connection closed for ${username}`, MailIdleService.name);
-      if (!connection.isErrorHandled) {
-        connection.isErrorHandled = true;
-        void this.handleConnectionError(username);
+      if (connection.isErrorHandled) {
+        return;
       }
+      Logger.debug(`IMAP connection closed for ${username}`, MailIdleService.name);
+      connection.isErrorHandled = true;
+      void this.handleConnectionError(username);
     });
 
     client.on('exists', (data: { path: string; count: number }) => {
@@ -240,6 +242,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
         MailIdleService.name,
       );
     } catch (error) {
+      connection.isErrorHandled = true;
       const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to connect IDLE for ${username}: ${errorMessage}`, MailIdleService.name);
       await MailIdleService.cleanupClient(client);
@@ -411,27 +414,28 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
-    connection.reconnectAttempts += 1;
+    const { email, password, reconnectAttempts } = connection;
+    const nextAttempt = reconnectAttempts + 1;
 
-    if (connection.reconnectAttempts > MAIL_IDLE_CONFIG.MAX_RECONNECT_ATTEMPTS) {
+    await this.stopIdle(username);
+    this.scheduleReconnect(username, email, password, nextAttempt);
+  }
+
+  private scheduleReconnect(username: string, email: string, password: string, attempt: number): void {
+    if (attempt > MAIL_IDLE_CONFIG.MAX_RECONNECT_ATTEMPTS) {
       Logger.warn(`Max reconnect attempts reached for ${username}, stopping IDLE`, MailIdleService.name);
-      await this.stopIdle(username);
       return;
     }
 
-    const delay = MAIL_IDLE_CONFIG.RECONNECT_DELAY_MS * connection.reconnectAttempts;
-    Logger.debug(
-      `Scheduling reconnect for ${username} in ${delay}ms (attempt ${connection.reconnectAttempts})`,
-      MailIdleService.name,
-    );
+    this.cancelPendingReconnect(username);
 
-    const { email, password } = connection;
-    await this.stopIdle(username);
+    const delay = MAIL_IDLE_CONFIG.RECONNECT_DELAY_MS * attempt;
+    Logger.debug(`Scheduling reconnect for ${username} in ${delay}ms (attempt ${attempt})`, MailIdleService.name);
 
     const reconnectTimer = setTimeout(() => {
-      void this.createIdleConnection(username, email, password).catch((error) => {
-        const errorMessage = getErrorMessage(error);
-        Logger.error(`Reconnect failed for ${username}: ${errorMessage}`, MailIdleService.name);
+      this.pendingReconnects.delete(username);
+      void this.createIdleConnection(username, email, password).catch(() => {
+        this.scheduleReconnect(username, email, password, attempt + 1);
       });
     }, delay);
 
@@ -444,12 +448,14 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
+    this.idleConnections.delete(username);
+
     if (connection.idleRestartTimer) {
       clearTimeout(connection.idleRestartTimer);
     }
 
+    connection.isErrorHandled = true;
     await MailIdleService.cleanupClient(connection.client);
-    this.idleConnections.delete(username);
 
     Logger.log(`IDLE stopped for user: ${username}`, MailIdleService.name);
   }
