@@ -17,23 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRightToBracket, faClone } from '@fortawesome/free-solid-svg-icons';
-import WindowControlBaseButton from './WindowControlBaseButton';
+import DOCKER_COMMANDS from './dockerCommands';
 
-interface ToggleDockButtonProps {
-  onClick: () => void;
-  isDocked: boolean;
-}
+const DOCKER_COMMAND_TRANSLATION_KEYS: Record<string, string> = {
+  [DOCKER_COMMANDS.START]: 'docker.events.startContainer',
+  [DOCKER_COMMANDS.STOP]: 'docker.events.stopContainer',
+  [DOCKER_COMMANDS.RESTART]: 'docker.events.restartContainer',
+  [DOCKER_COMMANDS.KILL]: 'docker.events.killContainer',
+};
 
-const ToggleDockButton = ({ onClick, isDocked }: ToggleDockButtonProps) => (
-  <WindowControlBaseButton
-    onClick={onClick}
-    tooltipTranslationId={isDocked ? 'common.undock' : 'common.dock'}
-  >
-    {isDocked ? <FontAwesomeIcon icon={faClone} /> : <FontAwesomeIcon icon={faArrowRightToBracket} />}
-  </WindowControlBaseButton>
-);
-
-export default ToggleDockButton;
+export default DOCKER_COMMAND_TRANSLATION_KEYS;

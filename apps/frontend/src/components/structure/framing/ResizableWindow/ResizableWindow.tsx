@@ -124,7 +124,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   const minimizedWidth = Math.min(300, documentWidth * 0.333);
 
-  function adjustPositionAndSizeForMinimizedState() {
+  const adjustPositionAndSizeForMinimizedState = () => {
     const maxVisibleY = documentHeight - DEFAULT_MINIMIZED_BAR_HEIGHT;
     const maxVisibleX = documentWidth - minimizedWidth;
 
@@ -133,7 +133,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
     setCurrentWindowedFrameSize(titleTranslationId, { width: minimizedWidth, height: DEFAULT_MINIMIZED_BAR_HEIGHT });
     setCurrentPosition({ x: adjustedX, y: adjustedY });
-  }
+  };
 
   useEffect(() => {
     if (isMinimized) {
