@@ -50,7 +50,12 @@ const ResultTable: FC<ResultTableDialogBodyProps> = ({ formula, result }) => {
     };
   }, [formula, result, language]);
 
-  return <div ref={containerRef} />;
+  return (
+    <div
+      className="result-table"
+      ref={containerRef}
+    />
+  );
 };
 
 export default ResultTable;

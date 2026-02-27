@@ -6,6 +6,13 @@
   width: 100%;
 }
 
+.sv-popup,
+.sv-dropdown-popup .sv-popup--dropdown {
+  .sv-popup__container {
+    box-shadow: 0 0 5px 0 var(--ring-transparent);
+  }
+}
+
 .sd-container-modern__title {
   background-color: transparent !important;
   .sd-title .sv-string-viewer {

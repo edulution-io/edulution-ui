@@ -40,6 +40,9 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 import '@/pages/Surveys/theme/participation.css';
+import APPS from '@libs/appconfig/constants/apps';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 
 registerSurveyComponents();
 
@@ -64,7 +67,6 @@ Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
   const { theme, getResolvedTheme } = useThemeStore();
-
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveysTablesPageStore();
 
   const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
@@ -248,9 +250,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     updateSignaturePadTheme(surveyParticipationModel, getResolvedTheme);
 
-    if (!surveyParticipationModel.logo?.startsWith(`${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-`)) return;
-
-    surveyParticipationModel.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-${getResolvedTheme()}.webp`;
+    if (!surveyParticipationModel.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
+    surveyParticipationModel.logo = getAssetUrl(APPS.SURVEYS, ASSET_TYPES.logo, getResolvedTheme());
   }, [surveyParticipationModel, theme, getResolvedTheme]);
 
   if (isFetching) {
