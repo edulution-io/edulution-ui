@@ -19,6 +19,7 @@
 
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import indexedDbStorage from '@/store/utils/indexedDbStorage';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
@@ -332,7 +333,7 @@ const useUserManagementStore = create<UserManagementStore>()(
     }),
     {
       name: 'user-management-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => indexedDbStorage),
       partialize: (state) => ({
         usersByType: state.usersByType,
         listDataByType: state.listDataByType,
