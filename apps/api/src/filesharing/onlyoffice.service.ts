@@ -20,6 +20,7 @@
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import ONLY_OFFICE_CALLBACK_STATUS from '@libs/filesharing/constants/onlyOfficeCallbackStatus';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { Request, Response } from 'express';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
@@ -85,7 +86,11 @@ class OnlyofficeService implements OnModuleInit {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const uniqueFileName = `${randomUUID()}-${filename}`;
 
-    if (callbackData.status !== 2 && callbackData.status !== 4) {
+    if (
+      callbackData.status !== ONLY_OFFICE_CALLBACK_STATUS.READY_FOR_SAVING &&
+      callbackData.status !== ONLY_OFFICE_CALLBACK_STATUS.CLOSED_WITHOUT_CHANGES &&
+      callbackData.status !== ONLY_OFFICE_CALLBACK_STATUS.FORCE_SAVING
+    ) {
       return res.status(HttpStatus.OK).json({ error: 0 });
     }
 
