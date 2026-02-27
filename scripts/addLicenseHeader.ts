@@ -41,7 +41,7 @@ const licenseText = `/*
 `;
 
 const targetDirectories = ['apps', 'libs', 'scripts'];
-const excludedPatterns = [/\.config\.ts$/, /\.config\.js$/];
+const excludedPatterns = [/\.config\.ts$/, /\.config\.js$/, /libs\/ui-kit\/dist\//];
 const fileExtensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 const hasLicenseHeader = (fileContent: string) => {
