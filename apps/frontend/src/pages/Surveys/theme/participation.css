@@ -97,3 +97,11 @@
   stroke: var(--primary) !important;
   fill: var(--primary) !important;
 }
+
+.dark .sd-input[type="time"]::-webkit-calendar-picker-indicator,
+.dark .sd-input[type="date"]::-webkit-calendar-picker-indicator,
+.dark .sd-input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.dark .sd-input[type="week"]::-webkit-calendar-picker-indicator,
+.dark .sd-input[type="month"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
