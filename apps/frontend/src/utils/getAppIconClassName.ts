@@ -33,7 +33,7 @@ const getAppIconClassName = (iconSrc: string | IconDefinition): string => {
 
   const decodedIconSrc = decodeURIComponent(iconSrc);
   const hasWhiteColor = decodedIconSrc.includes('#fff') || decodedIconSrc.includes('#FFF');
-  return hasWhiteColor ? 'light:icon-light-mode' : 'dark:icon-dark-mode';
+  return hasWhiteColor ? 'light:icon-light-mode' : '';
 };
 
 export default getAppIconClassName;

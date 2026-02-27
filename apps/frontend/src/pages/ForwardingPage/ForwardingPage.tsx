@@ -102,7 +102,10 @@ const ForwardingPage = () => {
           data-target-url={targetUrl}
         >
           <img
-            className={cn('m-10 w-[200px] md:m-[20] md:w-[200px]', getAppIconClassName(currentAppConfig.icon))}
+            className={cn(
+              'm-10 w-[200px] dark:icon-dark-mode md:m-[20] md:w-[200px]',
+              getAppIconClassName(currentAppConfig.icon),
+            )}
             src={currentAppConfig.icon}
             alt={currentAppConfig.name}
           />
