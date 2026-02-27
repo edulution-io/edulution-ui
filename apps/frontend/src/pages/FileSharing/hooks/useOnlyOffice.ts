@@ -40,10 +40,12 @@ interface UseOnlyOfficeProps {
   url: string;
   type: 'desktop' | 'mobile';
   mode: 'view' | 'edit';
+  webdavShare?: string;
 }
 
-const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
-  const { webdavShare } = useParams();
+const useOnlyOffice = ({ filePath, fileName, url, type, mode, webdavShare }: UseOnlyOfficeProps) => {
+  const { webdavShare: webdavShareFromParams } = useParams();
+  const resolvedWebdavShare = webdavShare ?? webdavShareFromParams;
   const [editorConfig, setEditorConfig] = useState<IConfig | null>(null);
   const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
@@ -61,7 +63,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
     fileName,
     filePath,
     token,
-    share: webdavShare,
+    share: resolvedWebdavShare,
   });
 
   const uiTheme = useMemo(() => {
