@@ -8,10 +8,25 @@ export NVM_DIR="$HOME/.nvm"
 # OR load fnm if available
 command -v fnm > /dev/null && eval "$(fnm env)"
 
-npm run check-circular-deps
-npm run check-translations
-npm run check-error-message-translations
-npm run check-filenames
+npm run check-circular-deps &
+pid1=$!
+npm run check-translations &
+pid2=$!
+npm run check-error-message-translations &
+pid3=$!
+npm run check-filenames &
+pid4=$!
+
+fail=0
+wait $pid1 || fail=1
+wait $pid2 || fail=1
+wait $pid3 || fail=1
+wait $pid4 || fail=1
+
+if [ $fail -ne 0 ]; then
+  exit 1
+fi
+
 npm run addLicenseHeader
 npm run format
 npm run lint:staged
