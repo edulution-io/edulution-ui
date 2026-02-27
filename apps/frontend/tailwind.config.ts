@@ -98,7 +98,6 @@ const TAILWIND_CONFIG: Config = {
         utils[`.ql-indent-${i}`] = { 'margin-left': `${i * 2}rem` };
       }
       utils['.icon-light-mode'] = { filter: 'brightness(0) saturate(100%) invert(15%)' };
-      utils['.icon-dark-mode'] = { filter: 'brightness(0) saturate(100%) invert(85%)' };
       addUtilities(utils);
     }),
   ],
