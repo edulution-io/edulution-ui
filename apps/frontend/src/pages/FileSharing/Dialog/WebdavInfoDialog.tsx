@@ -40,7 +40,9 @@ const WebdavInfoDialog: React.FC<WebdavInfoDialogProps> = ({ isOpen, handleClose
   const { createVariableSharePathname } = useVariableSharePathname();
 
   const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
-  const resolvedVariables = currentShare ? createVariableSharePathname('', currentShare.pathVariables) : '';
+  const resolvedVariables = currentShare
+    ? createVariableSharePathname(currentShare.sharePath, currentShare.pathVariables)
+    : '';
   const baseUrl = replaceIpWithOrigin(`${currentShare?.url || ''}${resolvedVariables}`);
 
   return (
