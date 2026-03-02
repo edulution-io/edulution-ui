@@ -22,6 +22,7 @@ import ConferencePage from '../../page-objects/ConferencePage';
 
 test.describe.serial('Conference workflow', () => {
   let conferenceName: string;
+  let conferenceCreated = false;
 
   test.beforeAll(() => {
     const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -31,7 +32,6 @@ test.describe.serial('Conference workflow', () => {
   test('admin creates a conference', async ({ adminPage }) => {
     const conferencePage = new ConferencePage(adminPage);
     await conferencePage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const createButton = adminPage.getByRole('button', { name: /create|new/i });
     const canCreate = await createButton
@@ -41,25 +41,25 @@ test.describe.serial('Conference workflow', () => {
     test.skip(!canCreate, 'Conference creation button not found');
 
     await conferencePage.createConference(conferenceName);
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const conferenceEntry = adminPage.getByText(conferenceName);
     await expect(conferenceEntry.first()).toBeVisible({ timeout: 10000 });
+    conferenceCreated = true;
   });
 
   test('admin can see the conference in the list', async ({ adminPage }) => {
+    test.skip(!conferenceCreated, 'Conference was not created in previous test');
     const conferencePage = new ConferencePage(adminPage);
     await conferencePage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const conferenceEntry = adminPage.getByText(conferenceName);
     await expect(conferenceEntry.first()).toBeVisible({ timeout: 10000 });
   });
 
   test('admin deletes the conference', async ({ adminPage }) => {
+    test.skip(!conferenceCreated, 'Conference was not created');
     const conferencePage = new ConferencePage(adminPage);
     await conferencePage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const conferenceEntry = adminPage.getByText(conferenceName);
     const isVisible = await conferenceEntry
@@ -69,7 +69,6 @@ test.describe.serial('Conference workflow', () => {
 
     if (isVisible) {
       await conferencePage.deleteConference(conferenceName);
-      await adminPage.waitForLoadState('domcontentloaded');
 
       await expect(adminPage.getByText(conferenceName))
         .not.toBeVisible({ timeout: 5000 })

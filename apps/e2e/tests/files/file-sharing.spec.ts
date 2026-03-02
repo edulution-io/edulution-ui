@@ -25,6 +25,7 @@ import { writeFileSync, mkdirSync, rmSync } from 'fs';
 test.describe.serial('File sharing workflow', () => {
   let uniqueFileName: string;
   let tempFilePath: string;
+  let fileUploaded = false;
   const tempDir = path.resolve(__dirname, '..', '..', 'test-artifacts');
 
   test.beforeAll(() => {
@@ -47,7 +48,6 @@ test.describe.serial('File sharing workflow', () => {
   test('teacher uploads a file', async ({ teacherPage }) => {
     const fileSharingPage = new FileSharingPage(teacherPage);
     await fileSharingPage.goto();
-    await teacherPage.waitForLoadState('domcontentloaded');
 
     const fileInput = teacherPage.locator('input[type="file"]');
     const hasFileInput = await fileInput.count();
@@ -55,25 +55,25 @@ test.describe.serial('File sharing workflow', () => {
     test.skip(hasFileInput === 0, 'File input not found on file sharing page');
 
     await fileSharingPage.uploadFile(tempFilePath);
-    await teacherPage.waitForLoadState('domcontentloaded');
 
     const uploadedFile = teacherPage.getByText(uniqueFileName);
     await expect(uploadedFile.first()).toBeVisible({ timeout: 15000 });
+    fileUploaded = true;
   });
 
   test('file appears in the listing', async ({ teacherPage }) => {
+    test.skip(!fileUploaded, 'File was not uploaded in previous test');
     const fileSharingPage = new FileSharingPage(teacherPage);
     await fileSharingPage.goto();
-    await teacherPage.waitForLoadState('domcontentloaded');
 
     const fileEntry = teacherPage.getByText(uniqueFileName);
     await expect(fileEntry.first()).toBeVisible({ timeout: 10000 });
   });
 
   test('teacher deletes the file', async ({ teacherPage }) => {
+    test.skip(!fileUploaded, 'File was not uploaded');
     const fileSharingPage = new FileSharingPage(teacherPage);
     await fileSharingPage.goto();
-    await teacherPage.waitForLoadState('domcontentloaded');
 
     const fileEntry = teacherPage.getByText(uniqueFileName);
     const isVisible = await fileEntry
@@ -84,7 +84,6 @@ test.describe.serial('File sharing workflow', () => {
     if (isVisible) {
       await fileSharingPage.selectFile(uniqueFileName);
       await fileSharingPage.deleteSelectedFiles();
-      await teacherPage.waitForLoadState('domcontentloaded');
 
       await expect(teacherPage.getByText(uniqueFileName))
         .not.toBeVisible({ timeout: 5000 })

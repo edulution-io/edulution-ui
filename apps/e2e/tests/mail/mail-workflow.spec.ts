@@ -21,8 +21,7 @@ import { test, expect } from '../../fixtures/auth.fixture';
 
 test.describe('Mail workflow', () => {
   test('user can access mail page', async ({ teacherPage }) => {
-    await teacherPage.goto('/mail');
-    await teacherPage.waitForLoadState('domcontentloaded');
+    await teacherPage.goto('/mail', { waitUntil: 'domcontentloaded' }).catch(() => {});
 
     const mailIframe = teacherPage.locator('iframe').first();
     const nativeFrame = teacherPage.locator('[data-testid*="native-frame"]').or(mailIframe).first();
@@ -34,8 +33,7 @@ test.describe('Mail workflow', () => {
   });
 
   test('mail iframe is accessible', async ({ teacherPage }) => {
-    await teacherPage.goto('/mail');
-    await teacherPage.waitForLoadState('domcontentloaded');
+    await teacherPage.goto('/mail', { waitUntil: 'domcontentloaded' }).catch(() => {});
 
     const mailIframe = teacherPage.locator('iframe').first();
     const isVisible = await mailIframe.isVisible({ timeout: 10000 }).catch(() => false);

@@ -14,8 +14,12 @@ const playwrightConfig = defineConfig({
   reporter: [['html', { open: 'never', outputFolder: 'playwright-report' }], ['list']],
   globalSetup: './global-setup.ts',
 
+  timeout: 30_000,
+
   use: {
     baseURL: BASE_URL,
+    actionTimeout: 10_000,
+    navigationTimeout: 15_000,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

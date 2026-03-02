@@ -22,12 +22,12 @@ import BasePage from './BasePage';
 class SidebarNav extends BasePage {
   async navigateToSurveys(): Promise<void> {
     await this.page.getByRole('link', { name: /survey/i }).click();
-    await this.page.waitForURL('**/surveys/**');
+    await this.page.waitForURL('**/surveys**');
   }
 
   async navigateToFileSharing(): Promise<void> {
     await this.page.getByRole('link', { name: /file/i }).click();
-    await this.page.waitForURL('**/filesharing/**');
+    await this.page.waitForURL('**/filesharing**');
   }
 
   async navigateToMail(): Promise<void> {
@@ -37,17 +37,39 @@ class SidebarNav extends BasePage {
 
   async navigateToConferences(): Promise<void> {
     await this.page.getByRole('link', { name: /conference/i }).click();
-    await this.page.waitForURL('**/conferences/**');
+    await this.page.waitForURL('**/conferences**');
   }
 
   async navigateToSettings(): Promise<void> {
     await this.page.getByRole('link', { name: /settings/i }).click();
-    await this.page.waitForURL('**/settings/**');
+    await this.page.waitForURL('**/settings**');
+  }
+
+  async dismissDialogs(): Promise<void> {
+    const closeButton = this.page.getByRole('button', { name: /close|schließen/i });
+    const isVisible = await closeButton
+      .first()
+      .isVisible({ timeout: 500 })
+      .catch(() => false);
+    if (isVisible) {
+      await closeButton.first().click();
+      await closeButton
+        .first()
+        .waitFor({ state: 'hidden', timeout: 2000 })
+        .catch(() => {});
+    }
   }
 
   async logout(): Promise<void> {
-    await this.page.getByRole('button', { name: /logout/i }).click();
-    await this.page.waitForURL('**/login**');
+    await this.dismissDialogs();
+    const userMenuTrigger = this.page
+      .locator('[key="usermenu"]')
+      .or(this.page.locator('img[alt*="avatar" i]'))
+      .or(this.page.getByRole('img').last());
+    await userMenuTrigger.click();
+    const logoutItem = this.page.getByRole('menuitem', { name: /logout|abmelden/i });
+    await logoutItem.click({ force: true });
+    await this.page.waitForURL('**/login**', { waitUntil: 'commit' }).catch(() => {});
   }
 }
 

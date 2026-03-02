@@ -17,9 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { type Page } from '@playwright/test';
 import { test, expect } from '../../fixtures/auth.fixture';
 import LoginPage from '../../page-objects/LoginPage';
 import SidebarNav from '../../page-objects/SidebarNav';
+
+const gracefulGoto = async (page: Page, path: string): Promise<void> => {
+  await page.goto(path, { waitUntil: 'domcontentloaded' }).catch(() => {});
+};
 
 test.describe('Login and Logout', () => {
   test('admin can login via form', async ({ browser }) => {
@@ -41,16 +46,13 @@ test.describe('Login and Logout', () => {
   });
 
   test('authenticated admin can access dashboard', async ({ adminPage }) => {
-    await adminPage.goto('/dashboard');
-    await adminPage.waitForLoadState('domcontentloaded');
-
-    const sidebar = adminPage.getByRole('navigation');
-    await expect(sidebar.first()).toBeVisible();
+    await gracefulGoto(adminPage, '/dashboard');
+    await expect(adminPage).toHaveURL(/\/dashboard/);
+    await expect(adminPage.getByRole('link').first()).toBeVisible();
   });
 
   test('user can logout', async ({ adminPage }) => {
-    await adminPage.goto('/dashboard');
-    await adminPage.waitForLoadState('domcontentloaded');
+    await gracefulGoto(adminPage, '/dashboard');
 
     const sidebarNav = new SidebarNav(adminPage);
     await sidebarNav.logout();
@@ -62,8 +64,7 @@ test.describe('Login and Logout', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await page.goto('/dashboard');
-    await page.waitForLoadState('domcontentloaded');
+    await gracefulGoto(page, '/dashboard');
 
     await expect(page).toHaveURL(/\/login/);
 

@@ -24,7 +24,6 @@ test.describe('AppStore', () => {
   test('admin can browse installed apps', async ({ adminPage }) => {
     const appStorePage = new AppStorePage(adminPage);
     await appStorePage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const appElements = adminPage.locator('[data-testid*="app-"]');
     const appCount = await appElements.count();
@@ -37,7 +36,6 @@ test.describe('AppStore', () => {
   test('admin can open app configuration', async ({ adminPage }) => {
     const appStorePage = new AppStorePage(adminPage);
     await appStorePage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const appElements = adminPage.locator('[data-testid*="app-"]');
     const appCount = await appElements.count();

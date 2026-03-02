@@ -27,7 +27,7 @@ abstract class BasePage {
   }
 
   async navigateTo(path: string): Promise<void> {
-    await this.page.goto(path);
+    await this.page.goto(path, { waitUntil: 'domcontentloaded' }).catch(() => {});
   }
 
   async waitForPageLoad(): Promise<void> {

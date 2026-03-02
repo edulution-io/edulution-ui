@@ -24,7 +24,6 @@ test.describe('Settings', () => {
   test('user can change theme', async ({ adminPage }) => {
     const settingsPage = new SettingsPage(adminPage);
     await settingsPage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const themeControl = adminPage
       .getByRole('combobox', { name: /theme/i })
@@ -46,7 +45,6 @@ test.describe('Settings', () => {
   test('user can view notification settings', async ({ adminPage }) => {
     const settingsPage = new SettingsPage(adminPage);
     await settingsPage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const notificationSection = adminPage
       .getByRole('switch', { name: /notification/i })
@@ -62,7 +60,6 @@ test.describe('Settings', () => {
   test('user can access DND window settings', async ({ adminPage }) => {
     const settingsPage = new SettingsPage(adminPage);
     await settingsPage.goto();
-    await adminPage.waitForLoadState('domcontentloaded');
 
     const dndSection = adminPage
       .getByText(/do not disturb/i)
