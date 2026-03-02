@@ -17,21 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_SHARE = 'public-share',
-  PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
-  UPLOAD = 'upload',
-  THUMBNAIL = 'thumbnail',
-  COLLABORA_TOKEN = 'collabora-token',
-}
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export default FileSharingApiEndpoints;
+const COLLABORA_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.COLLABORA_URL,
+    description: 'appExtendedOptions.collaboraUrl',
+    title: 'appExtendedOptions.collaboraUrlTitle',
+    type: ExtendedOptionField.input,
+    value: '',
+    width: 'full',
+  },
+  {
+    name: ExtendedOptionKeys.COLLABORA_WOPI_SECRET,
+    title: 'appExtendedOptions.collaboraWopiSecretTitle',
+    description: 'appExtendedOptions.collaboraWopiSecretDescription',
+    type: ExtendedOptionField.password,
+    value: '',
+    width: 'full',
+  },
+];
+
+export default COLLABORA_EXTENDED_OPTIONS;

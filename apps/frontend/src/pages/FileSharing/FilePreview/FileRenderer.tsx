@@ -21,12 +21,14 @@ import React, { FC, MutableRefObject, ReactNode, useEffect } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
 import MediaComponent from '@/components/ui/MediaComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
+import Collabora from '@/pages/FileSharing/FilePreview/Collabora/Collabora';
 import DrawioViewer from '@/pages/FileSharing/FilePreview/DrawioViewer/DrawioViewer';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
+import isCollaboraDocument from '@libs/filesharing/utils/isCollaboraDocument';
 import TEXT_EXTENSIONS from '@libs/filesharing/types/textExtensions';
 import useMedia from '@/hooks/useMedia';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
@@ -51,6 +53,7 @@ interface FileRendererProps {
   isOpenedInNewTab?: boolean;
   closingRef?: MutableRefObject<boolean>;
   isOnlyOfficeConfigured?: boolean;
+  isCollaboraConfigured?: boolean;
   webdavShare?: string;
 }
 
@@ -59,6 +62,7 @@ const FileRenderer: FC<FileRendererProps> = ({
   isOpenedInNewTab,
   closingRef,
   isOnlyOfficeConfigured,
+  isCollaboraConfigured,
   webdavShare,
 }) => {
   const { isMobileView } = useMedia();
@@ -126,6 +130,9 @@ const FileRenderer: FC<FileRendererProps> = ({
     const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
     if (isOnlyOfficeDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
 
+    const isCollaboraDoc = isCollaboraDocument(currentlyEditingFile.filePath);
+    if (isCollaboraDoc && isCollaboraConfigured) return FILE_PREVIEW_TYPE.COLLABORA;
+
     if (isDrawioExtension(fileExtension)) return FILE_PREVIEW_TYPE.DRAWIO;
     if (isImageExtension(fileExtension)) return FILE_PREVIEW_TYPE.IMAGE;
     if (isMediaExtension(fileExtension)) return FILE_PREVIEW_TYPE.MEDIA;
@@ -158,6 +165,16 @@ const FileRenderer: FC<FileRendererProps> = ({
             type={isMobileView ? 'mobile' : 'desktop'}
             isOpenedInNewTab={isOpenedInNewTab}
             webdavShare={webdavShare}
+          />
+        );
+
+      case FILE_PREVIEW_TYPE.COLLABORA:
+        return (
+          <Collabora
+            fileName={currentlyEditingFile.filename}
+            filePath={currentlyEditingFile.filePath}
+            mode={editMode ? 'edit' : 'view'}
+            isOpenedInNewTab={isOpenedInNewTab}
           />
         );
 

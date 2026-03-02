@@ -101,7 +101,16 @@ const FileSharingTable = () => {
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
 
-  const { handleFileOpen } = useFileOpen({ isDocumentServerConfigured });
+  const isCollaboraServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.COLLABORA_URL,
+  );
+
+  const { handleFileOpen } = useFileOpen({
+    isDocumentServerConfigured,
+    isCollaboraConfigured: isCollaboraServerConfigured,
+  });
   const { openDialog } = useFileSharingDialogStore();
   const startDownload = useStartWebdavFileDownload();
 

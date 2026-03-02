@@ -31,6 +31,7 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { ACTIVE_DOCUMENT_EDITOR } from '@libs/filesharing/constants/activeDocumentEditor';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
@@ -62,6 +63,21 @@ const FullScreenFileViewer = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
+
+  const isCollaboraServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.COLLABORA_URL,
+  );
+
+  const activeEditor = getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR,
+  );
+
+  const isOnlyOfficeActive = isDocumentServerConfigured && activeEditor !== ACTIVE_DOCUMENT_EDITOR.COLLABORA;
+  const isCollaboraActive = isCollaboraServerConfigured && activeEditor === ACTIVE_DOCUMENT_EDITOR.COLLABORA;
 
   const initializeFile = async () => {
     const fileToOpen = filesToOpenInNewTab.find((f) => f.etag === fileETag);
@@ -98,7 +114,8 @@ const FullScreenFileViewer = () => {
       <FileRenderer
         editMode
         isOpenedInNewTab
-        isOnlyOfficeConfigured={isDocumentServerConfigured}
+        isOnlyOfficeConfigured={isOnlyOfficeActive}
+        isCollaboraConfigured={isCollaboraActive}
         webdavShare={webdavShare}
       />
       {showSaveButton && (

@@ -1427,6 +1427,10 @@
           "title": "Only Office Integration",
           "description": ""
         },
+        "collabora": {
+          "title": "Collabora Online Integration",
+          "description": ""
+        },
         "imapMailFeed": {
           "title": "IMAP Integration",
           "description": ""
@@ -2414,6 +2418,14 @@
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "collaboraUrlTitle": "Collabora URL",
+    "collaboraUrl": "Gib hier die Collabora Online URL ein",
+    "collaboraWopiSecretTitle": "Collabora WOPI-Geheimschlüssel",
+    "collaboraWopiSecretDescription": "Gib hier den gemeinsamen WOPI-Geheimschlüssel für Collabora Online ein",
+    "activeDocumentEditorTitle": "Aktiver Dokumenten-Editor",
+    "activeDocumentEditorDescription": "Wähle den Dokumenten-Editor für Office-Dokumente",
+    "activeDocumentEditor.onlyoffice": "OnlyOffice",
+    "activeDocumentEditor.collabora": "Collabora Online",
     "drawioUrlTitle": "Draw.io URL",
     "drawioUrlDescription": "Gib die URL der selbst gehosteten Draw.io-Instanz ein",
     "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",

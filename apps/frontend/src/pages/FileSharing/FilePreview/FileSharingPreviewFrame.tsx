@@ -30,6 +30,8 @@ import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import ToggleEditModeButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleEditModeButton';
 import SaveButton from '@/components/structure/framing/ResizableWindow/Buttons/SaveButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isCollaboraDocument from '@libs/filesharing/utils/isCollaboraDocument';
+import { ACTIVE_DOCUMENT_EDITOR } from '@libs/filesharing/constants/activeDocumentEditor';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
@@ -238,15 +240,36 @@ const FileSharingPreviewFrame = () => {
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
 
+  const isCollaboraServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.COLLABORA_URL,
+  );
+
+  const activeEditor = getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR,
+  );
+
+  const isOnlyOfficeActive = isDocumentServerConfigured && activeEditor !== ACTIVE_DOCUMENT_EDITOR.COLLABORA;
+  const isCollaboraActive = isCollaboraServerConfigured && activeEditor === ACTIVE_DOCUMENT_EDITOR.COLLABORA;
+
   const isOnlyOfficeDoc =
     !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
+  const isCollaboraDoc =
+    !!currentlyEditingFile && isCollaboraDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
+
+  const isDocumentEditorDoc = isOnlyOfficeDoc || isCollaboraDoc;
+  const isDocumentEditorConfigured = isOnlyOfficeActive || isCollaboraActive;
+
   const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
   const isPdf = currentlyEditingFile?.filename.endsWith('pdf');
-  const isOnlyOfficeDocOnMobile = isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf;
+  const isOnlyOfficeDocOnMobile = isMobileView && isOnlyOfficeDoc && isOnlyOfficeActive && !isPdf;
 
   const isFileReady =
-    (isValidFile && (isOnlyOfficeDoc ? isDocumentServerConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
+    (isValidFile && (isDocumentEditorDoc ? isDocumentEditorConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
 
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
@@ -254,7 +277,11 @@ const FileSharingPreviewFrame = () => {
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const canToggleEditMode = isOnlyOfficeDocument(currentlyEditingFile?.filename || '') || isTextFile || isDrawioFile;
+  const canToggleEditMode =
+    isOnlyOfficeDocument(currentlyEditingFile?.filename || '') ||
+    isCollaboraDocument(currentlyEditingFile?.filename || '') ||
+    isTextFile ||
+    isDrawioFile;
   const isTextEditMode = isEditMode && isTextFile;
   const isDrawioEditMode = isEditMode && isDrawioFile;
   const showSaveButton = isTextEditMode || isDrawioEditMode;
@@ -313,7 +340,8 @@ const FileSharingPreviewFrame = () => {
         <FileRenderer
           editMode={isEditMode}
           closingRef={closingRef}
-          isOnlyOfficeConfigured={isDocumentServerConfigured}
+          isOnlyOfficeConfigured={isOnlyOfficeActive}
+          isCollaboraConfigured={isCollaboraActive}
           webdavShare={webdavShare}
         />
       </ResizableWindow>

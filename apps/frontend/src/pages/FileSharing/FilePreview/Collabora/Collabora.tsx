@@ -17,21 +17,35 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_SHARE = 'public-share',
-  PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
-  UPLOAD = 'upload',
-  THUMBNAIL = 'thumbnail',
-  COLLABORA_TOKEN = 'collabora-token',
+import React from 'react';
+import CollaboraEditor from '@/pages/FileSharing/FilePreview/Collabora/CollaboraEditor';
+import useCollabora from '@/pages/FileSharing/hooks/useCollabora';
+
+interface CollaboraProps {
+  filePath: string;
+  fileName: string;
+  mode: 'view' | 'edit';
+  isOpenedInNewTab?: boolean;
 }
 
-export default FileSharingApiEndpoints;
+const Collabora = ({ filePath, fileName, mode, isOpenedInNewTab }: CollaboraProps) => {
+  const { collaboraUrl, wopiSrc, accessToken, accessTokenTTL, isLoading } = useCollabora({
+    filePath,
+    fileName,
+    mode,
+  });
+
+  if (isLoading || !collaboraUrl || !wopiSrc || !accessToken) return null;
+
+  return (
+    <CollaboraEditor
+      collaboraUrl={collaboraUrl}
+      wopiSrc={wopiSrc}
+      accessToken={accessToken}
+      accessTokenTTL={accessTokenTTL}
+      isOpenedInNewTab={isOpenedInNewTab}
+    />
+  );
+};
+
+export default Collabora;

@@ -1,0 +1,94 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import { cn } from '@edulution-io/ui-kit';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
+
+interface CollaboraEditorProps {
+  collaboraUrl: string;
+  wopiSrc: string;
+  accessToken: string;
+  accessTokenTTL: number;
+  isOpenedInNewTab?: boolean;
+}
+
+const COLLABORA_FRAME_NAME = 'collabora-frame';
+const COLLABORA_EDITOR_PATH = '/browser/dist/cool.html';
+
+const CollaboraEditor = ({
+  collaboraUrl,
+  wopiSrc,
+  accessToken,
+  accessTokenTTL,
+  isOpenedInNewTab,
+}: CollaboraEditorProps) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.submit();
+    }
+  }, [collaboraUrl, wopiSrc, accessToken]);
+
+  const handleIframeLoad = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+
+  const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}`;
+
+  return (
+    <div className={cn('relative h-full w-full', { 'h-dvh': isOpenedInNewTab })}>
+      {isLoading && (
+        <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
+          <CircleLoader />
+        </div>
+      )}
+      <form
+        ref={formRef}
+        action={iframeSrc}
+        method="POST"
+        target={COLLABORA_FRAME_NAME}
+        className="hidden"
+      >
+        <input
+          type="hidden"
+          name="access_token"
+          value={accessToken}
+        />
+        <input
+          type="hidden"
+          name="access_token_ttl"
+          value={accessTokenTTL.toString()}
+        />
+      </form>
+      <iframe
+        name={COLLABORA_FRAME_NAME}
+        title="Collabora Online Editor"
+        className="h-full w-full border-none"
+        allow={IFRAME_ALLOWED_CONFIG}
+        onLoad={handleIframeLoad}
+      />
+    </div>
+  );
+};
+
+export default CollaboraEditor;
