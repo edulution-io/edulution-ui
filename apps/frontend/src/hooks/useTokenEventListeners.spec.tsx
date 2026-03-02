@@ -84,7 +84,6 @@ vi.mock('@libs/common/utils/delay', () => ({
 }));
 
 import { renderHook } from '@testing-library/react';
-import { toast } from 'sonner';
 import useTokenEventListeners from './useTokenEventListeners';
 
 describe('useTokenEventListeners', () => {

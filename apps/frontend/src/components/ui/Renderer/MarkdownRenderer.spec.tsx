@@ -49,18 +49,18 @@ let lastEditorProps: any = {};
 let lastMarkdownProps: any = {};
 
 vi.mock('@uiw/react-md-editor', () => {
-  const Markdown = (props: any) => {
-    lastMarkdownProps = props;
-    return <div data-testid="md-preview">{props.source}</div>;
+  const Markdown = ({ source, ...rest }: any) => {
+    lastMarkdownProps = { source, ...rest };
+    return <div data-testid="md-preview">{source}</div>;
   };
-  const MDEditor = (props: any) => {
-    lastEditorProps = props;
+  const MDEditor = ({ value, onChange, ...rest }: any) => {
+    lastEditorProps = { value, onChange, ...rest };
     return (
       <div data-testid="md-editor">
         <textarea
           data-testid="md-editor-textarea"
-          value={props.value}
-          onChange={(e) => props.onChange?.(e.target.value)}
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
         />
       </div>
     );
