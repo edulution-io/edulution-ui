@@ -99,7 +99,7 @@ vi.mock('./utilities/QuotaLimitInfo', () => ({
 }));
 
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
@@ -206,5 +206,21 @@ describe('FileSharingPage', () => {
 
     const previewContainer = container.querySelector('#file-sharing-file-preview-element-id');
     expect(previewContainer).toBeInTheDocument();
+  });
+
+  it('renders FileDropZone wrapper for drag-and-drop upload', () => {
+    renderPage();
+
+    const dropZone = screen.getByTestId('file-drop-zone');
+    expect(dropZone).toBeInTheDocument();
+    expect(within(dropZone).getByTestId('file-sharing-table')).toBeInTheDocument();
+  });
+
+  it('renders file sharing table nested inside FileDropZone', () => {
+    renderPage();
+
+    const dropZone = screen.getByTestId('file-drop-zone');
+    const table = within(dropZone).getByTestId('file-sharing-table');
+    expect(table).toBeInTheDocument();
   });
 });

@@ -38,6 +38,11 @@ import renderWithProviders from '@libs/test-utils/providers/renderWithProviders'
 import APPS from '@libs/appconfig/constants/apps';
 import MailPage from './MailPage';
 
+// FECP-08 Scope: MailPage renders NativeFrame (iframe) pointing to an external mail service.
+// Mail compose, editor, recipients, attachments, and send behaviors live inside the cross-origin
+// iframe and are NOT accessible from component tests (RTL/jsdom cannot access iframe content).
+// These behaviors are covered by E2E tests (E2ET-07) via Playwright's frameLocator.
+// Component tests verify the iframe wrapper renders correctly with the right appName.
 describe('MailPage', () => {
   it('renders NativeFrame component', () => {
     renderWithProviders(<MailPage />);
@@ -57,5 +62,11 @@ describe('MailPage', () => {
 
     const iframe = screen.getByTestId('native-frame');
     expect(iframe.tagName).toBe('IFRAME');
+  });
+
+  it('verifies iframe title attribute matches APPS.MAIL for accessibility', () => {
+    renderWithProviders(<MailPage />);
+
+    expect(screen.getByTitle(APPS.MAIL)).toBeInTheDocument();
   });
 });
