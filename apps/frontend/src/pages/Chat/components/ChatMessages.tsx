@@ -27,8 +27,6 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ChatBubble from './ChatBubble';
 import ChatEmptyState from './ChatEmptyState';
 
-const SCROLL_THRESHOLD_PX = 150;
-
 interface ChatMessagesProps {
   messages: ChatMessage[];
 }
@@ -42,11 +40,19 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
   const { user } = useUserStore();
   const { isLoading, error, hasMoreMessages, isLoadingOlderMessages, fetchOlderMessages } = useChatStore();
 
-  const handleScroll = useCallback(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
-    shouldAutoScrollRef.current = distanceFromBottom <= SCROLL_THRESHOLD_PX;
+  useEffect(() => {
+    const sentinel = messagesEndRef.current;
+    if (!sentinel) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        shouldAutoScrollRef.current = entry.isIntersecting;
+      },
+      { root: scrollContainerRef.current },
+    );
+    observer.observe(sentinel);
+
+    return () => observer.disconnect();
   }, []);
 
   const handleLoadOlder = useCallback(() => {
@@ -78,7 +84,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
     <div
       ref={scrollContainerRef}
       className="flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin"
-      onScroll={handleScroll}
     >
       {hasMoreMessages && (
         <div className="flex justify-center py-2">
