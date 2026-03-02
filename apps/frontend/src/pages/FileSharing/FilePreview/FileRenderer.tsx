@@ -157,6 +157,7 @@ const FileRenderer: FC<FileRendererProps> = ({
             mode={editMode ? 'edit' : 'view'}
             type={isMobileView ? 'mobile' : 'desktop'}
             isOpenedInNewTab={isOpenedInNewTab}
+            webdavShare={webdavShare}
           />
         );
 

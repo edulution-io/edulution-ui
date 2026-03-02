@@ -23,75 +23,47 @@ import type ListManagementEntry from '@libs/userManagement/types/listManagementE
 import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
 import LIST_MANAGEMENT_CSV_FIELDS from '@libs/userManagement/constants/listManagementCsvFields';
 import LIST_MANAGEMENT_DEFAULTS from '@libs/userManagement/constants/listManagementDefaults';
+import {
+  isCommentEntry,
+  createEmptyEntry as createEmptyEntryBase,
+  entriesToRows as entriesToRowsBase,
+  rowsToEntries as rowsToEntriesBase,
+  entriesToCsvWithComments as entriesToCsvWithCommentsBase,
+  csvToEntriesWithComments as csvToEntriesWithCommentsBase,
+} from '@libs/common/utils/csvEntryUtils';
 
-const isCommentEntry = (entry: ListManagementEntry): boolean => {
-  const firstValue = Object.values(entry)[0];
-  return typeof firstValue === 'string' && firstValue.trimStart().startsWith('#');
-};
+const createEmptyEntry = (managementListType: ManagementListType): ListManagementEntry =>
+  createEmptyEntryBase(LIST_MANAGEMENT_CSV_FIELDS[managementListType], LIST_MANAGEMENT_DEFAULTS[managementListType]);
 
-const entriesToRows = (entries: ListManagementEntry[], managementList: ManagementListType): ListManagementRow[] => {
-  if (!Array.isArray(entries)) return [];
-  const columns = LIST_MANAGEMENT_COLUMNS[managementList];
-
-  return entries.map((entry) => {
-    const row: Partial<ListManagementRow> = { id: crypto.randomUUID() };
-
-    columns.forEach((col) => {
-      (row as Record<string, string>)[col.key] = entry[col.apiKey] ?? '';
-    });
-
-    return row as ListManagementRow;
-  });
-};
-
-const createEmptyEntry = (managementListType: ManagementListType): ListManagementEntry => {
-  const fields = LIST_MANAGEMENT_CSV_FIELDS[managementListType];
-  const defaults = LIST_MANAGEMENT_DEFAULTS[managementListType];
-  const entry: ListManagementEntry = {};
-  fields.forEach((field) => {
-    entry[field] = defaults?.[field] ?? null;
-  });
-  return entry;
-};
+const entriesToRows = (entries: ListManagementEntry[], managementList: ManagementListType): ListManagementRow[] =>
+  entriesToRowsBase<ListManagementRow>(entries, LIST_MANAGEMENT_COLUMNS[managementList]);
 
 const rowsToEntries = (
   rows: ListManagementRow[],
   originalEntries: ListManagementEntry[],
   managementListType: ManagementListType,
-): ListManagementEntry[] => {
-  const columns = LIST_MANAGEMENT_COLUMNS[managementListType];
+): ListManagementEntry[] =>
+  rowsToEntriesBase(rows, originalEntries, LIST_MANAGEMENT_COLUMNS[managementListType], () =>
+    createEmptyEntry(managementListType),
+  );
 
-  return rows.map((row, index) => {
-    const base: ListManagementEntry =
-      index < originalEntries.length ? { ...originalEntries[index] } : createEmptyEntry(managementListType);
+const entriesToCsvWithComments = (
+  commentEntries: ListManagementEntry[],
+  dataEntries: ListManagementEntry[],
+  managementList: ManagementListType,
+): string => entriesToCsvWithCommentsBase(commentEntries, dataEntries, LIST_MANAGEMENT_CSV_FIELDS[managementList]);
 
-    columns.forEach((col) => {
-      base[col.apiKey] = (row as unknown as Record<string, string>)[col.key] ?? null;
-    });
+const csvToEntriesWithComments = (
+  csv: string,
+  managementList: ManagementListType,
+): { entries: ListManagementEntry[]; commentEntries: ListManagementEntry[] } =>
+  csvToEntriesWithCommentsBase(csv, LIST_MANAGEMENT_CSV_FIELDS[managementList]);
 
-    return base;
-  });
+export {
+  isCommentEntry,
+  createEmptyEntry,
+  entriesToRows,
+  rowsToEntries,
+  entriesToCsvWithComments,
+  csvToEntriesWithComments,
 };
-
-const entriesToCsv = (entries: ListManagementEntry[], managementList: ManagementListType): string => {
-  const fields = LIST_MANAGEMENT_CSV_FIELDS[managementList];
-
-  return entries.map((entry) => fields.map((field) => entry[field] ?? '').join(';')).join('\n');
-};
-
-const csvToEntries = (csv: string, managementList: ManagementListType): ListManagementEntry[] => {
-  const fields = LIST_MANAGEMENT_CSV_FIELDS[managementList];
-  return csv
-    .split('\n')
-    .filter((line) => line.trim().length > 0 && !line.trimStart().startsWith('#'))
-    .map((line) => {
-      const values = line.split(';');
-      const entry: ListManagementEntry = {};
-      fields.forEach((field, index) => {
-        entry[field] = values[index] ?? null;
-      });
-      return entry;
-    });
-};
-
-export { isCommentEntry, createEmptyEntry, entriesToRows, rowsToEntries, entriesToCsv, csvToEntries };

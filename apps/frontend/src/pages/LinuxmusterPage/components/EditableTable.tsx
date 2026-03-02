@@ -20,6 +20,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  type ColumnDef,
   type ColumnSort,
   flexRender,
   getCoreRowModel,
@@ -32,31 +33,36 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
 import Input from '@/components/shared/Input';
-import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
-import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
-import getListManagementColumns from './getListManagementColumns';
 
-interface ListManagementTableProps {
-  rows: ListManagementRow[];
-  managementList: ManagementListType;
+export interface CellCallbacks {
+  isNewRow: (rowId: string) => boolean;
+  isCellChanged: (rowId: string, columnKey: string) => boolean;
+  onCellChange: (rowIndex: number, columnKey: string, value: string) => void;
+  onCellBlur: (rowIndex: number, columnKey: string) => void;
+  onDeleteRow: (rowIndex: number) => void;
+}
+
+interface EditableTableProps<TRow extends { id: string }> {
+  rows: TRow[];
   newRowIds: Set<string>;
   changedCells: Set<string>;
   deletedRowIds: Set<string>;
-  onRowsChange: (rows: ListManagementRow[]) => void;
+  onRowsChange: (rows: TRow[]) => void;
   onDeleteRow: (rowIndex: number) => void;
+  getColumns: (callbacks: CellCallbacks) => ColumnDef<TRow>[];
   initialSorting?: ColumnSort[];
 }
 
-const ListManagementTable: React.FC<ListManagementTableProps> = ({
+const EditableTable = <TRow extends { id: string }>({
   rows,
-  managementList,
   newRowIds,
   changedCells,
   deletedRowIds,
   onRowsChange,
   onDeleteRow,
+  getColumns,
   initialSorting = [],
-}) => {
+}: EditableTableProps<TRow>) => {
   const { t } = useTranslation();
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>(initialSorting);
@@ -73,8 +79,6 @@ const ListManagementTable: React.FC<ListManagementTableProps> = ({
   newRowIdsRef.current = newRowIds;
   const changedCellsRef = useRef(changedCells);
   changedCellsRef.current = changedCells;
-  const deletedRowIdsRef = useRef(deletedRowIds);
-  deletedRowIdsRef.current = deletedRowIds;
   const onDeleteRowRef = useRef(onDeleteRow);
   onDeleteRowRef.current = onDeleteRow;
 
@@ -123,15 +127,14 @@ const ListManagementTable: React.FC<ListManagementTableProps> = ({
 
   const columns = useMemo(
     () =>
-      getListManagementColumns({
-        managementList,
+      getColumns({
         isNewRow,
         isCellChanged,
         onCellChange: updateCell,
         onCellBlur: trimCell,
         onDeleteRow: deleteRow,
       }),
-    [managementList, isNewRow, isCellChanged, updateCell, trimCell, deleteRow],
+    [getColumns, isNewRow, isCellChanged, updateCell, trimCell, deleteRow],
   );
 
   const table = useReactTable({
@@ -215,4 +218,4 @@ const ListManagementTable: React.FC<ListManagementTableProps> = ({
   );
 };
 
-export default ListManagementTable;
+export default EditableTable;

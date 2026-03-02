@@ -23,6 +23,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  Headers,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -39,6 +40,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import ONLY_OFFICE_CALLBACK_STATUS from '@libs/filesharing/constants/onlyOfficeCallbackStatus';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
@@ -76,12 +78,14 @@ class FilesharingController {
     @Query('type') type: string,
     @Query('path') path: string,
     @Query('share') share: string,
+    @Headers(HTTP_HEADERS.XForceCleanupCache) forceCleanupCacheHeader: string | undefined,
     @GetCurrentUsername() username: string,
   ) {
+    const forceCleanupCache = forceCleanupCacheHeader === 'true';
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.webdavService.getFilesAtPath(username, path, share);
+      return this.webdavService.getFilesAtPath(username, path, share, forceCleanupCache);
     }
-    return this.webdavService.getDirectoryAtPath(username, path, share);
+    return this.webdavService.getDirectoryAtPath(username, path, share, forceCleanupCache);
   }
 
   @Post()
@@ -242,7 +246,7 @@ class FilesharingController {
   ) {
     try {
       const { status } = req.body as OnlyOfficeCallbackData;
-      if (status === 1) {
+      if (status === ONLY_OFFICE_CALLBACK_STATUS.EDITING) {
         return res.status(HttpStatus.OK).json({ error: 0 });
       }
 

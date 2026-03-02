@@ -24,6 +24,7 @@ import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import SOPHOMORIX_STATUS_CLASS_MAP from '@libs/userManagement/constants/sophomorixStatusClassMap';
 import formatSophomorixDate from '@libs/userManagement/utils/formatSophomorixDate';
 import { extractCnFromDn, isManagementGroup } from '@libs/userManagement/utils/dnUtils';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import Quota from '@/pages/Dashboard/Quota';
 
@@ -34,6 +35,7 @@ interface UserDetailsDialogBodyProps {
 
 const UserDetailsDialogBody: React.FC<UserDetailsDialogBodyProps> = ({ user, quota }) => {
   const { t } = useTranslation();
+  const { isBusiness } = useOrganizationType();
   const neverLabel = t('common.never');
 
   const statusClass = SOPHOMORIX_STATUS_CLASS_MAP[user.sophomorixStatus || ''] || 'bg-gray-500';
@@ -43,13 +45,19 @@ const UserDetailsDialogBody: React.FC<UserDetailsDialogBodyProps> = ({ user, quo
 
   const properties = [
     { label: t('usermanagement.loginname'), value: user.cn },
-    { label: t('usermanagement.class'), value: user.sophomorixAdminClass },
+    {
+      label: t(isBusiness ? 'usermanagement.classBusiness' : 'usermanagement.class'),
+      value: user.sophomorixAdminClass,
+    },
     {
       label: t('usermanagement.sophomorixStatus'),
       value: <span className={`rounded px-2 py-1 text-xs text-white ${statusClass}`}>{statusText}</span>,
     },
     { label: t('usermanagement.role'), value: user.sophomorixRole },
-    { label: t('usermanagement.schoolname'), value: user.sophomorixSchoolname },
+    {
+      label: t(isBusiness ? 'usermanagement.schoolnameBusiness' : 'usermanagement.schoolname'),
+      value: user.sophomorixSchoolname,
+    },
     { label: t('usermanagement.birthdate'), value: user.sophomorixBirthdate },
     { label: t('usermanagement.userId'), value: unid },
     { label: t('usermanagement.mailAlias'), value: user.proxyAddresses?.join(', ') },

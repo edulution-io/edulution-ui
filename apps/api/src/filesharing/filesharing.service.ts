@@ -229,13 +229,7 @@ class FilesharingService {
       username,
       async (user: string, uploadPath: string, file: CustomFile, name: string): Promise<WebdavStatusResponse> => {
         const readableStream = Readable.from(file.buffer);
-        return this.webDavService.uploadFile(
-          user,
-          `${webdavShare.url}${uploadPath}/${name}`,
-          readableStream,
-          share,
-          file.mimetype,
-        );
+        return this.webDavService.uploadFile(user, `${uploadPath}/${name}`, readableStream, share, file.mimetype);
       },
     );
   }

@@ -37,8 +37,8 @@ const COLUMN_VALIDATORS: Record<ColumnKey, (value: string) => boolean> = {
   class: isValidTextField,
   category: isValidTextField,
   login: isValidTextField,
-  firstName: isValidTextField,
-  lastName: isValidTextField,
+  firstName: () => true,
+  lastName: () => true,
 };
 
 export { TEXT_FIELD_REGEX, BIRTHDAY_FORMAT_REGEX, isValidBirthday, COLUMN_VALIDATORS };

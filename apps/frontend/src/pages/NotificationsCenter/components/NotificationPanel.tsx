@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faRotate, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -31,6 +31,7 @@ import { Button, cn } from '@edulution-io/ui-kit';
 import NotificationList from '@/pages/NotificationsCenter/components/NotificationList';
 import NotificationFilterBadges from '@/pages/NotificationsCenter/components/NotificationFilterBadges';
 import DeleteAllNotificationsDialog from '@/pages/NotificationsCenter/components/DeleteAllNotificationsDialog';
+import NotificationRecipientsDialog from '@/pages/NotificationsCenter/components/NotificationRecipientsDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const NotificationPanel = () => {
@@ -39,12 +40,16 @@ const NotificationPanel = () => {
     notifications,
     unreadCount,
     isLoading,
+    isSentLoading,
     fetchNotifications,
     fetchUnreadCount,
     markAllAsRead,
     isSheetOpen,
     setIsSheetOpen,
     setIsDeleteDialogOpen,
+    sentNotifications,
+    sentTotal,
+    fetchSentNotifications,
   } = useNotificationStore();
 
   const { isMobileView, isTabletView } = useMedia();
@@ -52,29 +57,59 @@ const NotificationPanel = () => {
   const isMobileOrTablet = isMobileView || isTabletView || isEdulutionApp;
 
   const [activeFilter, setActiveFilter] = useState<NotificationFilterType>(NOTIFICATION_FILTER_TYPE.ALL);
+  const [recipientsDialog, setRecipientsDialog] = useState<{
+    isOpen: boolean;
+    notificationId: string;
+    title: string;
+  }>({ isOpen: false, notificationId: '', title: '' });
 
   useEffect(() => {
     if (isSheetOpen) {
       void fetchNotifications();
       void fetchUnreadCount();
+      void fetchSentNotifications();
     }
-  }, [isSheetOpen, fetchNotifications, fetchUnreadCount]);
+  }, [isSheetOpen, fetchNotifications, fetchUnreadCount, fetchSentNotifications]);
+
+  useEffect(() => {
+    if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT) {
+      void fetchSentNotifications();
+    }
+  }, [activeFilter, fetchSentNotifications]);
+
+  useEffect(() => {
+    if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT && sentTotal === 0 && !isSentLoading) {
+      setActiveFilter(NOTIFICATION_FILTER_TYPE.ALL);
+    }
+  }, [activeFilter, sentTotal, isSentLoading, setActiveFilter]);
 
   const filteredNotifications = useMemo(() => {
+    if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT) {
+      return sentNotifications;
+    }
     if (isNotificationType(activeFilter)) {
       return notifications.filter((notification) => notification.type === activeFilter);
     }
     return notifications;
-  }, [notifications, activeFilter]);
+  }, [notifications, sentNotifications, activeFilter]);
+
+  const isSentView = activeFilter === NOTIFICATION_FILTER_TYPE.SENT;
 
   const handleRefresh = () => {
     void fetchNotifications();
     void fetchUnreadCount();
+    if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT) {
+      void fetchSentNotifications();
+    }
   };
 
   const handleMarkAllAsRead = () => {
     void markAllAsRead();
   };
+
+  const handleShowRecipients = useCallback((notificationId: string, title: string) => {
+    setRecipientsDialog({ isOpen: true, notificationId, title });
+  }, []);
 
   return (
     <Sheet
@@ -91,12 +126,12 @@ const NotificationPanel = () => {
         )}
       >
         <SheetHeader className="pb-1">
-          <div className="flex items-center justify-between">
+          <div className="mr-2.5 flex items-center justify-between">
             <SheetTitle className="text-left text-xl font-bold text-background">
               {t('notificationscenter.appTitle')}
             </SheetTitle>
             <div className="flex items-center gap-1">
-              {unreadCount > 0 && (
+              {!isSentView && unreadCount > 0 && (
                 <Button
                   onClick={handleMarkAllAsRead}
                   className="h-8 w-8 rounded-full p-0 text-background transition-colors hover:bg-muted-background hover:text-background"
@@ -138,14 +173,18 @@ const NotificationPanel = () => {
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
           notifications={notifications}
+          sentCount={sentTotal}
         />
 
         <div className="min-h-0 flex-1">
-          {isLoading && <LoadingIndicatorDialog isOpen />}
-          {!isLoading && (
+          {(isSentView ? isSentLoading : isLoading) && <LoadingIndicatorDialog isOpen />}
+          {!(isSentView ? isSentLoading : isLoading) && (
             <NotificationList
               notifications={filteredNotifications}
               className="pb-4"
+              isSentView={isSentView}
+              emptyMessage={isSentView ? t('notificationscenter.noSentNotifications') : undefined}
+              onShowRecipients={isSentView ? handleShowRecipients : undefined}
             />
           )}
         </div>
@@ -153,6 +192,13 @@ const NotificationPanel = () => {
         <DeleteAllNotificationsDialog
           deleteType={activeFilter}
           notificationCount={filteredNotifications.length}
+        />
+
+        <NotificationRecipientsDialog
+          isOpen={recipientsDialog.isOpen}
+          onClose={() => setRecipientsDialog((prev) => ({ ...prev, isOpen: false }))}
+          notificationId={recipientsDialog.notificationId}
+          notificationTitle={recipientsDialog.title}
         />
       </SheetContent>
     </Sheet>

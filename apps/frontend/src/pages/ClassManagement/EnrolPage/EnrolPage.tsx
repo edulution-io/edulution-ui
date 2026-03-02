@@ -44,6 +44,7 @@ const EnrolPage: React.FC = () => {
     userSchoolClasses,
     fetchUserProjects,
     fetchUserSchoolClasses,
+    updateSchoolClass,
     isLoading,
     printers,
     fetchPrinters,
@@ -67,6 +68,7 @@ const EnrolPage: React.FC = () => {
     {
       name: UserGroups.Classes,
       translationId: 'myClasses',
+      updateFunction: updateSchoolClass,
       icon: (
         <FontAwesomeIcon
           icon={faUsers}

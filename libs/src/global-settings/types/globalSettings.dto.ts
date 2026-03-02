@@ -20,6 +20,7 @@
 import { ValidateNested } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type DeploymentTarget from '@libs/common/types/deployment-target';
+import type OrganizationType from '@libs/common/types/organization-type';
 import OrganisationInfoDto from '@libs/global-settings/types/organisationInfoDto';
 import ThemeSettingsDto from '@libs/global-settings/types/themeSettings.dto';
 
@@ -34,6 +35,7 @@ type GlobalSettingsGeneral = {
     appName: string;
   };
   deploymentTarget: DeploymentTarget;
+  organizationType: OrganizationType;
   ldap: {
     binduser: {
       dn: string;

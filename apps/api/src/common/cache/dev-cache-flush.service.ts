@@ -35,5 +35,6 @@ export default class DevCacheFlushService implements OnApplicationBootstrap {
     await client.quit();
 
     await this.globalSettings.setDeploymentTargetInCache();
+    await this.globalSettings.setOrganizationTypeInCache();
   }
 }

@@ -75,25 +75,25 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
     {
       labelTranslationId: 'classmanagement.hide',
       name: 'hide',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'classmanagement.isJoinable',
       name: 'join',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'common.mailList',
       name: 'maillist',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'classmanagement.sharedMailBox',
       name: 'mailalias',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {

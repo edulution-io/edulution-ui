@@ -23,6 +23,7 @@ const EMPTY_LIST_DATA: ListData = {
   managementListEntries: [],
   savedListEntries: [],
   deletedEntryIndices: [],
+  commentEntries: [],
 };
 
 export default EMPTY_LIST_DATA;

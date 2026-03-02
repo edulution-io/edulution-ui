@@ -49,6 +49,8 @@ const DeleteAllNotificationsDialog = ({ deleteType, notificationCount }: DeleteA
         return t('notificationscenter.deleteAllMessages');
       case NOTIFICATION_FILTER_TYPE.SYSTEM:
         return t('notificationscenter.deleteAllSystem');
+      case NOTIFICATION_FILTER_TYPE.SENT:
+        return t('notificationscenter.deleteAllSent');
       default:
         return t('notificationscenter.deleteAll');
     }
@@ -60,6 +62,8 @@ const DeleteAllNotificationsDialog = ({ deleteType, notificationCount }: DeleteA
         return t('notificationscenter.confirmDeleteMessages', { count: notificationCount });
       case NOTIFICATION_FILTER_TYPE.SYSTEM:
         return t('notificationscenter.confirmDeleteSystem', { count: notificationCount });
+      case NOTIFICATION_FILTER_TYPE.SENT:
+        return t('notificationscenter.confirmDeleteSent', { count: notificationCount });
       default:
         return t('notificationscenter.confirmDeleteAll', { count: notificationCount });
     }
@@ -89,6 +93,7 @@ const DeleteAllNotificationsDialog = ({ deleteType, notificationCount }: DeleteA
       title={getTitle()}
       body={getDialogBody()}
       footer={getFooter()}
+      mobileContentClassName="z-[600]"
       desktopContentClassName="z-[600]"
     />
   );

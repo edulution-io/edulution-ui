@@ -52,12 +52,14 @@ const getUserManagementActions = (
 };
 
 interface UserTableColumnsProps {
+  isBusiness: boolean;
   userType: UserType;
   onShowDetails: (user: LmnUserInfo) => void;
   setCurrentUser: (user: LmnUserInfo) => void;
 }
 
 const getUserTableColumns = ({
+  isBusiness,
   userType,
   onShowDetails,
   setCurrentUser,
@@ -77,7 +79,7 @@ const getUserTableColumns = ({
   if ((USER_TYPES_WITH_CLASS as ReadonlyArray<string>).includes(userType)) {
     columns.push({
       id: USER_MANAGEMENT_COLUMN_IDS.CLASS,
-      meta: { translationId: 'usermanagement.class' },
+      meta: { translationId: isBusiness ? 'usermanagement.classBusiness' : 'usermanagement.class' },
       header: ({ column }) => <SortableHeader<LmnUserInfo, unknown> column={column} />,
       accessorFn: (row) => row.sophomorixAdminClass,
       cell: ({ row }) => row.original.sophomorixAdminClass || '-',
