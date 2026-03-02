@@ -53,48 +53,71 @@ class BulletinCategoryService implements OnModuleInit {
     );
   }
 
+  private static getPermissionCacheKey(bulletinCategoryId: string, permission: BulletinCategoryPermissionType): string {
+    return `bulletinCategory:${bulletinCategoryId}:${permission}`;
+  }
+
+  private async invalidatePermissionCache(bulletinCategoryId: string): Promise<void> {
+    await this.cacheManager.del(
+      BulletinCategoryService.getPermissionCacheKey(bulletinCategoryId, BulletinCategoryPermission.VIEW),
+    );
+    await this.cacheManager.del(
+      BulletinCategoryService.getPermissionCacheKey(bulletinCategoryId, BulletinCategoryPermission.EDIT),
+    );
+  }
+
+  private async resolveUsersWithPermission(
+    bulletinCategoryId: string,
+    permission: BulletinCategoryPermissionType,
+  ): Promise<string[]> {
+    const bulletinCategory = await this.bulletinCategoryModel.findById(bulletinCategoryId).exec();
+    if (!bulletinCategory) {
+      throw new CustomHttpException(
+        BULLETIN_BOARD_ERROR_MESSAGE.CATEGORY_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        'Invalid ID format',
+      );
+    }
+
+    const groupsToCheck =
+      permission === BulletinCategoryPermission.EDIT
+        ? bulletinCategory.editableByGroups
+        : bulletinCategory.visibleForGroups;
+    const usersToCheck =
+      permission === BulletinCategoryPermission.EDIT
+        ? bulletinCategory.editableByUsers
+        : bulletinCategory.visibleForUsers;
+
+    const usersInGroups = await Promise.all(
+      groupsToCheck.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+
+        return groupWithMembers?.members?.map((member) => member.username) || [];
+      }),
+    );
+
+    const users = Array.from(new Set([...usersToCheck.map((user) => user.value), ...usersInGroups.flat()]));
+
+    const cacheKey = BulletinCategoryService.getPermissionCacheKey(bulletinCategoryId, permission);
+    await this.cacheManager.set(cacheKey, users, DEFAULT_CACHE_TTL_MS);
+
+    return users;
+  }
+
   async getUsersWithPermissionCached(
     bulletinCategoryId: string,
     permission: BulletinCategoryPermissionType,
   ): Promise<string[]> {
-    const cacheKey = `bulletinCategory:${bulletinCategoryId}:${permission}`;
-    let users = await this.cacheManager.get<string[]>(cacheKey);
+    const cacheKey = BulletinCategoryService.getPermissionCacheKey(bulletinCategoryId, permission);
+    const users = await this.cacheManager.get<string[]>(cacheKey);
 
-    if (!users || !users.length) {
-      const bulletinCategory = await this.bulletinCategoryModel.findById(bulletinCategoryId).exec();
-      if (!bulletinCategory) {
-        throw new CustomHttpException(
-          BULLETIN_BOARD_ERROR_MESSAGE.CATEGORY_NOT_FOUND,
-          HttpStatus.NOT_FOUND,
-          'Invalid ID format',
-        );
-      }
-
-      const groupsToCheck =
-        permission === BulletinCategoryPermission.EDIT
-          ? bulletinCategory.editableByGroups
-          : bulletinCategory.visibleForGroups;
-      const usersToCheck =
-        permission === BulletinCategoryPermission.EDIT
-          ? bulletinCategory.editableByUsers
-          : bulletinCategory.visibleForUsers;
-
-      const usersInGroups = await Promise.all(
-        groupsToCheck.map(async (group) => {
-          const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-            `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-          );
-
-          return groupWithMembers?.members?.map((member) => member.username) || [];
-        }),
-      );
-
-      users = Array.from(new Set([...usersToCheck.map((user) => user.value), ...usersInGroups.flat()]));
-
-      await this.cacheManager.set(cacheKey, users, DEFAULT_CACHE_TTL_MS);
+    if (users?.length) {
+      return users;
     }
 
-    return users;
+    return this.resolveUsersWithPermission(bulletinCategoryId, permission);
   }
 
   async hasUserPermission(
@@ -154,8 +177,8 @@ class BulletinCategoryService implements OnModuleInit {
       position: dto.position,
     })) as unknown as BulletinCategoryResponseDto;
 
-    await this.getUsersWithPermissionCached(category.id, BulletinCategoryPermission.VIEW);
-    await this.getUsersWithPermissionCached(category.id, BulletinCategoryPermission.EDIT);
+    await this.resolveUsersWithPermission(category.id, BulletinCategoryPermission.VIEW);
+    await this.resolveUsersWithPermission(category.id, BulletinCategoryPermission.EDIT);
 
     return category;
   }
@@ -173,8 +196,9 @@ class BulletinCategoryService implements OnModuleInit {
     Object.assign(category, dto);
     await category.save();
 
-    await this.getUsersWithPermissionCached(String(category.id), BulletinCategoryPermission.VIEW);
-    await this.getUsersWithPermissionCached(String(category.id), BulletinCategoryPermission.EDIT);
+    await this.invalidatePermissionCache(String(category.id));
+    await this.resolveUsersWithPermission(String(category.id), BulletinCategoryPermission.VIEW);
+    await this.resolveUsersWithPermission(String(category.id), BulletinCategoryPermission.EDIT);
   }
 
   async remove(id: string): Promise<void> {
