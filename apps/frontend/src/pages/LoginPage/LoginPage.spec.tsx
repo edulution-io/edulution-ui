@@ -75,6 +75,11 @@ vi.mock('@/components/ui/QRCodeDisplay', () => ({
 vi.mock('@/utils/getRandomUUID', () => ({
   default: () => 'test-uuid-123',
 }));
+vi.mock('./components/TotpInput', () => ({
+  default: ({ title }: { title: string }) => (
+    <div data-testid="totp-input">{title}</div>
+  ),
+}));
 
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
@@ -213,5 +218,28 @@ describe('LoginPage', () => {
     renderWithProviders(<LoginPage />, { route: '/login' });
 
     expect(screen.queryByTestId('test-id-login-page-submit-button')).not.toBeInTheDocument();
+  });
+
+  it('shows TOTP input when getTotpStatus returns true after form submit', async () => {
+    const user = userEvent.setup();
+    mockGetTotpStatus.mockResolvedValue(true);
+
+    renderWithProviders(<LoginPage />, { route: '/login' });
+
+    await user.type(screen.getByTestId('test-id-login-page-username-input'), 'mfauser');
+    await user.type(screen.getByTestId('test-id-login-page-password-input'), 'testpass');
+    await user.click(screen.getByTestId('test-id-login-page-submit-button'));
+
+    await waitFor(() => {
+      expect(mockGetTotpStatus).toHaveBeenCalledWith('mfauser');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('totp-input')).toBeInTheDocument();
+      expect(screen.getByTestId('totp-input')).toHaveTextContent('login.enterMultiFactorCode');
+    });
+
+    expect(screen.queryByTestId('test-id-login-page-username-input')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('test-id-login-page-password-input')).not.toBeInTheDocument();
   });
 });
