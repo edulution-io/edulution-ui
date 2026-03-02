@@ -60,7 +60,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     }
 
     try {
-      const compressedFile = await convertImageFileToCompressedWebp(file, 100, 3840);
+      const compressedFile = await convertImageFileToCompressedWebp(file, 128, 3840);
       const uploadedFilename = await onUpload(compressedFile);
       const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
 
