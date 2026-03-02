@@ -41,6 +41,9 @@ import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFi
 import useFileContentPreviewStore from '@/pages/FileSharing/FilePreview/useFileContentPreviewStore';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import useDownloadAcknowledgedStore from '@/pages/FileSharing/hooks/useDownloadAcknowledgedStore';
+import { del } from 'idb-keyval';
+import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
+import clearTLDrawPersistence from '@/pages/Whiteboard/TLDrawOffline/clearTLDrawPersistence';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
@@ -91,8 +94,6 @@ import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
 import useThemeStore from '@/store/useThemeStore';
 import useUserPreferencesStore from '@/store/useUserPreferencesStore';
 import UserStore from '@/store/UserStore/useUserStore';
-import clearTLDrawPersistence from '@/pages/Whiteboard/TLDrawOffline/clearTLDrawPersistence';
-import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
 
 const cleanAllStores = async () => {
   UserStore.getState().resetQrCodeSlice();
@@ -173,6 +174,10 @@ const cleanAllStores = async () => {
   useWhiteboardEditorStore.getState().reset();
   useWireguardConfigTableStore.getState().reset();
   localStorage.removeItem('i18nextLng');
+  localStorage.removeItem('user-management-storage');
+  localStorage.removeItem('device-management-storage');
+  await del('user-management-storage');
+  await del('device-management-storage');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };
 

@@ -134,7 +134,7 @@ const PublicConferenceJoinForm = ({
             )}
 
             {publicConference?.password && (
-              <div>
+              <div className="mb-4">
                 <div className="mb-2">{t('conferences.conferenceIsPasswordProtected')}</div>
                 <FormField
                   name="password"

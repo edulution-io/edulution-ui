@@ -40,6 +40,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import ONLY_OFFICE_CALLBACK_STATUS from '@libs/filesharing/constants/onlyOfficeCallbackStatus';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
@@ -245,7 +246,7 @@ class FilesharingController {
   ) {
     try {
       const { status } = req.body as OnlyOfficeCallbackData;
-      if (status === 1) {
+      if (status === ONLY_OFFICE_CALLBACK_STATUS.EDITING) {
         return res.status(HttpStatus.OK).json({ error: 0 });
       }
 

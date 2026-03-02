@@ -17,36 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { OnlyOfficeCallbackStatus } from '../constants/onlyOfficeCallbackStatus';
+const ONLY_OFFICE_CALLBACK_STATUS = {
+  EDITING: 1,
+  READY_FOR_SAVING: 2,
+  SAVING_ERROR: 3,
+  CLOSED_WITHOUT_CHANGES: 4,
+  FORCE_SAVING: 6,
+  FORCE_SAVING_ERROR: 7,
+} as const;
 
-interface Action {
-  type: 0 | 1 | 2;
-  userid: string;
-}
+type OnlyOfficeCallbackStatus = (typeof ONLY_OFFICE_CALLBACK_STATUS)[keyof typeof ONLY_OFFICE_CALLBACK_STATUS];
 
-interface ChangeHistory {
-  changeId: string;
-  timestamp: string;
-}
-
-interface History {
-  changes: ChangeHistory[];
-  serverVersion: string;
-}
-
-interface OnlyOfficeCallbackData {
-  actions?: Action[];
-  changeshistory?: ChangeHistory[];
-  changesurl?: string;
-  filetype?: string;
-  forcesavetype?: 0 | 1 | 2 | 3;
-  formsdataurl?: string;
-  history?: History;
-  key: string;
-  status: OnlyOfficeCallbackStatus;
-  url: string;
-  userdata?: string;
-  users?: string[];
-}
-
-export default OnlyOfficeCallbackData;
+export { OnlyOfficeCallbackStatus };
+export default ONLY_OFFICE_CALLBACK_STATUS;
