@@ -97,13 +97,15 @@ Plans:
 3. Playwright E2E project runs via Nx with parallel execution, and Keycloak authentication uses storageState pattern (authenticate once in globalSetup, reuse across all tests) without per-test login
 4. E2E tests cover login/logout, survey create-participate-results, file upload-share-download, mail compose-send-receive, conference create-join, AppStore browse-install, and settings changes -- each journey completes without manual intervention
 5. E2E test failures upload Playwright HTML report as CI artifact, and the E2E job runs as part of the PR pipeline
-   **Plans**: TBD
+   **Plans**: 5 plans, 2 waves
 
 Plans:
 
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [x] 04-01-PLAN.md -- Component behavioral tests (MenuBar, Sidebar, AppLayout, LoginPage, Table, Survey, FileSharing, Mail)
+- [x] 04-02-PLAN.md -- Playwright E2E infrastructure (config, auth, Page Object Models)
+- [x] 04-03-PLAN.md -- E2E journey tests (7 workflows) + CI pipeline e2e job
+- [ ] 04-04-PLAN.md -- Gap closure: LoginPage TOTP flow test + ScrollableTable sorting/actions tests
+- [ ] 04-05-PLAN.md -- Gap closure: AccessAndParticipateSurvey routing tests + FileSharingPage upload presence + MailPage scope docs
 
 ### Phase 5: Advanced Quality and CI Hardening
 
@@ -136,5 +138,5 @@ Note: Phase 2 and Phase 3 both depend only on Phase 1 and could execute in paral
 | 1. Test Foundation and Infrastructure | 0/3            | Not started | -          |
 | 2. API Unit Test Expansion            | 7/7            | Complete    | 2026-02-26 |
 | 3. Frontend Unit Tests                | 0/3            | Not started | -          |
-| 4. Frontend Components and E2E        | 0/3            | Not started | -          |
+| 4. Frontend Components and E2E        | 3/5            | Gap closure | -          |
 | 5. Advanced Quality and CI Hardening  | 0/3            | Not started | -          |
