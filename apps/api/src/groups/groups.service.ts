@@ -41,6 +41,9 @@ import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
+import SYSTEM_GROUP_PREFIXES from '@libs/groups/constants/systemGroupPrefixes';
+import SYSTEM_GROUP_SUFFIXES from '@libs/groups/constants/systemGroupSuffixes';
+import SYSTEM_GROUP_EXACT_EXCLUDES from '@libs/groups/constants/systemGroupExactExcludes';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 import SCHOOLS_PREFIX from '@libs/lmnApi/constants/prefixes/schoolsPrefix';
@@ -599,13 +602,9 @@ class GroupsService {
   }
 
   private static isSchoolClass(groupName: string): boolean {
-    const systemPrefixes = ['all-', 'role-', 's_'];
-    const systemSuffixes = ['-teachers', '-students', '-internet', '-intranet', '-printing', '-webfilter', '-wifi'];
-    const exactExcludes = ['SCHOOLS'];
-
-    if (exactExcludes.includes(groupName)) return false;
-    if (systemPrefixes.some((prefix) => groupName.startsWith(prefix))) return false;
-    return !systemSuffixes.some((suffix) => groupName.endsWith(suffix));
+    if (SYSTEM_GROUP_EXACT_EXCLUDES.includes(groupName as (typeof SYSTEM_GROUP_EXACT_EXCLUDES)[number])) return false;
+    if (SYSTEM_GROUP_PREFIXES.some((prefix) => groupName.startsWith(prefix))) return false;
+    return !SYSTEM_GROUP_SUFFIXES.some((suffix) => groupName.endsWith(suffix));
   }
 }
 

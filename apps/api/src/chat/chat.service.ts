@@ -25,6 +25,7 @@ import { Cache } from 'cache-manager';
 import CHAT_TYPES from '@libs/chat/constants/chatTypes';
 import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
+import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
 import type AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
@@ -53,6 +54,15 @@ class ChatService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
+  async getAuthorizedConversation(
+    groupName: string,
+    sophomorixType: string,
+    username: string,
+  ): Promise<ConversationDocument | null> {
+    await this.verifyGroupAccess(groupName, sophomorixType, username);
+    return this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName, sophomorixType });
+  }
+
   async getOrCreateAuthorizedConversation(
     groupName: string,
     sophomorixType: string,
@@ -75,7 +85,11 @@ class ChatService {
     return { conversation, members };
   }
 
-  async getMessages(conversationId: string, limit: number = 50, offset: number = 0): Promise<ChatMessageDocument[]> {
+  async getMessages(
+    conversationId: string,
+    limit: number = CHAT_MESSAGES_DEFAULT_LIMIT,
+    offset: number = 0,
+  ): Promise<ChatMessageDocument[]> {
     return this.chatMessageModel.find({ conversationId }).sort({ createdAt: -1 }).skip(offset).limit(limit).exec();
   }
 
@@ -109,37 +123,35 @@ class ChatService {
     sophomorixType: string,
     message: ChatMessageDocument,
   ): Promise<void> {
-    if (members.length === 0) {
+    const recipients = members.filter((member) => member !== message.createdBy);
+    if (recipients.length === 0) {
       return;
     }
 
     const payload = { ...message.toJSON(), groupName, sophomorixType };
-    this.sseService.sendEventToUsers(members, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
+    this.sseService.sendEventToUsers(recipients, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
-    const recipients = members.filter((member) => member !== message.createdBy);
-    if (recipients.length > 0) {
-      const sourceId = `${sophomorixType}/${groupName}`;
+    const sourceId = `${sophomorixType}/${groupName}`;
 
-      await this.notificationsService.upsertNotificationForSource(
-        recipients,
-        {
-          title: groupName,
-          subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
-          body: message.content,
-          channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
-          data: { groupName, sophomorixType, conversationId: message.conversationId.toString() },
-        },
-        message.createdBy,
-        {
-          type: NOTIFICATION_TYPE.USER,
-          sourceType: NOTIFICATION_SOURCE_TYPE.CHAT,
-          sourceId,
-          title: groupName,
-          pushNotification: `${message.createdByUserFirstName} ${message.createdByUserLastName}: ${message.content}`,
-          createdBy: message.createdBy,
-        },
-      );
-    }
+    await this.notificationsService.upsertNotificationForSource(
+      recipients,
+      {
+        title: groupName,
+        subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
+        body: message.content,
+        channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
+        data: { groupName, sophomorixType, conversationId: message.conversationId.toString() },
+      },
+      message.createdBy,
+      {
+        type: NOTIFICATION_TYPE.USER,
+        sourceType: NOTIFICATION_SOURCE_TYPE.CHAT,
+        sourceId,
+        title: groupName,
+        pushNotification: `${message.createdByUserFirstName} ${message.createdByUserLastName}: ${message.content}`,
+        createdBy: message.createdBy,
+      },
+    );
   }
 
   private static readonly CACHE_PATH_PREFIX: Record<AllowedChatSophomorixType, string> = {

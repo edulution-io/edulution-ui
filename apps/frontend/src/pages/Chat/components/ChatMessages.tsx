@@ -31,17 +31,16 @@ const SCROLL_THRESHOLD_PX = 150;
 
 interface ChatMessagesProps {
   messages: ChatMessage[];
-  isLoading: boolean;
 }
 
-const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
+const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
   const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(true);
   const prevScrollHeightRef = useRef(0);
   const { user } = useUserStore();
-  const { error, hasMoreMessages, isLoadingOlderMessages, fetchOlderMessages } = useChatStore();
+  const { isLoading, error, hasMoreMessages, isLoadingOlderMessages, fetchOlderMessages } = useChatStore();
 
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;

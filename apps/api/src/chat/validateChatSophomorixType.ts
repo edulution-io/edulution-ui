@@ -17,13 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import { BadRequestException } from '@nestjs/common';
+import AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
+import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
+import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+const validateChatSophomorixType = (value: string): AllowedChatSophomorixType => {
+  if (!isAllowedChatSophomorixType(value)) {
+    throw new BadRequestException(CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE);
+  }
+  return value;
+};
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
-
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const getChatMessagesEndpoint = (sophomorixType: string, groupName: string): string =>
-  `${CHAT_CONVERSATIONS_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}/messages`;
+export default validateChatSophomorixType;

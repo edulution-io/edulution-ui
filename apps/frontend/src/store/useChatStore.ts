@@ -20,7 +20,7 @@
 import { create } from 'zustand';
 import ChatMessage from '@libs/chat/types/chatMessage';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
-import { CHAT_USER_GROUPS_ENDPOINT, CHAT_CONVERSATIONS_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
+import { CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -81,7 +81,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}/messages`;
+      const endpoint = getChatMessagesEndpoint(sophomorixType, groupName);
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
         params: { limit, offset },
       });
@@ -106,7 +106,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     set({ isLoadingOlderMessages: true, error: null });
 
     try {
-      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${currentSophomorixType}/${encodeURIComponent(currentGroupName)}/messages`;
+      const endpoint = getChatMessagesEndpoint(currentSophomorixType, currentGroupName);
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
         params: { limit: CHAT_MESSAGES_DEFAULT_LIMIT, offset: messages.length },
       });
@@ -131,7 +131,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     set({ isSending: true, error: null });
 
     try {
-      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}/messages`;
+      const endpoint = getChatMessagesEndpoint(sophomorixType, groupName);
       const response = await eduApi.post<ChatMessage>(endpoint, { content });
 
       const newMessage = response.data;

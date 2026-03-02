@@ -45,7 +45,7 @@ const ChatPage = () => {
             groupType={groupType}
           />
         ) : (
-          <div className="bg-glass flex flex-1 flex-col items-center justify-center ">
+          <div className="bg-glass flex flex-1 flex-col items-center justify-center">
             {isLoadingGroups ? (
               <CircleLoader />
             ) : (

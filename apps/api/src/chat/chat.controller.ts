@@ -23,12 +23,12 @@ import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
-import validateChatSophomorixType from '@libs/chat/utils/validateChatSophomorixType';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import validateChatSophomorixType from './validateChatSophomorixType';
 
 @ApiTags(APPS.CHAT)
 @ApiBearerAuth()
@@ -53,13 +53,17 @@ class ChatController {
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
   ): Promise<ChatMessageDocument[]> {
     const sophomorixType = validateChatSophomorixType(rawSophomorixType);
-    const { conversation } = await this.chatService.getOrCreateAuthorizedConversation(
+    const conversation = await this.chatService.getAuthorizedConversation(
       groupName,
       sophomorixType,
       currentUser.preferred_username,
     );
 
-    return this.chatService.getMessages(conversation.id as string, limit, offset);
+    if (!conversation) {
+      return [];
+    }
+
+    return this.chatService.getMessages(String(conversation.id), limit, offset);
   }
 
   @Post('conversations/:sophomorixType/:groupName/messages')
@@ -77,7 +81,7 @@ class ChatController {
     );
 
     return this.chatService.sendMessage(
-      conversation.id as string,
+      String(conversation.id),
       groupName,
       sophomorixType,
       dto.content,

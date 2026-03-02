@@ -17,15 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
-import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
-import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
+const SYSTEM_GROUP_SUFFIXES = [
+  '-teachers',
+  '-students',
+  '-internet',
+  '-intranet',
+  '-printing',
+  '-webfilter',
+  '-wifi',
+] as const;
 
-const validateChatSophomorixType = (value: string): AllowedChatSophomorixType => {
-  if (!isAllowedChatSophomorixType(value)) {
-    throw new Error(CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE);
-  }
-  return value;
-};
-
-export default validateChatSophomorixType;
+export default SYSTEM_GROUP_SUFFIXES;

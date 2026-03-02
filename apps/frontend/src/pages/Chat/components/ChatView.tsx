@@ -34,7 +34,7 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle }) => {
   const hasError = !!error;
 
   return (
-    <div className="flex h-full flex-col pb-2 ">
+    <div className="flex h-full flex-col pb-2">
       {title && (
         <div className="flex w-full flex-col border-b border-muted px-4 pb-2 pt-2">
           <h3 className="font-semibold text-background">{title}</h3>
@@ -49,10 +49,7 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle }) => {
         </div>
       )}
 
-      <ChatMessages
-        messages={messages}
-        isLoading={isLoading}
-      />
+      <ChatMessages messages={messages} />
 
       {!hasError && (
         <ChatInput
