@@ -85,13 +85,13 @@ Requirements for the comprehensive test suite. Each maps to roadmap phases.
 - [ ] **E2ET-01**: Playwright project configured with NX integration and parallel execution
 - [ ] **E2ET-02**: Keycloak auth fixture using storageState pattern against staging server
 - [ ] **E2ET-03**: Page Object Model base classes for reusable page interactions
-- [ ] **E2ET-04**: Login flow E2E — Keycloak OIDC redirect, session persistence, logout
-- [ ] **E2ET-05**: Survey workflow E2E — create survey, participate, view results
-- [ ] **E2ET-06**: File sharing E2E — upload file, share with user, download shared file
-- [ ] **E2ET-07**: Mail workflow E2E — compose, send, receive in inbox
-- [ ] **E2ET-08**: Conference E2E — create conference, join, verify running state
-- [ ] **E2ET-09**: AppStore E2E — browse apps, install, configure
-- [ ] **E2ET-10**: Settings E2E — change theme, notifications, DND window
+- [x] **E2ET-04**: Login flow E2E — Keycloak OIDC redirect, session persistence, logout
+- [x] **E2ET-05**: Survey workflow E2E — create survey, participate, view results
+- [x] **E2ET-06**: File sharing E2E — upload file, share with user, download shared file
+- [x] **E2ET-07**: Mail workflow E2E — compose, send, receive in inbox
+- [x] **E2ET-08**: Conference E2E — create conference, join, verify running state
+- [x] **E2ET-09**: AppStore E2E — browse apps, install, configure
+- [x] **E2ET-10**: Settings E2E — change theme, notifications, DND window
 
 ### Visual Regression & Accessibility
 
@@ -105,7 +105,7 @@ Requirements for the comprehensive test suite. Each maps to roadmap phases.
 
 - [ ] **CICD-01**: Parallel GitHub Actions jobs (lint, test-api, test-frontend, build, e2e)
 - [ ] **CICD-02**: Frontend test job as required status check blocking PRs
-- [ ] **CICD-03**: E2E test job with Playwright report artifact upload on failure
+- [x] **CICD-03**: E2E test job with Playwright report artifact upload on failure
 - [ ] **CICD-04**: Coverage reporting via Codecov with PR comments showing diff
 - [ ] **CICD-05**: Diff-coverage gates requiring new files to have >60% coverage
 - [ ] **CICD-06**: Playwright MCP server configuration for AI-assisted test generation
@@ -135,81 +135,81 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ## Traceability
 
-| Requirement | Phase   | Status  |
-| ----------- | ------- | ------- |
-| FOUND-01    | Phase 1 | Pending |
-| FOUND-02    | Phase 1 | Pending |
-| FOUND-03    | Phase 1 | Pending |
-| FOUND-04    | Phase 1 | Pending |
-| FOUND-05    | Phase 1 | Pending |
-| FOUND-06    | Phase 1 | Pending |
-| FOUND-07    | Phase 1 | Pending |
-| FOUND-08    | Phase 1 | Pending |
-| FOUND-09    | Phase 1 | Pending |
-| APIT-01     | Phase 2 | Pending |
-| APIT-02     | Phase 2 | Pending |
-| APIT-03     | Phase 2 | Pending |
-| APIT-04     | Phase 2 | Pending |
-| APIT-05     | Phase 2 | Pending |
-| APIT-06     | Phase 2 | Pending |
-| APIT-07     | Phase 2 | Pending |
-| APIT-08     | Phase 2 | Pending |
-| APIT-09     | Phase 2 | Pending |
-| APIT-10     | Phase 2 | Pending |
-| APIT-11     | Phase 2 | Pending |
-| APIT-12     | Phase 2 | Pending |
-| APIT-13     | Phase 2 | Pending |
-| FEUT-01     | Phase 3 | Pending |
-| FEUT-02     | Phase 3 | Pending |
-| FEUT-03     | Phase 3 | Pending |
-| FEUT-04     | Phase 3 | Pending |
-| FEST-01     | Phase 3 | Pending |
-| FEST-02     | Phase 3 | Pending |
-| FEST-03     | Phase 3 | Pending |
-| FEST-04     | Phase 3 | Pending |
-| FEST-05     | Phase 3 | Pending |
-| FEST-06     | Phase 3 | Pending |
-| FEST-07     | Phase 3 | Pending |
-| FEST-08     | Phase 3 | Pending |
-| FEHK-01     | Phase 3 | Pending |
-| FEHK-02     | Phase 3 | Pending |
-| FEHK-03     | Phase 3 | Pending |
-| FEHK-04     | Phase 3 | Pending |
-| FEHK-05     | Phase 3 | Pending |
-| FECP-01     | Phase 4 | Pending |
-| FECP-02     | Phase 4 | Pending |
-| FECP-03     | Phase 4 | Pending |
-| FECP-04     | Phase 4 | Pending |
-| FECP-05     | Phase 4 | Pending |
-| FECP-06     | Phase 4 | Pending |
-| FECP-07     | Phase 4 | Pending |
-| FECP-08     | Phase 4 | Pending |
-| E2ET-01     | Phase 4 | Pending |
-| E2ET-02     | Phase 4 | Pending |
-| E2ET-03     | Phase 4 | Pending |
-| E2ET-04     | Phase 4 | Pending |
-| E2ET-05     | Phase 4 | Pending |
-| E2ET-06     | Phase 4 | Pending |
-| E2ET-07     | Phase 4 | Pending |
-| E2ET-08     | Phase 4 | Pending |
-| E2ET-09     | Phase 4 | Pending |
-| E2ET-10     | Phase 4 | Pending |
-| APII-01     | Phase 5 | Pending |
-| APII-02     | Phase 5 | Pending |
-| APII-03     | Phase 5 | Pending |
-| APII-04     | Phase 5 | Pending |
-| APII-05     | Phase 5 | Pending |
-| VRAT-01     | Phase 5 | Pending |
-| VRAT-02     | Phase 5 | Pending |
-| VRAT-03     | Phase 5 | Pending |
-| VRAT-04     | Phase 5 | Pending |
-| VRAT-05     | Phase 5 | Pending |
-| CICD-01     | Phase 1 | Pending |
-| CICD-02     | Phase 1 | Pending |
-| CICD-03     | Phase 4 | Pending |
-| CICD-04     | Phase 5 | Pending |
-| CICD-05     | Phase 5 | Pending |
-| CICD-06     | Phase 5 | Pending |
+| Requirement | Phase   | Status   |
+| ----------- | ------- | -------- |
+| FOUND-01    | Phase 1 | Pending  |
+| FOUND-02    | Phase 1 | Pending  |
+| FOUND-03    | Phase 1 | Pending  |
+| FOUND-04    | Phase 1 | Pending  |
+| FOUND-05    | Phase 1 | Pending  |
+| FOUND-06    | Phase 1 | Pending  |
+| FOUND-07    | Phase 1 | Pending  |
+| FOUND-08    | Phase 1 | Pending  |
+| FOUND-09    | Phase 1 | Pending  |
+| APIT-01     | Phase 2 | Pending  |
+| APIT-02     | Phase 2 | Pending  |
+| APIT-03     | Phase 2 | Pending  |
+| APIT-04     | Phase 2 | Pending  |
+| APIT-05     | Phase 2 | Pending  |
+| APIT-06     | Phase 2 | Pending  |
+| APIT-07     | Phase 2 | Pending  |
+| APIT-08     | Phase 2 | Pending  |
+| APIT-09     | Phase 2 | Pending  |
+| APIT-10     | Phase 2 | Pending  |
+| APIT-11     | Phase 2 | Pending  |
+| APIT-12     | Phase 2 | Pending  |
+| APIT-13     | Phase 2 | Pending  |
+| FEUT-01     | Phase 3 | Pending  |
+| FEUT-02     | Phase 3 | Pending  |
+| FEUT-03     | Phase 3 | Pending  |
+| FEUT-04     | Phase 3 | Pending  |
+| FEST-01     | Phase 3 | Pending  |
+| FEST-02     | Phase 3 | Pending  |
+| FEST-03     | Phase 3 | Pending  |
+| FEST-04     | Phase 3 | Pending  |
+| FEST-05     | Phase 3 | Pending  |
+| FEST-06     | Phase 3 | Pending  |
+| FEST-07     | Phase 3 | Pending  |
+| FEST-08     | Phase 3 | Pending  |
+| FEHK-01     | Phase 3 | Pending  |
+| FEHK-02     | Phase 3 | Pending  |
+| FEHK-03     | Phase 3 | Pending  |
+| FEHK-04     | Phase 3 | Pending  |
+| FEHK-05     | Phase 3 | Pending  |
+| FECP-01     | Phase 4 | Pending  |
+| FECP-02     | Phase 4 | Pending  |
+| FECP-03     | Phase 4 | Pending  |
+| FECP-04     | Phase 4 | Pending  |
+| FECP-05     | Phase 4 | Pending  |
+| FECP-06     | Phase 4 | Pending  |
+| FECP-07     | Phase 4 | Pending  |
+| FECP-08     | Phase 4 | Pending  |
+| E2ET-01     | Phase 4 | Pending  |
+| E2ET-02     | Phase 4 | Pending  |
+| E2ET-03     | Phase 4 | Pending  |
+| E2ET-04     | Phase 4 | Complete |
+| E2ET-05     | Phase 4 | Complete |
+| E2ET-06     | Phase 4 | Complete |
+| E2ET-07     | Phase 4 | Complete |
+| E2ET-08     | Phase 4 | Complete |
+| E2ET-09     | Phase 4 | Complete |
+| E2ET-10     | Phase 4 | Complete |
+| APII-01     | Phase 5 | Pending  |
+| APII-02     | Phase 5 | Pending  |
+| APII-03     | Phase 5 | Pending  |
+| APII-04     | Phase 5 | Pending  |
+| APII-05     | Phase 5 | Pending  |
+| VRAT-01     | Phase 5 | Pending  |
+| VRAT-02     | Phase 5 | Pending  |
+| VRAT-03     | Phase 5 | Pending  |
+| VRAT-04     | Phase 5 | Pending  |
+| VRAT-05     | Phase 5 | Pending  |
+| CICD-01     | Phase 1 | Pending  |
+| CICD-02     | Phase 1 | Pending  |
+| CICD-03     | Phase 4 | Complete |
+| CICD-04     | Phase 5 | Pending  |
+| CICD-05     | Phase 5 | Pending  |
+| CICD-06     | Phase 5 | Pending  |
 
 **Coverage:**
 
