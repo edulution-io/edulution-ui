@@ -57,7 +57,7 @@ const useRegisterChatSections = () => {
   }, [userGroups, groupType, navigate]);
 
   useEffect(() => {
-    setSections(sections);
+    setSections(sections, groupType);
     return () => setSections([]);
   }, [sections, setSections]);
 };
