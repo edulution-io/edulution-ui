@@ -170,6 +170,13 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
   private async createIdleConnection(username: string, email: string, password: string): Promise<void> {
     this.pendingReconnects.delete(username);
 
+    const existing = this.idleConnections.get(username);
+    if (existing) {
+      existing.isErrorHandled = true;
+      this.idleConnections.delete(username);
+      await MailIdleService.cleanupClient(existing.client);
+    }
+
     const client = new ImapFlow({
       host: this.imapConfig.host,
       port: this.imapConfig.port,
