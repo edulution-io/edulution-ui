@@ -182,6 +182,7 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@nestjs/testing": "^11.0.17",
     "@nx/eslint": "22.3.0",
     "@nx/eslint-plugin": "22.3.0",

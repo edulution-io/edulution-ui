@@ -16,6 +16,15 @@ const playwrightConfig = defineConfig({
 
   timeout: 30_000,
 
+  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
+
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      threshold: 0.2,
+    },
+  },
+
   use: {
     baseURL: BASE_URL,
     actionTimeout: 10_000,

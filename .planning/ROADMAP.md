@@ -13,11 +13,11 @@ This roadmap takes edulution-ui from near-zero test coverage to a production-rea
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Test Foundation and Infrastructure** - Shared factories, MSW setup, Vitest upgrade, mock consolidation, and CI frontend test job
+- [x] **Phase 1: Test Foundation and Infrastructure** - Shared factories, MSW setup, Vitest upgrade, mock consolidation, and CI frontend test job
 - [x] **Phase 2: API Unit Test Expansion** - Guards, pipes, filters, services, and controllers across all untested API modules
-- [ ] **Phase 3: Frontend Unit Tests** - Utility functions, Zustand store tests with MSW, and custom hook tests
-- [ ] **Phase 4: Frontend Components and E2E** - Component tests for critical UI, Playwright setup, Keycloak auth, Page Object Model, E2E journeys
-- [ ] **Phase 5: Advanced Quality and CI Hardening** - API integration tests, visual regression, accessibility scans, coverage reporting, diff-coverage gates
+- [x] **Phase 3: Frontend Unit Tests** - Utility functions, Zustand store tests with MSW, and custom hook tests
+- [x] **Phase 4: Frontend Components and E2E** - Component tests for critical UI, Playwright setup, Keycloak auth, Page Object Model, E2E journeys
+- [x] **Phase 5: Advanced Quality and CI Hardening** - API integration tests, visual regression, accessibility scans, coverage reporting, diff-coverage gates
 
 ## Phase Details
 
@@ -37,9 +37,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 
-- [ ] 01-01: Vitest upgrade, MSW setup, factories, renderWithProviders, sample test
-- [ ] 01-02: API test infrastructure (Mongoose mock, cacheManager, TestingModuleBuilder preset)
-- [ ] 01-03: CI pipeline split, cleanAllStores audit + validation test
+- [x] 01-01: Vitest upgrade, MSW setup, factories, renderWithProviders, sample test
+- [x] 01-02: API test infrastructure (Mongoose mock, cacheManager, TestingModuleBuilder preset)
+- [x] 01-03: CI pipeline split, cleanAllStores audit + validation test
 
 ### Phase 2: API Unit Test Expansion
 
@@ -81,9 +81,9 @@ Plans:
 
 Plans:
 
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [x] 03-01: Utility, schema, and route generation tests (18 files, 120 tests)
+- [x] 03-02: Zustand store specs and MSW handlers
+- [x] 03-03: Custom hook specs for SSE, sidebar, table, keyboard, notifications
 
 ### Phase 4: Frontend Components and E2E
 
@@ -104,8 +104,8 @@ Plans:
 - [x] 04-01-PLAN.md -- Component behavioral tests (MenuBar, Sidebar, AppLayout, LoginPage, Table, Survey, FileSharing, Mail)
 - [x] 04-02-PLAN.md -- Playwright E2E infrastructure (config, auth, Page Object Models)
 - [x] 04-03-PLAN.md -- E2E journey tests (7 workflows) + CI pipeline e2e job
-- [ ] 04-04-PLAN.md -- Gap closure: LoginPage TOTP flow test + ScrollableTable sorting/actions tests
-- [ ] 04-05-PLAN.md -- Gap closure: AccessAndParticipateSurvey routing tests + FileSharingPage upload presence + MailPage scope docs
+- [x] 04-04-PLAN.md -- Gap closure: LoginPage TOTP flow test + ScrollableTable sorting/actions tests
+- [x] 04-05-PLAN.md -- Gap closure: AccessAndParticipateSurvey routing tests + FileSharingPage upload presence + MailPage scope docs
 
 ### Phase 5: Advanced Quality and CI Hardening
 
@@ -123,9 +123,9 @@ Plans:
 
 Plans:
 
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
+- [x] 05-01: API integration tests with supertest + OpenAPI contract validation
+- [x] 05-02: Accessibility scans (axe-core) + visual regression screenshot baselines
+- [x] 05-03: Coverage reporting (codecov) + CI hardening (diff-coverage gates, E2E blocking)
 
 ## Progress
 
@@ -133,10 +133,10 @@ Plans:
 Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 Note: Phase 2 and Phase 3 both depend only on Phase 1 and could execute in parallel.
 
-| Phase                                 | Plans Complete | Status      | Completed  |
-| ------------------------------------- | -------------- | ----------- | ---------- |
-| 1. Test Foundation and Infrastructure | 0/3            | Not started | -          |
-| 2. API Unit Test Expansion            | 7/7            | Complete    | 2026-02-26 |
-| 3. Frontend Unit Tests                | 0/3            | Not started | -          |
-| 4. Frontend Components and E2E        | 3/5            | Gap closure | -          |
-| 5. Advanced Quality and CI Hardening  | 0/3            | Not started | -          |
+| Phase                                 | Plans Complete | Status   | Completed  |
+| ------------------------------------- | -------------- | -------- | ---------- |
+| 1. Test Foundation and Infrastructure | 3/3            | Complete | 2026-03-02 |
+| 2. API Unit Test Expansion            | 7/7            | Complete | 2026-02-26 |
+| 3. Frontend Unit Tests                | 3/3            | Complete | 2026-03-01 |
+| 4. Frontend Components and E2E        | 5/5            | Complete | 2026-03-02 |
+| 5. Advanced Quality and CI Hardening  | 3/3            | Complete | 2026-03-02 |

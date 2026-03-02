@@ -62,6 +62,7 @@ export default defineConfig(({ mode }) => {
       coverage: {
         reportsDirectory: '../../coverage/apps/frontend',
         provider: 'v8',
+        reporter: ['text', 'json-summary', 'lcov'],
       },
     },
     root: __dirname,
