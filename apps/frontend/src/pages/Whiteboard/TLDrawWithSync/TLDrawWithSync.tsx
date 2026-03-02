@@ -69,7 +69,7 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
       async upload(asset, file) {
         const filename = `${usernameRef.current}_${asset.id}`;
         const form = new FormData();
-        const compressedFile = await convertImageFileToCompressedWebp(file, 1024, 3840);
+        const compressedFile = await convertImageFileToCompressedWebp(file, 50, 3840);
         form.append('file', compressedFile, filename);
         const assetPath = `${assetBasePath}/${encodeURIComponent(filename)}`;
         await eduApi.post<string>(assetPath, form, {

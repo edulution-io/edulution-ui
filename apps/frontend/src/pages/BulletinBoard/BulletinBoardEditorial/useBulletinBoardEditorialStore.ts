@@ -156,7 +156,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   uploadAttachment: async (file): Promise<string> => {
     set({ isAttachmentUploadLoading: true, error: null });
     const formData = new FormData();
-    const uploadingFile = await convertImageFileToCompressedWebp(file, 128, 3840);
+    const uploadingFile = await convertImageFileToCompressedWebp(file, 50, 3840);
     formData.append('file', uploadingFile);
 
     try {

@@ -114,7 +114,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         set({ isUploadingFile: true });
         try {
           const formData = new FormData();
-          const compressedFile = await convertImageFileToCompressedWebp(file, 128, 2048);
+          const compressedFile = await convertImageFileToCompressedWebp(file, 50, 2048);
           formData.append('file', compressedFile);
           const response = await eduApi.post<string>(`${SURVEY_FILE_ATTACHMENT_ENDPOINT}`, formData, {
             headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
