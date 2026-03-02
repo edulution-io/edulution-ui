@@ -24,10 +24,12 @@ vi.mock('react-helmet-async', () => ({
 }));
 
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ColumnDef } from '@tanstack/react-table';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import renderWithProviders from '@libs/test-utils/providers/renderWithProviders';
+import SortableHeader from './SortableHeader';
 import ScrollableTable from './ScrollableTable';
 
 type TestData = {
@@ -156,5 +158,63 @@ describe('ScrollableTable', () => {
 
     const rows = tbody?.querySelectorAll('tr');
     expect(rows).toHaveLength(5);
+  });
+
+  it('sorts rows when clicking a sortable column header', async () => {
+    const user = userEvent.setup();
+
+    const sortableColumns: ColumnDef<TestData, string>[] = [
+      {
+        accessorKey: 'name',
+        header: ({ column }) => <SortableHeader column={column} />,
+        enableSorting: true,
+        meta: { translationId: 'Name' },
+      },
+      {
+        accessorKey: 'email',
+        header: 'Email',
+      },
+    ];
+
+    const { container } = renderWithProviders(
+      <ScrollableTable
+        {...defaultProps}
+        columns={sortableColumns}
+      />,
+    );
+
+    const tbody = container.querySelector('tbody')!;
+    const getRowNames = () => Array.from(tbody.querySelectorAll('tr')).map((tr) => tr.querySelector('td')?.textContent);
+
+    const initialOrder = getRowNames();
+    expect(initialOrder).toEqual(['Alice', 'Bob', 'Charlie', 'Diana', 'Eve']);
+
+    const sortButton = screen.getByRole('button', { name: /Name/i });
+
+    await user.click(sortButton);
+    const ascOrder = getRowNames();
+    expect(ascOrder).toEqual(['Alice', 'Bob', 'Charlie', 'Diana', 'Eve']);
+
+    await user.click(sortButton);
+    const descOrder = getRowNames();
+    expect(descOrder).toEqual(['Eve', 'Diana', 'Charlie', 'Bob', 'Alice']);
+  });
+
+  it('renders action buttons in footer when actions are provided', () => {
+    const mockOnClick = vi.fn();
+    const testActions = [{ icon: faTrash, onClick: mockOnClick, translationId: 'delete' }];
+
+    const { container } = renderWithProviders(
+      <ScrollableTable
+        {...defaultProps}
+        actions={testActions}
+      />,
+    );
+
+    const tfoot = container.querySelector('tfoot');
+    expect(tfoot).toBeInTheDocument();
+
+    const footerButton = within(tfoot).getByRole('button');
+    expect(footerButton).toBeInTheDocument();
   });
 });
