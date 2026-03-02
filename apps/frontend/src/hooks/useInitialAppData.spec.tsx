@@ -24,7 +24,6 @@ const {
   mockGetIsEduApiHealthy,
   mockFetchWebdavShares,
   mockFetchAndInitSentry,
-  mockHandleLogout,
 } = vi.hoisted(() => ({
   mockGetAppConfigs: vi.fn(),
   mockGetPublicAppConfigs: vi.fn(),
@@ -32,7 +31,6 @@ const {
   mockGetIsEduApiHealthy: vi.fn().mockResolvedValue(true),
   mockFetchWebdavShares: vi.fn(),
   mockFetchAndInitSentry: vi.fn(),
-  mockHandleLogout: vi.fn(),
 }));
 
 vi.mock('@/pages/Settings/AppConfig/useAppConfigsStore', () => {
@@ -78,10 +76,6 @@ vi.mock('@/store/useSentryStore', () => {
   return { default: hook };
 });
 
-vi.mock('@/hooks/useLogout', () => ({
-  default: () => mockHandleLogout,
-}));
-
 import { renderHook, waitFor } from '@testing-library/react';
 import useInitialAppData from './useInitialAppData';
 
@@ -122,27 +116,13 @@ describe('useInitialAppData', () => {
     });
   });
 
-  it('calls handleLogout when API is not healthy', async () => {
+  it('does not fetch data when API is not healthy', async () => {
     mockGetIsEduApiHealthy.mockResolvedValue(false);
 
     renderHook(() => useInitialAppData(true));
 
     await waitFor(() => {
       expect(mockGetIsEduApiHealthy).toHaveBeenCalled();
-    });
-
-    await waitFor(() => {
-      expect(mockHandleLogout).toHaveBeenCalled();
-    });
-  });
-
-  it('does not call data fetchers when API is not healthy', async () => {
-    mockGetIsEduApiHealthy.mockResolvedValue(false);
-
-    renderHook(() => useInitialAppData(true));
-
-    await waitFor(() => {
-      expect(mockHandleLogout).toHaveBeenCalled();
     });
 
     expect(mockGetAppConfigs).not.toHaveBeenCalled();

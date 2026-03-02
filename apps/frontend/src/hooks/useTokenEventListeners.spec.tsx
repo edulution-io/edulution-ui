@@ -120,13 +120,15 @@ describe('useTokenEventListeners', () => {
     expect(eventHandlers.accessTokenExpired).toHaveLength(0);
   });
 
-  it('calls handleLogout when user token is already expired', () => {
+  it('tries to renew when user token is already expired', async () => {
     authState.user = { expired: true };
+    mockSigninSilent.mockResolvedValue({ access_token: 'new-token' });
 
     renderHook(() => useTokenEventListeners());
 
-    expect(toast.error).toHaveBeenCalledWith('auth.errors.TokenExpired');
-    expect(mockHandleLogout).toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(mockSigninSilent).toHaveBeenCalled();
+    });
   });
 
   it('does not call handleLogout when token is not expired', () => {
@@ -159,18 +161,16 @@ describe('useTokenEventListeners', () => {
     removeEventListenerSpy.mockRestore();
   });
 
-  it('handles token expired event by logging out once', () => {
+  it('handles token expired event by trying to renew', async () => {
+    mockSigninSilent.mockResolvedValue({ access_token: 'new-token' });
+
     renderHook(() => useTokenEventListeners());
 
     const handler = eventHandlers.accessTokenExpired[0];
     handler();
 
-    expect(toast.error).toHaveBeenCalledWith('auth.errors.TokenExpired');
-    expect(mockHandleLogout).toHaveBeenCalledTimes(1);
-
-    vi.clearAllMocks();
-    handler();
-
-    expect(mockHandleLogout).not.toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(mockSigninSilent).toHaveBeenCalled();
+    });
   });
 });

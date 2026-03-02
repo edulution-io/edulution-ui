@@ -27,6 +27,10 @@ vi.mock('./useDeploymentTarget', () => ({
   default: vi.fn(() => ({ isLmn: false, isGeneric: true })),
 }));
 
+vi.mock('./useLdapGroups', () => ({
+  default: vi.fn(() => ({ isSuperAdmin: false })),
+}));
+
 vi.mock('@/store/useLmnApiStore', () => {
   const storeState = {
     lmnApiToken: null as string | null,
@@ -52,6 +56,7 @@ vi.mock('@/store/UserStore/useUserStore', () => {
 
 import { renderHook } from '@testing-library/react';
 import useDeploymentTarget from './useDeploymentTarget';
+import useLdapGroups from './useLdapGroups';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useInitLmnApi from './useInitLmnApi';
@@ -60,6 +65,7 @@ describe('useInitLmnApi', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useDeploymentTarget).mockReturnValue({ isLmn: false, isGeneric: true });
+    vi.mocked(useLdapGroups).mockReturnValue({ isSuperAdmin: false });
     useLmnApiStore.setState({ lmnApiToken: null });
     useUserStore.setState({ isAuthenticated: false });
   });
@@ -94,8 +100,9 @@ describe('useInitLmnApi', () => {
     expect(mockGetLmnVersion).not.toHaveBeenCalled();
   });
 
-  it('calls getOwnUser and getLmnVersion when LMN, authenticated, and token exists', () => {
+  it('calls getOwnUser and getLmnVersion when LMN, authenticated, token exists, and isSuperAdmin', () => {
     vi.mocked(useDeploymentTarget).mockReturnValue({ isLmn: true, isGeneric: false });
+    vi.mocked(useLdapGroups).mockReturnValue({ isSuperAdmin: true });
     useUserStore.setState({ isAuthenticated: true });
     useLmnApiStore.setState({ lmnApiToken: 'some-token' });
 
@@ -104,6 +111,18 @@ describe('useInitLmnApi', () => {
     expect(mockSetLmnApiToken).not.toHaveBeenCalled();
     expect(mockGetOwnUser).toHaveBeenCalled();
     expect(mockGetLmnVersion).toHaveBeenCalledWith(true);
+  });
+
+  it('calls getOwnUser but not getLmnVersion when not superAdmin', () => {
+    vi.mocked(useDeploymentTarget).mockReturnValue({ isLmn: true, isGeneric: false });
+    vi.mocked(useLdapGroups).mockReturnValue({ isSuperAdmin: false });
+    useUserStore.setState({ isAuthenticated: true });
+    useLmnApiStore.setState({ lmnApiToken: 'some-token' });
+
+    renderHook(() => useInitLmnApi());
+
+    expect(mockGetOwnUser).toHaveBeenCalled();
+    expect(mockGetLmnVersion).not.toHaveBeenCalled();
   });
 
   it('does nothing when both isLmn and isAuthenticated are false', () => {
