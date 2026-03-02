@@ -19,8 +19,14 @@
 
 import { create } from 'zustand';
 import ChatMessage from '@libs/chat/types/chatMessage';
+import ChatPresenceInfo from '@libs/chat/types/chatPresenceInfo';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
-import { CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
+import {
+  CHAT_PRESENCE_ENDPOINT,
+  CHAT_USER_GROUPS_ENDPOINT,
+  getChatMessagesEndpoint,
+  getChatPresenceEndpoint,
+} from '@libs/chat/constants/chatApiEndpoints';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -36,6 +42,8 @@ interface ChatStore {
   isLoadingGroups: boolean;
   hasMoreMessages: boolean;
   isLoadingOlderMessages: boolean;
+  activeViewers: string[];
+  groupMembers: string[];
 
   fetchUserGroups: () => Promise<number>;
   fetchMessages: (sophomorixType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
@@ -43,6 +51,9 @@ interface ChatStore {
   sendMessage: (sophomorixType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
   setCurrentConversation: (sophomorixType: string, groupName: string) => void;
   addMessage: (message: ChatMessage) => void;
+  setPresence: (sophomorixType: string, groupName: string, active: boolean) => Promise<void>;
+  fetchActiveViewers: (sophomorixType: string, groupName: string) => Promise<void>;
+  setActiveViewers: (viewers: string[], members?: string[]) => void;
   reset: () => void;
 }
 
@@ -57,6 +68,8 @@ const initialState = {
   isLoadingGroups: false,
   hasMoreMessages: false,
   isLoadingOlderMessages: false,
+  activeViewers: [],
+  groupMembers: [],
 };
 
 const useChatStore = create<ChatStore>((set, get) => ({
@@ -175,6 +188,31 @@ const useChatStore = create<ChatStore>((set, get) => ({
       if (exists) return state;
       return { messages: [...state.messages, message] };
     });
+  },
+
+  setPresence: async (sophomorixType, groupName, active) => {
+    await eduApi.patch(CHAT_PRESENCE_ENDPOINT, { groupName, sophomorixType, active });
+  },
+
+  fetchActiveViewers: async (sophomorixType, groupName) => {
+    try {
+      const endpoint = getChatPresenceEndpoint(sophomorixType, groupName);
+      const response = await eduApi.get<ChatPresenceInfo>(endpoint);
+
+      const { currentSophomorixType, currentGroupName } = get();
+      if (currentSophomorixType !== sophomorixType || currentGroupName !== groupName) return;
+
+      set({ activeViewers: response.data.activeUsers, groupMembers: response.data.members });
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
+
+  setActiveViewers: (viewers, members) => {
+    set((state) => ({
+      activeViewers: viewers,
+      groupMembers: members ?? state.groupMembers,
+    }));
   },
 
   reset: () => set(initialState),

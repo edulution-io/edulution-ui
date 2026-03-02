@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ChatView from '@/pages/Chat/components/ChatView';
 import useGroupChat from '@/pages/Chat/hooks/useGroupChat';
+import useChatStore from '@/store/useChatStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
@@ -32,6 +34,17 @@ interface ChatContentProps {
 const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
   const { t } = useTranslation();
   const adapter = useGroupChat(groupName, groupType);
+  const activeViewers = useChatStore((state) => state.activeViewers);
+  const groupMembers = useChatStore((state) => state.groupMembers);
+  const currentUsername = useUserStore((state) => state.user?.username);
+  const otherViewers = useMemo(
+    () => activeViewers.filter((username) => username !== currentUsername),
+    [activeViewers, currentUsername],
+  );
+  const otherMembers = useMemo(
+    () => groupMembers.filter((username) => username !== currentUsername),
+    [groupMembers, currentUsername],
+  );
   const groupTypeLabelMap: Record<string, string> = {
     [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: t('chat.schoolClass'),
     [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: t('chat.project'),
@@ -44,6 +57,8 @@ const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
       adapter={adapter}
       title={groupName}
       subtitle={groupTypeLabel}
+      activeViewers={otherViewers}
+      groupMembers={otherMembers}
     />
   );
 };

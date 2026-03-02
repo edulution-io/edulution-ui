@@ -18,8 +18,17 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '@edulution-io/ui-kit';
 import type ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import { BadgeSH } from '@/components/ui/BadgeSH';
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSH,
+  DropdownMenuTrigger,
+} from '@/components/ui/DropdownMenuSH';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 
@@ -27,9 +36,12 @@ interface ChatViewProps {
   adapter: ChatAdapter;
   title?: string;
   subtitle?: string;
+  activeViewers?: string[];
+  groupMembers?: string[];
 }
 
-const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle }) => {
+const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle, activeViewers = [], groupMembers = [] }) => {
+  const { t } = useTranslation();
   const { messages, input, setInput, handleSubmit, isLoading, error } = adapter;
   const hasError = !!error;
 
@@ -38,14 +50,53 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle }) => {
       {title && (
         <div className="flex w-full flex-col border-b border-muted px-4 pb-2 pt-2">
           <h3 className="font-semibold text-background">{title}</h3>
-          {subtitle && (
-            <BadgeSH
-              variant="secondary"
-              className="mt-1 h-auto w-fit px-1.5 py-0 text-[10px]"
-            >
-              {subtitle}
-            </BadgeSH>
-          )}
+          <div className="mt-1 flex items-center gap-2">
+            {subtitle && (
+              <BadgeSH
+                variant="secondary"
+                className="h-auto w-fit px-1.5 py-0 text-[10px]"
+              >
+                {subtitle}
+              </BadgeSH>
+            )}
+            {groupMembers.length > 0 && (
+              <DropdownMenuSH>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="ml-auto flex cursor-pointer items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground"
+                  >
+                    {t('chat.members', { count: groupMembers.length })}
+                    {activeViewers.length > 0 && (
+                      <>
+                        ,
+                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500" />
+                        {t('chat.online', { count: activeViewers.length })}
+                      </>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuContent className="max-h-[300px] min-w-[8rem] overflow-y-auto rounded-lg border-none bg-accent-light p-1 shadow-md">
+                    {groupMembers.map((username) => (
+                      <DropdownMenuItem
+                        key={username}
+                        className="flex items-center space-x-2 rounded-lg bg-accent-light px-4 py-2"
+                      >
+                        <span
+                          className={cn(
+                            'inline-block h-1.5 w-1.5 rounded-full',
+                            activeViewers.includes(username) ? 'bg-green-500' : 'bg-gray-400',
+                          )}
+                        />
+                        <span>{username}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSH>
+            )}
+          </div>
         </div>
       )}
 

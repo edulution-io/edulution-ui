@@ -18,6 +18,7 @@
  */
 
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -36,8 +37,11 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import PUSH_NOTIFICATION_CHANNEL_ID from '@libs/notification/constants/pushNotificationChannelId';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import type ChatPresenceInfo from '@libs/chat/types/chatPresenceInfo';
+import type ChatPresencePayload from '@libs/chat/types/chatPresencePayload';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import CustomHttpException from '../common/CustomHttpException';
 import NotificationsService from '../notifications/notifications.service';
 import SseService from '../sse/sse.service';
@@ -46,6 +50,8 @@ import { ChatMessage, ChatMessageDocument } from './schemas/chatMessage.schema';
 
 @Injectable()
 class ChatService {
+  private activeChatUsers = new Map<string, { groupName: string; sophomorixType: string }>();
+
   constructor(
     @InjectModel(Conversation.name) private conversationModel: Model<ConversationDocument>,
     @InjectModel(ChatMessage.name) private chatMessageModel: Model<ChatMessageDocument>,
@@ -53,6 +59,29 @@ class ChatService {
     private readonly sseService: SseService,
     private readonly notificationsService: NotificationsService,
   ) {}
+
+  setUserPresence(username: string, groupName: string, sophomorixType: string, active: boolean): void {
+    if (active) {
+      this.activeChatUsers.set(username, { groupName, sophomorixType });
+    } else {
+      this.activeChatUsers.delete(username);
+    }
+    void this.broadcastPresence(groupName, sophomorixType);
+  }
+
+  isUserViewingChat(username: string, groupName: string, sophomorixType: string): boolean {
+    const presence = this.activeChatUsers.get(username);
+    return presence?.groupName === groupName && presence?.sophomorixType === sophomorixType;
+  }
+
+  @OnEvent(EVENT_EMITTER_EVENTS.SSE_USER_DISCONNECTED)
+  handleUserDisconnected(username: string): void {
+    const presence = this.activeChatUsers.get(username);
+    if (presence) {
+      this.activeChatUsers.delete(username);
+      void this.broadcastPresence(presence.groupName, presence.sophomorixType);
+    }
+  }
 
   async getAuthorizedConversation(
     groupName: string,
@@ -131,10 +160,18 @@ class ChatService {
     const payload = { ...message.toJSON(), groupName, sophomorixType };
     this.sseService.sendEventToUsers(recipients, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
+    const notificationRecipients = recipients.filter(
+      (username) => !this.isUserViewingChat(username, groupName, sophomorixType),
+    );
+
+    if (notificationRecipients.length === 0) {
+      return;
+    }
+
     const sourceId = `${sophomorixType}/${groupName}`;
 
     await this.notificationsService.upsertNotificationForSource(
-      recipients,
+      notificationRecipients,
       {
         title: groupName,
         subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
@@ -151,7 +188,52 @@ class ChatService {
         pushNotification: `${message.createdByUserFirstName} ${message.createdByUserLastName}: ${message.content}`,
         createdBy: message.createdBy,
       },
+      false,
+      true,
     );
+  }
+
+  async getPresenceForGroup(groupName: string, sophomorixType: string): Promise<ChatPresenceInfo> {
+    const activeUsers = this.getActiveUsersForGroup(groupName, sophomorixType);
+
+    if (!isAllowedChatSophomorixType(sophomorixType)) {
+      return { activeUsers, members: [] };
+    }
+
+    const cachePath = `${ChatService.CACHE_PATH_PREFIX[sophomorixType]}${groupName}`;
+    const group = await this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${cachePath}`);
+    const members = group?.members?.map((m) => m.username) ?? [];
+
+    return { activeUsers, members };
+  }
+
+  private getActiveUsersForGroup(groupName: string, sophomorixType: string): string[] {
+    const activeUsers: string[] = [];
+    this.activeChatUsers.forEach((presence, username) => {
+      if (presence.groupName === groupName && presence.sophomorixType === sophomorixType) {
+        activeUsers.push(username);
+      }
+    });
+    return activeUsers;
+  }
+
+  private async broadcastPresence(groupName: string, sophomorixType: string): Promise<void> {
+    if (!isAllowedChatSophomorixType(sophomorixType)) {
+      return;
+    }
+
+    const cachePath = `${ChatService.CACHE_PATH_PREFIX[sophomorixType]}${groupName}`;
+    const group = await this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${cachePath}`);
+
+    if (!group?.members) {
+      return;
+    }
+
+    const members = group.members.map((m) => m.username);
+    const activeUsers = this.getActiveUsersForGroup(groupName, sophomorixType);
+
+    const payload: ChatPresencePayload = { groupName, sophomorixType, activeUsers, members };
+    this.sseService.sendEventToUsers(members, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_PRESENCE_UPDATED);
   }
 
   private static readonly CACHE_PATH_PREFIX: Record<AllowedChatSophomorixType, string> = {

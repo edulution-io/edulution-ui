@@ -17,18 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import ChatPresenceInfo from './chatPresenceInfo';
 
-export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
+interface ChatPresencePayload extends ChatPresenceInfo {
+  groupName: string;
+  sophomorixType: string;
+}
 
-export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
-
-export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
-
-export const getChatMessagesEndpoint = (sophomorixType: string, groupName: string): string =>
-  `${CHAT_CONVERSATIONS_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}/messages`;
-
-export const CHAT_PRESENCE_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/presence`;
-
-export const getChatPresenceEndpoint = (sophomorixType: string, groupName: string): string =>
-  `${CHAT_PRESENCE_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}`;
+export default ChatPresencePayload;

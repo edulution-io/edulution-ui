@@ -17,9 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, Param, Patch, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
+import ChatPresenceDto from '@libs/chat/types/chatPresenceDto';
+import type ChatPresenceInfo from '@libs/chat/types/chatPresenceInfo';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
@@ -38,6 +40,20 @@ class ChatController {
     private readonly chatService: ChatService,
     private readonly groupsService: GroupsService,
   ) {}
+
+  @Patch('presence')
+  setPresence(@Body() dto: ChatPresenceDto, @GetCurrentUser() currentUser: JwtUser): void {
+    this.chatService.setUserPresence(currentUser.preferred_username, dto.groupName, dto.sophomorixType, dto.active);
+  }
+
+  @Get('presence/:sophomorixType/:groupName')
+  async getPresence(
+    @Param('sophomorixType') rawSophomorixType: string,
+    @Param('groupName') groupName: string,
+  ): Promise<ChatPresenceInfo> {
+    const sophomorixType = validateChatSophomorixType(rawSophomorixType);
+    return this.chatService.getPresenceForGroup(groupName, sophomorixType);
+  }
 
   @Get('groups')
   async getUserGroups(@GetCurrentUser() currentUser: JwtUser): Promise<UserChatGroups> {
