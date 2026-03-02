@@ -25,6 +25,7 @@ interface DownloadAcknowledgedStore {
   isMultipleDownloadAcknowledged: boolean;
   setSingleDownloadAcknowledged: (value: boolean) => void;
   setMultipleDownloadAcknowledged: (value: boolean) => void;
+  reset: () => void;
 }
 
 type PersistedStore = (
@@ -39,6 +40,7 @@ const useDownloadAcknowledgedStore = create<DownloadAcknowledgedStore>(
       isMultipleDownloadAcknowledged: false,
       setSingleDownloadAcknowledged: (value) => set({ isSingleDownloadAcknowledged: value }),
       setMultipleDownloadAcknowledged: (value) => set({ isMultipleDownloadAcknowledged: value }),
+      reset: () => set({ isSingleDownloadAcknowledged: false, isMultipleDownloadAcknowledged: false }),
     }),
     {
       name: 'download-acknowledged',

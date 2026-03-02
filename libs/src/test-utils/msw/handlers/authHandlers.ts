@@ -17,9 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+/* eslint-disable import/no-extraneous-dependencies */
+import { http, HttpResponse } from 'msw';
+import createUser from '../../factories/createUser';
+
+const EDU_API_BASE = '/edu-api';
+
+const authHandlers = [
+  http.get(`${EDU_API_BASE}/auth/userinfo`, () => HttpResponse.json(createUser())),
+  http.post(`${EDU_API_BASE}/auth/token`, () =>
+    HttpResponse.json({ access_token: 'test-jwt-token', token_type: 'Bearer', expires_in: 900 }),
+  ),
+];
+
+export default authHandlers;

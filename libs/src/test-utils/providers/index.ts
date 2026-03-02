@@ -17,9 +17,4 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+export { default as renderWithProviders } from './renderWithProviders';

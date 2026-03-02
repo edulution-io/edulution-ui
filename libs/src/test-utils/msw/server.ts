@@ -17,9 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+/* eslint-disable import/no-extraneous-dependencies */
+import { setupServer } from 'msw/node';
+import { defaultHandlers } from './handlers';
+
+const server = setupServer(...defaultHandlers);
+
+export default server;

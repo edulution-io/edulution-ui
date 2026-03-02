@@ -17,9 +17,31 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+import type ConferenceDto from '@libs/conferences/types/conference.dto';
+import type AttendeeDto from '@libs/user/types/attendee.dto';
+
+const DEFAULT_CREATOR: AttendeeDto = {
+  firstName: 'Max',
+  lastName: 'Mustermann',
+  username: 'max.mustermann',
+  label: 'Max Mustermann',
+  value: 'max.mustermann',
+};
+
+const CONFERENCE_DEFAULTS: ConferenceDto = {
+  name: 'Lehrerkonferenz 10a',
+  meetingID: 'meeting-abc-123',
+  creator: DEFAULT_CREATOR,
+  isRunning: false,
+  isPublic: false,
+  invitedAttendees: [],
+  invitedGroups: [],
+  joinedAttendees: [],
+};
+
+const createConference = (overrides: Partial<ConferenceDto> = {}): ConferenceDto => ({
+  ...CONFERENCE_DEFAULTS,
+  ...overrides,
+});
+
+export default createConference;

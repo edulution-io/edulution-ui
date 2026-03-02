@@ -17,9 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+export { default as createUser, createAdminUser } from './createUser';
+export { default as createAppConfig } from './createAppConfig';
+export { default as createSurvey } from './createSurvey';
+export { default as createConference } from './createConference';
+export { default as createUserDocument } from './createUserDocument';

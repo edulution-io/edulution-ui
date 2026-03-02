@@ -17,9 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+import type SurveyFormula from '@libs/survey/types/SurveyFormula';
+
+const SURVEY_DEFAULTS: SurveyFormula = {
+  title: 'Schulumfrage Zufriedenheit',
+  description: 'Umfrage zur Zufriedenheit der Lehrkraefte',
+  pages: [],
+  elements: [],
+};
+
+const createSurvey = (overrides: Partial<SurveyFormula> = {}): SurveyFormula => ({
+  ...SURVEY_DEFAULTS,
+  ...overrides,
+});
+
+export default createSurvey;

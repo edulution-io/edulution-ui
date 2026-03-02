@@ -17,9 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
+import type TApps from '@libs/appconfig/types/appsType';
+
+const APP_CONFIG_DEFAULTS: AppConfigOption = {
+  id: 'filesharing' as TApps,
+  icon: 'folder',
+  color: '#4A90D9',
+  options: [],
+  isNativeApp: true,
+  extendedOptions: undefined,
+  defaultDisplayLocations: undefined,
+};
+
+const createAppConfig = (overrides: Partial<AppConfigOption> = {}): AppConfigOption => ({
+  ...APP_CONFIG_DEFAULTS,
+  ...overrides,
+});
+
+export default createAppConfig;

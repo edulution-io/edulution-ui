@@ -17,9 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+/* eslint-disable import/no-extraneous-dependencies */
+import { http, HttpResponse } from 'msw';
+import createAppConfig from '../../factories/createAppConfig';
+
+const EDU_API_BASE = '/edu-api';
+
+const appConfigHandlers = [
+  http.get(`${EDU_API_BASE}/appconfig`, () =>
+    HttpResponse.json([
+      createAppConfig({ id: 'filesharing' as const, icon: 'folder', isNativeApp: true }),
+      createAppConfig({ id: 'mail' as const, icon: 'envelope', isNativeApp: true }),
+      createAppConfig({ id: 'conferences' as const, icon: 'video', isNativeApp: true }),
+    ]),
+  ),
+];
+
+export default appConfigHandlers;

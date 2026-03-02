@@ -17,9 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
-}
+import authHandlers from './authHandlers';
+import appConfigHandlers from './appConfigHandlers';
+import userHandlers from './userHandlers';
+
+const defaultHandlers = [...authHandlers, ...appConfigHandlers, ...userHandlers];
+
+export { authHandlers, appConfigHandlers, userHandlers, defaultHandlers };

@@ -17,9 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export default interface UserSettingsPageStore {
-  isLoading: boolean;
-  error: Error | null;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  reset: () => void;
+interface UserDocument {
+  filename: string;
+  basename: string;
+  lastmod: string;
+  size: number;
+  type: string;
+  mime?: string;
+  etag?: string;
 }
+
+const USER_DOCUMENT_DEFAULTS: UserDocument = {
+  filename: '/webdav/default-school/teachers/max.mustermann/Dokumente/Arbeitsblatt.pdf',
+  basename: 'Arbeitsblatt.pdf',
+  lastmod: '2026-02-26T10:00:00Z',
+  size: 102400,
+  type: 'file',
+  mime: 'application/pdf',
+  etag: '"abc123"',
+};
+
+const createUserDocument = (overrides: Partial<UserDocument> = {}): UserDocument => ({
+  ...USER_DOCUMENT_DEFAULTS,
+  ...overrides,
+});
+
+export type { UserDocument };
+export default createUserDocument;
