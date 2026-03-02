@@ -26,7 +26,8 @@ const SURVEYS_TEMPLATE_ROLES_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     name: ExtendedOptionKeys.SURVEYS_TEMPLATE_ROLES,
     description: 'appExtendedOptions.surveysTemplateRolesDescription',
     title: 'appExtendedOptions.surveysTemplateRolesTitle',
-    type: ExtendedOptionField.switch,
+    // TODO: BECOMES A GROUP SEARCH
+    type: ExtendedOptionField.input,
     value: false,
     width: 'full',
   },

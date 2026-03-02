@@ -25,11 +25,11 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
+import useLdapGroupsTemplateAdmin from '@/hooks/useLdapGroupsTemplateAdmin';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import TemplateSaveDialogFields from '@/pages/Surveys/Editor/dialog/TemplateSaveDialogFields';
-import useLdapGroupsTemplateAdmin from '@/hooks/useLdapGroupsTemplateAdmin';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;

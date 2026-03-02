@@ -40,6 +40,7 @@ import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValu
 import useThemeStore from '@/store/useThemeStore';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useLdapGroupsTemplateAdmin from '@/hooks/useLdapGroupsTemplateAdmin';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
@@ -56,7 +57,6 @@ import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/E
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import CustomLogoImageComponent from '@/pages/Surveys/Editor/components/CustomLogoImageComponent';
 import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyComponents';
-import useLdapGroupsTemplateAdmin from '@/hooks/useLdapGroupsTemplateAdmin';
 
 registerSurveyComponents();
 
