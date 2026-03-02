@@ -215,6 +215,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
     const triggerRef = useRef<HTMLDivElement>(null);
     const popoverContentRef = useRef<HTMLDivElement>(null);
     const touchStartY = useRef<number>(0);
+    const commandListRef = useRef<HTMLDivElement>(null);
     const [open, setOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -265,6 +266,17 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
         setSelected(value);
       }
     }, [value]);
+
+    useEffect(() => {
+      const node = commandListRef.current;
+      if (!node) return undefined;
+      const handler = (e: WheelEvent) => {
+        node.scrollTop += e.deltaY;
+        e.preventDefault();
+      };
+      node.addEventListener('wheel', handler, { passive: false });
+      return () => node.removeEventListener('wheel', handler);
+    }, [open]);
 
     useEffect(() => {
       /** If `onSearch` is provided, do not trigger options updated. */
@@ -500,10 +512,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             >
               {open && (
                 <CommandList
-                  onWheel={(e) => {
-                    e.currentTarget.scrollTop += e.deltaY;
-                    e.preventDefault();
-                  }}
+                  ref={commandListRef}
                   onTouchStart={(e) => {
                     touchStartY.current = e.touches[0].clientY;
                   }}
