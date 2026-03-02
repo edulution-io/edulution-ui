@@ -49,6 +49,7 @@ import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
+import { del } from 'idb-keyval';
 import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
 import clearTLDrawPersistence from '@/pages/Whiteboard/TLDrawOffline/clearTLDrawPersistence';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
@@ -133,6 +134,10 @@ const cleanAllStores = async () => {
   useParentAssignmentStore.getState().reset();
   useNotificationStore.getState().reset();
   localStorage.removeItem('i18nextLng');
+  localStorage.removeItem('user-management-storage');
+  localStorage.removeItem('device-management-storage');
+  await del('user-management-storage');
+  await del('device-management-storage');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };
 

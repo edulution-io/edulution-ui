@@ -2553,7 +2553,8 @@
       "containerCreationSuccessful": "Container successfully created.",
       "containerCreationFailed": "Container could not be created.",
       "containerUpdateSuccessful": "{{containerName}} updated successfully.",
-      "containerAlreadyUpToDate": "{{containerName}} is already up to date."
+      "containerAlreadyUpToDate": "{{containerName}} is already up to date.",
+      "containerDeleted": "{{containerName}} deleted successfully."
     },
     "status": {
       "running": "running",

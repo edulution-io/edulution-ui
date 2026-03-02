@@ -69,7 +69,7 @@ const generateOnlyOfficeConfig = ({
       compactHeader: false,
       compactToolbar: false,
       compatibleFeatures: false,
-      forcesave: false,
+      forcesave: true,
       help: true,
       hideRightMenu: false,
       hideRulers: false,

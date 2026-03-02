@@ -25,6 +25,7 @@ import delay from '@libs/common/utils/delay';
 import useLogout from './useLogout';
 
 const EXPIRY_THRESHOLD_SECONDS = 60;
+const MAX_RENEW_RETRIES = 3;
 
 const useTokenEventListeners = () => {
   const { t } = useTranslation();
@@ -32,8 +33,9 @@ const useTokenEventListeners = () => {
   const handleLogout = useLogout();
   const alreadyLoggedOutRef = useRef(false);
   const renewInProgressRef = useRef(false);
+  const retryCountRef = useRef(0);
 
-  const handleTokenExpired = useCallback(() => {
+  const performLogout = useCallback(() => {
     if (alreadyLoggedOutRef.current) return;
     alreadyLoggedOutRef.current = true;
     toast.error(t('auth.errors.TokenExpired'));
@@ -47,38 +49,42 @@ const useTokenEventListeners = () => {
       renewInProgressRef.current = true;
       console.info(message);
 
-      if (!auth.user?.expired) {
-        try {
-          await delay(2000);
-          const response = await auth.signinSilent();
+      try {
+        await delay(2000);
+        const response = await auth.signinSilent();
 
-          if (!response) {
-            renewInProgressRef.current = false;
-            await handleRenew('Retry token renew');
+        if (!response) {
+          retryCountRef.current += 1;
+          renewInProgressRef.current = false;
+
+          if (retryCountRef.current >= MAX_RENEW_RETRIES) {
+            retryCountRef.current = 0;
+            performLogout();
             return;
           }
-        } catch (error) {
-          console.error('Silent renew failed:', error);
-          renewInProgressRef.current = false;
-          alreadyLoggedOutRef.current = true;
-          toast.error(t('auth.errors.TokenExpired'));
-          await handleLogout();
+
+          await handleRenew('Retry token renew');
           return;
         }
-      } else {
-        alreadyLoggedOutRef.current = true;
-        toast.error(t('auth.errors.TokenExpired'));
-        await handleLogout();
+
+        retryCountRef.current = 0;
+      } catch (error) {
+        console.error('Silent renew failed:', error);
+        retryCountRef.current = 0;
+        renewInProgressRef.current = false;
+        performLogout();
+        return;
       }
 
       renewInProgressRef.current = false;
     },
-    [auth, t, handleLogout],
+    [auth, performLogout],
   );
 
   useEffect(() => {
     const removeUserLoaded = auth.events.addUserLoaded(() => {
       alreadyLoggedOutRef.current = false;
+      retryCountRef.current = 0;
     });
 
     return () => {
@@ -88,9 +94,9 @@ const useTokenEventListeners = () => {
 
   useEffect(() => {
     if (auth.user?.expired) {
-      handleTokenExpired();
+      void handleRenew('Access token expired. Try renew.');
     }
-  }, [auth.user?.expired, handleTokenExpired]);
+  }, [auth.user?.expired, handleRenew]);
 
   useEffect(() => {
     const handleSilentRenewError = () => {
@@ -98,6 +104,9 @@ const useTokenEventListeners = () => {
     };
     const handleTokenExpiring = () => {
       void handleRenew('Token expiring. Try renew.');
+    };
+    const handleTokenExpired = () => {
+      void handleRenew('Access token expired event. Try renew.');
     };
 
     const removeSilentRenewError = auth.events.addSilentRenewError(handleSilentRenewError);
@@ -109,7 +118,7 @@ const useTokenEventListeners = () => {
       removeTokenExpiring();
       removeTokenExpired();
     };
-  }, [auth.events, handleRenew, handleTokenExpired]);
+  }, [auth.events, handleRenew]);
 
   const handleVisibilityChange = useCallback(() => {
     if (document.visibilityState !== 'visible' || !auth.user) return;
@@ -120,12 +129,10 @@ const useTokenEventListeners = () => {
     const now = Math.floor(Date.now() / 1000);
     const timeUntilExpiry = expiresAt - now;
 
-    if (timeUntilExpiry <= 0) {
-      handleTokenExpired();
-    } else if (timeUntilExpiry <= EXPIRY_THRESHOLD_SECONDS) {
+    if (timeUntilExpiry <= EXPIRY_THRESHOLD_SECONDS) {
       void handleRenew('Tab became visible, token expiring soon. Try renew.');
     }
-  }, [auth.user, handleRenew, handleTokenExpired]);
+  }, [auth.user, handleRenew]);
 
   useEffect(() => {
     document.addEventListener('visibilitychange', handleVisibilityChange);

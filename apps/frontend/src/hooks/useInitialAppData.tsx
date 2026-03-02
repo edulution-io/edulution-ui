@@ -23,7 +23,6 @@ import useSentryStore from '@/store/useSentryStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import useLogout from '@/hooks/useLogout';
 
 const useInitialAppData = (isAuthenticated: boolean) => {
   const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
@@ -32,37 +31,25 @@ const useInitialAppData = (isAuthenticated: boolean) => {
   const { fetchWebdavShares } = useFileSharingStore();
   const fetchAndInitSentry = useSentryStore((s) => s.fetchAndInitSentry);
 
-  const handleLogout = useLogout();
-
   useEffect(() => {
     void getPublicAppConfigs();
   }, []);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const getInitialAppData = async () => {
       const isApiResponding = await getIsEduApiHealthy();
-      if (isApiResponding) {
-        void getGlobalSettings();
-        void getAppConfigs();
-        void fetchWebdavShares();
-        void fetchAndInitSentry();
-      } else {
-        void handleLogout();
-      }
+      if (!isApiResponding) return;
+
+      void getGlobalSettings();
+      void getAppConfigs();
+      void fetchWebdavShares();
+      void fetchAndInitSentry();
     };
 
-    if (isAuthenticated) {
-      void getInitialAppData();
-    }
-  }, [
-    isAuthenticated,
-    getIsEduApiHealthy,
-    getGlobalSettings,
-    getAppConfigs,
-    fetchWebdavShares,
-    fetchAndInitSentry,
-    handleLogout,
-  ]);
+    void getInitialAppData();
+  }, [isAuthenticated]);
 };
 
 export default useInitialAppData;
