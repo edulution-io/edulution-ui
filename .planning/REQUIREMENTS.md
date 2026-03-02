@@ -76,9 +76,9 @@ Requirements for the comprehensive test suite. Each maps to roadmap phases.
 - [ ] **FECP-03**: AppLayout component tests — shell rendering with menubar, sidebar, outlet
 - [ ] **FECP-04**: LoginPage component tests — form validation, OIDC redirect trigger
 - [ ] **FECP-05**: Table component tests — sorting, filtering, pagination, row actions
-- [ ] **FECP-06**: Survey form components tests — question rendering, answer submission
-- [ ] **FECP-07**: File browser component tests — file listing, upload, download actions
-- [ ] **FECP-08**: Mail compose component tests — editor, recipients, attachments, send
+- [x] **FECP-06**: Survey form components tests — question rendering, answer submission
+- [x] **FECP-07**: File browser component tests — file listing, upload, download actions
+- [x] **FECP-08**: Mail compose component tests — editor, recipients, attachments, send
 
 ### E2E Tests
 
@@ -181,9 +181,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | FECP-03     | Phase 4 | Pending  |
 | FECP-04     | Phase 4 | Pending  |
 | FECP-05     | Phase 4 | Pending  |
-| FECP-06     | Phase 4 | Pending  |
-| FECP-07     | Phase 4 | Pending  |
-| FECP-08     | Phase 4 | Pending  |
+| FECP-06     | Phase 4 | Complete |
+| FECP-07     | Phase 4 | Complete |
+| FECP-08     | Phase 4 | Complete |
 | E2ET-01     | Phase 4 | Pending  |
 | E2ET-02     | Phase 4 | Pending  |
 | E2ET-03     | Phase 4 | Pending  |

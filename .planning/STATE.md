@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-26)
 
 **Core value:** Catch regressions before they reach users -- every PR must pass automated tests across all layers before merge
-**Current focus:** Phase 4 complete. All 3 plans executed (components, E2E infra, E2E journeys)
+**Current focus:** Phase 4 gap closure complete. All 5 plans executed (components, E2E infra, E2E journeys, 2 gap closures)
 
 ## Current Position
 
 Phase: 4 of 5 (Frontend Components and E2E) -- COMPLETE
-Plan: 3 of 3 in phase 4 (all done)
-Status: Phase 4 complete
-Last activity: 2026-03-02 -- All 3 plans completed, 7 E2E journey test suites with CI pipeline
+Plan: 5 of 5 in phase 4 (all done)
+Status: Phase 4 complete (including verification gap closure)
+Last activity: 2026-03-02 -- Plans 04-04 and 04-05 gap closures completed
 
 Progress: [########..] 80% (Phases 1-4 complete)
 
@@ -20,8 +20,8 @@ Progress: [########..] 80% (Phases 1-4 complete)
 
 **Velocity:**
 
-- Total plans completed: 10 (Phase 2: 7, Phase 4: 3)
-- Average duration: ~10 min/plan
+- Total plans completed: 12 (Phase 2: 7, Phase 4: 5)
+- Average duration: ~9 min/plan
 - Total execution time: ~2 hours
 
 **By Phase:**
@@ -29,12 +29,12 @@ Progress: [########..] 80% (Phases 1-4 complete)
 | Phase | Plans | Total   | Avg/Plan |
 | ----- | ----- | ------- | -------- |
 | 2     | 7/7   | ~90 min | ~12 min  |
-| 4     | 3/3   | ~12 min | ~4 min   |
+| 4     | 5/5   | ~20 min | ~4 min   |
 
 **Recent Trend:**
 
-- Last 3 plans (Phase 4): 04-01 (5m), 04-02 (3m), 04-03 (4m)
-- Trend: Fast execution for test creation plans
+- Last 3 plans (Phase 4): 04-03 (4m), 04-04 (4m), 04-05 (4m)
+- Trend: Fast execution for test creation and gap closure plans
 
 _Updated after each plan completion_
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 - [Phase 4]: Serial describes share state via closure variables for CRUD workflow tests
 - [Phase 4]: E2E CI job is non-blocking (continue-on-error: true) until tests stabilize
 - [Phase 4]: Fixed .gitignore auth/ to /auth/ to scope ignore to root storage dir only
+- [Phase 4]: Used renderWithProviders for AccessAndParticipateSurvey tests (simpler than manual wrapper)
+- [Phase 4]: Documented FECP-08 iframe scope limitation as comment rather than skipped tests
 
 ### Pending Todos
 
@@ -71,5 +73,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 04-03-PLAN.md -- Phase 4 fully complete (all 3 plans). Next: Phase 5 (Advanced Quality)
+Stopped at: Completed 04-05-PLAN.md -- Phase 4 fully complete (all 5 plans including gap closures). Next: Phase 5 (Advanced Quality)
 Resume file: .planning/ROADMAP.md (Phase 5 planning)
