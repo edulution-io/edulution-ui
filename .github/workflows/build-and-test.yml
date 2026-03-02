@@ -233,3 +233,53 @@ jobs:
 
       - name: Run Frontend Tests
         run: npm run test:frontend
+
+  e2e:
+    runs-on: ubuntu-24.04
+    needs: prepare
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+        with:
+          token: ${{ github.token }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6.0.0
+        with:
+          node-version: 22.x
+
+      - name: Restore cached Node.js modules
+        uses: actions/cache@v4.3.0
+        continue-on-error: true
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
+          E2E_ADMIN_USER: ${{ secrets.E2E_ADMIN_USER }}
+          E2E_ADMIN_PASS: ${{ secrets.E2E_ADMIN_PASS }}
+          E2E_TEACHER_USER: ${{ secrets.E2E_TEACHER_USER }}
+          E2E_TEACHER_PASS: ${{ secrets.E2E_TEACHER_PASS }}
+          E2E_STUDENT_USER: ${{ secrets.E2E_STUDENT_USER }}
+          E2E_STUDENT_PASS: ${{ secrets.E2E_STUDENT_PASS }}
+          E2E_PARENT_USER: ${{ secrets.E2E_PARENT_USER }}
+          E2E_PARENT_PASS: ${{ secrets.E2E_PARENT_PASS }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/e2e/playwright-report/
+          retention-days: 14
