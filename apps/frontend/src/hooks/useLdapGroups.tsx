@@ -21,6 +21,8 @@ import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobal
 import useUserStore from '@/store/UserStore/useUserStore';
 import getTokenPayload from '@libs/common/utils/getTokenPayload';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import SCHOOLS_PREFIX from '@libs/lmnApi/constants/prefixes/schoolsPrefix';
 
 const useLdapGroups = () => {
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
@@ -30,6 +32,8 @@ const useLdapGroups = () => {
   if (!isAuthenticated || !eduApiToken || !globalSettings) {
     return {
       isSuperAdmin: false,
+      isSchoolAdmin: false,
+      schoolNames: [] as string[],
       ldapGroups: [],
       isAuthReady: false,
     };
@@ -40,9 +44,13 @@ const useLdapGroups = () => {
   const payload = getTokenPayload(eduApiToken);
   const ldapGroups = payload.ldapGroups ?? [];
   const isSuperAdmin = getIsAdmin(ldapGroups, adminGroupsList);
+  const isSchoolAdmin = ldapGroups.includes(GroupRoles.SCHOOL_ADMIN);
+  const schoolNames = ldapGroups.filter((g) => g.startsWith(SCHOOLS_PREFIX)).map((g) => g.slice(SCHOOLS_PREFIX.length));
 
   return {
     isSuperAdmin,
+    isSchoolAdmin,
+    schoolNames,
     ldapGroups,
     isAuthReady: true,
   };

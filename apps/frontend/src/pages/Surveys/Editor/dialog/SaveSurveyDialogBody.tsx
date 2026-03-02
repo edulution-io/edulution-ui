@@ -43,7 +43,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
 
-  const { isSuperAdmin } = useLdapGroups();
+  const { isSuperAdmin, isSchoolAdmin } = useLdapGroups();
 
   const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
@@ -77,7 +77,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
 
   return (
     <>
-      {isSuperAdmin && (
+      {(isSuperAdmin || isSchoolAdmin) && (
         <Checkbox
           key="should-save-as-template"
           label={t('survey.editor.template.label')}

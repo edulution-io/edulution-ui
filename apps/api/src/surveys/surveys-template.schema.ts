@@ -46,6 +46,9 @@ export class SurveysTemplate {
   @Prop({ default: [] })
   accessGroups: MultipleSelectorGroup[] | Group[];
 
+  @Prop({ default: [] })
+  schools: string[];
+
   @Prop({ default: ['linuxmuster'] })
   deploymentTargets: string[];
 

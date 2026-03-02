@@ -99,7 +99,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { isSuperAdmin } = useLdapGroups();
+  const { isSuperAdmin, isSchoolAdmin, schoolNames } = useLdapGroups();
   const { theme, getResolvedTheme } = useThemeStore();
 
   const handleReset = () => {
@@ -191,7 +191,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   }, [form, initialFormValues, creator, theme, getResolvedTheme]);
 
   const handleSaveTemplate = useCallback(async () => {
-    if (!isSuperAdmin) {
+    if (!isSuperAdmin && !isSchoolAdmin) {
       return;
     }
     const survey = form.getValues();
@@ -204,6 +204,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       id: selectedTemplate?.id,
       name: templateName,
       accessGroups,
+      schools: isSchoolAdmin ? schoolNames : [],
       template: {
         ...remainingSurvey,
         formula: processedFormula,
@@ -218,6 +219,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     selectedTemplate,
     uploadTemplate,
     isSuperAdmin,
+    isSchoolAdmin,
+    schoolNames,
     setIsOpenSaveSurveyDialog,
     templateName,
     accessGroups,
