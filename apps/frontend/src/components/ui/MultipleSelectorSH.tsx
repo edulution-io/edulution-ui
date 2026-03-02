@@ -541,7 +541,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                             {dropdowns.map((option) => (
                               <CommandItem
                                 key={option.value}
-                                value={option.value}
+                                value={option.label}
                                 disabled={option.disable}
                                 onMouseDown={(e) => {
                                   e.preventDefault();
