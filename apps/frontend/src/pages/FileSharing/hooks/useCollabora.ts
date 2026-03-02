@@ -33,10 +33,12 @@ interface UseCollaboraProps {
   filePath: string;
   fileName: string;
   mode: 'view' | 'edit';
+  webdavShare?: string;
 }
 
-const useCollabora = ({ filePath, fileName, mode }: UseCollaboraProps) => {
-  const { webdavShare } = useParams();
+const useCollabora = ({ filePath, fileName, mode, webdavShare }: UseCollaboraProps) => {
+  const { webdavShare: webdavShareFromParams } = useParams();
+  const resolvedWebdavShare = webdavShare ?? webdavShareFromParams;
   const [accessToken, setAccessToken] = useState<string>('');
   const [accessTokenTTL, setAccessTokenTTL] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +57,7 @@ const useCollabora = ({ filePath, fileName, mode }: UseCollaboraProps) => {
           `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COLLABORA_TOKEN}`,
           {
             filePath,
-            share: webdavShare,
+            share: resolvedWebdavShare,
             canWrite: mode === 'edit',
           },
         );
@@ -69,7 +71,7 @@ const useCollabora = ({ filePath, fileName, mode }: UseCollaboraProps) => {
     };
 
     void fetchToken();
-  }, [filePath, fileName, mode, webdavShare]);
+  }, [filePath, fileName, mode, resolvedWebdavShare]);
 
   return {
     collaboraUrl: collaboraUrl || '',

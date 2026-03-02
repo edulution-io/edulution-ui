@@ -175,6 +175,7 @@ const FileRenderer: FC<FileRendererProps> = ({
             filePath={currentlyEditingFile.filePath}
             mode={editMode ? 'edit' : 'view'}
             isOpenedInNewTab={isOpenedInNewTab}
+            webdavShare={webdavShare}
           />
         );
 

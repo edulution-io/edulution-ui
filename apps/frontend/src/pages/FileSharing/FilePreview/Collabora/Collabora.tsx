@@ -26,13 +26,15 @@ interface CollaboraProps {
   fileName: string;
   mode: 'view' | 'edit';
   isOpenedInNewTab?: boolean;
+  webdavShare?: string;
 }
 
-const Collabora = ({ filePath, fileName, mode, isOpenedInNewTab }: CollaboraProps) => {
+const Collabora = ({ filePath, fileName, mode, isOpenedInNewTab, webdavShare }: CollaboraProps) => {
   const { collaboraUrl, wopiSrc, accessToken, accessTokenTTL, isLoading } = useCollabora({
     filePath,
     fileName,
     mode,
+    webdavShare,
   });
 
   if (isLoading || !collaboraUrl || !wopiSrc || !accessToken) return null;

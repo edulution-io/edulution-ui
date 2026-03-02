@@ -31,7 +31,6 @@ import FilesystemService from '../filesystem/filesystem.service';
 
 const WOPI_BASE_PATH = 'wopi/files';
 
-@Public()
 @Controller(WOPI_BASE_PATH)
 class WopiController {
   constructor(
@@ -40,6 +39,7 @@ class WopiController {
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
+  @Public()
   @Get(':fileId')
   async checkFileInfo(
     @Param('fileId') fileId: string,
@@ -66,9 +66,9 @@ class WopiController {
     return res.status(HttpStatus.OK).json(fileInfo);
   }
 
+  @Public()
   @Get(':fileId/contents')
-  async getFile(@Param('fileId') fileId: string, @Query('access_token') accessToken: string, @Res() res: Response) {
-    Logger.log(`GetFile for fileId=${fileId}`, WopiController.name);
+  async getFile(@Param('fileId') _fileId: string, @Query('access_token') accessToken: string, @Res() res: Response) {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
     const client = await this.webdavService.getClient(tokenData.username, tokenData.share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(tokenData.share);
@@ -89,6 +89,7 @@ class WopiController {
     }
   }
 
+  @Public()
   @Post(':fileId/contents')
   async putFile(
     @Param('fileId') fileId: string,
