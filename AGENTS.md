@@ -53,6 +53,7 @@
 - API: Jest; config under `apps/api/jest.config.ts`.
 - Conventions: Co-locate tests with source using `*.spec.ts(x)` or project `test/` folders.
 - Run: `npm run test:frontend` for UI, `npm run test:api` for API; add assertions and keep tests fast and deterministic.
+- New features must include tests. Every new component, hook, store, or utility should have a corresponding `*.spec.ts(x)` file with meaningful coverage before merging.
 
 ## Commit & Pull Request Guidelines
 
