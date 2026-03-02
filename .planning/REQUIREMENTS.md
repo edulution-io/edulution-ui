@@ -74,8 +74,8 @@ Requirements for the comprehensive test suite. Each maps to roadmap phases.
 - [ ] **FECP-01**: MenuBar component tests — navigation, collapse behavior, active state
 - [ ] **FECP-02**: Sidebar component tests — item rendering, collapse, responsive behavior
 - [ ] **FECP-03**: AppLayout component tests — shell rendering with menubar, sidebar, outlet
-- [ ] **FECP-04**: LoginPage component tests — form validation, OIDC redirect trigger
-- [ ] **FECP-05**: Table component tests — sorting, filtering, pagination, row actions
+- [x] **FECP-04**: LoginPage component tests — form validation, OIDC redirect trigger
+- [x] **FECP-05**: Table component tests — sorting, filtering, pagination, row actions
 - [x] **FECP-06**: Survey form components tests — question rendering, answer submission
 - [x] **FECP-07**: File browser component tests — file listing, upload, download actions
 - [x] **FECP-08**: Mail compose component tests — editor, recipients, attachments, send
@@ -179,8 +179,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | FECP-01     | Phase 4 | Pending  |
 | FECP-02     | Phase 4 | Pending  |
 | FECP-03     | Phase 4 | Pending  |
-| FECP-04     | Phase 4 | Pending  |
-| FECP-05     | Phase 4 | Pending  |
+| FECP-04     | Phase 4 | Complete |
+| FECP-05     | Phase 4 | Complete |
 | FECP-06     | Phase 4 | Complete |
 | FECP-07     | Phase 4 | Complete |
 | FECP-08     | Phase 4 | Complete |

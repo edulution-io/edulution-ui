@@ -59,6 +59,8 @@ Recent decisions affecting current work:
 - [Phase 4]: Fixed .gitignore auth/ to /auth/ to scope ignore to root storage dir only
 - [Phase 4]: Used renderWithProviders for AccessAndParticipateSurvey tests (simpler than manual wrapper)
 - [Phase 4]: Documented FECP-08 iframe scope limitation as comment rather than skipped tests
+- [Phase 4]: Mock complex child components (TotpInput) to avoid deep dependency chains in spec tests
+- [Phase 4]: Double-click sort assertion pattern when initial data is already in ascending order
 
 ### Pending Todos
 
@@ -73,5 +75,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 04-05-PLAN.md -- Phase 4 fully complete (all 5 plans including gap closures). Next: Phase 5 (Advanced Quality)
+Stopped at: Re-executed 04-04-PLAN.md -- ScrollableTable sorting/actions tests committed (230a937). Phase 4 fully complete. Next: Phase 5 (Advanced Quality)
 Resume file: .planning/ROADMAP.md (Phase 5 planning)
