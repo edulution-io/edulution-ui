@@ -34,6 +34,7 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
 
 interface BulletinBoardEditorialStore {
   selectedRows: RowSelectionState;
@@ -155,7 +156,8 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   uploadAttachment: async (file): Promise<string> => {
     set({ isAttachmentUploadLoading: true, error: null });
     const formData = new FormData();
-    formData.append('file', file);
+    const uploadingFile = await convertImageFileToCompressedWebp(file, 128, 3840);
+    formData.append('file', uploadingFile);
 
     try {
       const response = await eduApi.post<string>(BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT, formData, {
