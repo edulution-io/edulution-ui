@@ -168,7 +168,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async createIdleConnection(username: string, email: string, password: string): Promise<void> {
-    this.pendingReconnects.delete(username);
+    this.cancelPendingReconnect(username);
 
     const existing = this.idleConnections.get(username);
     if (existing) {
