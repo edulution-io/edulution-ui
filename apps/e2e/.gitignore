@@ -1,4 +1,4 @@
 .env.e2e
-auth/
+/auth/
 playwright-report/
 test-results/
