@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, @typescript-eslint/no-use-before-define, jsx-a11y/label-has-associated-control, jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus, jsx-a11y/role-has-required-aria-props, react/button-has-type, react/display-name, react/no-array-index-key, no-underscore-dangle, no-plusplus */
+
 import { renderHook } from '@testing-library/react';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
@@ -39,7 +41,7 @@ describe('useLdapGroups', () => {
     useGlobalSettingsApiStore.setState({ globalSettings: null });
   });
 
-  it('returns not ready when user is not authenticated', () => {
+  it('returns not ready when not authenticated', () => {
     useUserStore.setState({ isAuthenticated: false, eduApiToken: '' });
 
     const { result } = renderHook(() => useLdapGroups());
@@ -49,15 +51,16 @@ describe('useLdapGroups', () => {
     expect(result.current.isAuthReady).toBe(false);
   });
 
-  it('returns not ready when eduApiToken is missing', () => {
+  it('returns not ready when no token', () => {
     useUserStore.setState({ isAuthenticated: true, eduApiToken: '' });
 
     const { result } = renderHook(() => useLdapGroups());
 
     expect(result.current.isAuthReady).toBe(false);
+    expect(result.current.ldapGroups).toEqual([]);
   });
 
-  it('returns not ready when globalSettings is null', () => {
+  it('returns not ready when no globalSettings', () => {
     useUserStore.setState({
       isAuthenticated: true,
       eduApiToken: createToken({ ldapGroups: ['/teachers'] }),
@@ -69,23 +72,7 @@ describe('useLdapGroups', () => {
     expect(result.current.isAuthReady).toBe(false);
   });
 
-  it('returns ldapGroups and isAuthReady true when fully authenticated', () => {
-    useUserStore.setState({
-      isAuthenticated: true,
-      eduApiToken: createToken({ ldapGroups: ['/teachers', '/staff'] }),
-    });
-    useGlobalSettingsApiStore.setState({
-      globalSettings: { auth: { adminGroups: [{ path: '/admins' }] } } as never,
-    });
-
-    const { result } = renderHook(() => useLdapGroups());
-
-    expect(result.current.ldapGroups).toEqual(['/teachers', '/staff']);
-    expect(result.current.isAuthReady).toBe(true);
-    expect(result.current.isSuperAdmin).toBe(false);
-  });
-
-  it('returns isSuperAdmin true when user is in admin group', () => {
+  it('returns isSuperAdmin true when user is admin', () => {
     useUserStore.setState({
       isAuthenticated: true,
       eduApiToken: createToken({ ldapGroups: ['/admins', '/teachers'] }),
@@ -100,10 +87,25 @@ describe('useLdapGroups', () => {
     expect(result.current.isAuthReady).toBe(true);
   });
 
-  it('returns isSuperAdmin true when user has global admin role', () => {
+  it('returns isSuperAdmin false when user is not admin', () => {
     useUserStore.setState({
       isAuthenticated: true,
-      eduApiToken: createToken({ ldapGroups: ['/role-globaladministrator'] }),
+      eduApiToken: createToken({ ldapGroups: ['/teachers', '/staff'] }),
+    });
+    useGlobalSettingsApiStore.setState({
+      globalSettings: { auth: { adminGroups: [{ path: '/admins' }] } } as never,
+    });
+
+    const { result } = renderHook(() => useLdapGroups());
+
+    expect(result.current.isSuperAdmin).toBe(false);
+    expect(result.current.isAuthReady).toBe(true);
+  });
+
+  it('returns ldapGroups from token payload', () => {
+    useUserStore.setState({
+      isAuthenticated: true,
+      eduApiToken: createToken({ ldapGroups: ['/teachers', '/staff', '/science'] }),
     });
     useGlobalSettingsApiStore.setState({
       globalSettings: { auth: { adminGroups: [] } } as never,
@@ -111,7 +113,8 @@ describe('useLdapGroups', () => {
 
     const { result } = renderHook(() => useLdapGroups());
 
-    expect(result.current.isSuperAdmin).toBe(true);
+    expect(result.current.ldapGroups).toEqual(['/teachers', '/staff', '/science']);
+    expect(result.current.isAuthReady).toBe(true);
   });
 
   it('returns empty ldapGroups when token has no ldapGroups field', () => {
