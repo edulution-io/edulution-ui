@@ -35,7 +35,9 @@
     },
     "refreshGroups": "Refresh groups",
     "groupsFound": "{{count}} group(s) found",
-    "loadOlderMessages": "Load older messages"
+    "loadOlderMessages": "Load older messages",
+    "members": "{{count}} members",
+    "online": "{{count}} online"
   },
   "bulletinboard": {
     "settings": "Settings",

@@ -35,7 +35,9 @@
     },
     "refreshGroups": "Gruppen aktualisieren",
     "groupsFound": "{{count}} Gruppe(n) gefunden",
-    "loadOlderMessages": "Ältere Nachrichten laden"
+    "loadOlderMessages": "Ältere Nachrichten laden",
+    "members": "{{count}} Nutzer",
+    "online": "{{count}} online"
   },
   "bulletinboard": {
     "settings": "Einstellungen",

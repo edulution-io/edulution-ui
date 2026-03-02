@@ -20,6 +20,7 @@
 import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
+import ChatPresencePayload from '@libs/chat/types/chatPresencePayload';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -29,8 +30,19 @@ import useUserStore from '@/store/UserStore/useUserStore';
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
   const [input, setInput] = useState('');
-  const { messages, isLoading, isSending, error, fetchMessages, sendMessage, setCurrentConversation, addMessage } =
-    useChatStore();
+  const {
+    messages,
+    isLoading,
+    isSending,
+    error,
+    fetchMessages,
+    sendMessage,
+    setCurrentConversation,
+    addMessage,
+    setPresence,
+    fetchActiveViewers,
+    setActiveViewers,
+  } = useChatStore();
   const user = useUserStore((state) => state.user);
   const currentUsername = user?.username;
 
@@ -47,7 +59,16 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   useEffect(() => {
     setCurrentConversation(sophomorixType, groupName);
     void fetchMessages(sophomorixType, groupName);
-  }, [sophomorixType, groupName, setCurrentConversation, fetchMessages]);
+    void fetchActiveViewers(sophomorixType, groupName);
+  }, [sophomorixType, groupName, setCurrentConversation, fetchMessages, fetchActiveViewers]);
+
+  useEffect(() => {
+    void setPresence(sophomorixType, groupName, true);
+
+    return () => {
+      void setPresence(sophomorixType, groupName, false);
+    };
+  }, [groupName, sophomorixType, setPresence]);
 
   const handleNewMessage = useCallback(
     (e: MessageEvent<string>) => {
@@ -71,6 +92,25 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   );
 
   useSseEventListener(SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE, handleNewMessage, { enabled: true });
+
+  const handlePresenceUpdate = useCallback(
+    (e: MessageEvent<string>) => {
+      try {
+        const payload = JSON.parse(e.data) as ChatPresencePayload;
+
+        if (payload.groupName !== groupNameRef.current || payload.sophomorixType !== sophomorixTypeRef.current) {
+          return;
+        }
+
+        setActiveViewers(payload.activeUsers, payload.members);
+      } catch (err) {
+        console.error('Failed to parse SSE presence update', err);
+      }
+    },
+    [setActiveViewers],
+  );
+
+  useSseEventListener(SSE_MESSAGE_TYPE.CHAT_PRESENCE_UPDATED, handlePresenceUpdate, { enabled: true });
 
   const handleSubmit = useCallback(
     async (e?: FormEvent): Promise<void> => {

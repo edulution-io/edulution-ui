@@ -217,6 +217,7 @@ class NotificationsService {
     triggeredBy: string | undefined,
     createNotificationDto: CreateNotificationDto,
     skipPush = false,
+    skipDebounce = false,
   ): Promise<void> {
     const effectiveTriggeredBy = triggeredBy ?? NOTIFICATION_TYPE.USER;
     const { sourceType, sourceId } = createNotificationDto;
@@ -236,6 +237,7 @@ class NotificationsService {
         effectiveTriggeredBy,
         createNotificationDto,
         skipPush,
+        skipDebounce,
       );
     } else {
       await this.notifyUsernames(usernames, partialNotification, effectiveTriggeredBy, createNotificationDto, skipPush);
@@ -249,6 +251,7 @@ class NotificationsService {
     triggeredBy: string,
     updateData: CreateNotificationDto,
     skipPush = false,
+    skipDebounce = false,
   ): Promise<void> {
     const notificationId = String(existingNotification.id);
     const objectId = new Types.ObjectId(notificationId);
@@ -270,7 +273,8 @@ class NotificationsService {
 
     this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
 
-    if (!skipPush && NotificationsService.shouldSendPush(existingNotification)) {
+    const shouldPush = skipDebounce || NotificationsService.shouldSendPush(existingNotification);
+    if (!skipPush && shouldPush) {
       const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
       await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
       await this.updateLastPushSentAt(notificationId);
