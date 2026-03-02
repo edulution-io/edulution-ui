@@ -17,9 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@edulution-io/ui-kit';
@@ -35,6 +36,11 @@ const ChatPage = () => {
   const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
   const { isLoadingGroups, fetchUserGroups } = useChatStore();
   useRegisterChatSections();
+
+  const handleRefreshGroups = useCallback(async () => {
+    const count = await fetchUserGroups();
+    toast.info(t('chat.groupsFound', { count }));
+  }, [fetchUserGroups, t]);
 
   return (
     <PageLayout hasFullWidthMain>
@@ -60,7 +66,7 @@ const ChatPage = () => {
                   type="button"
                   variant="btn-ghost"
                   disabled={isLoadingGroups}
-                  onClick={() => fetchUserGroups()}
+                  onClick={handleRefreshGroups}
                   className="mt-4 flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted-background disabled:opacity-50"
                 >
                   <FontAwesomeIcon

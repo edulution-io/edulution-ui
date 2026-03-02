@@ -34,6 +34,7 @@
       "invalidGroupType": "Ungültiger Gruppentyp"
     },
     "refreshGroups": "Gruppen aktualisieren",
+    "groupsFound": "{{count}} Gruppe(n) gefunden",
     "loadOlderMessages": "Ältere Nachrichten laden"
   },
   "bulletinboard": {

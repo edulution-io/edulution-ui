@@ -37,7 +37,7 @@ interface ChatStore {
   hasMoreMessages: boolean;
   isLoadingOlderMessages: boolean;
 
-  fetchUserGroups: () => Promise<void>;
+  fetchUserGroups: () => Promise<number>;
   fetchMessages: (sophomorixType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
   fetchOlderMessages: () => Promise<void>;
   sendMessage: (sophomorixType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
@@ -63,15 +63,18 @@ const useChatStore = create<ChatStore>((set, get) => ({
   ...initialState,
 
   fetchUserGroups: async () => {
-    if (get().isLoadingGroups) return;
+    if (get().isLoadingGroups) return 0;
 
     set({ isLoadingGroups: true, error: null });
 
     try {
       const response = await eduApi.get<UserChatGroups>(CHAT_USER_GROUPS_ENDPOINT);
       set({ userGroups: response.data });
+      const { classes, projects, groups } = response.data;
+      return classes.length + projects.length + groups.length;
     } catch (error) {
       handleApiError(error, set);
+      return 0;
     } finally {
       set({ isLoadingGroups: false });
     }

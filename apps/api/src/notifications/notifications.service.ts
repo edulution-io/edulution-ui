@@ -261,6 +261,7 @@ class NotificationsService {
           pushNotification: updateData.pushNotification,
           content: updateData.content,
           data: updateData.data,
+          createdBy: updateData.createdBy,
         },
       },
     );
