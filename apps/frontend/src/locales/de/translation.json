@@ -2148,7 +2148,9 @@
       "light": "helle",
       "dark": "dunkle",
       "title": "Logo für das {{variant}} Farbschema"
-    }
+    },
+    "surveysTemplateRolesDescription": "Wähle hier die Rollen aus, die die Umfragevorlagen verwalten ksollen.",
+    "surveysTemplateRolesTitle": "Umfragevorlagen-Rollen"
   },
   "preview": {
     "image": "Bildvorschau",

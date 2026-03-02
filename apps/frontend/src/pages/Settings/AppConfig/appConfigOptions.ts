@@ -55,6 +55,7 @@ import URL_SYNC_EXTENDED_OPTIONS, {
 import APP_LOGO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/appLogoExtendedOptions';
 import { ALL_DISPLAY_LOCATIONS } from '@libs/appconfig/constants/appDisplayLocations';
 import WIREGUARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/wireguardExtendedOptions';
+import SURVEYS_TEMPLATE_ROLES_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/surveysTemplateRolesExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -99,6 +100,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.appLogo]: APP_LOGO_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.surveysTemplateRoles]: SURVEYS_TEMPLATE_ROLES_EXTENDED_OPTIONS,
     },
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },

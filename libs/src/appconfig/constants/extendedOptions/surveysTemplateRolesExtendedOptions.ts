@@ -17,15 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
-import { Migration } from 'apps/api/src/migration/migration.type';
-import surveyTemplatesMigration001LoadDefaultTemplates from './surveyTemplatesMigration001LoadDefaultTemplates';
-import surveyTemplatesMigration000MigrateTemplateFilesToDB from './surveyTemplatesMigration000MigrateTemplateFilesToDB';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-// Add new migrations here
-const surveyTemplatesMigrationsList: Migration<SurveysTemplateDocument>[] = [
-  surveyTemplatesMigration000MigrateTemplateFilesToDB,
-  surveyTemplatesMigration001LoadDefaultTemplates,
+const SURVEYS_TEMPLATE_ROLES_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.SURVEYS_TEMPLATE_ROLES,
+    description: 'appExtendedOptions.surveysTemplateRolesDescription',
+    title: 'appExtendedOptions.surveysTemplateRolesTitle',
+    type: ExtendedOptionField.switch,
+    value: false,
+    width: 'full',
+  },
 ];
 
-export default surveyTemplatesMigrationsList;
+export default SURVEYS_TEMPLATE_ROLES_EXTENDED_OPTIONS;

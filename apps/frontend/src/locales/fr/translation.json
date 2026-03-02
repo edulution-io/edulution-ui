@@ -1954,7 +1954,9 @@
       "light": "clair",
       "dark": "sombre",
       "title": "Logo thématique {{variant}}"
-    }
+    },
+    "surveysTemplateRolesDescription": "Sélectionnez ici les rôles qui devraient gérer les modèles de sondage.",
+    "surveysTemplateRolesTitle": "Rôles des modèles de sondage"
   },
   "preview": {
     "image": "Aperçu de l'image",

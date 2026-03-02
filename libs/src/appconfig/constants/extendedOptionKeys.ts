@@ -47,6 +47,7 @@ const ExtendedOptionKeys = {
   APP_LOGO: 'APP_LOGO',
   BACKGROUND: 'BACKGROUND',
   WIREGUARD_PEERS_TABLE: 'WIREGUARD_PEERS_TABLE',
+  SURVEYS_TEMPLATE_ROLES: 'SURVEYS_TEMPLATE_ROLES',
 } as const;
 
 export default ExtendedOptionKeys;

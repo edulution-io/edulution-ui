@@ -17,35 +17,34 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import useUserStore from '@/store/UserStore/useUserStore';
+import APPS from '@libs/appconfig/constants/apps';
 import getTokenPayload from '@libs/common/utils/getTokenPayload';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import useUserStore from '@/store/UserStore/useUserStore';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
-const useLdapGroups = () => {
+const useLdapGroupsTemplateAdmin = () => {
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const eduApiToken = useUserStore((s) => s.eduApiToken);
-  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
+  const appConfig = appConfigs.find((c) => c.name === APPS.SURVEYS);
 
-  if (!isAuthenticated || !eduApiToken || !globalSettings) {
+  if (!isAuthenticated || !eduApiToken || !appConfig) {
     return {
-      isSuperAdmin: false,
-      ldapGroups: [],
-      isAuthReady: false,
+      canAccessTemplates: false,
     };
   }
 
-  const adminGroups = globalSettings.auth?.adminGroups || [];
-  const adminGroupsList = adminGroups.map((group) => group.path);
+  const surveysTemplateRoles = appConfig?.extendedOptions?.[ExtendedOptionKeys.SURVEYS_TEMPLATE_ROLES] as
+    | string[]
+    | undefined;
   const payload = getTokenPayload(eduApiToken);
   const ldapGroups = payload.ldapGroups ?? [];
-  const isSuperAdmin = getIsAdmin(ldapGroups, adminGroupsList);
-
+  const canAccessTemplates = getIsAdmin(ldapGroups, surveysTemplateRoles || []);
   return {
-    isSuperAdmin,
-    ldapGroups,
-    isAuthReady: true,
+    canAccessTemplates,
   };
 };
 
-export default useLdapGroups;
+export default useLdapGroupsTemplateAdmin;

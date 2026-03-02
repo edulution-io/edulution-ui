@@ -2127,7 +2127,9 @@
       "light": "light",
       "dark": "dark",
       "title": "Logo for the {{variant}} color scheme"
-    }
+    },
+    "surveysTemplateRolesDescription": "Select the roles that should manage the survey templates.",
+    "surveysTemplateRolesTitle": "Survey Template Roles"
   },
   "mails": {
     "errors": {

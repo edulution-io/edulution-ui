@@ -40,7 +40,6 @@ import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValu
 import useThemeStore from '@/store/useThemeStore';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
@@ -57,6 +56,7 @@ import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/E
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import CustomLogoImageComponent from '@/pages/Surveys/Editor/components/CustomLogoImageComponent';
 import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyComponents';
+import useLdapGroupsTemplateAdmin from '@/hooks/useLdapGroupsTemplateAdmin';
 
 registerSurveyComponents();
 
@@ -99,7 +99,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { isSuperAdmin, isSchoolAdmin, schoolNames } = useLdapGroups();
+  const { canAccessTemplates } = useLdapGroupsTemplateAdmin();
   const { theme, getResolvedTheme } = useThemeStore();
 
   const handleReset = () => {
@@ -191,7 +191,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   }, [form, initialFormValues, creator, theme, getResolvedTheme]);
 
   const handleSaveTemplate = useCallback(async () => {
-    if (!isSuperAdmin && !isSchoolAdmin) {
+    if (!canAccessTemplates) {
       return;
     }
     const survey = form.getValues();
@@ -204,7 +204,6 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       id: selectedTemplate?.id,
       name: templateName,
       accessGroups,
-      schools: isSchoolAdmin ? schoolNames : [],
       template: {
         ...remainingSurvey,
         formula: processedFormula,
@@ -218,9 +217,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     creator,
     selectedTemplate,
     uploadTemplate,
-    isSuperAdmin,
-    isSchoolAdmin,
-    schoolNames,
+    canAccessTemplates,
     setIsOpenSaveSurveyDialog,
     templateName,
     accessGroups,

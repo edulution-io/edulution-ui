@@ -17,19 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import SurveyDto from './survey.dto';
 
 export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
 
 export interface SurveyTemplateDto {
   template: TemplateDto;
+  createdAt?: Date;
   id?: string;
   name?: string;
   isActive?: boolean;
   isDefaultTemplate?: boolean;
   accessGroups?: MultipleSelectorGroup[];
-  schools?: string[];
-  createdAt?: Date;
 }

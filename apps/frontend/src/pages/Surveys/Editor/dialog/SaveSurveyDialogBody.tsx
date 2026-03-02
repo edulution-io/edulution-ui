@@ -25,11 +25,11 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import TemplateSaveDialogFields from '@/pages/Surveys/Editor/dialog/TemplateSaveDialogFields';
+import useLdapGroupsTemplateAdmin from '@/hooks/useLdapGroupsTemplateAdmin';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -42,8 +42,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
-
-  const { isSuperAdmin, isSchoolAdmin } = useLdapGroups();
+  const { canAccessTemplates } = useLdapGroupsTemplateAdmin();
 
   const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
@@ -77,7 +76,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
 
   return (
     <>
-      {(isSuperAdmin || isSchoolAdmin) && (
+      {canAccessTemplates && (
         <Checkbox
           key="should-save-as-template"
           label={t('survey.editor.template.label')}
@@ -86,7 +85,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           aria-label={t('survey.editor.template.label')}
         />
       )}
-      {shouldSaveAsTemplate && <TemplateSaveDialogFields />}
+      {canAccessTemplates && shouldSaveAsTemplate && <TemplateSaveDialogFields />}
       <p className="text-l font-bold text-background">{t('surveys.saveDialog.surveySettings')}</p>
       <SearchUsersOrGroups
         users={watch('invitedAttendees')}
@@ -112,6 +111,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
           disabled={shouldDisable}
           aria-label={t(`survey.${name}`)}
+          className="text-background"
         />
       ))}
     </>

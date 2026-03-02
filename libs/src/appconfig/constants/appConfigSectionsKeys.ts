@@ -33,6 +33,7 @@ const AppConfigSectionsKeys = {
   urlHandling: 'urlHandling',
   appLogo: 'appLogo',
   wireguard: 'wireguard',
+  surveysTemplateRoles: 'surveysTemplateRoles',
 } as const;
 
 export default AppConfigSectionsKeys;
