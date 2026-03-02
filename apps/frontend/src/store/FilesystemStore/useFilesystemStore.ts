@@ -104,11 +104,10 @@ const useFilesystemStore = create<FilesystemStore>((set) => ({
     try {
       const form = new FormData();
       form.append('destination', destination);
-      form.append('filename', filename);
-
       if (file instanceof File) {
         const webpFile = await convertImageFileToCompressedWebp(file, 1024, 3840);
-        form.append('file', webpFile, filename);
+        form.append('filename', webpFile.name);
+        form.append('file', webpFile, webpFile.name);
       } else if (file instanceof Blob) {
         const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
 
