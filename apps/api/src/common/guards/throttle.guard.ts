@@ -19,7 +19,7 @@
 
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import THROTTLE_METADATA_KEY from '@libs/common/constants/throttleMetadataKey';
 import { THROTTLE_ERROR_MESSAGES } from '@libs/common/constants/throttleErrorMessages';
 import CustomHttpException from '../CustomHttpException';
@@ -27,7 +27,7 @@ import type { ThrottleConfig } from '../decorators/throttle.decorator';
 
 const throttleCache = new Map<string, { count: number; expiresAt: number }>();
 const MAX_CACHE_SIZE = 10_000;
-const CLEANUP_THRESHOLD = MAX_CACHE_SIZE * 0.9;
+const TARGET_SIZE_AFTER_CLEANUP = MAX_CACHE_SIZE * 0.9;
 
 const evictExpiredEntries = () => {
   if (throttleCache.size < MAX_CACHE_SIZE) {
@@ -46,7 +46,7 @@ const evictExpiredEntries = () => {
   }
 
   const entries = Array.from(throttleCache.entries()).sort((a, b) => a[1].expiresAt - b[1].expiresAt);
-  const entriesToRemove = entries.slice(0, throttleCache.size - CLEANUP_THRESHOLD);
+  const entriesToRemove = entries.slice(0, throttleCache.size - TARGET_SIZE_AFTER_CLEANUP);
   entriesToRemove.forEach(([key]) => throttleCache.delete(key));
 };
 
@@ -65,6 +65,7 @@ class ThrottleGuard implements CanActivate {
     }
 
     const request: Request = context.switchToHttp().getRequest();
+    const response: Response = context.switchToHttp().getResponse();
     const username = request.user?.preferred_username;
 
     if (!username) {
@@ -78,6 +79,13 @@ class ThrottleGuard implements CanActivate {
     const cached = throttleCache.get(cacheKey);
 
     if (cached && cached.expiresAt > now) {
+      const remaining = Math.max(0, config.limit - cached.count);
+      const retryAfterSeconds = Math.ceil((cached.expiresAt - now) / 1000);
+
+      response.setHeader('X-RateLimit-Limit', config.limit);
+      response.setHeader('X-RateLimit-Remaining', remaining);
+      response.setHeader('Retry-After', retryAfterSeconds);
+
       if (cached.count >= config.limit) {
         throw new CustomHttpException(
           THROTTLE_ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
@@ -93,6 +101,9 @@ class ThrottleGuard implements CanActivate {
 
     evictExpiredEntries();
     throttleCache.set(cacheKey, { count: 1, expiresAt: now + config.ttl });
+
+    response.setHeader('X-RateLimit-Limit', config.limit);
+    response.setHeader('X-RateLimit-Remaining', config.limit - 1);
 
     return true;
   }
