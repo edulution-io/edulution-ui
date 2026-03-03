@@ -1859,6 +1859,7 @@
       "startDateBeforeEndDate": "The start date must be before the end date",
       "invalidRequestData": "Invalid request data",
       "wrongServerConfig": "Incorrect server configuration",
+      "rateLimitExceeded": "Too many requests. Please try again later",
       "path": {
         "noString": "Path must be a string",
         "isEmpty": "Path cannot be empty",
