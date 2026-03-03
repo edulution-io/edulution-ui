@@ -168,11 +168,16 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
 
     if (!isAnswerFileQuestionAnswer(questionAnswer)) {
       const nested = questionAnswer as unknown as Record<string, TSurveyQuestionAnswerTypes>;
-      const entries = Object.entries(nested).map(async ([_key, value]) =>
-        this.processSurveyAnswer(userName, surveyId, value as unknown as TSurveyAnswer, true),
+      const processedEntries = await Promise.all(
+        Object.entries(nested).map(async ([nestedKey, nestedValue]) => {
+          const processed = await this.processQuestionAnswer(userName, surveyId, nestedKey, nestedValue, keepOldFiles);
+          return [nestedKey, processed] as const;
+        }),
       );
-      const answer = await Promise.all(entries);
-      return answer as unknown as TSurveyQuestionAnswerTypes;
+      if (Array.isArray(questionAnswer)) {
+        return processedEntries.map(([, value]) => value) as unknown as TSurveyQuestionAnswerTypes;
+      }
+      return Object.fromEntries(processedEntries) as unknown as TSurveyQuestionAnswerTypes;
     }
 
     return this.processFileQuestionAnswer(userName, surveyId, questionId, questionAnswer, keepOldFiles);
