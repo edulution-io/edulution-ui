@@ -32,6 +32,7 @@ import { decodeBase64 } from '@libs/common/utils/getBase64String';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import MASKED_VALUE from '@libs/common/constants/maskedValue';
 import EnterSafePinDialog from './EnterSafePinDialog';
 
 interface PasswordCellProps {
@@ -41,9 +42,8 @@ interface PasswordCellProps {
 
 const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = false }) => {
   const { t } = useTranslation();
-  const placeholder = '********';
-  const [password, setPassword] = useState(placeholder);
-  const isVisible = password !== placeholder;
+  const [password, setPassword] = useState(MASKED_VALUE);
+  const isVisible = password !== MASKED_VALUE;
 
   const [isOpen, setIsOpen] = useState('');
 
@@ -68,25 +68,25 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
     }
     form.setValue('safePin', '');
     toast.error(t('usersettings.security.wrongSafePin'));
-    return placeholder;
+    return MASKED_VALUE;
   };
 
   const handleDecrypt = async () => {
-    if (password === placeholder) {
+    if (password === MASKED_VALUE) {
       const encryptedPassword = await handleDecryptPassword();
 
-      if (encryptedPassword !== placeholder) {
+      if (encryptedPassword !== MASKED_VALUE) {
         setPassword(encryptedPassword);
       }
     } else {
-      setPassword(placeholder);
+      setPassword(MASKED_VALUE);
     }
   };
 
   const handleShowPassword = async () => {
     if (isOpen === 'show' || safePin) {
       await handleDecrypt();
-    } else if (password === placeholder) {
+    } else if (password === MASKED_VALUE) {
       setIsOpen('show');
     } else {
       setIsOpen('');
@@ -97,10 +97,10 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
     if (isOpen === 'copy' || safePin) {
       const encryptedPassword = await handleDecryptPassword();
 
-      if (encryptedPassword !== placeholder) {
+      if (encryptedPassword !== MASKED_VALUE) {
         copyToClipboard(encryptedPassword);
       }
-    } else if (password === placeholder) {
+    } else if (password === MASKED_VALUE) {
       setIsOpen('copy');
     } else {
       setIsOpen('');
@@ -139,7 +139,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
           <Input
             title={t('common.username')}
             type="text"
-            value={isVisible ? password : placeholder}
+            value={isVisible ? password : MASKED_VALUE}
             readOnly
             className="min-w-64 cursor-pointer"
             onMouseDown={(e) => {
@@ -152,7 +152,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
         ) : (
           <SelectableCell
             onClick={() => handleCopyPassword()}
-            text={isVisible ? password : placeholder}
+            text={isVisible ? password : MASKED_VALUE}
             className="min-w-28 cursor-pointer"
           />
         )}

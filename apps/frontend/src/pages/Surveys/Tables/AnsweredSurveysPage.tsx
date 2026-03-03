@@ -31,6 +31,7 @@ const AnsweredSurveysPage = () => {
     answeredSurveys,
     isFetchingAnsweredSurveys,
     updateAnsweredSurveys,
+    isCurrentUserTheSurveyOwner,
     canParticipate,
     hasAnswers,
   } = useSurveysTablesPageStore();
@@ -58,6 +59,8 @@ const AnsweredSurveysPage = () => {
         icon={SurveysViewAnsweredIcon}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
+        canEdit={isCurrentUserTheSurveyOwner}
+        canDelete={isCurrentUserTheSurveyOwner}
         canShowResults={hasAnswers}
         canParticipate={canParticipate}
         canShowSubmittedAnswers={hasAnswers}

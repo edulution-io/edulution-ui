@@ -23,7 +23,6 @@ import { useTranslation } from 'react-i18next';
 import { faFileCirclePlus, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, cn } from '@edulution-io/ui-kit';
-import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -93,9 +92,12 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
 
   return (
     <Card
-      className={cn(GRID_CARD, 'relative flex h-36 min-w-[16rem] cursor-pointer p-4', {
-        'opacity-50': surveyTemplate && !surveyTemplate.isActive,
-      })}
+      className={cn(
+        'relative m-1 flex flex h-32 h-36 w-32 min-w-[16rem] cursor-pointer flex-col items-center overflow-hidden p-4 md:w-48',
+        {
+          'opacity-50': surveyTemplate && !surveyTemplate.isActive,
+        },
+      )}
       variant="text"
       onClick={handleCardClick}
     >

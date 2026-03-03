@@ -49,7 +49,7 @@ const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = fals
     }
 
     const iconClassName = getAppIconClassName(iconSrc);
-    const baseClassName = cn('h-20 w-20 object-contain text-foreground dark:text-white', iconClassName);
+    const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
     return (
       <FontAwesomeIcon
         icon={iconSrc}
