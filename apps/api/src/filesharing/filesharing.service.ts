@@ -358,14 +358,14 @@ class FilesharingService {
     const webDavUrl = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
     const client = await this.webDavService.getClient(creator.username, share);
 
-    const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
-
     const fileType = await this.webDavService.getFileTypeFromWebdavPath(
       publicShare.creator.username,
       pathWithoutWebdav,
       publicShare.filePath,
       share,
     );
+
+    const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
 
     const filename = fileType === ContentType.FILE ? publicShare.filename : `${publicShare.filename}.zip`;
 

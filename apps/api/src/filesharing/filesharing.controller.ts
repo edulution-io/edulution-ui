@@ -32,9 +32,9 @@ import {
   Query,
   Req,
   Res,
-  StreamableFile,
 } from '@nestjs/common';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import ContentType from '@libs/filesharing/types/contentType';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { Request, Response } from 'express';
@@ -281,7 +281,7 @@ class FilesharingController {
     @Param('publicShareId') publicShareId: string,
     @Query('share') share: string,
     @Body('password') password: string | undefined,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
     @GetCurrentUser({ required: false }) currentUser?: JWTUser,
   ) {
     const { stream, filename, fileType } = await this.filesharingService.getPublicShare(
@@ -291,15 +291,26 @@ class FilesharingController {
       password,
     );
 
-    res.set({
-      [HTTP_HEADERS.ContentDisposition]: `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
-      [HTTP_HEADERS.ContentType]:
-        fileType === ContentType.FILE
-          ? RequestResponseContentType.APPLICATION_OCTET_STREAM
-          : RequestResponseContentType.APPLICATION_ZIP,
-    });
+    res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
+    res.setHeader(
+      HTTP_HEADERS.ContentType,
+      fileType === ContentType.FILE
+        ? RequestResponseContentType.APPLICATION_OCTET_STREAM
+        : RequestResponseContentType.APPLICATION_ZIP,
+    );
 
-    return new StreamableFile(stream);
+    try {
+      await pipeline(stream, res);
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: FileSharingErrorMessage.DownloadFailed,
+          details: (error as Error).message,
+        });
+      } else {
+        res.end();
+      }
+    }
   }
 }
 
