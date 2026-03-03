@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { CanActivate, ExecutionContext, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import THROTTLE_METADATA_KEY from '@libs/common/constants/throttleMetadataKey';
@@ -79,7 +79,6 @@ class ThrottleGuard implements CanActivate {
 
     if (cached && cached.expiresAt > now) {
       if (cached.count >= config.limit) {
-        Logger.warn(`Rate limit exceeded for ${username} on ${routePath}`, ThrottleGuard.name);
         throw new CustomHttpException(
           THROTTLE_ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
           HttpStatus.TOO_MANY_REQUESTS,
