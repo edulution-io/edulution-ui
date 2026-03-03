@@ -18,8 +18,6 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -29,13 +27,7 @@ import ImageQuestionOptions from '@/pages/Surveys/Editor/dialog/ImageQuestionOpt
 import RowAndColumnOptions from '@/pages/Surveys/Editor/dialog/matrix-options/RowAndColumnOptions';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 
-interface QuestionsContextMenuBodyProps {
-  form: UseFormReturn<SurveyDto>;
-}
-
-const QuestionsContextMenuBody = (props: QuestionsContextMenuBodyProps) => {
-  const { form } = props;
-
+const QuestionsContextMenuBody = () => {
   const { selectedQuestion } = useQuestionsContextMenuStore();
 
   if (!selectedQuestion) return null;
@@ -51,12 +43,7 @@ const QuestionsContextMenuBody = (props: QuestionsContextMenuBodyProps) => {
     options.push(<RowAndColumnOptions key="matrix-options" />);
   }
   if (isQuestionTypeChoiceType(questionType)) {
-    options.push(
-      <ChoicesByUrl
-        key="choices-by-url"
-        form={form}
-      />,
-    );
+    options.push(<ChoicesByUrl key="choices-by-url" />);
   }
 
   return <div className="flex flex-col gap-2">{options}</div>;

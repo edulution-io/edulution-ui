@@ -63,14 +63,14 @@ const MenuBar: React.FC = () => {
   const shouldCollapse = isDesktopView && isCollapsed;
 
   const handleClickOutside = useCallback(() => {
-    if ((isMobileView || isTabletView) && isMobileMenuBarOpen) {
+    if ((isMobileView || isTabletView || isEdulutionApp) && isMobileMenuBarOpen) {
       closeMobileMenuBar();
     }
-  }, [isMobileView, isTabletView, isMobileMenuBarOpen, closeMobileMenuBar]);
+  }, [isMobileView, isTabletView, isEdulutionApp, isMobileMenuBarOpen, closeMobileMenuBar]);
 
   const handleCloseMobileMenu = useCallback(() => {
-    if (isMobileView || isTabletView) toggleMobileMenuBar();
-  }, [isMobileView, isTabletView, toggleMobileMenuBar]);
+    if (isMobileView || isTabletView || isEdulutionApp) toggleMobileMenuBar();
+  }, [isMobileView, isTabletView, isEdulutionApp, toggleMobileMenuBar]);
 
   useOnClickOutside(menubarRef, handleClickOutside);
 
