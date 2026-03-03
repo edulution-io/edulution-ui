@@ -49,6 +49,7 @@ class FileSharingPage extends BasePage {
   }
 
   async uploadFile(filePath: string): Promise<void> {
+    await this.dismissOverlays();
     await this.floatingButton('Hochladen').first().click();
 
     const dialog = this.page.getByRole('dialog');
@@ -74,6 +75,7 @@ class FileSharingPage extends BasePage {
   }
 
   async deleteSelectedFiles(): Promise<void> {
+    await this.dismissOverlays();
     await this.floatingButton('Löschen').first().click();
 
     const dialog = this.page.getByRole('dialog');
@@ -84,6 +86,7 @@ class FileSharingPage extends BasePage {
   }
 
   async createFolder(name: string): Promise<void> {
+    await this.dismissOverlays();
     await this.floatingButton('Ordner erstellen').first().click();
 
     const dialog = this.page.getByRole('dialog');

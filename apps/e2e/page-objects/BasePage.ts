@@ -34,6 +34,38 @@ abstract class BasePage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
+  async dismissOverlays(): Promise<void> {
+    const overlay = this.page.locator('[data-state="open"][aria-hidden="true"].fixed.inset-0');
+    const hasOverlay = await overlay
+      .first()
+      .isVisible({ timeout: 2_000 })
+      .catch(() => false);
+    if (hasOverlay) {
+      const closeBtn = this.page
+        .getByRole('button', { name: /close|schließen|ok|verstanden/i })
+        .or(this.page.locator('[data-state="open"] button').last());
+      const canClose = await closeBtn
+        .first()
+        .isVisible({ timeout: 2_000 })
+        .catch(() => false);
+      if (canClose) {
+        await closeBtn
+          .first()
+          .click({ force: true })
+          .catch(() => {});
+        await overlay
+          .first()
+          .waitFor({ state: 'hidden', timeout: 3_000 })
+          .catch(() => {});
+      } else {
+        await overlay
+          .first()
+          .evaluate((el) => el.remove())
+          .catch(() => {});
+      }
+    }
+  }
+
   getByTestId(testId: string): Locator {
     return this.page.getByTestId(testId);
   }

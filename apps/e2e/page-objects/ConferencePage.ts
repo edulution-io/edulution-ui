@@ -39,6 +39,7 @@ class ConferencePage extends BasePage {
   }
 
   async createConference(name: string): Promise<void> {
+    await this.dismissOverlays();
     await this.floatingButton('Erstellen').first().click();
 
     const dialog = this.page.getByRole('dialog');
@@ -62,6 +63,7 @@ class ConferencePage extends BasePage {
   }
 
   async deleteSelectedConferences(): Promise<void> {
+    await this.dismissOverlays();
     await this.floatingButton('Löschen').first().click();
 
     const dialog = this.page.getByRole('dialog');

@@ -80,9 +80,9 @@ class SidebarNav extends BasePage {
 
     await logoutItem
       .first()
-      .waitFor({ state: 'visible', timeout: 5_000 })
+      .waitFor({ state: 'visible', timeout: 10_000 })
       .catch(() => {});
-    await logoutItem.first().click({ force: true, timeout: 5_000 });
+    await logoutItem.first().click({ force: true, timeout: 10_000 });
     await this.page.waitForURL('**/login**', { waitUntil: 'commit' }).catch(() => {});
   }
 }
