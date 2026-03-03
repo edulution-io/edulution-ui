@@ -17,18 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
+import { CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS } from '@libs/chat/constants/chatThrottleConfig';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import validateChatSophomorixType from './validateChatSophomorixType';
+import Throttle from '../common/decorators/throttle.decorator';
+import ThrottleGuard from '../common/guards/throttle.guard';
 
 @ApiTags(APPS.CHAT)
 @ApiBearerAuth()
@@ -66,6 +69,8 @@ class ChatController {
     return this.chatService.getMessages(String(conversation.id), limit, offset);
   }
 
+  @Throttle(CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS)
+  @UseGuards(ThrottleGuard)
   @Post('conversations/:sophomorixType/:groupName/messages')
   async sendMessage(
     @Param('sophomorixType') rawSophomorixType: string,

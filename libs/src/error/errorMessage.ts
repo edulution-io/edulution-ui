@@ -40,6 +40,7 @@ import ParentChildPairingErrorMessagesType from '@libs/parent-child-pairing/type
 import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
 import WebhookErrorMessages from '@libs/webhook/types/webhookErrorMessages';
 import ChatErrorMessages from '@libs/chat/types/chatErrorMessages';
+import ThrottleErrorMessages from '@libs/common/constants/throttleErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -64,6 +65,7 @@ type ErrorMessage =
   | PathValidationErrorMessages
   | WireguardErrorMessages
   | WebhookErrorMessages
-  | ChatErrorMessages;
+  | ChatErrorMessages
+  | ThrottleErrorMessages;
 
 export default ErrorMessage;
