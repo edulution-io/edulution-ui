@@ -40,7 +40,9 @@ test.describe.serial('Conference workflow', () => {
     await expect(adminPage).toHaveURL(/\/conferences/, { timeout: 15_000 });
   });
 
-  test('admin creates a conference', async ({ adminPage }) => {
+  test('admin creates a conference', async ({ adminPage }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
+
     const conferencePage = new ConferencePage(adminPage);
     await conferencePage.goto();
 
@@ -54,7 +56,8 @@ test.describe.serial('Conference workflow', () => {
     conferenceCreated = true;
   });
 
-  test('admin can see the conference in the list', async ({ adminPage }) => {
+  test('admin can see the conference in the list', async ({ adminPage }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
     test.skip(!conferenceCreated, 'Conference was not created in previous test');
 
     const conferencePage = new ConferencePage(adminPage);
@@ -64,7 +67,8 @@ test.describe.serial('Conference workflow', () => {
     expect(isVisible).toBeTruthy();
   });
 
-  test('admin deletes the conference', async ({ adminPage }) => {
+  test('admin deletes the conference', async ({ adminPage }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
     test.skip(!conferenceCreated, 'Conference was not created');
 
     const conferencePage = new ConferencePage(adminPage);

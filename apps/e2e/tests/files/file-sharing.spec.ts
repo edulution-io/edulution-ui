@@ -52,7 +52,9 @@ test.describe.serial('File sharing workflow', () => {
     await expect(teacherPage).toHaveURL(/\/filesharing/, { timeout: 15_000 });
   });
 
-  test('teacher uploads a file', async ({ teacherPage }) => {
+  test('teacher uploads a file', async ({ teacherPage }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
+
     const fileSharingPage = new FileSharingPage(teacherPage);
     await fileSharingPage.goto();
 
@@ -66,7 +68,8 @@ test.describe.serial('File sharing workflow', () => {
     fileUploaded = true;
   });
 
-  test('file appears in the listing', async ({ teacherPage }) => {
+  test('file appears in the listing', async ({ teacherPage }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
     test.skip(!fileUploaded, 'File was not uploaded in previous test');
 
     const fileSharingPage = new FileSharingPage(teacherPage);
@@ -76,7 +79,8 @@ test.describe.serial('File sharing workflow', () => {
     expect(isVisible).toBeTruthy();
   });
 
-  test('teacher deletes the file', async ({ teacherPage }) => {
+  test('teacher deletes the file', async ({ teacherPage }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
     test.skip(!fileUploaded, 'File was not uploaded');
 
     const fileSharingPage = new FileSharingPage(teacherPage);
