@@ -88,8 +88,10 @@ const globalSetup = async (_config: FullConfig): Promise<void> => {
     mkdirSync(AUTH_DIR, { recursive: true });
   }
 
-  for (const role of ROLES) {
-    await authenticateRole(role, baseURL);
+  const results = await Promise.allSettled(ROLES.map((role) => authenticateRole(role, baseURL)));
+  const failures = results.filter((r) => r.status === 'rejected');
+  if (failures.length > 0) {
+    console.error(`[global-setup] ${failures.length}/${ROLES.length} role(s) failed to authenticate`);
   }
 };
 

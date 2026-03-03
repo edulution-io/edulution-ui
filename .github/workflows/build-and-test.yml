@@ -271,7 +271,11 @@ jobs:
   e2e:
     runs-on: ubuntu-24.04
     needs: prepare
-    timeout-minutes: 30
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v5.0.0
@@ -296,8 +300,8 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Run E2E tests
-        run: npm run test:e2e
+      - name: Run E2E tests (shard ${{ matrix.shard }}/2)
+        run: npx nx run e2e:e2e -- --shard=${{ matrix.shard }}/2
         env:
           E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
           E2E_ADMIN_USER: ${{ secrets.E2E_ADMIN_USER }}
@@ -313,6 +317,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-shard-${{ matrix.shard }}
           path: apps/e2e/playwright-report/
           retention-days: 14

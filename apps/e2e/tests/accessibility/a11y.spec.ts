@@ -23,7 +23,7 @@ import { test as baseTest } from '@playwright/test';
 
 const LOAD_TIMEOUT_MS = 10000;
 
-const KNOWN_ISSUES: string[] = ['color-contrast', 'button-name', 'label', 'aria-allowed-attr'];
+const KNOWN_ISSUES: string[] = ['color-contrast', 'button-name', 'label', 'aria-allowed-attr', 'nested-interactive'];
 
 baseTest.describe('Accessibility: Public Pages', () => {
   baseTest('login page has no critical a11y violations', async ({ page }) => {

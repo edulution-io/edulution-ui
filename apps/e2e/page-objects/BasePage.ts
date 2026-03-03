@@ -35,35 +35,23 @@ abstract class BasePage {
   }
 
   async dismissOverlays(): Promise<void> {
-    const overlay = this.page.locator('[data-state="open"][aria-hidden="true"].fixed.inset-0');
-    const hasOverlay = await overlay
-      .first()
-      .isVisible({ timeout: 2_000 })
-      .catch(() => false);
-    if (hasOverlay) {
-      const closeBtn = this.page
-        .getByRole('button', { name: /close|schließen|ok|verstanden/i })
-        .or(this.page.locator('[data-state="open"] button').last());
-      const canClose = await closeBtn
-        .first()
-        .isVisible({ timeout: 2_000 })
-        .catch(() => false);
-      if (canClose) {
-        await closeBtn
-          .first()
-          .click({ force: true })
-          .catch(() => {});
-        await overlay
-          .first()
-          .waitFor({ state: 'hidden', timeout: 3_000 })
-          .catch(() => {});
-      } else {
-        await overlay
-          .first()
-          .evaluate((el) => el.remove())
-          .catch(() => {});
-      }
+    const closeBtn = this.page.getByRole('button', { name: /close|schließen|ok|verstanden/i }).first();
+    const canClose = await closeBtn.isVisible({ timeout: 2_000 }).catch(() => false);
+    if (canClose) {
+      await closeBtn.click({ force: true }).catch(() => {});
+      await this.page.waitForTimeout(500);
     }
+
+    await this.page
+      .evaluate(() => {
+        document.querySelectorAll('[data-state="open"][aria-hidden="true"]').forEach((el) => el.remove());
+        document.querySelectorAll('.fixed.inset-0').forEach((el) => {
+          if (el.getAttribute('aria-hidden') === 'true' || el.querySelector('[role="dialog"]')) {
+            el.remove();
+          }
+        });
+      })
+      .catch(() => {});
   }
 
   getByTestId(testId: string): Locator {
