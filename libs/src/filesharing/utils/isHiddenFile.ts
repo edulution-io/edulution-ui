@@ -24,7 +24,7 @@ const isHiddenFile = (filename: string): boolean => {
     return false;
   }
 
-  return basename.startsWith('.') || basename.startsWith('_');
+  return basename.startsWith('.');
 };
 
 export default isHiddenFile;
