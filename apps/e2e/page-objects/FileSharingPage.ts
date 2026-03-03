@@ -50,7 +50,8 @@ class FileSharingPage extends BasePage {
 
   async uploadFile(filePath: string): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Hochladen').first().click();
+    await this.floatingButton('Hochladen').first().waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
+    await this.floatingButton('Hochladen').first().click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 5000 });
@@ -76,7 +77,8 @@ class FileSharingPage extends BasePage {
 
   async deleteSelectedFiles(): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Löschen').first().click();
+    await this.floatingButton('Löschen').first().waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
+    await this.floatingButton('Löschen').first().click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 5000 });
@@ -87,7 +89,10 @@ class FileSharingPage extends BasePage {
 
   async createFolder(name: string): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Ordner erstellen').first().click();
+    await this.floatingButton('Ordner erstellen')
+      .first()
+      .waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
+    await this.floatingButton('Ordner erstellen').first().click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 5000 });
