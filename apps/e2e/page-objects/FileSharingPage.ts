@@ -20,15 +20,17 @@
 import { type Locator } from '@playwright/test';
 import BasePage from './BasePage';
 
+const FLOATING_BUTTON_TIMEOUT = 10_000;
+
 class FileSharingPage extends BasePage {
   async goto(webdavShare?: string): Promise<void> {
-    const path = webdavShare ? `/filesharing/${webdavShare}` : '/filesharing';
-    await this.navigateTo(path);
+    const pagePath = webdavShare ? `/filesharing/${webdavShare}` : '/filesharing';
+    await this.navigateTo(pagePath);
+    await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  async uploadFile(filePath: string): Promise<void> {
-    const fileInput = this.page.locator('input[type="file"]');
-    await fileInput.setInputFiles(filePath);
+  private floatingButton(label: string) {
+    return this.page.locator('button').filter({ has: this.page.locator(`[aria-label="${label}"]`) });
   }
 
   breadcrumb(): Locator {
@@ -39,13 +41,57 @@ class FileSharingPage extends BasePage {
     return this.getByTestId('file-sharing-table');
   }
 
+  async isUploadButtonVisible(): Promise<boolean> {
+    return this.floatingButton('Hochladen')
+      .first()
+      .isVisible({ timeout: FLOATING_BUTTON_TIMEOUT })
+      .catch(() => false);
+  }
+
+  async uploadFile(filePath: string): Promise<void> {
+    await this.floatingButton('Hochladen').first().click();
+
+    const dialog = this.page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+
+    const fileInput = dialog.locator('input[type="file"]').first();
+    await fileInput.setInputFiles(filePath);
+
+    await dialog.getByRole('button', { name: /hochladen/i }).click();
+    await dialog.waitFor({ state: 'hidden', timeout: 15_000 }).catch(() => {});
+  }
+
+  async isFileVisible(fileName: string): Promise<boolean> {
+    return this.page
+      .getByText(fileName)
+      .first()
+      .isVisible({ timeout: 10_000 })
+      .catch(() => false);
+  }
+
   async selectFile(fileName: string): Promise<void> {
-    await this.page.getByText(fileName).click();
+    await this.page.getByText(fileName).first().click();
   }
 
   async deleteSelectedFiles(): Promise<void> {
-    await this.page.getByRole('button', { name: /delete/i }).click();
-    await this.page.getByRole('button', { name: /confirm|yes/i }).click();
+    await this.floatingButton('Löschen').first().click();
+
+    const dialog = this.page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+
+    await dialog.getByRole('button', { name: /fortfahren/i }).click();
+    await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
+  }
+
+  async createFolder(name: string): Promise<void> {
+    await this.floatingButton('Ordner erstellen').first().click();
+
+    const dialog = this.page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+
+    await dialog.locator('input').first().fill(name);
+    await dialog.getByRole('button', { name: /erstellen/i }).click();
+    await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 }
 

@@ -19,6 +19,7 @@
 
 import { test, expect } from '../../fixtures/auth.fixture';
 import ConferencePage from '../../page-objects/ConferencePage';
+import SidebarNav from '../../page-objects/SidebarNav';
 
 test.describe.serial('Conference workflow', () => {
   let conferenceName: string;
@@ -26,55 +27,58 @@ test.describe.serial('Conference workflow', () => {
 
   test.beforeAll(() => {
     const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    conferenceName = `Test Conference ${uniqueId}`;
+    conferenceName = `E2E Conf ${uniqueId}`;
+  });
+
+  test('admin can navigate to conferences page', async ({ adminPage }) => {
+    const sidebar = new SidebarNav(adminPage);
+    await sidebar.dismissDialogs();
+
+    const conferencePage = new ConferencePage(adminPage);
+    await conferencePage.goto();
+
+    await expect(adminPage).toHaveURL(/\/conferences/, { timeout: 15_000 });
   });
 
   test('admin creates a conference', async ({ adminPage }) => {
     const conferencePage = new ConferencePage(adminPage);
     await conferencePage.goto();
 
-    const createButton = adminPage.getByRole('button', { name: /create|new/i });
-    const canCreate = await createButton
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    const canCreate = await conferencePage.isCreateButtonVisible();
     test.skip(!canCreate, 'Conference creation button not found');
 
     await conferencePage.createConference(conferenceName);
 
-    const conferenceEntry = adminPage.getByText(conferenceName);
-    await expect(conferenceEntry.first()).toBeVisible({ timeout: 10000 });
+    const isVisible = await conferencePage.isConferenceVisible(conferenceName);
+    expect(isVisible).toBeTruthy();
     conferenceCreated = true;
   });
 
   test('admin can see the conference in the list', async ({ adminPage }) => {
     test.skip(!conferenceCreated, 'Conference was not created in previous test');
+
     const conferencePage = new ConferencePage(adminPage);
     await conferencePage.goto();
 
-    const conferenceEntry = adminPage.getByText(conferenceName);
-    await expect(conferenceEntry.first()).toBeVisible({ timeout: 10000 });
+    const isVisible = await conferencePage.isConferenceVisible(conferenceName);
+    expect(isVisible).toBeTruthy();
   });
 
   test('admin deletes the conference', async ({ adminPage }) => {
     test.skip(!conferenceCreated, 'Conference was not created');
+
     const conferencePage = new ConferencePage(adminPage);
     await conferencePage.goto();
 
-    const conferenceEntry = adminPage.getByText(conferenceName);
-    const isVisible = await conferenceEntry
-      .first()
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
+    const isVisible = await conferencePage.isConferenceVisible(conferenceName);
+    test.skip(!isVisible, 'Conference not found in list');
 
-    if (isVisible) {
-      await conferencePage.deleteConference(conferenceName);
+    await conferencePage.selectConference(conferenceName);
+    await conferencePage.deleteSelectedConferences();
 
-      await expect(adminPage.getByText(conferenceName))
-        .not.toBeVisible({ timeout: 5000 })
-        .catch(() => {
-          // Cleanup best-effort
-        });
-    }
+    await expect(adminPage.getByText(conferenceName))
+      .not.toBeVisible({ timeout: 10_000 })
+      .catch(() => {});
+    conferenceCreated = false;
   });
 });

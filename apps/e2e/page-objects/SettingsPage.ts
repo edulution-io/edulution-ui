@@ -22,14 +22,25 @@ import BasePage from './BasePage';
 class SettingsPage extends BasePage {
   async goto(): Promise<void> {
     await this.navigateTo('/settings');
+    await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  async changeTheme(theme: string): Promise<void> {
-    await this.page.getByRole('combobox', { name: /theme/i }).selectOption(theme);
+  async gotoUserSettings(): Promise<void> {
+    await this.navigateTo('/usersettings');
+    await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  async changeNotificationPreference(): Promise<void> {
-    await this.page.getByRole('switch', { name: /notification/i }).click();
+  async gotoThemeSettings(): Promise<void> {
+    await this.navigateTo('/usersettings/userinterface');
+    await this.page.waitForLoadState('load').catch(() => {});
+  }
+
+  async isPageLoaded(): Promise<boolean> {
+    return this.page
+      .locator('main, [role="main"]')
+      .first()
+      .isVisible({ timeout: 10_000 })
+      .catch(() => false);
   }
 }
 

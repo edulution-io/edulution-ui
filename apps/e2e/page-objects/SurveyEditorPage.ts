@@ -19,24 +19,55 @@
 
 import BasePage from './BasePage';
 
+const FLOATING_BUTTON_TIMEOUT = 10_000;
+
 class SurveyEditorPage extends BasePage {
   async goto(): Promise<void> {
     await this.navigateTo('/surveys');
+    await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  async createSurvey(name: string): Promise<void> {
-    await this.page.getByRole('button', { name: /create|new/i }).click();
-    await this.page.getByRole('textbox', { name: /title|name/i }).fill(name);
+  async gotoCreated(): Promise<void> {
+    await this.navigateTo('/surveys/created');
+    await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  async publishSurvey(): Promise<void> {
-    await this.page.getByRole('button', { name: /save|publish/i }).click();
+  async gotoEditor(): Promise<void> {
+    await this.navigateTo('/surveys/editor/new');
+    await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  async deleteSurvey(name: string): Promise<void> {
-    await this.page.getByText(name).click();
-    await this.page.getByRole('button', { name: /delete/i }).click();
-    await this.page.getByRole('button', { name: /confirm|yes/i }).click();
+  private floatingButton(label: string) {
+    return this.page.locator('button').filter({ has: this.page.locator(`[aria-label="${label}"]`) });
+  }
+
+  async isEditButtonVisible(): Promise<boolean> {
+    return this.floatingButton('Bearbeiten')
+      .first()
+      .isVisible({ timeout: FLOATING_BUTTON_TIMEOUT })
+      .catch(() => false);
+  }
+
+  async isSurveyVisible(name: string): Promise<boolean> {
+    return this.page
+      .getByText(name)
+      .first()
+      .isVisible({ timeout: 10_000 })
+      .catch(() => false);
+  }
+
+  async selectSurvey(name: string): Promise<void> {
+    await this.page.getByText(name).first().click();
+  }
+
+  async deleteSelectedSurveys(): Promise<void> {
+    await this.floatingButton('Löschen').first().click();
+
+    const dialog = this.page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+
+    await dialog.getByRole('button', { name: /löschen/i }).click();
+    await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 }
 

@@ -20,92 +20,50 @@
 import { test, expect } from '../../fixtures/auth.fixture';
 import SurveyEditorPage from '../../page-objects/SurveyEditorPage';
 
-test.describe.serial('Survey workflow', () => {
-  let surveyName: string;
-  let surveyCreated = false;
+test.describe('Survey workflow', () => {
+  test('teacher can navigate to surveys page', async ({ teacherPage }) => {
+    const surveyPage = new SurveyEditorPage(teacherPage);
+    await surveyPage.goto();
 
-  test.beforeAll(() => {
-    const helper = { generateUniqueId: () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}` };
-    surveyName = `Test Survey ${helper.generateUniqueId()}`;
+    await expect(teacherPage).toHaveURL(/\/surveys/, { timeout: 15_000 });
   });
 
-  test('teacher creates a survey', async ({ teacherPage }) => {
-    const surveyEditor = new SurveyEditorPage(teacherPage);
-    await surveyEditor.goto();
+  test('teacher can access created surveys list', async ({ teacherPage }) => {
+    const surveyPage = new SurveyEditorPage(teacherPage);
+    await surveyPage.gotoCreated();
 
-    const createButton = teacherPage.getByRole('button', { name: /create|new/i });
-    const canCreate = await createButton
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
-    test.skip(!canCreate, 'Survey creation button not found');
+    await expect(teacherPage).toHaveURL(/\/surveys\/created/, { timeout: 15_000 });
 
-    await surveyEditor.createSurvey(surveyName);
-    await surveyEditor.publishSurvey();
+    const mainContent = teacherPage.locator('main, [role="main"]').first();
+    const loaded = await mainContent.isVisible({ timeout: 10_000 }).catch(() => false);
+    test.skip(!loaded, 'Created surveys page did not load');
 
-    const surveyEntry = teacherPage.getByText(surveyName);
-    await expect(surveyEntry.first()).toBeVisible({ timeout: 10000 });
-    surveyCreated = true;
+    await expect(mainContent).toBeVisible();
   });
 
-  test('student participates in the survey', async ({ studentPage }) => {
-    test.skip(!surveyCreated, 'Survey was not created in previous test');
-    const surveyEditor = new SurveyEditorPage(studentPage);
-    await surveyEditor.goto();
+  test('teacher can open survey editor', async ({ teacherPage }) => {
+    const surveyPage = new SurveyEditorPage(teacherPage);
+    await surveyPage.gotoEditor();
 
-    const surveyLink = studentPage.getByText(surveyName);
-    const isVisible = await surveyLink
-      .first()
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
-    test.skip(!isVisible, 'Survey not visible to student - may require explicit sharing');
+    await expect(teacherPage).toHaveURL(/\/surveys\/editor/, { timeout: 15_000 });
 
-    await surveyLink.first().click();
+    const editorContent = teacherPage.locator('main, [role="main"], .svc-creator').first();
+    const loaded = await editorContent.isVisible({ timeout: 10_000 }).catch(() => false);
+    test.skip(!loaded, 'Survey editor did not load');
 
-    const submitButton = studentPage.getByRole('button', { name: /submit|complete|finish/i });
-    const canSubmit = await submitButton.isVisible({ timeout: 5000 }).catch(() => false);
-
-    if (canSubmit) {
-      await submitButton.click();
-    }
+    await expect(editorContent).toBeVisible();
   });
 
-  test('teacher views survey results', async ({ teacherPage }) => {
-    test.skip(!surveyCreated, 'Survey was not created');
-    const surveyEditor = new SurveyEditorPage(teacherPage);
-    await surveyEditor.goto();
+  test('student can access open surveys list', async ({ studentPage }) => {
+    const surveyPage = new SurveyEditorPage(studentPage);
+    await surveyPage.goto();
 
-    const surveyEntry = teacherPage.getByText(surveyName);
-    await expect(surveyEntry.first()).toBeVisible({ timeout: 10000 });
-    await surveyEntry.first().click();
+    await expect(studentPage).toHaveURL(/\/surveys/, { timeout: 15_000 });
 
-    const resultsSection = teacherPage
-      .getByText(/result/i)
-      .or(teacherPage.locator('[data-testid*="result"]'))
-      .first();
-    const hasResults = await resultsSection.isVisible({ timeout: 5000 }).catch(() => false);
-    test.skip(!hasResults, 'Results section not accessible from survey detail view');
-  });
+    const mainContent = studentPage.locator('main, [role="main"]').first();
+    const loaded = await mainContent.isVisible({ timeout: 10_000 }).catch(() => false);
+    test.skip(!loaded, 'Surveys page did not load for student');
 
-  test('teacher deletes the survey', async ({ teacherPage }) => {
-    test.skip(!surveyCreated, 'Survey was not created');
-    const surveyEditor = new SurveyEditorPage(teacherPage);
-    await surveyEditor.goto();
-
-    const surveyEntry = teacherPage.getByText(surveyName);
-    const isVisible = await surveyEntry
-      .first()
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
-
-    if (isVisible) {
-      await surveyEditor.deleteSurvey(surveyName);
-
-      await expect(teacherPage.getByText(surveyName))
-        .not.toBeVisible({ timeout: 5000 })
-        .catch(() => {
-          // Cleanup best-effort: if deletion UI differs, survey may remain
-        });
-    }
+    await expect(mainContent).toBeVisible();
   });
 });

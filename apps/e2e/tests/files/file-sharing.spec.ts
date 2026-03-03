@@ -30,66 +30,67 @@ test.describe.serial('File sharing workflow', () => {
 
   test.beforeAll(() => {
     const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    uniqueFileName = `test-file-${uniqueId}.txt`;
+    uniqueFileName = `e2e-test-${uniqueId}.txt`;
 
     mkdirSync(tempDir, { recursive: true });
     tempFilePath = path.resolve(tempDir, uniqueFileName);
-    writeFileSync(tempFilePath, `Test file content created at ${new Date().toISOString()}`);
+    writeFileSync(tempFilePath, `E2E test file created at ${new Date().toISOString()}`);
   });
 
   test.afterAll(() => {
     try {
       rmSync(tempDir, { recursive: true, force: true });
     } catch {
-      // Cleanup best-effort
+      // best-effort cleanup
     }
+  });
+
+  test('teacher can navigate to file sharing', async ({ teacherPage }) => {
+    const fileSharingPage = new FileSharingPage(teacherPage);
+    await fileSharingPage.goto();
+
+    await expect(teacherPage).toHaveURL(/\/filesharing/, { timeout: 15_000 });
   });
 
   test('teacher uploads a file', async ({ teacherPage }) => {
     const fileSharingPage = new FileSharingPage(teacherPage);
     await fileSharingPage.goto();
 
-    const fileInput = teacherPage.locator('input[type="file"]');
-    const hasFileInput = await fileInput.count();
-
-    test.skip(hasFileInput === 0, 'File input not found on file sharing page');
+    const canUpload = await fileSharingPage.isUploadButtonVisible();
+    test.skip(!canUpload, 'Upload button not found on file sharing page');
 
     await fileSharingPage.uploadFile(tempFilePath);
 
-    const uploadedFile = teacherPage.getByText(uniqueFileName);
-    await expect(uploadedFile.first()).toBeVisible({ timeout: 15000 });
+    const isVisible = await fileSharingPage.isFileVisible(uniqueFileName);
+    expect(isVisible).toBeTruthy();
     fileUploaded = true;
   });
 
   test('file appears in the listing', async ({ teacherPage }) => {
     test.skip(!fileUploaded, 'File was not uploaded in previous test');
+
     const fileSharingPage = new FileSharingPage(teacherPage);
     await fileSharingPage.goto();
 
-    const fileEntry = teacherPage.getByText(uniqueFileName);
-    await expect(fileEntry.first()).toBeVisible({ timeout: 10000 });
+    const isVisible = await fileSharingPage.isFileVisible(uniqueFileName);
+    expect(isVisible).toBeTruthy();
   });
 
   test('teacher deletes the file', async ({ teacherPage }) => {
     test.skip(!fileUploaded, 'File was not uploaded');
+
     const fileSharingPage = new FileSharingPage(teacherPage);
     await fileSharingPage.goto();
 
-    const fileEntry = teacherPage.getByText(uniqueFileName);
-    const isVisible = await fileEntry
-      .first()
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
+    const isVisible = await fileSharingPage.isFileVisible(uniqueFileName);
+    test.skip(!isVisible, 'File not found in listing');
 
-    if (isVisible) {
-      await fileSharingPage.selectFile(uniqueFileName);
-      await fileSharingPage.deleteSelectedFiles();
+    await fileSharingPage.selectFile(uniqueFileName);
+    await fileSharingPage.deleteSelectedFiles();
 
-      await expect(teacherPage.getByText(uniqueFileName))
-        .not.toBeVisible({ timeout: 5000 })
-        .catch(() => {
-          // Cleanup best-effort
-        });
-    }
+    await expect(teacherPage.getByText(uniqueFileName))
+      .not.toBeVisible({ timeout: 10_000 })
+      .catch(() => {});
+    fileUploaded = false;
   });
 });

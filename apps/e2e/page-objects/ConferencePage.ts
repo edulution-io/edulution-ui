@@ -19,30 +19,56 @@
 
 import BasePage from './BasePage';
 
+const FLOATING_BUTTON_TIMEOUT = 10_000;
+
 class ConferencePage extends BasePage {
   async goto(): Promise<void> {
     await this.navigateTo('/conferences');
+    await this.page.waitForLoadState('load').catch(() => {});
+  }
+
+  private floatingButton(label: string) {
+    return this.page.locator('button').filter({ has: this.page.locator(`[aria-label="${label}"]`) });
+  }
+
+  async isCreateButtonVisible(): Promise<boolean> {
+    return this.floatingButton('Erstellen')
+      .first()
+      .isVisible({ timeout: FLOATING_BUTTON_TIMEOUT })
+      .catch(() => false);
   }
 
   async createConference(name: string): Promise<void> {
-    await this.page.getByRole('button', { name: /create|new/i }).click();
-    await this.page.getByRole('textbox', { name: /name|title/i }).fill(name);
-    await this.page
-      .getByRole('button', { name: /save|create/i })
-      .last()
-      .click();
+    await this.floatingButton('Erstellen').first().click();
+
+    const dialog = this.page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+
+    await dialog.getByLabel(/name/i).first().fill(name);
+    await dialog.getByRole('button', { name: /speichern/i }).click();
+    await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 
-  async joinConference(name: string): Promise<void> {
-    const row = this.page.getByText(name);
-    await row.click();
-    await this.page.getByRole('button', { name: /join/i }).click();
+  async isConferenceVisible(name: string): Promise<boolean> {
+    return this.page
+      .getByText(name)
+      .first()
+      .isVisible({ timeout: 10_000 })
+      .catch(() => false);
   }
 
-  async deleteConference(name: string): Promise<void> {
-    await this.page.getByText(name).click();
-    await this.page.getByRole('button', { name: /delete/i }).click();
-    await this.page.getByRole('button', { name: /confirm|yes/i }).click();
+  async selectConference(name: string): Promise<void> {
+    await this.page.getByText(name).first().click();
+  }
+
+  async deleteSelectedConferences(): Promise<void> {
+    await this.floatingButton('Löschen').first().click();
+
+    const dialog = this.page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+
+    await dialog.getByRole('button', { name: /löschen/i }).click();
+    await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 }
 
