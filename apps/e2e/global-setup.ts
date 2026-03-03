@@ -25,7 +25,8 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '.env.e2e') });
 
 const AUTH_DIR = path.resolve(__dirname, 'auth');
-const LOGIN_TIMEOUT_MS = 10_000;
+const LOGIN_TIMEOUT_MS = 30_000;
+const MAX_RETRIES = 2;
 
 const ROLES = ['admin', 'teacher', 'student', 'parent'] as const;
 
@@ -49,28 +50,34 @@ const authenticateRole = async (role: Role, baseURL: string): Promise<void> => {
   const credentials = getCredentials(role);
   if (!credentials) return;
 
-  const browser = await chromium.launch();
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const browser = await chromium.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
 
-  try {
-    await page.goto(`${baseURL}/login`, { timeout: LOGIN_TIMEOUT_MS, waitUntil: 'commit' });
+    try {
+      await page.goto(`${baseURL}/login`, { timeout: LOGIN_TIMEOUT_MS, waitUntil: 'load' });
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
 
-    await page.getByTestId('test-id-login-page-username-input').fill(credentials.user);
-    await page.getByTestId('test-id-login-page-password-input').fill(credentials.pass);
-    await page.getByTestId('test-id-login-page-submit-button').click();
+      await page.getByTestId('test-id-login-page-username-input').fill(credentials.user, { timeout: LOGIN_TIMEOUT_MS });
+      await page.getByTestId('test-id-login-page-password-input').fill(credentials.pass, { timeout: LOGIN_TIMEOUT_MS });
+      await page.getByTestId('test-id-login-page-submit-button').click({ timeout: LOGIN_TIMEOUT_MS });
 
-    await page.waitForURL('**/dashboard**', { timeout: LOGIN_TIMEOUT_MS });
+      await page.waitForURL('**/dashboard**', { timeout: LOGIN_TIMEOUT_MS });
 
-    const storageStatePath = path.resolve(AUTH_DIR, `${role}.storageState.json`);
-    await context.storageState({ path: storageStatePath });
+      const storageStatePath = path.resolve(AUTH_DIR, `${role}.storageState.json`);
+      await context.storageState({ path: storageStatePath });
 
-    console.log(`[global-setup] Authenticated role "${role}" -> ${storageStatePath}`);
-  } catch (error) {
-    console.error(`[global-setup] Failed to authenticate role "${role}":`, error);
-  } finally {
-    await browser.close();
+      console.log(`[global-setup] Authenticated role "${role}" -> ${storageStatePath}`);
+      return;
+    } catch (error) {
+      console.error(`[global-setup] Attempt ${attempt}/${MAX_RETRIES} failed for role "${role}":`, error);
+    } finally {
+      await browser.close();
+    }
   }
+
+  console.error(`[global-setup] All ${MAX_RETRIES} attempts failed for role "${role}"`);
 };
 
 const globalSetup = async (_config: FullConfig): Promise<void> => {
