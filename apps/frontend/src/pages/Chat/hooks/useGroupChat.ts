@@ -23,6 +23,7 @@ import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
 import useChatStore from '@/store/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -61,6 +62,10 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
         if (payload.createdBy === currentUsername) {
           return;
         }
+
+        useChatProfilePictureStore
+          .getState()
+          .updateCache(payload.createdBy, payload.profilePicture, payload.profilePictureHash);
 
         addMessage(payload);
       } catch (err) {

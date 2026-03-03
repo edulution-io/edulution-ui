@@ -100,6 +100,8 @@ class ChatService {
     content: string,
     currentUser: JwtUser,
     members: string[],
+    profilePicture?: string,
+    profilePictureHash?: string,
   ): Promise<ChatMessageDocument> {
     const message = await this.chatMessageModel.create({
       conversationId,
@@ -112,7 +114,7 @@ class ChatService {
 
     await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
 
-    await this.notifyGroupMembers(members, groupName, sophomorixType, message);
+    await this.notifyGroupMembers(members, groupName, sophomorixType, message, profilePicture, profilePictureHash);
 
     return message;
   }
@@ -122,13 +124,15 @@ class ChatService {
     groupName: string,
     sophomorixType: string,
     message: ChatMessageDocument,
+    profilePicture?: string,
+    profilePictureHash?: string,
   ): Promise<void> {
     const recipients = members.filter((member) => member !== message.createdBy);
     if (recipients.length === 0) {
       return;
     }
 
-    const payload = { ...message.toJSON(), groupName, sophomorixType };
+    const payload = { ...message.toJSON(), groupName, sophomorixType, profilePicture, profilePictureHash };
     this.sseService.sendEventToUsers(recipients, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
     const sourceId = `${sophomorixType}/${groupName}`;

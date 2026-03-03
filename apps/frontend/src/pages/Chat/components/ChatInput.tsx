@@ -64,7 +64,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder || t('chat.inputPlaceholder')}
-        className="max-h-32 min-h-10 flex-1 resize-none rounded-xl py-2 [field-sizing:content]"
+        className="max-h-32 min-h-[42px] flex-1 resize-none rounded-xl py-2 [field-sizing:content]"
         rows={1}
         maxLength={CHAT_MESSAGE_MAX_LENGTH}
         disabled={isLoading}
@@ -74,7 +74,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
         variant="btn-collaboration"
         size="icon"
         disabled={isDisabled}
-        className={cn('h-10 w-10 shrink-0', isDisabled && 'opacity-50')}
+        className={cn('h-[42px] w-[42px] shrink-0 self-end rounded-xl', isDisabled && 'opacity-50')}
       >
         <FontAwesomeIcon
           icon={faPaperPlane}

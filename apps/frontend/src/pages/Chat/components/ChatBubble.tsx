@@ -20,7 +20,10 @@
 import React from 'react';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import { cn } from '@edulution-io/ui-kit';
-import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
+import getChatUserColor from '@libs/chat/utils/getChatUserColor';
+import formatIsoDateToTimeString from '@libs/common/utils/Date/formatIsoDateToTimeString';
+import Avatar from '@/components/shared/Avatar';
+import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
 
 interface ChatBubbleProps {
   message: ChatMessage;
@@ -28,24 +31,53 @@ interface ChatBubbleProps {
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => {
+  const cachedProfilePicture = useChatProfilePictureStore((state) =>
+    state.getCachedProfilePicture(message.createdBy ?? ''),
+  );
+
   const nameParts = [message.createdByUserFirstName, message.createdByUserLastName].filter(Boolean);
   const displayName = nameParts.length > 0 ? nameParts.join(' ') : message.createdBy;
 
   return (
     <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
+      {!isOwnMessage && (
+        <div className="mr-2 flex-shrink-0 self-end">
+          <Avatar
+            user={{
+              username: message.createdBy || '',
+              firstName: message.createdByUserFirstName,
+              lastName: message.createdByUserLastName,
+            }}
+            imageSrc={cachedProfilePicture}
+            className="h-8 w-8"
+          />
+        </div>
+      )}
       <div
         className={cn(
-          'max-w-[75%] rounded-2xl px-4 py-2',
-          isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
+          'bg-glass max-w-[75%] rounded-2xl px-4 py-2 backdrop-blur-lg',
+          isOwnMessage ? 'rounded-br-md text-background' : 'rounded-bl-md text-background',
         )}
       >
-        <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
-        <div className={cn('mt-1 flex items-center gap-2 text-xs', isOwnMessage ? 'justify-end' : 'justify-between')}>
-          {!isOwnMessage && displayName && <span className="font-medium opacity-70">{displayName}</span>}
-          <span className={isOwnMessage ? 'text-white/70' : 'text-muted-foreground'}>
-            {formatIsoDateToLocaleString(message.createdAt)}
-          </span>
-        </div>
+        {!isOwnMessage && displayName && (
+          <div className="flex items-baseline justify-between gap-2">
+            <span
+              className="text-xs font-semibold"
+              style={{ color: getChatUserColor(message.createdBy ?? '') }}
+            >
+              {displayName}
+            </span>
+            <span className="text-background/70 text-xs">{formatIsoDateToTimeString(message.createdAt)}</span>
+          </div>
+        )}
+        <p className="whitespace-pre-wrap break-words text-sm">
+          {message.content}
+          {isOwnMessage && (
+            <span className="text-background/70 float-right ml-3 mt-1 text-xs">
+              {formatIsoDateToTimeString(message.createdAt)}
+            </span>
+          )}
+        </p>
       </div>
     </div>
   );

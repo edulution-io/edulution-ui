@@ -87,6 +87,8 @@ class ChatController {
       dto.content,
       currentUser,
       members,
+      dto.profilePicture,
+      dto.profilePictureHash,
     );
   }
 }

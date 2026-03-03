@@ -17,22 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
-import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
+import CHAT_USER_COLORS from '@libs/chat/constants/chatUserColors';
 
-class CreateMessageDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(CHAT_MESSAGE_MAX_LENGTH)
-  content: string;
+const getChatUserColor = (username: string): string => {
+  const hash = Array.from(username).reduce((acc, char) => char.charCodeAt(0) + (Math.imul(acc, 31) + 1), 0);
+  const index = Math.abs(hash) % CHAT_USER_COLORS.length;
+  return CHAT_USER_COLORS[index];
+};
 
-  @IsOptional()
-  @IsString()
-  profilePicture?: string;
-
-  @IsOptional()
-  @IsString()
-  profilePictureHash?: string;
-}
-
-export default CreateMessageDto;
+export default getChatUserColor;

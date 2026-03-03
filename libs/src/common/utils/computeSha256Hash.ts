@@ -17,22 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
-import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
+import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 
-class CreateMessageDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(CHAT_MESSAGE_MAX_LENGTH)
-  content: string;
+const computeSha256Hash = async (data: string): Promise<string> => {
+  const encoder = new TextEncoder();
+  const buffer = await crypto.subtle.digest(HashAlgorithm, encoder.encode(data));
+  const hashArray = Array.from(new Uint8Array(buffer));
+  return hashArray.map((byte) => byte.toString(16).padStart(2, '0')).join('');
+};
 
-  @IsOptional()
-  @IsString()
-  profilePicture?: string;
-
-  @IsOptional()
-  @IsString()
-  profilePictureHash?: string;
-}
-
-export default CreateMessageDto;
+export default computeSha256Hash;
