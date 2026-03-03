@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
 import { useTranslation } from 'react-i18next';
@@ -35,16 +35,17 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
 
   const { t } = useTranslation();
 
-  if (!formula || !answer) {
+  const surveyModel = useMemo(() => {
+    const model = new Model(formula);
+    model.data = answer;
+    model.mode = 'display';
+    model.applyTheme(surveyTheme);
+    return model;
+  }, [formula, answer]);
+
+  if (!formula || !answer || !surveyModel) {
     return <div className="bg-accent p-4 text-center">{t('survey.noAnswer')}</div>;
   }
-  const surveyModel = new Model(formula);
-
-  surveyModel.data = answer;
-
-  surveyModel.mode = 'display';
-
-  surveyModel.applyTheme(surveyTheme);
 
   return (
     <div className="participated-survey max-h-[74vh] overflow-y-auto rounded">

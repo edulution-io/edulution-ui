@@ -33,6 +33,7 @@ const OpenSurveysPage = () => {
     isFetchingOpenSurveys,
     hasAnswers,
     canParticipate,
+    isCurrentUserTheSurveyOwner,
   } = useSurveysTablesPageStore();
 
   const { t } = useTranslation();
@@ -58,6 +59,8 @@ const OpenSurveysPage = () => {
         icon={SurveysViewOpenIcon}
         surveys={openSurveys || []}
         isLoading={isFetchingOpenSurveys}
+        canEdit={isCurrentUserTheSurveyOwner}
+        canDelete={isCurrentUserTheSurveyOwner}
         canShowResults={hasAnswers}
         canParticipate={canParticipate}
       />

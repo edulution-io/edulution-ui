@@ -11,15 +11,15 @@
 .sa-question,
 .sa-question__title {
   background: transparent !important;
-  color: var(--primary-foreground) !important;
+  color: var(--background) !important;
 }
 .sa-question__select {
-  color: var(--secondary) !important;
+  color: var(--input) !important;
   background-color: var(--accent) !important;
 }
 .sa-question__select:hover,
 .sa-question__select:focus {
-  color: var(--primary-foreground) !important;
+  color: var(--background) !important;
 }
 
 .sa-question__content {
@@ -33,8 +33,8 @@
   background: transparent !important;
 
   text {
-    color: var(--primary-foreground) !important;
-    fill: var(--primary-foreground) !important;
+    color: var(--background) !important;
+    fill: var(--background) !important;
   }
 }
 .sa-visualizer__content {
@@ -58,7 +58,7 @@
 }
 
 .modebar-btn .icon path {
-  fill: var(--primary-foreground) !important;
+  fill: var(--ring) !important;
 }
 .modebar-btn .icon path:hover,
 .modebar-btn .icon path:focus {

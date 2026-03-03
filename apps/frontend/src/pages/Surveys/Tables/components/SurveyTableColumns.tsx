@@ -30,6 +30,7 @@ import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
@@ -50,15 +51,22 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     meta: {
       translationId: 'common.title',
     },
-    cell: ({ row }) => (
-      <SelectableCell
-        row={row}
-        text={row.original.formula?.title || i18n.t('common.not-available')}
-        className="h-full w-full min-w-32"
-        onClick={() => row.toggleSelected()}
-        isFirstColumn
-      />
-    ),
+    cell: ({ row }) => {
+      const { setIsCurrentUserTheSurveyOwner } = useSurveysTablesPageStore();
+      const { username } = row.original.creator;
+      return (
+        <SelectableCell
+          row={row}
+          text={row.original.formula?.title || i18n.t('common.not-available')}
+          className="h-full w-full min-w-32"
+          onClick={() => {
+            setIsCurrentUserTheSurveyOwner(username);
+            row.toggleSelected();
+          }}
+          isFirstColumn
+        />
+      );
+    },
     accessorFn: (row) => row.formula?.title || i18n.t('common.not-available'),
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
@@ -73,6 +81,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'survey.creationDate',
     },
     cell: ({ row }) => {
+      const { setIsCurrentUserTheSurveyOwner } = useSurveysTablesPageStore();
+      const { username } = row.original.creator;
+
       const { language } = useLanguage();
       const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.createdAt
@@ -81,7 +92,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       return (
         <SelectableCell
           text={text}
-          onClick={() => row.toggleSelected()}
+          onClick={() => {
+            setIsCurrentUserTheSurveyOwner(username);
+            row.toggleSelected();
+          }}
         />
       );
     },
@@ -98,13 +112,19 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'survey.expirationDate',
     },
     cell: ({ row }) => {
+      const { setIsCurrentUserTheSurveyOwner } = useSurveysTablesPageStore();
+      const { username } = row.original.creator;
+
       const { language } = useLanguage();
       const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.expires ? format(row.original.expires, 'P', { locale: localDateFormat }) : '-';
       return (
         <SelectableCell
           text={text}
-          onClick={() => row.toggleSelected()}
+          onClick={() => {
+            setIsCurrentUserTheSurveyOwner(username);
+            row.toggleSelected();
+          }}
         />
       );
     },
@@ -124,10 +144,14 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         ? `${row.creator.firstName} ${row.creator.lastName}`
         : row.creator.username,
     cell: ({ row }) => {
+      const { setIsCurrentUserTheSurveyOwner } = useSurveysTablesPageStore();
       const { firstName, username, lastName } = row.original.creator;
       return (
         <SelectableCell
-          onClick={() => row.toggleSelected()}
+          onClick={() => {
+            setIsCurrentUserTheSurveyOwner(username);
+            row.toggleSelected();
+          }}
           text={firstName && lastName ? `${firstName} ${lastName}` : username}
         />
       );
@@ -173,6 +197,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     },
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
+      const { setIsCurrentUserTheSurveyOwner } = useSurveysTablesPageStore();
+      const { username } = row.original.creator;
+
       const { length } = row.original.invitedAttendees;
       const attendeeCount = length;
       const attendeeText = `${attendeeCount} ${i18n.t(attendeeCount === 1 ? 'survey.attendee' : 'survey.attendees')}`;
@@ -181,7 +208,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       return (
         <SelectableCell
           text={`${attendeeText}${groupsText}`}
-          onClick={() => row.toggleSelected()}
+          onClick={() => {
+            setIsCurrentUserTheSurveyOwner(username);
+            row.toggleSelected();
+          }}
         />
       );
     },
@@ -196,12 +226,20 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     meta: {
       translationId: 'common.answers',
     },
-    cell: ({ row }) => (
-      <SelectableCell
-        text={`${row.original?.answers.length || 0}`}
-        onClick={() => row.toggleSelected()}
-      />
-    ),
+    cell: ({ row }) => {
+      const { setIsCurrentUserTheSurveyOwner } = useSurveysTablesPageStore();
+      const { username } = row.original.creator;
+
+      return (
+        <SelectableCell
+          text={`${row.original?.answers.length || 0}`}
+          onClick={() => {
+            setIsCurrentUserTheSurveyOwner(username);
+            row.toggleSelected();
+          }}
+        />
+      );
+    },
     sortingFn: (rowA, rowB) => sortSurveyByInvitesAndParticipation(rowA.original, rowB.original),
   },
 ];

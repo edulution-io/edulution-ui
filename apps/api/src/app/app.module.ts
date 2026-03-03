@@ -68,6 +68,8 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
 import AccessGuard from '../auth/access.guard';
 import AuthGuard from '../auth/auth.guard';
 import WireguardModule from '../wireguard/wireguard.module';
+import WebhookModule from '../webhook/webhook.module';
+import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
 
 @Module({
   imports: [
@@ -142,6 +144,8 @@ import WireguardModule from '../wireguard/wireguard.module';
     TLDrawSyncModule,
     ScriptsModule,
     WireguardModule,
+    WebhookModule,
+    WebhookClientsModule,
   ],
   providers: [
     {

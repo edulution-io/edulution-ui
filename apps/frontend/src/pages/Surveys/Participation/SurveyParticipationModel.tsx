@@ -22,7 +22,6 @@ import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
-import THEME from '@libs/common/constants/theme';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
@@ -33,6 +32,7 @@ import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPa
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
+import updateSignaturePadTheme from '@/pages/Surveys/utils/updateSignaturePadTheme';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyComponents';
@@ -65,16 +65,6 @@ Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
   const { theme, getResolvedTheme } = useThemeStore();
-
-  useEffect(() => {
-    Serializer.getProperty('signaturepad', 'penColor').defaultValue =
-      getResolvedTheme() === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
-
-    Serializer.getProperty('survey', 'logo').defaultValue =
-      getResolvedTheme() === THEME.dark
-        ? `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-dark.webp`
-        : `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-light.webp`;
-  }, [theme, getResolvedTheme]);
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveysTablesPageStore();
 
@@ -256,11 +246,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   useEffect(() => {
     if (!surveyParticipationModel) return;
-    if (surveyParticipationModel.logo !== `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`) return;
-    if (!surveyParticipationModel.calculatedValues) {
-      surveyParticipationModel.calculatedValues = [];
-    }
-    surveyParticipationModel.setVariable('theme', getResolvedTheme().toString());
+
+    updateSignaturePadTheme(surveyParticipationModel, getResolvedTheme);
+
+    if (!surveyParticipationModel.logo?.startsWith(`${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-`)) return;
+
+    surveyParticipationModel.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-${getResolvedTheme()}.webp`;
   }, [surveyParticipationModel, theme, getResolvedTheme]);
 
   if (isFetching) {

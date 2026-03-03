@@ -18,11 +18,10 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { Serializer } from 'survey-core';
 import { Model, Survey } from 'survey-react-ui';
 import useLanguage from '@/hooks/useLanguage';
-import THEME from '@libs/common/constants/theme';
 import useThemeStore from '@/store/useThemeStore';
+import updateSignaturePadTheme from '@/pages/Surveys/utils/updateSignaturePadTheme';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
@@ -32,9 +31,7 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
 
   const { language } = useLanguage();
 
-  const { getResolvedTheme } = useThemeStore();
-
-  const currentTheme = getResolvedTheme();
+  const { theme, getResolvedTheme } = useThemeStore();
 
   const modelRef = useRef<Model | null>(null);
   if (!modelRef.current && selectedTemplate?.template.formula) {
@@ -57,9 +54,8 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
 
   useEffect(() => {
     if (!model) return;
-    Serializer.getProperty('signaturepad', 'penColor').defaultValue =
-      currentTheme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
-  }, [model, currentTheme]);
+    updateSignaturePadTheme(model, getResolvedTheme);
+  }, [model, theme, getResolvedTheme]);
 
   if (!selectedTemplate || !selectedTemplate.template.formula || !model) {
     return null;
