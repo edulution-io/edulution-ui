@@ -17,12 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { KeyboardEvent, FormEvent } from 'react';
+import React, { useRef, useEffect, KeyboardEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button, cn } from '@edulution-io/ui-kit';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
 
 interface ChatInputProps {
@@ -35,6 +36,13 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoading, placeholder }) => {
   const { t } = useTranslation();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (!isLoading) {
+      textareaRef.current?.focus();
+    }
+  }, [isLoading]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -57,14 +65,15 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-background/80 flex items-end gap-2 border-t p-4 backdrop-blur-sm"
+      className="bg-background/80 flex items-end gap-2 border-t border-muted p-4 backdrop-blur-sm"
     >
       <Textarea
+        ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder || t('chat.inputPlaceholder')}
-        className="max-h-32 min-h-10 flex-1 resize-none rounded-xl py-2 [field-sizing:content]"
+        className={cn(inputVariants(), 'max-h-32 min-h-10 flex-1 resize-none py-2 [field-sizing:content]')}
         rows={1}
         maxLength={CHAT_MESSAGE_MAX_LENGTH}
         disabled={isLoading}

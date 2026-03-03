@@ -17,7 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
@@ -51,6 +62,7 @@ class ChatController {
     @GetCurrentUser() currentUser: JwtUser,
     @Query('limit', new DefaultValuePipe(CHAT_MESSAGES_DEFAULT_LIMIT), ParseIntPipe) limit: number,
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('sort', new DefaultValuePipe('asc')) sort: string,
   ): Promise<ChatMessageDocument[]> {
     const sophomorixType = validateChatSophomorixType(rawSophomorixType);
     const conversation = await this.chatService.getAuthorizedConversation(
@@ -63,10 +75,11 @@ class ChatController {
       return [];
     }
 
-    return this.chatService.getMessages(String(conversation.id), limit, offset);
+    return this.chatService.getMessages(String(conversation.id), limit, offset, sort);
   }
 
   @Post('conversations/:sophomorixType/:groupName/messages')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async sendMessage(
     @Param('sophomorixType') rawSophomorixType: string,
     @Param('groupName') groupName: string,

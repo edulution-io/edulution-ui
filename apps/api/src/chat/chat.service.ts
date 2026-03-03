@@ -26,7 +26,6 @@ import CHAT_TYPES from '@libs/chat/constants/chatTypes';
 import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
-import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
 import type AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
@@ -56,7 +55,7 @@ class ChatService {
 
   async getAuthorizedConversation(
     groupName: string,
-    sophomorixType: string,
+    sophomorixType: AllowedChatSophomorixType,
     username: string,
   ): Promise<ConversationDocument | null> {
     await this.verifyGroupAccess(groupName, sophomorixType, username);
@@ -65,7 +64,7 @@ class ChatService {
 
   async getOrCreateAuthorizedConversation(
     groupName: string,
-    sophomorixType: string,
+    sophomorixType: AllowedChatSophomorixType,
     username: string,
   ): Promise<{ conversation: ConversationDocument; members: string[] }> {
     const members = await this.verifyGroupAccess(groupName, sophomorixType, username);
@@ -89,14 +88,22 @@ class ChatService {
     conversationId: string,
     limit: number = CHAT_MESSAGES_DEFAULT_LIMIT,
     offset: number = 0,
+    sort: string = 'asc',
   ): Promise<ChatMessageDocument[]> {
-    return this.chatMessageModel.find({ conversationId }).sort({ createdAt: -1 }).skip(offset).limit(limit).exec();
+    const messages = await this.chatMessageModel
+      .find({ conversationId })
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .exec();
+
+    return sort === 'asc' ? messages.reverse() : messages;
   }
 
   async sendMessage(
     conversationId: string,
     groupName: string,
-    sophomorixType: string,
+    sophomorixType: AllowedChatSophomorixType,
     content: string,
     currentUser: JwtUser,
     members: string[],
@@ -160,20 +167,19 @@ class ChatService {
     [GENERIC_CHAT_GROUP_TYPE]: '/',
   };
 
-  private async verifyGroupAccess(groupName: string, sophomorixType: string, username: string): Promise<string[]> {
-    if (!isAllowedChatSophomorixType(sophomorixType)) {
-      throw new CustomHttpException(
-        CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE,
-        HttpStatus.BAD_REQUEST,
-        { sophomorixType },
-        ChatService.name,
-      );
-    }
-
+  private async verifyGroupAccess(
+    groupName: string,
+    sophomorixType: AllowedChatSophomorixType,
+    username: string,
+  ): Promise<string[]> {
     const cachePath = `${ChatService.CACHE_PATH_PREFIX[sophomorixType]}${groupName}`;
     const group = await this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${cachePath}`);
 
-    if (!group?.members?.some((m) => m.username === username)) {
+    if (!group) {
+      return [];
+    }
+
+    if (!group.members?.some((m) => m.username === username)) {
       throw new CustomHttpException(
         CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
         HttpStatus.FORBIDDEN,

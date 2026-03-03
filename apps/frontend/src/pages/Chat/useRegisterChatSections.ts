@@ -22,13 +22,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type Section from '@libs/menubar/section';
 import { CHAT_CLASSES_LOCATION, CHAT_GROUPS_LOCATION, CHAT_PATH } from '@libs/chat/constants/chatPaths';
 import isValidGroupTypeLocation from '@libs/chat/utils/isValidGroupTypeLocation';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import useChatStore from '@/store/useChatStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import useSubMenuStore from '@/store/useSubMenuStore';
 
 const useRegisterChatSections = () => {
   const navigate = useNavigate();
   const { groupType } = useParams<{ groupType: string; groupName: string }>();
   const { userGroups, fetchUserGroups } = useChatStore();
+  const { user } = useLmnApiStore();
   const { setSections } = useSubMenuStore();
 
   useEffect(() => {
@@ -51,15 +54,15 @@ const useRegisterChatSections = () => {
 
     return groups.map((group) => ({
       id: group.name,
-      label: group.name,
+      label: removeSchoolPrefix(group.name, user?.school),
       action: () => navigate(`/${CHAT_PATH}/${groupType}/${encodeURIComponent(group.name)}`),
     }));
-  }, [userGroups, groupType, navigate]);
+  }, [userGroups, groupType, navigate, user?.school]);
 
   useEffect(() => {
     setSections(sections, groupType);
     return () => setSections([]);
-  }, [sections, setSections]);
+  }, [sections, setSections, groupType]);
 };
 
 export default useRegisterChatSections;

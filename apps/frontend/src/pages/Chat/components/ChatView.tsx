@@ -31,7 +31,6 @@ interface ChatViewProps {
 
 const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle }) => {
   const { messages, input, setInput, handleSubmit, isLoading, error } = adapter;
-  const hasError = !!error;
 
   return (
     <div className="flex h-full flex-col pb-2">
@@ -51,14 +50,12 @@ const ChatView: React.FC<ChatViewProps> = ({ adapter, title, subtitle }) => {
 
       <ChatMessages messages={messages} />
 
-      {!hasError && (
-        <ChatInput
-          value={input}
-          onChange={setInput}
-          onSubmit={handleSubmit}
-          isLoading={isLoading}
-        />
-      )}
+      <ChatInput
+        value={input}
+        onChange={setInput}
+        onSubmit={handleSubmit}
+        isLoading={isLoading || !!error}
+      />
     </div>
   );
 };
