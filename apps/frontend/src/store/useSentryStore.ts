@@ -77,9 +77,7 @@ const useSentryStore = create<UseSentryStore>(
         set({ initialized: false, config: null });
       },
 
-      reset: () => {
-        set({ initialized: false, config: null });
-      },
+      reset: () => {},
     }),
     {
       name: 'sentryConfig',

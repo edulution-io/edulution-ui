@@ -32,7 +32,7 @@ const initialState = {
 const usePlatformStore = create<PlatformStore>((set) => ({
   ...initialState,
   setIsEdulutionApp: (value) => set({ isEdulutionApp: value }),
-  reset: () => set(initialState),
+  reset: () => {},
 }));
 
 export default usePlatformStore;
