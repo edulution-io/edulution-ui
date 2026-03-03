@@ -23,6 +23,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
+import { CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS } from '@libs/chat/constants/chatThrottleConfig';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
@@ -68,7 +69,7 @@ class ChatController {
     return this.chatService.getMessages(String(conversation.id), limit, offset);
   }
 
-  @Throttle(5, 10000)
+  @Throttle(CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS)
   @UseGuards(ThrottleGuard)
   @Post('conversations/:sophomorixType/:groupName/messages')
   async sendMessage(
