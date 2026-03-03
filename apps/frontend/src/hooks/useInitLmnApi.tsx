@@ -20,11 +20,13 @@
 import { useEffect } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useLdapGroups from './useLdapGroups';
 import useDeploymentTarget from './useDeploymentTarget';
 
 const useInitLmnApi = () => {
   const { isLmn } = useDeploymentTarget();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const { isSuperAdmin } = useLdapGroups();
   const { lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion } = useLmnApiStore();
 
   useEffect(() => {
@@ -34,9 +36,11 @@ const useInitLmnApi = () => {
       void setLmnApiToken();
     } else {
       void getOwnUser();
-      void getLmnVersion(true);
+      if (isSuperAdmin) {
+        void getLmnVersion(true);
+      }
     }
-  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion]);
+  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser, getLmnVersion, isSuperAdmin]);
 };
 
 export default useInitLmnApi;
