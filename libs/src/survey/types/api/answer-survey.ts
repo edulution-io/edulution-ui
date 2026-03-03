@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { CompleteEvent } from 'survey-core';
+import type { CompleteEvent } from 'survey-core';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 

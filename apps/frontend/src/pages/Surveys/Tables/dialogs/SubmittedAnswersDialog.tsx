@@ -17,16 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+
+const SubmittedAnswersDialogBody = lazy(() => import('./SubmittedAnswersDialogBody'));
 
 const SubmittedAnswersDialog = () => {
   const { selectedSurvey: selectedSurveyFromPage } = useSurveysTablesPageStore();
@@ -65,12 +66,14 @@ const SubmittedAnswersDialog = () => {
       );
     }
     return (
-      <ScrollArea>
-        <SubmittedAnswersDialogBody
-          formula={selectedSurvey?.formula}
-          answer={submittedAnswer}
-        />
-      </ScrollArea>
+      <Suspense fallback={<CircleLoader />}>
+        <ScrollArea>
+          <SubmittedAnswersDialogBody
+            formula={selectedSurvey?.formula}
+            answer={submittedAnswer}
+          />
+        </ScrollArea>
+      </Suspense>
     );
   };
 
