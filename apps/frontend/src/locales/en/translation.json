@@ -907,6 +907,7 @@
         "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
         "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
         "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
+        "pageTitlePlaceHolder": "Enter page title",
         "previewTabTitle": "Preview"
       },
       "isLoadingSurvey": "Survey is loading...",

@@ -24,14 +24,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { faRotateLeft, faFilePdf, faClose } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import APPS from '@libs/appconfig/constants/apps';
 import { ReactElementFactory } from 'survey-react-ui';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
+import { CREATED_SURVEYS_PAGE, SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import resetSurveyIdFromFormulasBackendLimiters from '@libs/survey/utils/resetSurveyIdFromFormulasBackendLimiters';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import useThemeStore from '@/store/useThemeStore';
@@ -40,6 +43,7 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SurveysLogoSettingsDialog from '@/pages/Surveys/Editor/dialog/SurveysLogoSettingsDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
@@ -52,6 +56,9 @@ import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import CustomLogoImageComponent from '@/pages/Surveys/Editor/components/CustomLogoImageComponent';
+import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyComponents';
+
+registerSurveyComponents();
 
 ReactElementFactory.Instance.registerElement('svc-logo-image', (props: { data: SurveyCreatorModel }) => (
   <CustomLogoImageComponent data={props.data} />
@@ -94,7 +101,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { isSuperAdmin } = useLdapGroups();
-  const { getResolvedTheme } = useThemeStore();
+  const { theme, getResolvedTheme } = useThemeStore();
 
   const handleCancel = useCallback(() => {
     clearInitialSurvey();
@@ -173,6 +180,14 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     });
   }, [creator, form, language]);
 
+  useEffect(() => {
+    if (!creator) return;
+    creator.theme = surveyTheme;
+    if (!creator.survey.logo) return;
+    if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
+    creator.survey.logo = getAssetUrl(APPS.SURVEYS, ASSET_TYPES.logo, getResolvedTheme());
+  }, [theme, getResolvedTheme, creator]);
+
   const resetSurveyEditor = useCallback(() => {
     handleReset();
     form.reset(initialFormValues);
@@ -222,6 +237,10 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const handleSaveSurvey = useCallback(async () => {
     if (!creator) return;
+
+    if (creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) {
+      creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-${getResolvedTheme().toString()}.webp`;
+    }
 
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;
@@ -278,7 +297,11 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         {creator && (
           <SurveyCreatorComponent
             creator={creator}
-            style={{ height: '100%', width: '100%' }}
+            style={{
+              height: '100%',
+              width: '100%',
+              ...surveyTheme.cssVariables,
+            }}
           />
         )}
       </div>

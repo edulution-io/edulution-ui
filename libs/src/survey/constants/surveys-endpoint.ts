@@ -17,6 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import APPS from '@libs/appconfig/constants/apps';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 
 export const SURVEYS = 'surveys';
@@ -56,3 +59,5 @@ export const PUBLIC_SURVEY_FILE_ATTACHMENT_ENDPOINT = `${PUBLIC_SURVEYS}/${FILES
 
 export const SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT = `${SURVEYS}/${ANSWER}/${FILES}`;
 export const PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}`;
+
+export const SURVEY_DEFAULT_LOGO_PATH = `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${APPS.SURVEYS}`;

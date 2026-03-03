@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sd-page.sd-body__page {
+  width: 100%;
+}
+
+.sd-container-modern__title {
+  background-color: transparent !important;
+  .sd-title .sv-string-viewer {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+  .sd-description .sv-string-viewer {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+  }
+}
+
+.sd-page {
+  .sd-page__title .sv-string-viewer {
+    font-size: 1.5rem !important;
+    line-height: 1.5rem;
+  }
+  .sd-page__description .sv-string-viewer {
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+  }
+}
+
+.survey-participation .sd-body__navigation {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1rem 0;
+}
+
+.survey-nav-button {
+  min-width: 6rem;
+  padding: 1rem 0;
+}
+
+.svc-preview__test-again.svc-btn {
+  display: flex;
+  justify-content: center;
+  height: 3rem;
+  width: 12rem !important;
+  border-radius: var(--border-radius, 12px);
+}
+
+.svc-surface-placeholder {
+  margin-top: 10rem;
+  justify-self: center;
+  align-self: center;
+}
+
+.sd-dropdown__value {
+  color: var(--background);
+  font-weight: 600;
+}
+
+/* Fix rating component */
+.sd-rating__item,
+.sd-rating__item-star,
+.sd-rating__item-smiley,
+.sd-rating__item--fixed-size {
+  margin-left: 1rem !important;
+}
+.sd-rating__item {
+  background-color: var(--muted-background) !important;
+}
+.sd-rating__item:hover {
+  background-color: var(--muted) !important;
+}
+.sd-rating__item--selected {
+  background-color: var(--primary) !important;
+}
+.sd-rating__item-star {
+  svg {
+    max-width: 3rem !important;
+    max-height: 3rem !important;
+    use {
+      stroke: var(--muted-background) !important;
+      fill: var(--muted-background) !important;
+    }
+  }
+}
+.sd-rating__item-star--selected svg use {
+  stroke: var(--primary) !important;
+  fill: var(--primary) !important;
+}

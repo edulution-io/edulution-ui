@@ -909,6 +909,7 @@
         "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
         "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
         "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
+        "pageTitlePlaceHolder": "Seitentitel eingeben",
         "previewTabTitle": "Vorschau"
       },
       "isLoadingSurvey": "Umfrage wird geladen...",

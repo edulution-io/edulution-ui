@@ -17,20 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface TEditorLocale {
-  ed: {
-    surveyPlaceHolder: string;
-    surveyPlaceholderDescription: string;
-    surveyPlaceholderDescriptionMobile: string;
-    pagePlaceHolder: string;
-    panelPlaceHolder: string;
-  };
-  pe: {
-    pageTitlePlaceholder: string;
-  };
-  tabs: {
-    preview: string;
-  };
+import { Action } from 'survey-core';
+import { ReactElementFactory } from 'survey-react-ui';
+import SurveyNavigationButton from './SurveyNavigationButton';
+
+interface SurveyNavigationButtonProps {
+  item: Action;
 }
 
-export default TEditorLocale;
+const SURVEY_ELEMENT_TYPES = {
+  NAV_BUTTON: 'sv-nav-btn',
+} as const;
+
+let isRegistered = false;
+
+const registerSurveyComponents = () => {
+  if (isRegistered) {
+    return;
+  }
+
+  ReactElementFactory.Instance.registerElement(SURVEY_ELEMENT_TYPES.NAV_BUTTON, (props: SurveyNavigationButtonProps) =>
+    SurveyNavigationButton(props),
+  );
+
+  isRegistered = true;
+};
+
+export default registerSurveyComponents;

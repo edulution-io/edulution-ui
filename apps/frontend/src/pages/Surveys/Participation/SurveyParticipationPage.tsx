@@ -25,7 +25,6 @@ import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPa
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import '../theme/custom.participation.css';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;

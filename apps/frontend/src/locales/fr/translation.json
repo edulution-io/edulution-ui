@@ -808,6 +808,7 @@
         "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
         "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
         "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
+        "pageTitlePlaceHolder": "Entrez le titre de la page",
         "previewTabTitle": "Aperçu"
       },
       "isLoadingSurvey": "Le sondage est en cours de chargement...",
