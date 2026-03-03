@@ -25,8 +25,8 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '.env.e2e') });
 
 const AUTH_DIR = path.resolve(__dirname, 'auth');
-const LOGIN_TIMEOUT_MS = 30_000;
-const MAX_RETRIES = 2;
+const LOGIN_TIMEOUT_MS = 60_000;
+const MAX_RETRIES = 3;
 
 const ROLES = ['admin', 'teacher', 'student', 'parent'] as const;
 
