@@ -171,7 +171,6 @@ class AuthService {
     return this.signin(body, password);
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   public getQrCode(username: string): string {
     const totpSecret = new Secret({ size: 16 });
     const secret = totpSecret.base32;
