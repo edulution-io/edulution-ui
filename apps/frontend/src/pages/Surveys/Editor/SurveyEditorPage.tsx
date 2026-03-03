@@ -248,8 +248,8 @@ const SurveyEditorPage = () => {
   if (isLoading || isFetching) return <LoadingIndicatorDialog isOpen />;
 
   return (
-    <Form {...form}>
-      <PageLayout>
+    <PageLayout>
+      <Form {...form}>
         <div className="survey-editor h-full pt-1">
           {creator && (
             <SurveyCreatorComponent
@@ -280,8 +280,8 @@ const SurveyEditorPage = () => {
           setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
         />
         <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
-      </PageLayout>
-    </Form>
+      </Form>
+    </PageLayout>
   );
 };
 
