@@ -28,11 +28,10 @@ import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
-import isCollaboraDocument from '@libs/filesharing/utils/isCollaboraDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import TEXT_EXTENSIONS from '@libs/filesharing/types/textExtensions';
 import useMedia from '@/hooks/useMedia';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -127,11 +126,9 @@ const FileRenderer: FC<FileRendererProps> = ({
   const getFileType = (): FilePreviewType => {
     if (isPdfExtension(fileExtension)) return FILE_PREVIEW_TYPE.PDF;
 
-    const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
-    if (isOnlyOfficeDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
-
-    const isCollaboraDoc = isCollaboraDocument(currentlyEditingFile.filePath);
-    if (isCollaboraDoc && isCollaboraConfigured) return FILE_PREVIEW_TYPE.COLLABORA;
+    const isEditableDoc = isOfficeDocument(currentlyEditingFile.filePath);
+    if (isEditableDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
+    if (isEditableDoc && isCollaboraConfigured) return FILE_PREVIEW_TYPE.COLLABORA;
 
     if (isDrawioExtension(fileExtension)) return FILE_PREVIEW_TYPE.DRAWIO;
     if (isImageExtension(fileExtension)) return FILE_PREVIEW_TYPE.IMAGE;

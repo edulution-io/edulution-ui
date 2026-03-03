@@ -19,16 +19,14 @@
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import WopiAccessToken from '@libs/filesharing/types/wopiAccessToken';
+import { WOPI_TOKEN_EXPIRY, WOPI_TOKEN_TTL_MS } from '@libs/filesharing/constants/wopi';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
-
-const WOPI_TOKEN_EXPIRY = '24h';
-const WOPI_TOKEN_TTL_MS = 86400000;
 
 interface WopiTokenPayload {
   username: string;

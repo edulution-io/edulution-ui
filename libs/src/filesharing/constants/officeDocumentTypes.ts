@@ -17,13 +17,28 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import COLLABORA_DOCUMENT_TYPES from '@libs/filesharing/constants/collaboraDocumentTypes';
+const OFFICE_DOCUMENT_TYPES = {
+  PPTX: 'pptx',
+  PPSX: 'ppsx',
+  POTX: 'potx',
+  PPT: 'ppt',
+  PPS: 'pps',
+  POT: 'pot',
+  OTP: 'otp',
+  ODP: 'odp',
+  DOCX: 'docx',
+  DOC: 'doc',
+  DOT: 'dot',
+  DOTX: 'dotx',
+  ODT: 'odt',
+  OTT: 'ott',
+  RTF: 'rtf',
+  XLSX: 'xlsx',
+  XLS: 'xls',
+  XLT: 'xlt',
+  XLTX: 'xltx',
+  ODS: 'ods',
+  OTS: 'ots',
+} as const;
 
-type TCollaboraDocumentTypes = (typeof COLLABORA_DOCUMENT_TYPES)[keyof typeof COLLABORA_DOCUMENT_TYPES];
-
-const isCollaboraDocument = (filePath: string): boolean => {
-  const fileExtension = filePath.split('.').pop()?.toLowerCase() as TCollaboraDocumentTypes;
-  return fileExtension ? Object.values(COLLABORA_DOCUMENT_TYPES).includes(fileExtension) : false;
-};
-
-export default isCollaboraDocument;
+export default OFFICE_DOCUMENT_TYPES;

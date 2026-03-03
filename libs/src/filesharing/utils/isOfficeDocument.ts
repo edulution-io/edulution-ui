@@ -17,6 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
+import OFFICE_DOCUMENT_TYPES from '@libs/filesharing/constants/officeDocumentTypes';
+import type OfficeDocumentType from '@libs/filesharing/types/officeDocumentType';
 
-export type TOnlyOfficeDocumentTypes = (typeof OnlyOfficeDocumentTypes)[keyof typeof OnlyOfficeDocumentTypes];
+const isOfficeDocument = (filePath: string): boolean => {
+  const fileExtension = filePath.split('.').pop()?.toLowerCase() as OfficeDocumentType;
+  return fileExtension ? Object.values(OFFICE_DOCUMENT_TYPES).includes(fileExtension) : false;
+};
+
+export default isOfficeDocument;

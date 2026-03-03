@@ -17,31 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const OnlyOfficeDocumentTypes = {
-  // Presentation
-  PPTX: 'pptx',
-  PPSX: 'ppsx',
-  POTX: 'potx',
-  PPT: 'ppt',
-  PPS: 'pps',
-  POT: 'pot',
-  OTP: 'otp',
-  ODP: 'odp',
-  // Text
-  DOCX: 'docx',
-  DOC: 'doc',
-  DOT: 'dot',
-  DOTX: 'dotx',
-  ODT: 'odt',
-  OTT: 'ott',
-  RTF: 'rtf',
-  // Spreadsheet
-  XLSX: 'xlsx',
-  XLS: 'xls',
-  XLT: 'xlt',
-  XLTX: 'xltx',
-  ODS: 'ods',
-  OTS: 'ots',
-} as const;
+import OFFICE_DOCUMENT_TYPES from '@libs/filesharing/constants/officeDocumentTypes';
 
-export default OnlyOfficeDocumentTypes;
+type OfficeDocumentType = (typeof OFFICE_DOCUMENT_TYPES)[keyof typeof OFFICE_DOCUMENT_TYPES];
+
+export default OfficeDocumentType;

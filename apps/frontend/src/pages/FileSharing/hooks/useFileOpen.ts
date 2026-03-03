@@ -24,8 +24,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import isCollaboraDocument from '@libs/filesharing/utils/isCollaboraDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import useMedia from '@/hooks/useMedia';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -76,18 +75,16 @@ const useFileOpen = ({ isDocumentServerConfigured, isCollaboraConfigured }: UseF
       }
 
       const isPdf = item.filename.toLowerCase().endsWith('.pdf');
-      const isOnlyOfficeDoc = isOnlyOfficeDocument(item.filename);
-      const isCollaboraDoc = isCollaboraDocument(item.filename);
-      const isDocumentEditorDoc = isOnlyOfficeDoc || isCollaboraDoc;
+      const isEditableDoc = isOfficeDocument(item.filename);
       const hasDocumentEditor = isDocumentServerConfigured || isCollaboraConfigured;
 
-      if (isDocumentEditorDoc && !hasDocumentEditor && !isPdf) {
+      if (isEditableDoc && !hasDocumentEditor && !isPdf) {
         return;
       }
-      if (isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf) {
+      if (isMobileView && isEditableDoc && isDocumentServerConfigured && !isPdf) {
         return;
       }
-      if (isDocumentEditorDoc || isPdf) {
+      if (isEditableDoc || isPdf) {
         void setFileIsCurrentlyDisabled(item.filename, true, 5000);
       }
 

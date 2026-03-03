@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Controller, Get, Post, Param, Query, Req, Res, HttpStatus, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, Req, Res, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -32,13 +32,12 @@ import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
+import { WOPI_BASE_PATH } from '@libs/filesharing/constants/wopi';
 import Public from '../common/decorators/public.decorator';
 import CollaboraService from './collabora.service';
 import WebdavService from '../webdav/webdav.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import FilesystemService from '../filesystem/filesystem.service';
-
-const WOPI_BASE_PATH = 'wopi/files';
 
 @Controller(WOPI_BASE_PATH)
 class WopiController {
@@ -80,7 +79,6 @@ class WopiController {
     @Query('access_token') accessToken: string,
     @Res() res: Response,
   ) {
-    Logger.log(`CheckFileInfo for fileId=${fileId}`, WopiController.name);
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
     const fileName = tokenData.filePath.split('/').pop() || fileId;
 
@@ -104,7 +102,7 @@ class WopiController {
 
   @Public()
   @Get(':fileId/contents')
-  async getFile(@Param('fileId') _fileId: string, @Query('access_token') accessToken: string, @Res() res: Response) {
+  async getFile(@Query('access_token') accessToken: string, @Res() res: Response) {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
     const client = await this.webdavService.getClient(tokenData.username, tokenData.share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(tokenData.share);
@@ -127,13 +125,7 @@ class WopiController {
 
   @Public()
   @Post(':fileId/contents')
-  async putFile(
-    @Param('fileId') fileId: string,
-    @Query('access_token') accessToken: string,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    Logger.log(`PutFile for fileId=${fileId}`, WopiController.name);
+  async putFile(@Query('access_token') accessToken: string, @Req() req: Request, @Res() res: Response) {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
 
     if (!tokenData.canWrite) {

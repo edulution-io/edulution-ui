@@ -29,8 +29,7 @@ import OpenInNewTabButton from '@/components/structure/framing/ResizableWindow/B
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import ToggleEditModeButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleEditModeButton';
 import SaveButton from '@/components/structure/framing/ResizableWindow/Buttons/SaveButton';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import isCollaboraDocument from '@libs/filesharing/utils/isCollaboraDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
@@ -231,21 +230,17 @@ const FileSharingPreviewFrame = () => {
 
   const { isOnlyOfficeActive, isCollaboraActive } = useActiveDocumentEditor();
 
-  const isOnlyOfficeDoc =
-    !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
+  const isEditableDoc =
+    !!currentlyEditingFile && isOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
-  const isCollaboraDoc =
-    !!currentlyEditingFile && isCollaboraDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
-
-  const isDocumentEditorDoc = isOnlyOfficeDoc || isCollaboraDoc;
   const isDocumentEditorConfigured = isOnlyOfficeActive || isCollaboraActive;
 
   const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
   const isPdf = currentlyEditingFile?.filename.endsWith('pdf');
-  const isOnlyOfficeDocOnMobile = isMobileView && isOnlyOfficeDoc && isOnlyOfficeActive && !isPdf;
+  const isOnlyOfficeDocOnMobile = isMobileView && isEditableDoc && isOnlyOfficeActive && !isPdf;
 
   const isFileReady =
-    (isValidFile && (isDocumentEditorDoc ? isDocumentEditorConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
+    (isValidFile && (isEditableDoc ? isDocumentEditorConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
 
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
@@ -253,11 +248,7 @@ const FileSharingPreviewFrame = () => {
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const canToggleEditMode =
-    isOnlyOfficeDocument(currentlyEditingFile?.filename || '') ||
-    isCollaboraDocument(currentlyEditingFile?.filename || '') ||
-    isTextFile ||
-    isDrawioFile;
+  const canToggleEditMode = isOfficeDocument(currentlyEditingFile?.filename || '') || isTextFile || isDrawioFile;
   const isTextEditMode = isEditMode && isTextFile;
   const isDrawioEditMode = isEditMode && isDrawioFile;
   const showSaveButton = isTextEditMode || isDrawioEditMode;

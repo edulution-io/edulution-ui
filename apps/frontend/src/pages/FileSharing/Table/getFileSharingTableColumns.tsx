@@ -29,7 +29,7 @@ import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import i18n from '@/i18n';
@@ -112,16 +112,16 @@ const getFileSharingTableColumns = (
             row.toggleSelected();
             return;
           }
-          const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
-          if (isOnlyOfficeDoc && !isDocumentServerConfigured && !isPdf) {
+          const isEditableDoc = isOfficeDocument(row.original.filename);
+          if (isEditableDoc && !isDocumentServerConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }
-          if (isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf) {
+          if (isMobileView && isEditableDoc && isDocumentServerConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }
-          if (isOnlyOfficeDoc || isPdf) {
+          if (isEditableDoc || isPdf) {
             void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
           }
 

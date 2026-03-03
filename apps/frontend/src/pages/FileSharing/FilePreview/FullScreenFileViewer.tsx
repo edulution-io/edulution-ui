@@ -29,7 +29,7 @@ import PageTitle from '@/components/PageTitle';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import isCollaboraDocument from '@libs/filesharing/utils/isCollaboraDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import useActiveDocumentEditor from '@/pages/FileSharing/hooks/useActiveDocumentEditor';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
@@ -55,8 +55,7 @@ const FullScreenFileViewer = () => {
   const isTextFile = isTextExtension(fileExtension);
   const isDrawioFile = isDrawioExtension(fileExtension);
 
-  const isCollaboraDoc =
-    isCollaboraActive && !!currentlyEditingFile && isCollaboraDocument(currentlyEditingFile.filePath);
+  const isCollaboraDoc = isCollaboraActive && !!currentlyEditingFile && isOfficeDocument(currentlyEditingFile.filePath);
 
   const initializeFile = async () => {
     const fileToOpen = filesToOpenInNewTab.find((f) => f.etag === fileETag);

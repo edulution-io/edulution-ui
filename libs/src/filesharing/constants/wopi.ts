@@ -17,28 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const COLLABORA_DOCUMENT_TYPES = {
-  PPTX: 'pptx',
-  PPSX: 'ppsx',
-  POTX: 'potx',
-  PPT: 'ppt',
-  PPS: 'pps',
-  POT: 'pot',
-  OTP: 'otp',
-  ODP: 'odp',
-  DOCX: 'docx',
-  DOC: 'doc',
-  DOT: 'dot',
-  DOTX: 'dotx',
-  ODT: 'odt',
-  OTT: 'ott',
-  RTF: 'rtf',
-  XLSX: 'xlsx',
-  XLS: 'xls',
-  XLT: 'xlt',
-  XLTX: 'xltx',
-  ODS: 'ods',
-  OTS: 'ots',
-} as const;
+const WOPI_TOKEN_EXPIRY = '24h';
+const WOPI_TOKEN_TTL_MS = 86400000;
+const WOPI_BASE_PATH = 'wopi/files';
 
-export default COLLABORA_DOCUMENT_TYPES;
+export { WOPI_TOKEN_EXPIRY, WOPI_TOKEN_TTL_MS, WOPI_BASE_PATH };

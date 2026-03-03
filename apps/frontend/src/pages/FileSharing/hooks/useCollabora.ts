@@ -25,6 +25,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { WOPI_BASE_PATH } from '@libs/filesharing/constants/wopi';
 import useCollaboraStore from '@/pages/FileSharing/FilePreview/Collabora/useCollaboraStore';
 
 interface UseCollaboraProps {
@@ -44,7 +45,7 @@ const useCollabora = ({ filePath, fileName, mode, webdavShare }: UseCollaboraPro
   const collaboraUrl = getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.COLLABORA_URL);
 
   const fileId = btoa(filePath).replace(/[/+=]/g, '_');
-  const wopiSrc = `${getFrontEndUrl()}/${EDU_API_ROOT}/wopi/files/${fileId}`;
+  const wopiSrc = `${getFrontEndUrl()}/${EDU_API_ROOT}/${WOPI_BASE_PATH}/${fileId}`;
 
   useEffect(() => {
     if (resolvedWebdavShare) {
