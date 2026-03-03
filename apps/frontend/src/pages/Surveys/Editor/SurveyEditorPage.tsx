@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { faRotateLeft, faFilePdf, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faRotateLeft, faFilePdf, faClose } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import { ReactElementFactory } from 'survey-react-ui';
 import { SurveyCreatorModel } from 'survey-creator-core';
@@ -173,14 +173,14 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     });
   }, [creator, form, language]);
 
-  const resetSurveyEditorPage = useCallback(() => {
+  const resetSurveyEditor = useCallback(() => {
     handleReset();
     form.reset(initialFormValues);
     if (creator) {
       creator.saveNo = 0;
       creator.JSON = getSurveysDefaultValues(getResolvedTheme()).formula;
     }
-  }, [form, initialFormValues, creator]);
+  }, [form, initialFormValues, creator, handleReset, getResolvedTheme]);
 
   const handleSaveTemplate = useCallback(async () => {
     if (!isSuperAdmin) {
@@ -203,7 +203,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       },
     });
     setIsOpenSaveSurveyDialog(false);
-    resetSurveyEditorPage();
+    resetSurveyEditor();
   }, [
     form,
     creator,
@@ -250,7 +250,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const config: FloatingButtonsBarConfig = {
     buttons: [
       {
-        icon: faXmark,
+        icon: faClose,
         text: t('common.cancel'),
         onClick: () => handleCancel(),
       },
@@ -258,7 +258,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       {
         icon: faRotateLeft,
         text: t('survey.editor.reset'),
-        onClick: () => resetSurveyEditorPage(),
+        onClick: () => resetSurveyEditor(),
+        isVisible: !!initialFormValues.id,
       },
       {
         icon: faFilePdf,

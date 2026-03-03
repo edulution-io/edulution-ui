@@ -95,14 +95,13 @@ const useSurveysTablesPageStore = create<SurveysTablesPageStore>((set, get) => (
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   setIsCurrentUserTheSurveyOwner: (username: string) => {
-    const { user } = useUserStore();
+    const { user } = useUserStore.getState();
     set({ isCurrentUserTheSurveyOwner: username === user?.username });
   },
 
   fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<SurveyDto | undefined> => {
     set({ selectedSurvey: undefined });
     if (!surveyId) {
-      set({ selectedSurvey: undefined });
       return undefined;
     }
     set({ isFetching: true });
