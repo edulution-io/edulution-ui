@@ -42,17 +42,45 @@
       }
     }
   }
+
+  /* Fix tables background color: Remove the white backgrounds */
   .sa-text-table {
     color: var(--input) !important;
     background: transparent !important;
-  }
-  .sa-text-table__cell {
-    color: var(--input) !important;
-    background: transparent !important;
-    border: solid 1px var(--input) !important;
+    border: none;
+
+    .sa-text-table__cell,
+    .sa-text-table__cell-value,
+    .sa-text-table__cell-header {
+      color: var(--input);
+      background: transparent;
+      border: none;
+    }
+
+    tr:not(:first-child):not(:last-child) {
+      border-bottom: solid 1px var(--muted-light) !important;
+    }
+    .sa-text-table__cell-header {
+      border-bottom: solid 1px var(--muted-light) !important;
+    }
   }
 
-  /* Fix tables background color: Remove the white backgrounds */
+  .sa-statistics-table {
+    color: var(--input) !important;
+    background: transparent !important;
+
+    .sa-statistics-table__cell,
+    .sa-statistics-table__cell-value,
+    .sa-statistics-table__cell-header {
+      color: var(--input);
+      background: transparent;
+      border: none;
+    }
+    .sa-statistics-table__cell-header {
+      border-bottom: solid 1px var(--muted-light);
+    }
+  }
+
   .sa-question,
   .sa-question__title {
     background: transparent !important;

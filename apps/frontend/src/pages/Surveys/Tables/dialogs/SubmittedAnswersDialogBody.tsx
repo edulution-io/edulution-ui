@@ -48,7 +48,7 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
   }
 
   return (
-    <div className="participated-survey max-h-[75vh] overflow-y-scroll p-4">
+    <div className="participated-survey max-h-[75vh] overflow-y-auto p-4">
       <Survey model={surveyModel} />
     </div>
   );

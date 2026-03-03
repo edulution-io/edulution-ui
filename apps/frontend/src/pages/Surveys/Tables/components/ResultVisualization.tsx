@@ -25,7 +25,7 @@ import 'survey-analytics/survey.analytics.min.css';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
 import '../dialogs/resultVisualizationDialog.css';
-import SelectDropdown, { SelectOption } from './SelectDropdown';
+import DropdownSelect, { DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,
@@ -55,7 +55,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
     el.dataset.replaced = 'true';
     el.style.display = 'none';
 
-    const options: SelectOption[] = Array.from(el.options).map((o) => ({
+    const options: DropdownOptions[] = Array.from(el.options).map((o) => ({
       id: o.value,
       name: o.text,
     }));
@@ -64,16 +64,24 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
     el.insertAdjacentElement('afterend', wrapper);
 
     const root = ReactDOM.createRoot(wrapper);
-    root.render(
-      <SelectDropdown
-        options={options}
-        initialValue={el.value}
-        onSelect={(val: string) => {
-          el.value = val;
-          el.dispatchEvent(new Event('change', { bubbles: true }));
-        }}
-      />,
-    );
+
+    const renderDropdown = (val: string) => {
+      root.render(
+        <DropdownSelect
+          options={options}
+          selectedVal={val}
+          handleChange={(newVal: string) => {
+            el.value = newVal;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            renderDropdown(newVal);
+          }}
+          enableSearch={false}
+          enablePortalUsage={false}
+        />,
+      );
+    };
+
+    renderDropdown(el.value);
     rootsRef.current.set(el, root);
   };
 

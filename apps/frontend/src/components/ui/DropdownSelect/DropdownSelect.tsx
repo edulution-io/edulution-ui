@@ -40,6 +40,8 @@ interface DropdownProps {
   variant?: DropdownVariant;
   placeholder?: string;
   translate?: boolean;
+  enableSearch?: boolean;
+  enablePortalUsage?: boolean;
 }
 
 const MENU_MAX_HEIGHT = 125;
@@ -54,9 +56,11 @@ const DropdownSelect = ({
   variant = 'default',
   placeholder = '',
   translate = true,
+  enableSearch = true,
+  enablePortalUsage = true,
 }: DropdownProps) => {
   const { t } = useTranslation();
-  const searchEnabled = options.length > 3;
+  const searchEnabled = enableSearch && options.length > 3;
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
@@ -186,6 +190,65 @@ const DropdownSelect = ({
     },
   };
 
+  const PanelContent = (
+    <div
+      ref={menuRef}
+      className={cn(
+        'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
+        variantClasses[variant],
+      )}
+      style={
+        enablePortalUsage
+          ? {
+              maxHeight: MENU_MAX_HEIGHT,
+              top: menuPosition.top,
+              left: menuPosition.left,
+              width: menuPosition.width,
+            }
+          : {
+              maxHeight: MENU_MAX_HEIGHT,
+              width: Math.max(menuPosition.width, 130),
+            }
+      }
+      role="listbox"
+      id="dropdown-listbox"
+      onWheel={handleWheel}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+    >
+      {filteredOptions.map((option) => {
+        const label = translateLabel(option.name);
+        const selected = option.id === selectedVal;
+        const classes = optionVariantClasses[variant];
+
+        return (
+          <div
+            key={option.id}
+            role="option"
+            aria-selected={selected}
+            tabIndex={0}
+            onClick={() => selectOption(option)}
+            onKeyDown={(e) => handleKeyDown(e, option)}
+            className={cn('box-border block cursor-pointer px-2.5 py-2', selected ? classes.selected : classes.base)}
+            title={label}
+          >
+            {label}
+          </div>
+        );
+      })}
+      {filteredOptions.length === 0 && (
+        <div
+          className="box-border block cursor-default px-2.5 py-2"
+          aria-disabled="true"
+        >
+          {t('search.no-results')}
+        </div>
+      )}
+    </div>
+  );
+
+  const DropdownPanel = !enablePortalUsage ? PanelContent : createPortal(PanelContent, document.body);
+
   return (
     <div
       className={cn('relative cursor-default', classname)}
@@ -220,60 +283,7 @@ const DropdownSelect = ({
         })}
       />
 
-      {isOpen &&
-        createPortal(
-          <div
-            ref={menuRef}
-            className={cn(
-              'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
-              variantClasses[variant],
-            )}
-            style={{
-              maxHeight: MENU_MAX_HEIGHT,
-              top: menuPosition.top,
-              left: menuPosition.left,
-              width: menuPosition.width,
-            }}
-            role="listbox"
-            id="dropdown-listbox"
-            onWheel={handleWheel}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-          >
-            {filteredOptions.map((option) => {
-              const label = translateLabel(option.name);
-              const selected = option.id === selectedVal;
-              const classes = optionVariantClasses[variant];
-
-              return (
-                <div
-                  key={option.id}
-                  role="option"
-                  aria-selected={selected}
-                  tabIndex={0}
-                  onClick={() => selectOption(option)}
-                  onKeyDown={(e) => handleKeyDown(e, option)}
-                  className={cn(
-                    'box-border block cursor-pointer px-2.5 py-2',
-                    selected ? classes.selected : classes.base,
-                  )}
-                  title={label}
-                >
-                  {label}
-                </div>
-              );
-            })}
-            {filteredOptions.length === 0 && (
-              <div
-                className="box-border block cursor-default px-2.5 py-2"
-                aria-disabled="true"
-              >
-                {t('search.no-results')}
-              </div>
-            )}
-          </div>,
-          document.body,
-        )}
+      {isOpen && DropdownPanel}
     </div>
   );
 };
