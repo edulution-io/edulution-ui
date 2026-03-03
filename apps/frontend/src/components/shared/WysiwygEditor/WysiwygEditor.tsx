@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
 import {
-  IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM,
+  IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
   IMAGE_MAX_DIMENSION_LARGE,
 } from '@libs/common/constants/imageUploadConstraints';
 
@@ -66,7 +66,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     try {
       const compressedFile = await convertImageFileToCompressedWebp(
         file,
-        IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM,
+        IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
         IMAGE_MAX_DIMENSION_LARGE,
       );
       const uploadedFilename = await onUpload(compressedFile);

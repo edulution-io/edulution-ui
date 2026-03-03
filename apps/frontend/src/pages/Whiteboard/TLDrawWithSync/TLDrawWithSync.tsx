@@ -40,7 +40,7 @@ import useThemeStore from '@/store/useThemeStore';
 import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
 import {
   IMAGE_MAX_DIMENSION_LARGE,
-  IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+  IMAGE_COMPRESSION_MAX_SIZE_KB_MAXIMUM,
 } from '@libs/common/constants/imageUploadConstraints';
 
 const TLDrawWithSync = ({ uri }: { uri: string }) => {
@@ -75,7 +75,7 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
         const form = new FormData();
         const compressedFile = await convertImageFileToCompressedWebp(
           file,
-          IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+          IMAGE_COMPRESSION_MAX_SIZE_KB_MAXIMUM,
           IMAGE_MAX_DIMENSION_LARGE,
         );
         form.append('file', compressedFile, filename);
