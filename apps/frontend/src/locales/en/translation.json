@@ -459,7 +459,8 @@
       "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
       "CopyFailed": "Copy failed",
-      "FileFormatNotSupported": "File format is not supported"
+      "FileFormatNotSupported": "File format is not supported",
+      "WopiTokenInvalid": "WOPI token invalid or expired"
     },
     "singleDownload": {
       "promptInfo": "Your file download has started.",

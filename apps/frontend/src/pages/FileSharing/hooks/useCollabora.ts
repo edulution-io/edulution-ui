@@ -17,17 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import eduApi from '@/api/eduApi';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import WopiAccessToken from '@libs/filesharing/types/wopiAccessToken';
+import useCollaboraStore from '@/pages/FileSharing/FilePreview/Collabora/useCollaboraStore';
 
 interface UseCollaboraProps {
   filePath: string;
@@ -39,9 +37,8 @@ interface UseCollaboraProps {
 const useCollabora = ({ filePath, fileName, mode, webdavShare }: UseCollaboraProps) => {
   const { webdavShare: webdavShareFromParams } = useParams();
   const resolvedWebdavShare = webdavShare ?? webdavShareFromParams;
-  const [accessToken, setAccessToken] = useState<string>('');
-  const [accessTokenTTL, setAccessTokenTTL] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const { accessToken, accessTokenTTL, isLoading, fetchWopiToken } = useCollaboraStore();
 
   const { appConfigs } = useAppConfigsStore();
   const collaboraUrl = getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.COLLABORA_URL);
@@ -50,27 +47,9 @@ const useCollabora = ({ filePath, fileName, mode, webdavShare }: UseCollaboraPro
   const wopiSrc = `${getFrontEndUrl()}/${EDU_API_ROOT}/wopi/files/${fileId}`;
 
   useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        setIsLoading(true);
-        const response = await eduApi.post<WopiAccessToken>(
-          `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COLLABORA_TOKEN}`,
-          {
-            filePath,
-            share: resolvedWebdavShare,
-            canWrite: mode === 'edit',
-          },
-        );
-        setAccessToken(response.data.accessToken);
-        setAccessTokenTTL(response.data.accessTokenTTL);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void fetchToken();
+    if (resolvedWebdavShare) {
+      void fetchWopiToken(filePath, resolvedWebdavShare, mode === 'edit');
+    }
   }, [filePath, fileName, mode, resolvedWebdavShare]);
 
   return {

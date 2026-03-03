@@ -31,14 +31,11 @@ import ToggleEditModeButton from '@/components/structure/framing/ResizableWindow
 import SaveButton from '@/components/structure/framing/ResizableWindow/Buttons/SaveButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import isCollaboraDocument from '@libs/filesharing/utils/isCollaboraDocument';
-import { ACTIVE_DOCUMENT_EDITOR } from '@libs/filesharing/constants/activeDocumentEditor';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import useActiveDocumentEditor from '@/pages/FileSharing/hooks/useActiveDocumentEditor';
 import ContentType from '@libs/filesharing/types/contentType';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import ToggleDockButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleDockButton';
@@ -221,8 +218,6 @@ const FileSharingPreviewFrame = () => {
     printContent(contentElement, title);
   };
 
-  const { appConfigs } = useAppConfigsStore();
-
   const { x, y, width, height } = filePreviewRect || { x: 0, y: 0, width: 0, height: 0 };
 
   const initialPositionMemo = useMemo(
@@ -234,26 +229,7 @@ const FileSharingPreviewFrame = () => {
     [isFilePreviewDocked, width, height],
   );
 
-  const isDocumentServerConfigured = !!getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
-  );
-
-  const isCollaboraServerConfigured = !!getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.COLLABORA_URL,
-  );
-
-  const activeEditor = getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR,
-  );
-
-  const isOnlyOfficeActive = isDocumentServerConfigured && activeEditor !== ACTIVE_DOCUMENT_EDITOR.COLLABORA;
-  const isCollaboraActive = isCollaboraServerConfigured && activeEditor === ACTIVE_DOCUMENT_EDITOR.COLLABORA;
+  const { isOnlyOfficeActive, isCollaboraActive } = useActiveDocumentEditor();
 
   const isOnlyOfficeDoc =
     !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);

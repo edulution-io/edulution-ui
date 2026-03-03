@@ -446,7 +446,8 @@
       "MissingCallbackURL": "Callback-URL manquante",
       "SharingFailed": "La distribution des fichiers a échoué",
       "CopyFailed": "La copie a échoué",
-      "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
+      "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge.",
+      "WopiTokenInvalid": "Jeton WOPI invalide ou expiré"
     },
     "singleDownload": {
       "promptInfo": "Le téléchargement de votre fichier a commencé.",

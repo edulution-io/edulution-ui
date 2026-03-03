@@ -50,7 +50,12 @@ class CollaboraService {
     const secret = appConfig?.extendedOptions?.[ExtendedOptionKeys.COLLABORA_WOPI_SECRET] as string;
 
     if (!secret) {
-      throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.AppNotProperlyConfigured,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        CollaboraService.name,
+      );
     }
 
     return secret;
@@ -91,9 +96,10 @@ class CollaboraService {
       return this.jwtService.verify<WopiTokenPayload>(token, { secret });
     } catch {
       throw new CustomHttpException(
-        FileSharingErrorMessage.DownloadFailed,
+        FileSharingErrorMessage.WopiTokenInvalid,
         HttpStatus.UNAUTHORIZED,
-        'Invalid WOPI token',
+        undefined,
+        CollaboraService.name,
       );
     }
   }

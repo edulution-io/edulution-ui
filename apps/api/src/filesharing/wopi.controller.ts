@@ -21,8 +21,17 @@ import { Controller, Get, Post, Param, Query, Req, Res, HttpStatus, Logger } fro
 import { Request, Response } from 'express';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import {
+  HTTP_HEADERS,
+  HttpMethodsWebDav,
+  RequestResponseContentType,
+  WebdavRequestDepth,
+} from '@libs/common/types/http-methods';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import Public from '../common/decorators/public.decorator';
 import CollaboraService from './collabora.service';
 import WebdavService from '../webdav/webdav.service';
@@ -39,6 +48,31 @@ class WopiController {
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
+  private async getFileStat(username: string, filePath: string, share: string): Promise<DirectoryFileDTO | undefined> {
+    try {
+      const client = await this.webdavService.getClient(username, share);
+      const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+      const pathWithoutWebdav = getPathWithoutWebdav(filePath, webdavShare.pathname);
+      const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
+
+      const files = (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
+        client,
+        {
+          method: HttpMethodsWebDav.PROPFIND,
+          url,
+          data: DEFAULT_PROPFIND_XML,
+          headers: { [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONLY_SELF },
+        },
+        FileSharingErrorMessage.FileNotFound,
+        mapToDirectoryFiles,
+      )) as DirectoryFileDTO[];
+
+      return files[0];
+    } catch {
+      return undefined;
+    }
+  }
+
   @Public()
   @Get(':fileId')
   async checkFileInfo(
@@ -50,17 +84,19 @@ class WopiController {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
     const fileName = tokenData.filePath.split('/').pop() || fileId;
 
+    const fileStat = await this.getFileStat(tokenData.username, tokenData.filePath, tokenData.share);
+
     const fileInfo = {
       BaseFileName: fileName,
-      Size: 0,
+      Size: fileStat?.size ?? 0,
       OwnerId: tokenData.username,
       UserId: tokenData.username,
       UserFriendlyName: tokenData.username,
       UserCanWrite: tokenData.canWrite,
       UserCanNotWriteRelative: true,
-      PostMessageOrigin: '*',
-      LastModifiedTime: new Date().toISOString(),
-      Version: Date.now().toString(),
+      PostMessageOrigin: process.env.EDULUTION_BASE_DOMAIN || '',
+      LastModifiedTime: fileStat?.lastmod ?? new Date().toISOString(),
+      Version: fileStat?.etag ?? Date.now().toString(),
     };
 
     return res.status(HttpStatus.OK).json(fileInfo);

@@ -458,7 +458,8 @@
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen",
-      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
+      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt",
+      "WopiTokenInvalid": "WOPI-Token ungültig oder abgelaufen"
     },
     "singleDownload": {
       "promptInfo": "Dein Dateidownload wurde gestartet.",
