@@ -55,7 +55,7 @@ const getSurveyRoutes = () => [
     />
     <Route
       path={SurveysPageView.EDITOR}
-      element={<SurveyEditorEntryPage isCreatingNew />}
+      element={<SurveyApp surveysPageView={SurveysPageView.EDITOR} />}
     />
     <Route
       path={`${SurveysPageView.EDITOR}/:surveyId`}
