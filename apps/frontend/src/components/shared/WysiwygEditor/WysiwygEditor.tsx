@@ -28,6 +28,10 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM,
+  IMAGE_MAX_DIMENSION_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface WysiwygEditorProps {
   value: string;
@@ -60,7 +64,11 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     }
 
     try {
-      const compressedFile = await convertImageFileToCompressedWebp(file, 50, 3840);
+      const compressedFile = await convertImageFileToCompressedWebp(
+        file,
+        IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM,
+        IMAGE_MAX_DIMENSION_LARGE,
+      );
       const uploadedFilename = await onUpload(compressedFile);
       const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
 

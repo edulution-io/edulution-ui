@@ -21,7 +21,7 @@ import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadA
 
 const convertImageFileToCompressedWebp = async (
   file: File,
-  maxSizeMB: number,
+  maxSizeKB: number,
   maxDimension?: number,
 ): Promise<File> => {
   if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.type) || !file.type.startsWith('image/')) return file;
@@ -41,7 +41,8 @@ const convertImageFileToCompressedWebp = async (
       img.src = dataUrl;
     });
 
-    let { width, height } = image;
+    let width = image.naturalWidth || image.width;
+    let height = image.naturalHeight || image.height;
     if (maxDimension && (width > maxDimension || height > maxDimension)) {
       const aspectRatio = width / height;
       if (width > height) {
@@ -65,7 +66,7 @@ const convertImageFileToCompressedWebp = async (
       const b = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob((result) => resolve(result), 'image/webp', q);
       });
-      if (b && b.size > maxSizeMB * 1024 * 1024 && q > 0.1) {
+      if (b && b.size > maxSizeKB * 1024 && q > 0.1) {
         return compressToBlob(Math.round((q - 0.1) * 10) / 10);
       }
       return b;

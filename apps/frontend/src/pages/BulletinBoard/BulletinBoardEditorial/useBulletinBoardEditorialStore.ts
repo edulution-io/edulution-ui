@@ -35,6 +35,10 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+  IMAGE_MAX_DIMENSION_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface BulletinBoardEditorialStore {
   selectedRows: RowSelectionState;
@@ -156,7 +160,11 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   uploadAttachment: async (file): Promise<string> => {
     set({ isAttachmentUploadLoading: true, error: null });
     const formData = new FormData();
-    const uploadingFile = await convertImageFileToCompressedWebp(file, 50, 3840);
+    const uploadingFile = await convertImageFileToCompressedWebp(
+      file,
+      IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+      IMAGE_MAX_DIMENSION_LARGE,
+    );
     formData.append('file', uploadingFile);
 
     try {

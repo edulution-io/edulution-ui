@@ -38,6 +38,10 @@ import tlDrawComponents from '@/pages/Whiteboard/components/tlDrawComponents';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import useThemeStore from '@/store/useThemeStore';
 import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_MAX_DIMENSION_LARGE,
+  IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 const TLDrawWithSync = ({ uri }: { uri: string }) => {
   const { t } = useTranslation();
@@ -69,7 +73,11 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
       async upload(asset, file) {
         const filename = `${usernameRef.current}_${asset.id}`;
         const form = new FormData();
-        const compressedFile = await convertImageFileToCompressedWebp(file, 50, 3840);
+        const compressedFile = await convertImageFileToCompressedWebp(
+          file,
+          IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+          IMAGE_MAX_DIMENSION_LARGE,
+        );
         form.append('file', compressedFile, filename);
         const assetPath = `${assetBasePath}/${encodeURIComponent(filename)}`;
         await eduApi.post<string>(assetPath, form, {

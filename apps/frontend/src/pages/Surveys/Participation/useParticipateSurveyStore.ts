@@ -41,6 +41,10 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 import handleApiError from '@/utils/handleApiError';
 import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_COMPRESSION_MAX_SIZE_KB_SMALL,
+  IMAGE_MAX_DIMENSION_MEDIUM,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface ParticipateSurveyStore {
   attendee: Partial<AttendeeDto> | undefined;
@@ -208,7 +212,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     set({ isUploadingFile: true });
     try {
       const formData = new FormData();
-      const uploadingFile = await convertImageFileToCompressedWebp(file, 50, 2048);
+      const uploadingFile = await convertImageFileToCompressedWebp(
+        file,
+        IMAGE_COMPRESSION_MAX_SIZE_KB_SMALL,
+        IMAGE_MAX_DIMENSION_MEDIUM,
+      );
       formData.append('file', uploadingFile);
       const endpoint = `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}`;
       const response = await eduApi.post<FileDownloadDto>(

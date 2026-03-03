@@ -27,6 +27,10 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import ThemeType from '@libs/common/types/themeType';
 import AssetSource from '@libs/filesystem/types/AssetSource';
 import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_MAX_DIMENSION_LARGE,
+  IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface FilesystemStore {
   fetchImage: (url: string, variant?: ThemeType) => Promise<{ source: AssetSource; content: string } | null>;
@@ -105,7 +109,12 @@ const useFilesystemStore = create<FilesystemStore>((set) => ({
       const form = new FormData();
       form.append('destination', destination);
       if (file instanceof File) {
-        const webpFile = await convertImageFileToCompressedWebp(file, 1024, 3840);
+        const webpFile = await convertImageFileToCompressedWebp(
+          file,
+          IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+          IMAGE_MAX_DIMENSION_LARGE,
+        );
+
         form.append('filename', webpFile.name);
         form.append('file', webpFile, webpFile.name);
       } else if (file instanceof Blob) {
@@ -116,6 +125,7 @@ const useFilesystemStore = create<FilesystemStore>((set) => ({
           ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
 
         const wrapped = new File([file], fullName, { type });
+        form.append('filename', fullName);
         form.append('file', wrapped, fullName);
       } else {
         return false;
