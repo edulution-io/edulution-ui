@@ -17,36 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { OnlyOfficeCallbackStatus } from '../constants/onlyOfficeCallbackStatus';
+import { get, set, del } from 'idb-keyval';
+import type { StateStorage } from 'zustand/middleware';
 
-interface Action {
-  type: 0 | 1 | 2;
-  userid: string;
-}
+const indexedDbStorage: StateStorage = {
+  getItem: async (name) => (await get<string>(name)) ?? null,
+  setItem: async (name, value) => {
+    await set(name, value);
+  },
+  removeItem: async (name) => {
+    await del(name);
+  },
+};
 
-interface ChangeHistory {
-  changeId: string;
-  timestamp: string;
-}
-
-interface History {
-  changes: ChangeHistory[];
-  serverVersion: string;
-}
-
-interface OnlyOfficeCallbackData {
-  actions?: Action[];
-  changeshistory?: ChangeHistory[];
-  changesurl?: string;
-  filetype?: string;
-  forcesavetype?: 0 | 1 | 2 | 3;
-  formsdataurl?: string;
-  history?: History;
-  key: string;
-  status: OnlyOfficeCallbackStatus;
-  url: string;
-  userdata?: string;
-  users?: string[];
-}
-
-export default OnlyOfficeCallbackData;
+export default indexedDbStorage;

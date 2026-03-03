@@ -19,6 +19,7 @@
 
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import indexedDbStorage from '@/store/utils/indexedDbStorage';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
@@ -180,7 +181,7 @@ const useDeviceManagementStore = create<DeviceManagementStore>()(
     }),
     {
       name: 'device-management-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => indexedDbStorage),
       partialize: (state) => ({
         devices: state.devices,
         savedDevices: state.savedDevices,

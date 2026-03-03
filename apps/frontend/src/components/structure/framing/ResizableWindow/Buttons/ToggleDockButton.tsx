@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRightToBracket, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightToBracket, faClone } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface ToggleDockButtonProps {
@@ -32,7 +32,7 @@ const ToggleDockButton = ({ onClick, isDocked }: ToggleDockButtonProps) => (
     onClick={onClick}
     tooltipTranslationId={isDocked ? 'common.undock' : 'common.dock'}
   >
-    {isDocked ? <FontAwesomeIcon icon={faWindowRestore} /> : <FontAwesomeIcon icon={faArrowRightToBracket} />}
+    {isDocked ? <FontAwesomeIcon icon={faClone} /> : <FontAwesomeIcon icon={faArrowRightToBracket} />}
   </WindowControlBaseButton>
 );
 

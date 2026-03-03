@@ -86,7 +86,7 @@
       "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
       "editableByUsersAndGroupsTitle": "Manage Bulletins",
-      "accessGroupsOnlyHint": "Only access groups can be assigned."
+      "accessGroupsOnlyHint": "Only user groups can be assigned."
     },
     "errors": {
       "categoryNotFound": "Category not found",
@@ -2531,7 +2531,8 @@
       "containerCreationSuccessful": "Container successfully created.",
       "containerCreationFailed": "Container could not be created.",
       "containerUpdateSuccessful": "{{containerName}} updated successfully.",
-      "containerAlreadyUpToDate": "{{containerName}} is already up to date."
+      "containerAlreadyUpToDate": "{{containerName}} is already up to date.",
+      "containerDeleted": "{{containerName}} deleted successfully."
     },
     "status": {
       "running": "running",
