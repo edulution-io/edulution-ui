@@ -204,7 +204,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Run API Tests
-        run: npm run test -- --coverage --coverageReporters=json-summary --coverageReporters=lcov
+        run: npm run test:api -- --coverage --coverageReporters=json-summary --coverageReporters=lcov
 
       - name: Upload API coverage
         uses: actions/upload-artifact@v4

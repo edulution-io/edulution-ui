@@ -185,4 +185,35 @@ describe('MenuBar', () => {
     await user.click(screen.getByText('Dashboard'));
     expect(actionFn).toHaveBeenCalled();
   });
+
+  it('renders mobile overlay when isEdulutionApp is true', () => {
+    usePlatformStore.setState({ isEdulutionApp: true });
+    useMenuBarStore.setState({ isMobileMenuBarOpen: true });
+
+    const { container } = renderWithProviders(<MenuBar />, { route: '/filesharing/item-1' });
+
+    const mobileOverlay = container.querySelector('.translate-x-0');
+    expect(mobileOverlay).toBeInTheDocument();
+  });
+
+  it('uses mobile layout instead of desktop when isEdulutionApp is true', () => {
+    usePlatformStore.setState({ isEdulutionApp: true });
+
+    const { container } = renderWithProviders(<MenuBar />, { route: '/filesharing/item-1' });
+
+    const aside = container.querySelector('aside');
+    expect(aside).not.toBeInTheDocument();
+  });
+
+  it('closes mobile menu on click outside when isEdulutionApp is true', async () => {
+    const user = userEvent.setup();
+    usePlatformStore.setState({ isEdulutionApp: true });
+    useMenuBarStore.setState({ isMobileMenuBarOpen: true });
+
+    renderWithProviders(<MenuBar />, { route: '/filesharing/item-1' });
+
+    await user.click(document.body);
+
+    expect(useMenuBarStore.getState().isMobileMenuBarOpen).toBe(false);
+  });
 });
