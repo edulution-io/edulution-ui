@@ -121,7 +121,7 @@ describe('useSentryStore', () => {
   });
 
   describe('reset', () => {
-    it('resets state to initial values', () => {
+    it('is a no-op to preserve Sentry initialization across logout', () => {
       useSentryStore.setState({
         initialized: true,
         config: { dsn: 'https://key@sentry.io/123', enabled: true },
@@ -129,8 +129,8 @@ describe('useSentryStore', () => {
 
       useSentryStore.getState().reset();
 
-      expect(useSentryStore.getState().initialized).toBe(false);
-      expect(useSentryStore.getState().config).toBeNull();
+      expect(useSentryStore.getState().initialized).toBe(true);
+      expect(useSentryStore.getState().config).toEqual({ dsn: 'https://key@sentry.io/123', enabled: true });
     });
   });
 });

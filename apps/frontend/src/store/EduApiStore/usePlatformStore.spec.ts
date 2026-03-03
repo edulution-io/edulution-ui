@@ -51,12 +51,12 @@ describe('usePlatformStore', () => {
   });
 
   describe('reset', () => {
-    it('resets isEdulutionApp to false', () => {
+    it('is a no-op to preserve platform state across logout', () => {
       usePlatformStore.setState({ isEdulutionApp: true });
 
       usePlatformStore.getState().reset();
 
-      expect(usePlatformStore.getState().isEdulutionApp).toBe(false);
+      expect(usePlatformStore.getState().isEdulutionApp).toBe(true);
     });
   });
 });
