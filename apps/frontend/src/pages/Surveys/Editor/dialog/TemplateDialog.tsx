@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -32,7 +32,6 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface TemplateDialogProps {
-  form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
 
   isOpenTemplateMenu: boolean;
@@ -43,11 +42,11 @@ interface TemplateDialogProps {
 
 const TemplateDialog: React.FC<TemplateDialogProps> = ({
   trigger,
-  form,
   creator,
   isOpenTemplateMenu,
   setIsOpenTemplateMenu,
 }) => {
+  const form = useFormContext<SurveyDto>();
   const { template, uploadTemplate, fetchTemplates, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
     useTemplateMenuStore();
 
@@ -87,10 +86,7 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({
 
   const body = (
     <>
-      <TemplateDialogBody
-        form={form}
-        surveyCreator={creator}
-      />
+      <TemplateDialogBody surveyCreator={creator} />
       <DeleteTemplateDialog
         isOpenTemplateConfirmDeletion={isOpenTemplateConfirmDeletion}
         setIsOpenTemplateConfirmDeletion={setIsOpenTemplateConfirmDeletion}
