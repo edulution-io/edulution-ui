@@ -215,6 +215,21 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
     const triggerRef = useRef<HTMLDivElement>(null);
     const popoverContentRef = useRef<HTMLDivElement>(null);
     const touchStartY = useRef<number>(0);
+    const commandListCleanupRef = useRef<(() => void) | null>(null);
+    const commandListRef = useCallback((node: HTMLDivElement | null) => {
+      if (commandListCleanupRef.current) {
+        commandListCleanupRef.current();
+        commandListCleanupRef.current = null;
+      }
+      if (!node) return;
+      const handleWheel = (e: WheelEvent) => {
+        // eslint-disable-next-line no-param-reassign
+        node.scrollTop += e.deltaY;
+        e.preventDefault();
+      };
+      node.addEventListener('wheel', handleWheel, { passive: false });
+      commandListCleanupRef.current = () => node.removeEventListener('wheel', handleWheel);
+    }, []);
     const [open, setOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -500,10 +515,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             >
               {open && (
                 <CommandList
-                  onWheel={(e) => {
-                    e.currentTarget.scrollTop += e.deltaY;
-                    e.preventDefault();
-                  }}
+                  ref={commandListRef}
                   onTouchStart={(e) => {
                     touchStartY.current = e.touches[0].clientY;
                   }}
@@ -541,7 +553,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                             {dropdowns.map((option) => (
                               <CommandItem
                                 key={option.value}
-                                value={option.value}
+                                value={option.label}
                                 disabled={option.disable}
                                 onMouseDown={(e) => {
                                   e.preventDefault();
