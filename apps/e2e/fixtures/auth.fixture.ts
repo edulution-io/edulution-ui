@@ -18,7 +18,24 @@
  */
 
 import { test as base, type Page } from '@playwright/test';
+import { existsSync } from 'fs';
 import path from 'path';
+
+const AUTH_DIR = path.resolve(__dirname, '../auth');
+
+const createAuthPage = async (
+  browser: Parameters<Parameters<typeof base.extend>[0]['adminPage']>[0]['browser'],
+  role: string,
+): Promise<Page> => {
+  const statePath = path.resolve(AUTH_DIR, `${role}.storageState.json`);
+  const hasState = existsSync(statePath);
+  const context = await browser.newContext(hasState ? { storageState: statePath } : {});
+  const page = await context.newPage();
+  if (!hasState) {
+    page.setDefaultTimeout(0);
+  }
+  return page;
+};
 
 type AuthFixtures = {
   adminPage: Page;
@@ -29,36 +46,24 @@ type AuthFixtures = {
 
 export const test = base.extend<AuthFixtures>({
   adminPage: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      storageState: path.resolve(__dirname, '../auth/admin.storageState.json'),
-    });
-    const page = await context.newPage();
+    const page = await createAuthPage(browser, 'admin');
     await use(page);
-    await context.close();
+    await page.context().close();
   },
   teacherPage: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      storageState: path.resolve(__dirname, '../auth/teacher.storageState.json'),
-    });
-    const page = await context.newPage();
+    const page = await createAuthPage(browser, 'teacher');
     await use(page);
-    await context.close();
+    await page.context().close();
   },
   studentPage: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      storageState: path.resolve(__dirname, '../auth/student.storageState.json'),
-    });
-    const page = await context.newPage();
+    const page = await createAuthPage(browser, 'student');
     await use(page);
-    await context.close();
+    await page.context().close();
   },
   parentPage: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      storageState: path.resolve(__dirname, '../auth/parent.storageState.json'),
-    });
-    const page = await context.newPage();
+    const page = await createAuthPage(browser, 'parent');
     await use(page);
-    await context.close();
+    await page.context().close();
   },
 });
 
