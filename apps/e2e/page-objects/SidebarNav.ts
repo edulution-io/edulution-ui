@@ -66,9 +66,23 @@ class SidebarNav extends BasePage {
       .locator('[key="usermenu"]')
       .or(this.page.locator('img[alt*="avatar" i]'))
       .or(this.page.getByRole('img').last());
-    await userMenuTrigger.click();
-    const logoutItem = this.page.getByRole('menuitem', { name: /logout|abmelden/i });
-    await logoutItem.click({ force: true });
+
+    await userMenuTrigger
+      .first()
+      .waitFor({ state: 'visible', timeout: 10_000 })
+      .catch(() => {});
+    await userMenuTrigger.first().click({ timeout: 5_000 });
+
+    const logoutItem = this.page
+      .getByRole('menuitem', { name: /logout|abmelden/i })
+      .or(this.page.locator('[role="menuitem"]').filter({ hasText: /logout|abmelden/i }))
+      .or(this.page.getByText(/logout|abmelden/i));
+
+    await logoutItem
+      .first()
+      .waitFor({ state: 'visible', timeout: 5_000 })
+      .catch(() => {});
+    await logoutItem.first().click({ force: true, timeout: 5_000 });
     await this.page.waitForURL('**/login**', { waitUntil: 'commit' }).catch(() => {});
   }
 }

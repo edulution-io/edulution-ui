@@ -49,7 +49,9 @@ test.describe('Login and Logout', () => {
     await gracefulGoto(adminPage, '/dashboard');
     await adminPage.waitForLoadState('load').catch(() => {});
     await expect(adminPage).toHaveURL(/\/dashboard/, { timeout: 20_000 });
-    await expect(adminPage.getByRole('link').first()).toBeVisible({ timeout: 10_000 });
+
+    const mainContent = adminPage.locator('main, [role="main"], nav').first();
+    await expect(mainContent).toBeVisible({ timeout: 10_000 });
   });
 
   test('user can logout', async ({ adminPage }) => {
