@@ -19,15 +19,18 @@
 
 import React, { useEffect } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import { Card } from '@/components/shared/Card';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 
 const LmnVersionInfo = () => {
   const { lmnVersions, isGetVersionLoading, getLmnVersion } = useLmnApiStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
+    if (!isSuperAdmin) return;
     void getLmnVersion();
-  }, []);
+  }, [isSuperAdmin]);
 
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
