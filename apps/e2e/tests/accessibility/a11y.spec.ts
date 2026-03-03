@@ -28,7 +28,7 @@ const KNOWN_ISSUES: string[] = ['color-contrast'];
 baseTest.describe('Accessibility: Public Pages', () => {
   baseTest('login page has no critical a11y violations', async ({ page }) => {
     await page.goto('/login', { waitUntil: 'domcontentloaded' }).catch(() => {});
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForLoadState('load').catch(() => {});
 
     await runAccessibilityScan(page, { disableRules: KNOWN_ISSUES });
   });
@@ -37,7 +37,7 @@ baseTest.describe('Accessibility: Public Pages', () => {
 test.describe('Accessibility: Authenticated Pages', () => {
   test('dashboard has no critical a11y violations', async ({ adminPage }) => {
     await adminPage.goto('/dashboard', { waitUntil: 'domcontentloaded' }).catch(() => {});
-    await adminPage.waitForLoadState('networkidle').catch(() => {});
+    await adminPage.waitForLoadState('load').catch(() => {});
 
     const dashboardLoaded = await adminPage
       .locator('[data-testid*="dashboard"], main, [role="main"]')
@@ -52,7 +52,7 @@ test.describe('Accessibility: Authenticated Pages', () => {
 
   test('settings page has no critical a11y violations', async ({ adminPage }) => {
     await adminPage.goto('/settings', { waitUntil: 'domcontentloaded' }).catch(() => {});
-    await adminPage.waitForLoadState('networkidle').catch(() => {});
+    await adminPage.waitForLoadState('load').catch(() => {});
 
     const settingsLoaded = await adminPage
       .locator('[data-testid*="settings"], main, [role="main"]')
@@ -67,7 +67,7 @@ test.describe('Accessibility: Authenticated Pages', () => {
 
   test('file browser has no critical a11y violations', async ({ adminPage }) => {
     await adminPage.goto('/file-sharing', { waitUntil: 'domcontentloaded' }).catch(() => {});
-    await adminPage.waitForLoadState('networkidle').catch(() => {});
+    await adminPage.waitForLoadState('load').catch(() => {});
 
     const fileBrowserLoaded = await adminPage
       .locator('[data-testid*="file-sharing"], [data-testid*="file"], main, [role="main"]')
@@ -82,7 +82,7 @@ test.describe('Accessibility: Authenticated Pages', () => {
 
   test('survey editor has no critical a11y violations', async ({ adminPage }) => {
     await adminPage.goto('/surveys', { waitUntil: 'domcontentloaded' }).catch(() => {});
-    await adminPage.waitForLoadState('networkidle').catch(() => {});
+    await adminPage.waitForLoadState('load').catch(() => {});
 
     const surveysLoaded = await adminPage
       .locator('[data-testid*="survey"], main, [role="main"]')
@@ -97,7 +97,7 @@ test.describe('Accessibility: Authenticated Pages', () => {
 
   test('mail page has no critical a11y violations', async ({ adminPage }) => {
     await adminPage.goto('/mail', { waitUntil: 'domcontentloaded' }).catch(() => {});
-    await adminPage.waitForLoadState('networkidle').catch(() => {});
+    await adminPage.waitForLoadState('load').catch(() => {});
 
     const mailLoaded = await adminPage
       .locator('[data-testid*="mail"], main, [role="main"]')

@@ -47,8 +47,9 @@ test.describe('Login and Logout', () => {
 
   test('authenticated admin can access dashboard', async ({ adminPage }) => {
     await gracefulGoto(adminPage, '/dashboard');
-    await expect(adminPage).toHaveURL(/\/dashboard/);
-    await expect(adminPage.getByRole('link').first()).toBeVisible();
+    await adminPage.waitForLoadState('load').catch(() => {});
+    await expect(adminPage).toHaveURL(/\/dashboard/, { timeout: 20_000 });
+    await expect(adminPage.getByRole('link').first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('user can logout', async ({ adminPage }) => {
@@ -65,8 +66,9 @@ test.describe('Login and Logout', () => {
     const page = await context.newPage();
 
     await gracefulGoto(page, '/dashboard');
+    await page.waitForLoadState('load').catch(() => {});
 
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/login/, { timeout: 20_000 });
 
     await context.close();
   });

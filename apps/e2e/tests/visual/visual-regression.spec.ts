@@ -25,8 +25,8 @@ const LOAD_TIMEOUT_MS = 10000;
 const SCREENSHOT_TIMEOUT_MS = 15000;
 
 const waitForPageStable = async (page: Page): Promise<void> => {
-  await page.waitForLoadState('networkidle').catch(() => {});
-  await page.waitForTimeout(500);
+  await page.waitForLoadState('load').catch(() => {});
+  await page.waitForTimeout(1000);
 };
 
 const setTheme = async (page: Page, theme: 'light' | 'dark'): Promise<void> => {

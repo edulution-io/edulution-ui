@@ -370,7 +370,6 @@ $RECYCLE.BIN/
 .playwright-mcp
 
 test-results/
-__screenshots__/
 
 # Certificates
 *.crt

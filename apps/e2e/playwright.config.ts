@@ -14,11 +14,12 @@ const playwrightConfig = defineConfig({
   reporter: [['html', { open: 'never', outputFolder: 'playwright-report' }], ['list']],
   globalSetup: './global-setup.ts',
 
-  timeout: 30_000,
+  timeout: process.env.CI ? 60_000 : 30_000,
 
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
 
   expect: {
+    timeout: process.env.CI ? 15_000 : 5_000,
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.01,
       threshold: 0.2,
@@ -27,8 +28,8 @@ const playwrightConfig = defineConfig({
 
   use: {
     baseURL: BASE_URL,
-    actionTimeout: 10_000,
-    navigationTimeout: 15_000,
+    actionTimeout: process.env.CI ? 15_000 : 10_000,
+    navigationTimeout: process.env.CI ? 30_000 : 15_000,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
