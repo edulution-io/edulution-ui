@@ -70,6 +70,9 @@ export const HTTP_HEADERS = {
   ETag: 'ETag',
   AssetSource: 'X-Asset-Source',
   XForceCleanupCache: 'X-Force-Cleanup-Cache',
+  XRateLimitLimit: 'X-RateLimit-Limit',
+  XRateLimitRemaining: 'X-RateLimit-Remaining',
+  RetryAfter: 'Retry-After',
 } as const;
 
 export enum WebdavRequestDepth {

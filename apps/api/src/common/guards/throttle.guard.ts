@@ -22,6 +22,7 @@ import { Reflector } from '@nestjs/core';
 import { Request, Response } from 'express';
 import THROTTLE_METADATA_KEY from '@libs/common/constants/throttleMetadataKey';
 import { THROTTLE_ERROR_MESSAGES } from '@libs/common/constants/throttleErrorMessages';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import CustomHttpException from '../CustomHttpException';
 import type { ThrottleConfig } from '../decorators/throttle.decorator';
 
@@ -82,9 +83,9 @@ class ThrottleGuard implements CanActivate {
       const remaining = Math.max(0, config.limit - cached.count);
       const retryAfterSeconds = Math.ceil((cached.expiresAt - now) / 1000);
 
-      response.setHeader('X-RateLimit-Limit', config.limit);
-      response.setHeader('X-RateLimit-Remaining', remaining);
-      response.setHeader('Retry-After', retryAfterSeconds);
+      response.setHeader(HTTP_HEADERS.XRateLimitLimit, config.limit);
+      response.setHeader(HTTP_HEADERS.XRateLimitRemaining, remaining);
+      response.setHeader(HTTP_HEADERS.RetryAfter, retryAfterSeconds);
 
       if (cached.count >= config.limit) {
         throw new CustomHttpException(
@@ -102,8 +103,8 @@ class ThrottleGuard implements CanActivate {
     evictExpiredEntries();
     throttleCache.set(cacheKey, { count: 1, expiresAt: now + config.ttl });
 
-    response.setHeader('X-RateLimit-Limit', config.limit);
-    response.setHeader('X-RateLimit-Remaining', config.limit - 1);
+    response.setHeader(HTTP_HEADERS.XRateLimitLimit, config.limit);
+    response.setHeader(HTTP_HEADERS.XRateLimitRemaining, config.limit - 1);
 
     return true;
   }
