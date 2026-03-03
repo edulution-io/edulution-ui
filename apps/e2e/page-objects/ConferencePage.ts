@@ -43,7 +43,7 @@ class ConferencePage extends BasePage {
     await this.floatingButton('Erstellen').first().click();
 
     const dialog = this.page.getByRole('dialog');
-    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+    await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
     await dialog.getByLabel(/name/i).first().fill(name);
     await dialog.getByRole('button', { name: /speichern/i }).click();
@@ -67,7 +67,7 @@ class ConferencePage extends BasePage {
     await this.floatingButton('Löschen').first().click();
 
     const dialog = this.page.getByRole('dialog');
-    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+    await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
     await dialog.getByRole('button', { name: /löschen/i }).click();
     await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});

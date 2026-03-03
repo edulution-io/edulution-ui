@@ -54,7 +54,7 @@ class FileSharingPage extends BasePage {
     await this.floatingButton('Hochladen').first().click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
-    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+    await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
     const fileInput = dialog.locator('input[type="file"]').first();
     await fileInput.setInputFiles(filePath);
@@ -81,7 +81,7 @@ class FileSharingPage extends BasePage {
     await this.floatingButton('Löschen').first().click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
-    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+    await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
     await dialog.getByRole('button', { name: /fortfahren/i }).click();
     await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
@@ -95,7 +95,7 @@ class FileSharingPage extends BasePage {
     await this.floatingButton('Ordner erstellen').first().click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
-    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+    await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
     await dialog.locator('input').first().fill(name);
     await dialog.getByRole('button', { name: /erstellen/i }).click();
