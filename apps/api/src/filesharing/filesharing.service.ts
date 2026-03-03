@@ -197,11 +197,11 @@ class FilesharingService {
       const resp = await FilesystemService.fetchFileStream(url, client);
       return resp instanceof Readable ? resp : resp.data;
     } catch (error) {
-      Logger.error(`Stream failed for ${username} ${filePath}: ${(error as Error).message}`, FilesharingService.name);
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
         `${username} ${filePath}`,
+        FilesharingService.name,
       );
     }
   }
