@@ -9,7 +9,7 @@
     "test:frontend": "nx run frontend:test",
     "test:e2e": "nx run e2e:e2e",
     "test:ui": "nx run frontend:test -- --ui",
-    "coverage": "nx run frontend:test -- --coverage",
+    "coverage": "nx run frontend:test -- --coverage && nx run api:test -- --coverage",
     "dev": "nx run frontend:serve:development --host",
     "api": "nx serve api",
     "demo": "nx run frontend:serve:demo",
