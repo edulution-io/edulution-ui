@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyApp from '@/pages/Surveys/SurveyApp';
 import SurveysPageView from '@libs/survey/types/api/surveysPageView';
@@ -30,7 +30,12 @@ const getSurveyRoutes = () => [
   >
     <Route
       path=""
-      element={<SurveyApp surveysPageView={SurveysPageView.OPEN} />}
+      element={
+        <Navigate
+          to={SurveysPageView.OPEN}
+          replace
+        />
+      }
     />
     <Route
       path={SurveysPageView.OPEN}

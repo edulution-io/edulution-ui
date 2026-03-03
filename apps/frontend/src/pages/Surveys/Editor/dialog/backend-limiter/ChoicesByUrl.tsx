@@ -70,7 +70,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     form.setValue('backendLimiters', updatedBackendLimits);
   }, [currentChoices]);
 
-  const handleUseToggleBackendLimits = () => {
+  const handleToggleBackendLimits = () => {
     if (!selectedQuestion) {
       return;
     }
@@ -106,7 +106,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       <div className="ml-2 inline-flex">
         <Switch
           checked={!!useBackendLimits}
-          onCheckedChange={() => handleUseToggleBackendLimits()}
+          onCheckedChange={() => handleToggleBackendLimits()}
           className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-background': useBackendLimits })}
         />
         <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'enabled' : 'disabled'}`)}</p>
