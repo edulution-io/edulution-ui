@@ -275,7 +275,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2]
+        shard: [1, 2, 3]
     steps:
       - name: Checkout
         uses: actions/checkout@v5.0.0
@@ -297,11 +297,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Get Playwright version
+        id: pw-version
+        run: echo "version=$(npx playwright --version | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4.3.0
+        id: pw-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.pw-version.outputs.version }}
+
       - name: Install Playwright browsers
+        if: steps.pw-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Run E2E tests (shard ${{ matrix.shard }}/2)
-        run: npx nx run e2e:e2e -- --shard=${{ matrix.shard }}/2
+      - name: Install Playwright OS deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium firefox webkit
+
+      - name: Run E2E tests (shard ${{ matrix.shard }}/3)
+        run: npx nx run e2e:e2e -- --shard=${{ matrix.shard }}/3
         env:
           E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
           E2E_ADMIN_USER: ${{ secrets.E2E_ADMIN_USER }}
