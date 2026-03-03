@@ -82,7 +82,9 @@ class FilesystemService {
     onProgress?: (percent: string) => void,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
-      const response = await firstValueFrom(from(client.get<Readable>(url, { responseType: ResponseType.STREAM })));
+      const response = await firstValueFrom(
+        from(client.get<Readable>(url, { responseType: ResponseType.STREAM, decompress: false })),
+      );
 
       const contentLengthHeader = response.headers?.[HTTP_HEADERS.ContentLength] as string | undefined;
 
@@ -101,10 +103,12 @@ class FilesystemService {
 
       return isStreamFetching ? response : readStream;
     } catch (error) {
+      const axiosStatus = (error as { response?: { status?: number } })?.response?.status;
+      const reason = error instanceof Error ? error.message : String(error);
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        url,
+        `${url} | ${reason}${axiosStatus ? ` (HTTP ${axiosStatus})` : ''}`,
         FilesystemService.name,
       );
     }

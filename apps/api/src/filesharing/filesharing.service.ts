@@ -17,8 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 import { Request, Response } from 'express';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
@@ -196,11 +197,31 @@ class FilesharingService {
       const resp = await FilesystemService.fetchFileStream(url, client);
       return resp instanceof Readable ? resp : resp.data;
     } catch (error) {
+      Logger.error(`Stream failed for ${username} ${filePath}: ${(error as Error).message}`, FilesharingService.name);
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
         `${username} ${filePath}`,
       );
+    }
+  }
+
+  async streamToResponse(stream: Readable, res: Response, filename: string, contentType: string): Promise<void> {
+    res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
+    res.setHeader(HTTP_HEADERS.ContentType, contentType);
+
+    try {
+      await pipeline(stream, res);
+    } catch (error) {
+      Logger.error((error as Error).message, FilesharingService.name);
+      if (!res.headersSent) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: FileSharingErrorMessage.DownloadFailed,
+          details: (error as Error).message,
+        });
+      } else {
+        res.end();
+      }
     }
   }
 
@@ -355,8 +376,6 @@ class FilesharingService {
     }
 
     const pathWithoutWebdav = getPathWithoutWebdav(publicShare.filePath, webdavShare.pathname);
-    const webDavUrl = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
-    const client = await this.webDavService.getClient(creator.username, share);
 
     const fileType = await this.webDavService.getFileTypeFromWebdavPath(
       publicShare.creator.username,
@@ -365,7 +384,7 @@ class FilesharingService {
       share,
     );
 
-    const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
+    const stream = await this.getWebDavFileStream(creator.username, publicShare.filePath, share);
 
     const filename = fileType === ContentType.FILE ? publicShare.filename : `${publicShare.filename}.zip`;
 
