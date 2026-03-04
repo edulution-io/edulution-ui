@@ -1077,7 +1077,7 @@ class LmnApiService {
     try {
       const response = await this.request<ListManagementEntry[]>(
         HttpMethods.GET,
-        `${DEVICES_LMN_API_ENDPOINT}/${school}`,
+        `${DEVICES_LMN_API_ENDPOINT}/list/${school}`,
         undefined,
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -1100,7 +1100,7 @@ class LmnApiService {
     school: string,
     data: ListManagementEntry[],
   ): Promise<ListManagementEntry[]> {
-    const endpoint = `${DEVICES_LMN_API_ENDPOINT}/${school}`;
+    const endpoint = `${DEVICES_LMN_API_ENDPOINT}/list/${school}`;
     const sanitized = data.map((entry) => {
       const clean: Record<string, string | null> = {};
       DEVICE_FIELDS.forEach((field) => {
@@ -1135,10 +1135,15 @@ class LmnApiService {
 
   public async getImportDevices(lmnApiToken: string, school: string): Promise<void> {
     try {
-      await this.request<unknown>(HttpMethods.GET, `${DEVICES_LMN_API_ENDPOINT}/${school}/import-devices`, undefined, {
-        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-        timeout: 120000,
-      });
+      await this.request<unknown>(
+        HttpMethods.GET,
+        `${DEVICES_LMN_API_ENDPOINT}/list/${school}/import-devices`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          timeout: 120000,
+        },
+      );
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.ImportDevicesFailed,

@@ -18,7 +18,7 @@
  */
 
 import React, { useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import { cn, Button } from '@edulution-io/ui-kit';
@@ -30,13 +30,13 @@ import { Textarea } from '@/components/ui/Textarea';
 import { AccordionTrigger, AccordionItem, AccordionContent } from '@/components/ui/AccordionSH';
 
 interface TemplateItemProps {
-  form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
   template: SurveyTemplateDto;
 }
 
 const TemplateItem = (props: TemplateItemProps) => {
-  const { form, creator, template } = props;
+  const { creator, template } = props;
+  const form = useFormContext<SurveyDto>();
   const {
     formula,
     backendLimiters,

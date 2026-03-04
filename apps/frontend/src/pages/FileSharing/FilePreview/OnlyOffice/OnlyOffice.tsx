@@ -28,15 +28,17 @@ interface OnlyOfficeProps {
   type: 'desktop' | 'mobile';
   mode: 'view' | 'edit';
   isOpenedInNewTab?: boolean;
+  webdavShare?: string;
 }
 
-const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type, isOpenedInNewTab }) => {
+const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type, isOpenedInNewTab, webdavShare }) => {
   const { documentServerURL, editorType, editorConfig } = useOnlyOffice({
     filePath,
     fileName,
     url,
     type,
     mode,
+    webdavShare,
   });
 
   return (

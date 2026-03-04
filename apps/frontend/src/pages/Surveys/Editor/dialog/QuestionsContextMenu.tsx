@@ -18,26 +18,23 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import QuestionsContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 interface QuestionsContextMenuProps {
-  form: UseFormReturn<SurveyDto>;
   isOpenQuestionContextMenu: boolean;
   setIsOpenQuestionContextMenu: (state: boolean) => void;
   trigger?: React.ReactNode;
 }
 
 const QuestionsContextMenu = (props: QuestionsContextMenuProps) => {
-  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu } = props;
+  const { trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => <QuestionsContextMenuBody form={form} />;
+  const getDialogBody = () => <QuestionsContextMenuBody />;
 
   const handleClose = () => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu);
 

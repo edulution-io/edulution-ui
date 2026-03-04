@@ -17,36 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { OnlyOfficeCallbackStatus } from '../constants/onlyOfficeCallbackStatus';
+import DOCKER_COMMANDS from './dockerCommands';
 
-interface Action {
-  type: 0 | 1 | 2;
-  userid: string;
-}
+const DOCKER_COMMAND_TRANSLATION_KEYS: Record<string, string> = {
+  [DOCKER_COMMANDS.START]: 'docker.events.startContainer',
+  [DOCKER_COMMANDS.STOP]: 'docker.events.stopContainer',
+  [DOCKER_COMMANDS.RESTART]: 'docker.events.restartContainer',
+  [DOCKER_COMMANDS.KILL]: 'docker.events.killContainer',
+};
 
-interface ChangeHistory {
-  changeId: string;
-  timestamp: string;
-}
-
-interface History {
-  changes: ChangeHistory[];
-  serverVersion: string;
-}
-
-interface OnlyOfficeCallbackData {
-  actions?: Action[];
-  changeshistory?: ChangeHistory[];
-  changesurl?: string;
-  filetype?: string;
-  forcesavetype?: 0 | 1 | 2 | 3;
-  formsdataurl?: string;
-  history?: History;
-  key: string;
-  status: OnlyOfficeCallbackStatus;
-  url: string;
-  userdata?: string;
-  users?: string[];
-}
-
-export default OnlyOfficeCallbackData;
+export default DOCKER_COMMAND_TRANSLATION_KEYS;

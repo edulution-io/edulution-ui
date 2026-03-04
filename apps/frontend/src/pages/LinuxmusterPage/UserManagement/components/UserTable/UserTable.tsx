@@ -70,7 +70,7 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
   );
 
   return (
-    <>
+    <div className="h-full pb-10">
       {isLoadingUsers || isBackgroundFetchingUsers ? <HorizontalLoader /> : <div className="h-1" />}
       <ScrollableTable
         columns={columns}
@@ -82,7 +82,7 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
         initialSorting={[{ id: USER_MANAGEMENT_COLUMN_IDS.CN, desc: false }]}
       />
       {currentUser && <UserPasswordDialog />}
-    </>
+    </div>
   );
 };
 

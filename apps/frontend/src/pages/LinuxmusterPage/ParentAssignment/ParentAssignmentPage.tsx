@@ -159,7 +159,6 @@ const ParentAssignmentPage: React.FC = () => {
               {isSuperAdmin && <SchoolSelectorDropdown />}
             </>
           }
-          activeFilterCount={activeFilterCount}
         />
         <ParentAssignmentFloatingButtons />
       </div>

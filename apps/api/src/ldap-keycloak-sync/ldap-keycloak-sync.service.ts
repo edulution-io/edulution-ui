@@ -100,7 +100,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
     private readonly groupsService: GroupsService,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
     Logger.log('Initialized, waiting for Keycloak startup', LdapKeycloakSyncService.name);
   }
@@ -508,7 +507,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   private async searchWithPagedFallback(ldapClient: Client, searchBase: string, options: SearchOptions) {
     const pagedOptions: SearchOptions = { ...options, paged: { pageSize: 500 } };
 
