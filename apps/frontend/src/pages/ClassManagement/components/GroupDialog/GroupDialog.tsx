@@ -70,6 +70,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     fetchUserSessions,
     fetchUserProjects,
     fetchUserSchoolClasses,
+    selectedSchool,
   } = useClassManagementStore();
 
   const initialFormValues: GroupForm = {
@@ -87,7 +88,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     admingroups: [],
     members: [],
     membergroups: [],
-    school: user?.school || '',
+    school: isSuperAdmin && selectedSchool ? selectedSchool : user?.school || '',
     proxyAddresses: '',
   };
 
