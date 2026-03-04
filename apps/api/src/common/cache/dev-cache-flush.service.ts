@@ -26,7 +26,6 @@ import GlobalSettingsService from '../../global-settings/global-settings.service
 export default class DevCacheFlushService implements OnApplicationBootstrap {
   constructor(private readonly globalSettings: GlobalSettingsService) {}
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onApplicationBootstrap() {
     if (process.env.NODE_ENV !== 'development') return;
 
