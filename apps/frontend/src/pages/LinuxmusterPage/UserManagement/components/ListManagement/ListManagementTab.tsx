@@ -39,7 +39,7 @@ interface ListManagementTabProps {
 const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const effectiveSchool = isSuperAdmin ? selectedSchool : selectedSchool || user?.school || '';
   const {

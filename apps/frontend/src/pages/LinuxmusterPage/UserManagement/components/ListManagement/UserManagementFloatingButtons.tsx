@@ -46,7 +46,7 @@ interface UserManagementFloatingButtonsProps {
 
 const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps> = ({ userType }) => {
   const { t } = useTranslation();
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const {
     isSaving,
     isCheckLoading,

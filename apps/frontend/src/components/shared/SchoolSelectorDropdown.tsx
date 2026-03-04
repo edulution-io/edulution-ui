@@ -25,7 +25,10 @@ import useSchoolStore from '@/store/useSchoolStore';
 
 const SchoolSelectorDropdown: React.FC = () => {
   const { t } = useTranslation();
-  const { selectedSchool, setSelectedSchool, schools, getSchools } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
+  const setSelectedSchool = useSchoolStore((s) => s.setSelectedSchool);
+  const schools = useSchoolStore((s) => s.schools);
+  const getSchools = useSchoolStore((s) => s.getSchools);
 
   useEffect(() => {
     void getSchools();

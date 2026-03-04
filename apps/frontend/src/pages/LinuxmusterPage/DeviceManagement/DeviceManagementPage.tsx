@@ -41,7 +41,7 @@ import DeviceFloatingButtons from './components/DeviceFloatingButtons';
 const DeviceManagementPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { setSections } = useSubMenuStore();
   const { isBusiness } = useOrganizationType();

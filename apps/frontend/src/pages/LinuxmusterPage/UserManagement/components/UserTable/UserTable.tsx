@@ -43,7 +43,7 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
   const { usersByType, isLoadingUsers, isBackgroundFetchingUsers, fetchUsersByRole, setSelectedUserDetails } =
     useUserManagementStore();
   const users = usersByType[userType] ?? [];
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { currentUser, setCurrentUser } = UseLmnApiPasswordStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { isBusiness } = useOrganizationType();

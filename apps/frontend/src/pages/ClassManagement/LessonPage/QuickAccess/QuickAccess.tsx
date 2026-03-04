@@ -52,7 +52,7 @@ const QuickAccess = () => {
     areSchoolClassesLoading,
     isRoomLoading,
   } = useClassManagementStore();
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {

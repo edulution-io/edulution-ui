@@ -37,7 +37,7 @@ const UserProjectOrSchoolClassSearch = () => {
   const { member, setMember } = useLessonStore();
   const { user, fetchUser } = useLmnApiStore();
   const { searchGroupsOrUsers, fetchSchoolClass, fetchProject } = useClassManagementStore();
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const [selectedValues, setSelectedValues] = useState<MultipleSelectorOptionSH[]>([]);
   const { groupName } = useParams();
   const { isSuperAdmin } = useLdapGroups();

@@ -36,7 +36,7 @@ interface GroupListProps {
 const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
   const { t } = useTranslation();
   const { openDialogType } = useLessonStore();
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   const items = row.groups?.filter(

@@ -44,7 +44,7 @@ interface GroupPropertiesTableProps {
 const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
   const { watch, setValue, register, formState } = form;
   const { t } = useTranslation();
-  const { selectedSchool } = useSchoolStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
