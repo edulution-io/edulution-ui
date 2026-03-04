@@ -73,6 +73,7 @@ import useParentChildPairingStore from '@/pages/UserSettings/ParentChildPairing/
 import useNotificationStore from '@/store/useNotificationStore';
 import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
 import useUserManagementStore from '@/pages/LinuxmusterPage/UserManagement/useUserManagementStore';
+import LAST_CHAT_GROUP_STORAGE_KEY from '@libs/chat/constants/lastChatGroupStorageKey';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -133,6 +134,7 @@ const cleanAllStores = async () => {
   useParentChildPairingStore.getState().reset();
   useParentAssignmentStore.getState().reset();
   useNotificationStore.getState().reset();
+  localStorage.removeItem(LAST_CHAT_GROUP_STORAGE_KEY);
   localStorage.removeItem('i18nextLng');
   localStorage.removeItem('user-management-storage');
   localStorage.removeItem('device-management-storage');

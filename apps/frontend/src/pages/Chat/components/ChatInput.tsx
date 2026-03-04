@@ -44,6 +44,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [value]);
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -60,36 +68,47 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
     }
   };
 
-  const isDisabled = !value.trim() || isLoading;
+  const isMaxLength = value.length >= CHAT_MESSAGE_MAX_LENGTH;
+  const isDisabled = !value.trim() || isLoading || isMaxLength;
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-background/80 flex items-end gap-2 border-t border-muted p-4 backdrop-blur-sm"
+      className="bg-background/80 flex flex-col border-t border-muted p-4 backdrop-blur-sm"
     >
-      <Textarea
-        ref={textareaRef}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder || t('chat.inputPlaceholder')}
-        className={cn(inputVariants(), 'max-h-32 min-h-10 flex-1 resize-none py-2 [field-sizing:content]')}
-        rows={1}
-        maxLength={CHAT_MESSAGE_MAX_LENGTH}
-        disabled={isLoading}
-      />
-      <Button
-        type="submit"
-        variant="btn-collaboration"
-        size="icon"
-        disabled={isDisabled}
-        className={cn('h-10 w-10 shrink-0', isDisabled && 'opacity-50')}
-      >
-        <FontAwesomeIcon
-          icon={faPaperPlane}
-          className="h-4 w-4"
+      <div className="flex items-end gap-2">
+        <Textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder || t('chat.inputPlaceholder')}
+          className={cn(inputVariants(), 'max-h-32 min-h-10 flex-1 resize-none overflow-y-auto py-2')}
+          rows={1}
+          maxLength={CHAT_MESSAGE_MAX_LENGTH}
+          disabled={isLoading}
         />
-      </Button>
+        <Button
+          type="submit"
+          variant="btn-collaboration"
+          size="icon"
+          disabled={isDisabled}
+          className={cn('h-10 w-10 shrink-0', isDisabled && 'opacity-50')}
+        >
+          <FontAwesomeIcon
+            icon={faPaperPlane}
+            className="h-4 w-4"
+          />
+        </Button>
+      </div>
+      <div
+        className={cn(
+          'mt-1 text-right text-xs',
+          isMaxLength ? 'font-medium text-destructive' : 'text-muted-foreground',
+        )}
+      >
+        {value.length} / {CHAT_MESSAGE_MAX_LENGTH}
+      </div>
     </form>
   );
 };
