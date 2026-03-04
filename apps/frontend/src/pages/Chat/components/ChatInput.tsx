@@ -68,7 +68,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
     }
   };
 
-  const isMaxLength = value.length >= CHAT_MESSAGE_MAX_LENGTH;
+  const isMaxLength = value.length >= CHAT_MESSAGE_MAX_LENGTH + 1;
   const isDisabled = !value.trim() || isLoading || isMaxLength;
 
   return (
