@@ -3,42 +3,10 @@ import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
-import { readFileSync, cpSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
+import { readFileSync } from 'fs';
 
 const port = 5173;
 const host = 'localhost';
-
-const copyFontAwesomeIcons = () => ({
-  name: 'copy-fontawesome-icons',
-  closeBundle() {
-    const outDir = resolve(__dirname, '../../dist/apps/frontend');
-    const sourceDir = resolve(__dirname, './src/assets/icons');
-    const assetsDir = `${outDir}/assets`;
-
-    mkdirSync(`${assetsDir}/fontawsome-brands`, { recursive: true });
-    mkdirSync(`${assetsDir}/fontawsome-solid`, { recursive: true });
-
-    cpSync(`${sourceDir}/fontawsome-brands`, `${assetsDir}/fontawsome-brands`, {
-      recursive: true,
-    });
-    cpSync(`${sourceDir}/fontawsome-solid`, `${assetsDir}/fontawsome-solid`, {
-      recursive: true,
-    });
-
-    const brandFiles = readdirSync(`${assetsDir}/fontawsome-brands`).map((f) => f.replace('.svg', ''));
-    const solidFiles = readdirSync(`${assetsDir}/fontawsome-solid`).map((f) => f.replace('.svg', ''));
-    const allIconNames = new Set([...brandFiles, ...solidFiles]);
-
-    readdirSync(assetsDir).forEach((file) => {
-      if (file.endsWith('.svg')) {
-        const fileNameWithoutHash = file.replace(/-[A-Za-z0-9_-]{8}\.svg$/, '');
-        if (allIconNames.has(fileNameWithoutHash)) {
-          unlinkSync(`${assetsDir}/${file}`);
-        }
-      }
-    });
-  },
-});
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -155,7 +123,6 @@ export default defineConfig(({ mode }) => {
       }),
       react(),
       nxViteTsPaths(),
-      copyFontAwesomeIcons(),
     ],
     css: {
       lightningcss: {
