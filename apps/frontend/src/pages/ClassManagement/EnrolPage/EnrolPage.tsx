@@ -34,7 +34,7 @@ import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 
 const EnrolPage: React.FC = () => {
   const { t } = useTranslation();
