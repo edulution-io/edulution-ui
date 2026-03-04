@@ -17,15 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
-
-interface PrintPasswordsRequest {
-  format: FileExportFormat;
-  one_per_page: boolean;
-  pdflatex: boolean;
-  school: string;
-  nosplit_names: boolean;
-  schoolclasses: string[];
+enum FileExportFormat {
+  PDF = 'pdf',
+  CSV = 'csv',
 }
 
-export default PrintPasswordsRequest;
+export default FileExportFormat;

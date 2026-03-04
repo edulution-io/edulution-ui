@@ -35,6 +35,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
+import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -46,6 +47,7 @@ import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
 import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
 import type JwtUser from '@libs/user/types/jwt/jwtUser';
+import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -60,6 +62,14 @@ const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
+  private static sendFileResponse(res: Response, apiResponse: LmnApiJobResult<Buffer>): void {
+    const contentType = (apiResponse.headers['content-type'] ?? RequestResponseContentType.APPLICATION_PDF) as string;
+    const contentDisposition = apiResponse.headers['content-disposition'] as string;
+    res.setHeader(HTTP_HEADERS.ContentType, contentType);
+    res.setHeader(HTTP_HEADERS.ContentDisposition, contentDisposition);
+    res.send(Buffer.from(apiResponse.data));
+  }
+
   @Get('auth')
   async getLmnApiToken(@GetCurrentUsername() username: string) {
     return this.lmnApiService.getLmnApiToken(username);
@@ -72,9 +82,21 @@ export class LmnApiController {
     @Res() res: Response,
   ) {
     const apiResponse = await this.lmnApiService.printPasswords(lmnApiToken, body.options);
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_PDF as string);
-    res.setHeader(HTTP_HEADERS.ContentDisposition, apiResponse.headers['content-disposition'] as string);
-    res.send(Buffer.from(apiResponse.data));
+    LmnApiController.sendFileResponse(res, apiResponse);
+  }
+
+  @Get('students-list/:schoolclass/:format')
+  async getStudentsList(
+    @Param() params: { schoolclass: string; format: string },
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Res() res: Response,
+  ) {
+    const apiResponse = await this.lmnApiService.getStudentsList(
+      lmnApiToken,
+      params.schoolclass,
+      params.format as FileExportFormat,
+    );
+    LmnApiController.sendFileResponse(res, apiResponse);
   }
 
   @Put('exam-mode/:state')

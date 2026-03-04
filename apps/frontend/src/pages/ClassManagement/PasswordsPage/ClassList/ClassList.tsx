@@ -17,47 +17,58 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import GroupColumn from '@libs/groups/types/groupColumn';
+import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import ClassSelectionList from '@/pages/ClassManagement/components/ClassSelectionList';
 import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
-import ClassListCard from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassListCard';
-import { useTranslation } from 'react-i18next';
-import useLdapGroups from '@/hooks/useLdapGroups';
-import useClassManagementStore from '../../useClassManagementStore';
+import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
 
-interface EnrolGroupListProps {
+interface ClassListProps {
   row: Omit<GroupColumn, 'icon'>;
   selectedClasses: LmnApiSchoolClass[];
   setSelectedClasses: React.Dispatch<React.SetStateAction<LmnApiSchoolClass[]>>;
   activeSchool: string | null;
 }
 
-const ClassList = ({ row, selectedClasses, setSelectedClasses, activeSchool }: EnrolGroupListProps) => {
-  const { t } = useTranslation();
-  const { selectedSchool } = useClassManagementStore();
-  const { isSuperAdmin } = useLdapGroups();
+const ClassList = ({ row, selectedClasses, setSelectedClasses, activeSchool }: ClassListProps) => {
+  const [classToPrint, setClassToPrint] = useState<LmnApiSchoolClass | null>(null);
+  const [formatToPrint, setFormatToPrint] = useState<FileExportFormat | null>(null);
+
+  const handlePdfClick = (group: LmnApiSchoolClass) => {
+    setFormatToPrint(FileExportFormat.PDF);
+    setClassToPrint(group);
+  };
+
+  const handleCsvClick = (group: LmnApiSchoolClass) => {
+    setFormatToPrint(FileExportFormat.CSV);
+    setClassToPrint(group);
+  };
 
   return (
-    <div className="flex flex-row flex-wrap">
-      {row.groups.length ? (
-        row.groups
-          .filter((group) => !isSuperAdmin || (group as LmnApiSchoolClass).sophomorixSchoolname === selectedSchool)
-          .map((group) => (
-            <ClassListCard
-              key={(group as LmnApiSchoolClass).dn}
-              group={group as LmnApiSchoolClass}
-              selectedClasses={selectedClasses}
-              setSelectedClasses={setSelectedClasses}
-              disabled={!!activeSchool && (group as LmnApiSchoolClass).sophomorixSchoolname !== activeSchool}
-            />
-          ))
-      ) : (
-        <div className="mt-3">{t('classmanagement.notMemberOfClass')}</div>
-      )}
+    <>
+      <ClassSelectionList
+        row={row}
+        selectedClasses={selectedClasses}
+        setSelectedClasses={setSelectedClasses}
+        activeSchool={activeSchool}
+        floatingBar={<PasswordsFloatingButtonsBar selectedClasses={selectedClasses} />}
+        onPdfClick={handlePdfClick}
+        onCsvClick={handleCsvClick}
+      />
 
-      <PasswordsFloatingButtonsBar selectedClasses={selectedClasses} />
-    </div>
+      {classToPrint && formatToPrint && (
+        <PrintPasswordsDialog
+          title={formatToPrint}
+          selectedClasses={[classToPrint]}
+          onClose={() => {
+            setClassToPrint(null);
+            setFormatToPrint(null);
+          }}
+        />
+      )}
+    </>
   );
 };
 

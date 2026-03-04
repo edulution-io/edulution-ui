@@ -17,9 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum PrintPasswordsFormat {
-  PDF = 'pdf',
-  CSV = 'csv',
-}
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 
-export default PrintPasswordsFormat;
+const downloadFileFromBuffer = (data: ArrayBuffer, filename: string, format: FileExportFormat) => {
+  const mimeType =
+    format === FileExportFormat.CSV
+      ? `${RequestResponseContentType.TEXT_CSV};charset=utf-8;`
+      : RequestResponseContentType.APPLICATION_PDF;
+
+  const blob = new Blob([data], { type: mimeType });
+  const url = window.URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode?.removeChild(link);
+
+  window.URL.revokeObjectURL(url);
+};
+
+export default downloadFileFromBuffer;
