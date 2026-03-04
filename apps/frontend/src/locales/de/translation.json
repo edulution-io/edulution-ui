@@ -1688,6 +1688,12 @@
       "title": "Benutzeroberfläche",
       "description": "Hier kannst du Einstellungen zur Benutzeroberfläche vornehmen."
     },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "description": "Hier kannst du deine Benachrichtigungseinstellungen verwalten.",
+      "pushNotifications": "Push-Benachrichtigungen",
+      "pushNotificationsDescription": "Push-Benachrichtigungen auf deinem Gerät empfangen."
+    },
     "wireguard": {
       "title": "VPN-Zugang",
       "description": "Hier kannst du deinen WireGuard VPN-Zugang einsehen und konfigurieren.",

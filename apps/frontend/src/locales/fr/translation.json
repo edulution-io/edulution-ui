@@ -1479,6 +1479,12 @@
       "title": "Interface utilisateur",
       "description": "Ici, vous pouvez configurer certains aspects de l'interface utilisateur selon vos préférences."
     },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Ici, vous pouvez gérer vos préférences de notification.",
+      "pushNotifications": "Notifications push",
+      "pushNotificationsDescription": "Recevoir des notifications push sur votre appareil."
+    },
     "wireguard": {
       "title": "Accès VPN",
       "description": "Ici, vous pouvez consulter et configurer votre accès VPN WireGuard.",
