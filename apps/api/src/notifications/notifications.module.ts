@@ -19,6 +19,7 @@
 
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import UserPreferencesModule from '../user-preferences/user-preferences.module';
 import NotificationsService from './notifications.service';
 import NotificationsController from './notifications.controller';
 import { Notification, NotificationSchema } from './notification.schema';
@@ -32,6 +33,7 @@ import PushNotificationQueue from './queue/push-notification.queue';
       { name: Notification.name, schema: NotificationSchema },
       { name: UserNotification.name, schema: UserNotificationSchema },
     ]),
+    UserPreferencesModule,
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService, PushNotificationQueue],

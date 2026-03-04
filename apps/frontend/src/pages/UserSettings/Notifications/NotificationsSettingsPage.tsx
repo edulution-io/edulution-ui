@@ -17,16 +17,52 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import APP_DISPLAY_LOCATIONS from '@libs/appconfig/constants/appDisplayLocations';
+import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
+import type NotificationScheduleDto from '@libs/user-preferences/types/notification-schedule.dto';
 import { NotificationIcon } from '@/assets/icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import Switch from '@/components/ui/Switch';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import useUserPreferencesStore from '@/store/useUserPreferencesStore';
+import AppNotificationsList from '@/pages/UserSettings/Notifications/components/AppNotificationsList';
 
 const NotificationsSettingsPage = () => {
   const { t } = useTranslation();
-  const [pushEnabled, setPushEnabled] = useState(true);
+  const { appConfigs } = useAppConfigsStore();
+  const { notificationPreferences, getUserPreferences, updateNotificationPreferences } = useUserPreferencesStore();
+
+  useEffect(() => {
+    void getUserPreferences([USER_PREFERENCES_FIELDS.notifications]);
+  }, []);
+
+  const userApps = useMemo(
+    () => appConfigs.filter((config) => config.displayLocations?.includes(APP_DISPLAY_LOCATIONS.SIDEBAR)),
+    [appConfigs],
+  );
+
+  const appNotifications = useMemo(() => {
+    const result: Record<string, boolean> = {};
+    userApps.forEach((config) => {
+      result[config.name] = notificationPreferences.apps?.[config.name]?.enabled ?? true;
+    });
+    return result;
+  }, [userApps, notificationPreferences]);
+
+  const appSchedules = useMemo(() => {
+    const result: Record<string, NotificationScheduleDto | undefined> = {};
+    userApps.forEach((config) => {
+      result[config.name] = notificationPreferences.apps?.[config.name]?.schedules?.[0];
+    });
+    return result;
+  }, [userApps, notificationPreferences]);
+
+  const handlePushToggle = (enabled: boolean) => {
+    void updateNotificationPreferences({ pushEnabled: enabled });
+  };
 
   const switchId = 'push-notifications-switch';
 
@@ -46,16 +82,27 @@ const NotificationsSettingsPage = () => {
           <div className="flex items-center justify-between">
             <label
               htmlFor={switchId}
-              className="cursor-pointer text-foreground"
+              className="cursor-pointer text-background"
             >
               {t('usersettings.notifications.pushNotificationsDescription')}
             </label>
             <Switch
               id={switchId}
-              checked={pushEnabled}
-              onCheckedChange={setPushEnabled}
+              checked={notificationPreferences.pushEnabled}
+              onCheckedChange={handlePushToggle}
             />
           </div>
+        </SectionAccordionItem>
+        <SectionAccordionItem
+          id="app-notifications"
+          label={t('usersettings.notifications.appNotifications')}
+        >
+          <p className="mb-4 text-background">{t('usersettings.notifications.appNotificationsDescription')}</p>
+          <AppNotificationsList
+            apps={userApps}
+            appNotifications={appNotifications}
+            appSchedules={appSchedules}
+          />
         </SectionAccordionItem>
       </SectionAccordion>
     </PageLayout>

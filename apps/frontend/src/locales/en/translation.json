@@ -1689,7 +1689,19 @@
       "title": "Notifications",
       "description": "Here you can manage your notification preferences.",
       "pushNotifications": "Push Notifications",
-      "pushNotificationsDescription": "Receive push notifications on your device."
+      "pushNotificationsDescription": "Receive push notifications on your device.",
+      "appNotifications": "App Notifications",
+      "appNotificationsDescription": "Choose which apps you want to receive notifications from.",
+      "table": {
+        "app": "App",
+        "active": "Active"
+      },
+      "schedule": {
+        "title": "Schedule – {{app}}",
+        "startTime": "From",
+        "endTime": "To",
+        "days": "Days"
+      }
     },
     "wireguard": {
       "title": "VPN Access",
@@ -1903,6 +1915,15 @@
     "logout": "Logout",
     "selected": "selected",
     "save": "Save",
+    "weekdaysShort": {
+      "0": "Mo",
+      "1": "Tu",
+      "2": "We",
+      "3": "Th",
+      "4": "Fr",
+      "5": "Sa",
+      "6": "Su"
+    },
     "successful": "Successful",
     "failed": "Failed",
     "login": "Login",

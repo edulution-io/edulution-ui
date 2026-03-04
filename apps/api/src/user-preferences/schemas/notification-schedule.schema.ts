@@ -18,31 +18,22 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { NotificationPreferences, NotificationPreferencesSchema } from './schemas/notification-preferences.schema';
+import ALL_WEEKDAYS from '@libs/common/constants/allWeekdays';
+import Weekday from '@libs/common/constants/weekday';
 
-export type UserPreferencesDocument = UserPreferences & Document;
+@Schema({ _id: false })
+export class NotificationSchedule {
+  @Prop({ type: Boolean, default: false })
+  enabled: boolean;
 
-@Schema({ timestamps: true })
-export class UserPreferences extends Document {
-  @Prop({ type: String, required: true, unique: true, index: true })
-  username: string;
+  @Prop({ type: String, default: null })
+  startTime: string | null;
 
-  @Prop({
-    type: Map,
-    of: Boolean,
-    default: {},
-  })
-  collapsedBulletins: Record<string, boolean>;
+  @Prop({ type: String, default: null })
+  endTime: string | null;
 
-  @Prop({
-    type: String,
-    default: '1',
-  })
-  bulletinBoardGridRows: string;
-
-  @Prop({ type: NotificationPreferencesSchema, default: () => ({}) })
-  notifications: NotificationPreferences;
+  @Prop({ type: [Number], default: ALL_WEEKDAYS })
+  days: Weekday[];
 }
 
-export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
+export const NotificationScheduleSchema = SchemaFactory.createForClass(NotificationSchedule);

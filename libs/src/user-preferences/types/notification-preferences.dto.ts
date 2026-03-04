@@ -17,32 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { NotificationPreferences, NotificationPreferencesSchema } from './schemas/notification-preferences.schema';
+import type AppNotificationPreferenceDto from './app-notification-preference.dto';
 
-export type UserPreferencesDocument = UserPreferences & Document;
-
-@Schema({ timestamps: true })
-export class UserPreferences extends Document {
-  @Prop({ type: String, required: true, unique: true, index: true })
-  username: string;
-
-  @Prop({
-    type: Map,
-    of: Boolean,
-    default: {},
-  })
-  collapsedBulletins: Record<string, boolean>;
-
-  @Prop({
-    type: String,
-    default: '1',
-  })
-  bulletinBoardGridRows: string;
-
-  @Prop({ type: NotificationPreferencesSchema, default: () => ({}) })
-  notifications: NotificationPreferences;
+interface NotificationPreferencesDto {
+  pushEnabled: boolean;
+  apps: Record<string, AppNotificationPreferenceDto>;
 }
 
-export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
+export default NotificationPreferencesDto;

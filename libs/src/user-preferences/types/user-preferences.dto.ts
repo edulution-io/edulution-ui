@@ -17,10 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import type NotificationPreferencesDto from './notification-preferences.dto';
+
 interface UserPreferencesDto {
   username: string;
   collapsedBulletins: Record<string, boolean>;
   bulletinBoardGridRows?: string;
+  notifications?: NotificationPreferencesDto;
 }
 
 export default UserPreferencesDto;

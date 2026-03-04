@@ -17,32 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { NotificationPreferences, NotificationPreferencesSchema } from './schemas/notification-preferences.schema';
+import type NotificationScheduleDto from '@libs/user-preferences/types/notification-schedule.dto';
+import toWeekday from '@libs/user-preferences/utils/toWeekday';
 
-export type UserPreferencesDocument = UserPreferences & Document;
+const isWithinSchedule = (schedule: NotificationScheduleDto): boolean => {
+  if (!schedule.enabled) {
+    return true;
+  }
 
-@Schema({ timestamps: true })
-export class UserPreferences extends Document {
-  @Prop({ type: String, required: true, unique: true, index: true })
-  username: string;
+  const now = new Date();
+  const currentDay = toWeekday(now.getDay());
 
-  @Prop({
-    type: Map,
-    of: Boolean,
-    default: {},
-  })
-  collapsedBulletins: Record<string, boolean>;
+  if (!schedule.days.includes(currentDay)) {
+    return false;
+  }
 
-  @Prop({
-    type: String,
-    default: '1',
-  })
-  bulletinBoardGridRows: string;
+  if (schedule.startTime && schedule.endTime) {
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    return currentTime >= schedule.startTime && currentTime <= schedule.endTime;
+  }
 
-  @Prop({ type: NotificationPreferencesSchema, default: () => ({}) })
-  notifications: NotificationPreferences;
-}
+  return true;
+};
 
-export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
+export default isWithinSchedule;

@@ -1692,7 +1692,19 @@
       "title": "Benachrichtigungen",
       "description": "Hier kannst du deine Benachrichtigungseinstellungen verwalten.",
       "pushNotifications": "Push-Benachrichtigungen",
-      "pushNotificationsDescription": "Push-Benachrichtigungen auf deinem Gerät empfangen."
+      "pushNotificationsDescription": "Push-Benachrichtigungen auf deinem Gerät empfangen.",
+      "appNotifications": "App-Benachrichtigungen",
+      "appNotificationsDescription": "Wähle aus, für welche Apps du Benachrichtigungen erhalten möchtest.",
+      "table": {
+        "app": "App",
+        "active": "Aktiv"
+      },
+      "schedule": {
+        "title": "Zeitplan – {{app}}",
+        "startTime": "Von",
+        "endTime": "Bis",
+        "days": "Tage"
+      }
     },
     "wireguard": {
       "title": "VPN-Zugang",
@@ -1903,6 +1915,15 @@
     "reload": "Neu laden",
     "logout": "Abmelden",
     "save": "Speichern",
+    "weekdaysShort": {
+      "0": "Mo",
+      "1": "Di",
+      "2": "Mi",
+      "3": "Do",
+      "4": "Fr",
+      "5": "Sa",
+      "6": "So"
+    },
     "stop": "Stoppen",
     "selected": "ausgewählt",
     "successful": "Erfolgreich",
