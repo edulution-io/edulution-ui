@@ -90,7 +90,7 @@ class PublicSurveysController {
   @Public()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
     const { surveyId, answer, attendee } = postAnswerDto;
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveyService.throwErrorIfPublicSurveyIsNotAccessible(surveyId);
     const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
     return savedAnswer;
   }
@@ -99,7 +99,7 @@ class PublicSurveysController {
   @Public()
   async hasPublicUserAnswered(@Param() params: { surveyId: string; publicUserName: string }) {
     const { surveyId, publicUserName } = params;
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveyService.throwErrorIfPublicSurveyIsNotAccessible(surveyId);
     const response = await this.surveyAnswerService.hasPublicUserAnsweredSurvey(surveyId, publicUserName);
     return response;
   }
@@ -113,7 +113,7 @@ class PublicSurveysController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveyService.throwErrorIfPublicSurveyIsNotAccessible(surveyId);
     const filePath = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
     return this.filesystemService.serveFile(filePath, filename, req, res);
   }
@@ -183,7 +183,7 @@ class PublicSurveysController {
     @Param('fileName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) fileName?: string,
   ) {
     PublicSurveysController.validateParams({ userName, surveyId, questionId }, ['userName', 'surveyId', 'questionId']);
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveyService.throwErrorIfPublicSurveyIsNotAccessible(surveyId);
     if (fileName) {
       await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);
     } else {
@@ -207,7 +207,7 @@ class PublicSurveysController {
       'questionId',
       'fileName',
     ]);
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveyService.throwErrorIfPublicSurveyIsNotAccessible(surveyId);
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, req, res);
   }
 
@@ -219,10 +219,10 @@ class PublicSurveysController {
     @Res() res: Response,
   ) {
     const { surveyId } = params;
-    const survey = await this.surveyService.getSurvey(surveyId);
+    const survey = await this.surveyService.throwErrorIfPublicSurveyIsNotAccessible(surveyId);
 
     Object.keys(choicesMap).forEach((questionName) => {
-      this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(survey, questionName);
+      this.surveysBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed(survey, questionName);
     });
 
     await this.surveyAnswerService.validateAndAppendBulkChoices(surveyId, choicesMap);
@@ -236,7 +236,7 @@ class PublicSurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveyService.throwErrorIfPublicSurveyIsNotAccessible(surveyId);
     const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }

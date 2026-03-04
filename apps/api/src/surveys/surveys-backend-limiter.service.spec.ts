@@ -141,14 +141,14 @@ describe(SurveysBackendLimiterService.name, () => {
   describe('throwErrorIfUserIsNotAllowedToAppendBackendLimiters', () => {
     it('should throw FORBIDDEN when question does not allow custom choices', () => {
       expect(() =>
-        service.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
+        service.throwErrorIfAppendingOwnChoicesIsNotAllowed(
           surveyWithoutShowOtherItem,
           dropdownQuestionWithShowOtherItemName,
         ),
       ).toThrow(CustomHttpException);
 
       try {
-        service.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
+        service.throwErrorIfAppendingOwnChoicesIsNotAllowed(
           surveyWithoutShowOtherItem,
           dropdownQuestionWithoutShowOtherItemName,
         );
@@ -160,7 +160,7 @@ describe(SurveysBackendLimiterService.name, () => {
 
     it('should not throw when question allows custom choices', () => {
       expect(() =>
-        service.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
+        service.throwErrorIfAppendingOwnChoicesIsNotAllowed(
           surveyWithShowOtherItem,
           dropdownQuestionWithShowOtherItemName,
         ),

@@ -19,7 +19,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, useWatch } from 'react-hook-form';
 import { cn } from '@edulution-io/ui-kit';
 import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
@@ -58,11 +58,13 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     uploadBackendLimiter,
   } = useQuestionsContextMenuStore();
 
+  const isPublic = useWatch({ control: form.control, name: 'isPublic' });
+
   useEffect(() => {
     if (!selectedQuestion) return;
     const questionName = selectedQuestion.name;
-    const surveyId = form.watch('id');
-    const limiters = form.watch('backendLimiters') || {};
+    const surveyId = form.getValues('id');
+    const limiters = form.getValues('backendLimiters') || {};
     if (useBackendLimits) {
       if (currentChoices.length > 0) {
         setInitialChoices(currentChoices);
@@ -79,21 +81,21 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
         void deleteBackendLimiters(surveyId, questionName);
       }
     }
-  }, [selectedQuestion, useBackendLimits, form, setInitialChoices, getInitialChoices, deleteBackendLimiters]);
+  }, [selectedQuestion, useBackendLimits, setInitialChoices, getInitialChoices, deleteBackendLimiters]);
 
   useEffect(() => {
     if (!selectedQuestion) return;
     const questionName = selectedQuestion.name;
 
-    const limiters = form.watch('backendLimiters') || {};
+    const limiters = form.getValues('backendLimiters') || {};
     const updatedLimiters = { ...limiters, [questionName]: currentChoices };
     form.setValue('backendLimiters', updatedLimiters);
 
-    const surveyId = form.watch('id');
+    const surveyId = form.getValues('id');
     if (surveyId && currentChoices.length > 0) {
       void uploadBackendLimiter(surveyId, questionName, currentChoices);
     }
-  }, [currentChoices, selectedQuestion, form, uploadBackendLimiter]);
+  }, [currentChoices, selectedQuestion, uploadBackendLimiter]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [
@@ -121,7 +123,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       <div className="ml-2 inline-flex">
         <Switch
           checked={!!useBackendLimits}
-          onCheckedChange={() => toggleUseBackendLimits(form.watch('isPublic') || false)}
+          onCheckedChange={() => toggleUseBackendLimits(isPublic || false)}
           className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-background': useBackendLimits })}
         />
         <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'enabled' : 'disabled'}`)}</p>

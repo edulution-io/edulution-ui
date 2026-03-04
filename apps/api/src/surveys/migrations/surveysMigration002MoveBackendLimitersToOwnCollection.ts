@@ -25,9 +25,9 @@ import { SurveysBackendLimiterDocument } from '../surveys-backend-limiter.schema
 
 type OldSurveyDocument = NewSurveyDocument & { backendLimiters?: { questionName: string; choices: unknown[] }[] };
 
-const name = '002-move-backend-limiters-to-own-table';
+const name = '002-move-backend-limiters-to-own-collection';
 
-const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocument> = {
+const surveysMigration002MoveBackendLimitersToOwnCollection: Migration<NewSurveyDocument> = {
   name,
   version: 2,
   execute: async (model) => {
@@ -116,4 +116,4 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocum
   },
 };
 
-export default surveysMigration002MoveBackendLimitersToOwnTable;
+export default surveysMigration002MoveBackendLimitersToOwnCollection;

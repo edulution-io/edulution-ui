@@ -352,14 +352,10 @@ class SurveysController {
   ) {
     const { surveyId } = params;
     SurveysController.validateParams(params, ['surveyId']);
-    const survey = await this.surveyService.getSurvey(surveyId, currentUser);
+    const survey = await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
 
     Object.keys(choicesMap).forEach((questionName) => {
-      this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
-        survey,
-        questionName,
-        currentUser,
-      );
+      this.surveysBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed(survey, questionName);
     });
 
     await this.surveyAnswerService.validateAndAppendBulkChoices(surveyId, choicesMap);
@@ -375,7 +371,7 @@ class SurveysController {
   ) {
     const { surveyId, questionId } = params;
     SurveysController.validateParams(params, ['surveyId', 'questionId']);
-    const survey = await this.surveyService.getSurvey(surveyId, currentUser);
+    const survey = await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
 
     const isCreator = survey.creator.username === currentUser?.preferred_username;
     if (!isCreator) {

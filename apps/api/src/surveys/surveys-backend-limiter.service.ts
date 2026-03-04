@@ -20,7 +20,6 @@
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import JwtUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
@@ -91,11 +90,7 @@ class SurveysBackendLimiterService {
     return question.showOtherItem ?? false;
   };
 
-  throwErrorIfUserIsNotAllowedToAppendBackendLimiters = (
-    survey: Survey,
-    questionName: string,
-    _user?: JwtUser,
-  ): void => {
+  throwErrorIfAppendingOwnChoicesIsNotAllowed = (survey: Survey, questionName: string): void => {
     const isAllowed = this.canAddOwnChoicesToTheQuestion(survey, questionName);
     if (!isAllowed) {
       throw new CustomHttpException(

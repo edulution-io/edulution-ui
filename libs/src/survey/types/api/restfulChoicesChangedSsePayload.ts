@@ -17,11 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import migration000 from './surveysMigration000SurveyIds';
-import migration001 from './surveysMigration001Attachments';
-import migration002 from './surveysMigration002MoveBackendLimitersToOwnCollection';
+interface RestfulChoicesChangedSsePayload {
+  surveyId: string;
+  questionName: string;
+}
 
-// Add new migrations here
-const surveysMigrationsList = [migration000, migration001, migration002];
-
-export default surveysMigrationsList;
+export default RestfulChoicesChangedSsePayload;

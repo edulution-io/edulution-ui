@@ -57,24 +57,6 @@ class SurveysService implements OnModuleInit {
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
   }
 
-  getSurvey = async (surveyId: string, user?: JwtUser): Promise<Survey> => {
-    let survey: Survey | null = null;
-    if (!user) {
-      survey = await this.findPublicSurvey(surveyId);
-    } else {
-      survey = await this.findSurvey(surveyId, user);
-    }
-    if (!survey) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysService.name,
-      );
-    }
-    return survey;
-  };
-
   async findSurveyWithCreatorDependency(surveyId: string, creator: JwtUser): Promise<Survey | null> {
     try {
       const survey = await this.surveyModel
@@ -120,7 +102,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async throwErrorIfSurveyIsNotAccessible(surveyId: string, user: JwtUser): Promise<void> {
+  async throwErrorIfSurveyIsNotAccessible(surveyId: string, user: JwtUser): Promise<Survey> {
     const survey = await this.findSurvey(surveyId, user);
     if (!survey) {
       throw new CustomHttpException(
@@ -130,6 +112,7 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
+    return survey;
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
@@ -145,7 +128,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async throwErrorIfSurveyIsNotPublic(surveyId: string): Promise<void> {
+  async throwErrorIfPublicSurveyIsNotAccessible(surveyId: string): Promise<Survey> {
     const survey = await this.findPublicSurvey(surveyId);
     if (!survey) {
       throw new CustomHttpException(
@@ -155,6 +138,7 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
+    return survey;
   }
 
   async throwErrorIfUserIsNotCreator(surveyId: string, user: JwtUser): Promise<void> {

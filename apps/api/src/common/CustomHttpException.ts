@@ -22,7 +22,7 @@ import ErrorMessage from '@libs/error/errorMessage';
 
 class CustomHttpException extends HttpException {
   constructor(errorMessage: ErrorMessage, status: HttpStatus, data?: unknown, domain?: string) {
-    super(data !== undefined ? { message: errorMessage, details: data } : errorMessage, status);
+    super(errorMessage, status);
     CustomHttpException.logError(errorMessage, status, data, domain);
   }
 

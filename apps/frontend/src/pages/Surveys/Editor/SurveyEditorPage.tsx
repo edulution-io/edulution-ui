@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -206,12 +206,12 @@ const SurveyEditorPage = () => {
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
-  const handleSaveSurvey = async () => {
+  const handleSaveSurvey = useCallback(async () => {
     if (!creator) return;
 
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;
-    const shouldUploadBackendLimiters = form.watch('id') === undefined;
+    const shouldUploadBackendLimiters = form.getValues('id') === undefined;
     const resultingSurveyId = await updateOrCreateSurvey({
       ...form.getValues(),
       formula,
@@ -219,7 +219,7 @@ const SurveyEditorPage = () => {
     });
     if (resultingSurveyId) {
       if (shouldUploadBackendLimiters) {
-        await uploadBackendLimiters(resultingSurveyId, form.watch('backendLimiters') || {});
+        await uploadBackendLimiters(resultingSurveyId, form.getValues('backendLimiters') || {});
       }
 
       void updateUsersSurveys();
@@ -230,7 +230,7 @@ const SurveyEditorPage = () => {
       toast.success(t('survey.editor.saveSurveySuccess'));
       handleNavigateToCreatedSurveys();
     }
-  };
+  }, [creator, form, language]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [

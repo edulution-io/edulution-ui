@@ -17,9 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface UpdateRestfulChoicesDto {
-  surveyId: string;
-  questionName: string;
+import { HttpException, HttpStatus } from '@nestjs/common';
+import ErrorMessage from '@libs/error/errorMessage';
+
+class DetailedHttpException extends HttpException {
+  constructor(errorMessage: ErrorMessage, details: string | string[] | Record<string, string | string[]>) {
+    super({ errorMessage, details, HttpStatusCode: HttpStatus.CONFLICT }, HttpStatus.CONFLICT);
+  }
 }
 
-export default UpdateRestfulChoicesDto;
+export default DetailedHttpException;

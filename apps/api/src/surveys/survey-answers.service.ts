@@ -38,6 +38,7 @@ import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CHOICES_DEFAULT_LIMIT from '@libs/survey/constants/choices-default-limit';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import CustomHttpException from '../common/CustomHttpException';
+import DetailedHttpException from '../common/DetailedHttpException';
 import SseService from '../sse/sse.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -107,12 +108,10 @@ class SurveyAnswersService implements OnModuleInit {
       return possibleChoices;
     }
 
-    const filteredChoices: ChoiceDto[] = [];
-    await Promise.all(
-      possibleChoices.map(async (choice) => {
+    const results = await Promise.all(
+      possibleChoices.map(async (choice): Promise<ChoiceDto | null> => {
         if (!choice.limit || choice.limit === 0) {
-          filteredChoices.push(choice);
-          return;
+          return choice;
         }
         let counter = 0;
         if (choice.isCustomUserEntry) {
@@ -123,11 +122,10 @@ class SurveyAnswersService implements OnModuleInit {
           );
         }
         counter += await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
-        if (counter < choice.limit) {
-          filteredChoices.push(choice);
-        }
+        return counter < choice.limit ? choice : null;
       }),
     );
+    const filteredChoices = results.filter((choice): choice is ChoiceDto => choice !== null);
 
     filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
 
@@ -218,8 +216,13 @@ class SurveyAnswersService implements OnModuleInit {
       ),
     );
 
+    const limitExceededQuestionNames: string[] = [];
     const limitReachedQuestionNames: string[] = [];
-    const creationOperations: Array<{ questionName: string; fn: () => Promise<{ modifiedCount: number }> }> = [];
+    const creationOperations: Array<{
+      questionName: string;
+      choiceLimit: number;
+      fn: () => Promise<{ modifiedCount: number }>;
+    }> = [];
 
     await Promise.all(
       questionNames.map(async (questionName, index) => {
@@ -254,12 +257,16 @@ class SurveyAnswersService implements OnModuleInit {
                 questionName,
                 newChoice.title,
               );
-              if (commentCount + answerCount >= otherItemLimit) {
+              const totalCount = commentCount + answerCount;
+              if (totalCount >= otherItemLimit) {
+                limitExceededQuestionNames.push(questionName);
+              } else if (totalCount + 1 === otherItemLimit) {
                 limitReachedQuestionNames.push(questionName);
               }
             } else {
               creationOperations.push({
                 questionName,
+                choiceLimit: otherItemLimit,
                 fn: () =>
                   this.surveysBackendLimiterModel
                     .updateOne(
@@ -274,24 +281,26 @@ class SurveyAnswersService implements OnModuleInit {
       }),
     );
 
-    if (limitReachedQuestionNames.length > 0) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.ChoiceLimitReachedError,
-        HttpStatus.CONFLICT,
-        { questionNames: limitReachedQuestionNames },
-        SurveyAnswersService.name,
-      );
-    }
-
-    if (creationOperations.length > 0) {
-      const results = await Promise.all(creationOperations.map(({ fn }) => fn()));
-      const modifiedQuestionNames = new Set(
-        creationOperations.filter((_, i) => results[i].modifiedCount > 0).map(({ questionName }) => questionName),
-      );
-      modifiedQuestionNames.forEach((questionName) => {
-        this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
+    if (limitExceededQuestionNames.length > 0) {
+      throw new DetailedHttpException(SurveyErrorMessages.ChoiceLimitReachedError, {
+        questionNames: limitExceededQuestionNames,
       });
     }
+
+    const questionNamesWeNotifyOtherUsersFor = limitReachedQuestionNames;
+    if (creationOperations.length > 0) {
+      const creations = await Promise.all(creationOperations.map(({ fn }) => fn()));
+      const questionNamesForNewSelectableChoices = new Set(
+        creationOperations
+          .filter((object, index) => creations[index].modifiedCount > 0 && object.choiceLimit !== 1)
+          .map(({ questionName }) => questionName),
+      );
+      questionNamesWeNotifyOtherUsersFor.concat([...questionNamesForNewSelectableChoices]);
+    }
+
+    questionNamesWeNotifyOtherUsersFor.forEach((questionName) => {
+      this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
+    });
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {

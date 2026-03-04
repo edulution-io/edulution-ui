@@ -33,7 +33,7 @@ import {
 } from 'survey-core';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import UpdateRestfulChoicesDto from '@libs/survey/types/api/updateRestfulChoices.dto';
+import RestfulChoicesChangedSsePayload from '@libs/survey/types/api/restfulChoicesChangedSsePayload';
 import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/surveyjs-comment-suffix';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useSseEventListener from '@/hooks/useSseEventListener';
@@ -314,7 +314,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!surveyParticipationModel || !selectedSurvey?.id) {
         return;
       }
-      const { surveyId, questionName } = JSON.parse(e.data) as UpdateRestfulChoicesDto;
+      const { surveyId, questionName } = JSON.parse(e.data) as RestfulChoicesChangedSsePayload;
       if (surveyId !== selectedSurvey.id) {
         return;
       }
@@ -324,7 +324,15 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return;
       }
       ChoicesRestful.clearCache();
-      (choicesByUrl as unknown as { lastObjHash: string }).lastObjHash = '';
+      // HAS TO BE FIXED SHOULD WORK LIKE THAT (DOES NOT RETURN UPDATE THE PARTICIPAITON OF ANOTHER USER)
+      const restful = choicesByUrl as unknown as Record<string, unknown>;
+      if ('lastObjHash' in restful) {
+        (choicesByUrl as unknown as { lastObjHash: string }).lastObjHash = '';
+      } else {
+        console.warn('Cannot find lastObjHash in ChoicesRestful instance.');
+        console.warn('It seems that there are major changes in surveyjs library.');
+        console.warn('Please notify a developer.');
+      }
       choicesByUrl.run();
     },
     {

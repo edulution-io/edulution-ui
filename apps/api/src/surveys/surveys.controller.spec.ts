@@ -477,7 +477,7 @@ describe(SurveysController.name, () => {
 
     it('should call updateOrCreateSurveysBackendLimiters when user is creator and append is not set', async () => {
       const { res, status, json } = mockRes();
-      surveyService.getSurvey = jest.fn().mockResolvedValue(publicSurvey01);
+      surveyService.throwErrorIfSurveyIsNotAccessible = jest.fn().mockResolvedValue(publicSurvey01);
 
       await controller.updateChoices({ surveyId, questionId }, firstMockJWTUser, choices, res);
 

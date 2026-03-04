@@ -95,7 +95,7 @@ describe(PublicSurveysController.name, () => {
         {
           provide: SurveyBackendLimiterService,
           useValue: {
-            throwErrorIfUserIsNotAllowedToAppendBackendLimiters: jest.fn(),
+            throwErrorIfAppendingOwnChoicesIsNotAllowed: jest.fn(),
           },
         },
         {
@@ -178,7 +178,7 @@ describe(PublicSurveysController.name, () => {
 
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
-      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       await controller.answerSurvey({
         surveyId: idOfPublicSurvey02.toString(),
@@ -231,7 +231,7 @@ describe(PublicSurveysController.name, () => {
           .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
       });
 
-      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
@@ -261,7 +261,7 @@ describe(PublicSurveysController.name, () => {
           .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
       });
 
-      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
@@ -285,7 +285,7 @@ describe(PublicSurveysController.name, () => {
     >[2];
 
     it('should call getSurvey, validate permissions, and append choices', async () => {
-      surveysService.getSurvey = jest.fn().mockResolvedValue(publicSurvey02);
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValue(publicSurvey02);
       jest.spyOn(surveyAnswerService, 'validateAndAppendBulkChoices').mockResolvedValue(undefined);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
@@ -298,12 +298,12 @@ describe(PublicSurveysController.name, () => {
 
       await controller.validateAndAppendBulkChoices({ surveyId }, choicesMap, mockRes);
 
-      expect(surveysService.getSurvey).toHaveBeenCalledWith(surveyId);
-      expect(surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenCalledTimes(
+      expect(surveysService.throwErrorIfPublicSurveyIsNotAccessible).toHaveBeenCalledWith(surveyId);
+      expect(surveyBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed).toHaveBeenCalledTimes(
         questionNames.length,
       );
       questionNames.forEach((questionName, index) => {
-        expect(surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters).toHaveBeenNthCalledWith(
+        expect(surveyBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed).toHaveBeenNthCalledWith(
           index + 1,
           publicSurvey02,
           questionName,
@@ -313,12 +313,10 @@ describe(PublicSurveysController.name, () => {
 
     it('should throw FORBIDDEN when a question does not allow custom choices', async () => {
       jest.spyOn(surveyAnswerService, 'validateAndAppendBulkChoices');
-      surveysService.getSurvey = jest.fn().mockResolvedValue(publicSurvey02);
-      (surveyBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters as jest.Mock).mockImplementation(
-        () => {
-          throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.FORBIDDEN);
-        },
-      );
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValue(publicSurvey02);
+      (surveyBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed as jest.Mock).mockImplementation(() => {
+        throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.FORBIDDEN);
+      });
 
       try {
         await controller.validateAndAppendBulkChoices({ surveyId }, choicesMap, mockRes);

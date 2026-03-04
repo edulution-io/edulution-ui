@@ -157,14 +157,12 @@ describe('SurveyAnswersService', () => {
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest
-          .fn()
-          .mockResolvedValue({
-            surveyId: idOfPublicSurvey02,
-            questionName: publicSurvey02QuestionNameWithLimiters,
-            choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
-            schemaVersion: 1,
-          }),
+        exec: jest.fn().mockResolvedValue({
+          surveyId: idOfPublicSurvey02,
+          questionName: publicSurvey02QuestionNameWithLimiters,
+          choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
+          schemaVersion: 1,
+        }),
       });
 
       const result = await service.getSelectableChoices(
@@ -190,14 +188,12 @@ describe('SurveyAnswersService', () => {
         .mockReturnValueOnce(2);
 
       surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
-        exec: jest
-          .fn()
-          .mockResolvedValue({
-            surveyId: idOfPublicSurvey02,
-            questionName: publicSurvey02QuestionNameWithLimiters,
-            choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
-            schemaVersion: 1,
-          }),
+        exec: jest.fn().mockResolvedValue({
+          surveyId: idOfPublicSurvey02,
+          questionName: publicSurvey02QuestionNameWithLimiters,
+          choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
+          schemaVersion: 1,
+        }),
       });
 
       const result = await service.getSelectableChoices(
@@ -213,7 +209,7 @@ describe('SurveyAnswersService', () => {
       expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
     });
 
-    it('Throw error when the backendLimit is not set', async () => {
+    it('Return empty array when the backendLimit is not set, to not throw an error when backendLimiter gets enabled', async () => {
       jest.spyOn(service, 'getSelectableChoices');
       jest.spyOn(service, 'countTotalChoiceSelectionsInSurveyAnswers');
 
@@ -221,12 +217,11 @@ describe('SurveyAnswersService', () => {
         exec: jest.fn().mockResolvedValue(null),
       });
 
-      try {
-        await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionNameWithLimiters);
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NotFoundError);
-      }
+      const result = await service.getSelectableChoices(
+        idOfPublicSurvey01.toString(),
+        publicSurvey02QuestionNameWithLimiters,
+      );
+      expect(result).toEqual([]);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey01.toString(),
