@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
@@ -157,26 +157,27 @@ export default defineConfig(({ mode }) => {
       nxViteTsPaths(),
       copyFontAwesomeIcons(),
     ],
+    css: {
+      lightningcss: {
+        errorRecovery: true,
+      },
+    },
     build: {
       outDir: '../../dist/apps/frontend',
       emptyOutDir: true,
       reportCompressedSize: true,
       rollupOptions: {
         output: {
-          manualChunks: {
-            surveyjs: [
-              'survey-analytics',
-              'survey-core',
-              'survey-creator-core',
-              'survey-creator-react',
-              'survey-react-ui',
-            ],
-            sentry: ['@sentry/react'],
+          manualChunks(id) {
+            if (id.includes('survey-')) {
+              return 'surveyjs';
+            }
+            if (id.includes('@sentry/react')) {
+              return 'sentry';
+            }
+            return undefined;
           },
         },
-      },
-      commonjsOptions: {
-        transformMixedEsModules: true,
       },
     },
   };
