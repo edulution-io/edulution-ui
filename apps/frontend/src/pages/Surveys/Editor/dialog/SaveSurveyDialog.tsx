@@ -18,15 +18,12 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface SaveSurveyDialogProps {
-  form: UseFormReturn<SurveyDto>;
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
   submitSurvey: () => void;
@@ -35,11 +32,11 @@ interface SaveSurveyDialogProps {
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { trigger, form, submitSurvey, isSubmitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
+  const { trigger, submitSurvey, isSubmitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => <SaveSurveyDialogBody form={form} />;
+  const getDialogBody = () => <SaveSurveyDialogBody />;
 
   const handleClose = () => setIsOpenSaveSurveyDialog(!isOpenSaveSurveyDialog);
 
