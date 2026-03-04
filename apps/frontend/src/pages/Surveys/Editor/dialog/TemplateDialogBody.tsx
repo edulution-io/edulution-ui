@@ -19,21 +19,18 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreator } from 'survey-creator-react';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import TemplateList from '@/pages/Surveys/Editor/dialog/TemplateList';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useLdapGroups from '@/hooks/useLdapGroups';
 
 interface TemplateDialogBodyProps {
-  form: UseFormReturn<SurveyDto>;
   surveyCreator: SurveyCreator;
 }
 
 const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
-  const { form, surveyCreator } = props;
+  const { surveyCreator } = props;
   const { templates, fetchTemplates, isLoading } = useTemplateMenuStore();
 
   const { t } = useTranslation();
@@ -61,7 +58,6 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
         <p className="flex justify-center text-secondary">{t('survey.editor.templateMenu.emptyMessage')}</p>
       ) : (
         <TemplateList
-          form={form}
           creator={surveyCreator}
           templates={templates}
         />
