@@ -20,7 +20,7 @@
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
-import { HttpStatusCode } from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
@@ -32,7 +32,10 @@ import {
   PUBLIC_SURVEY_ANSWER_ENDPOINT,
   SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
   PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
+  SURVEY_CHOICES,
+  PUBLIC_SURVEY_CHOICES,
 } from '@libs/survey/constants/surveys-endpoint';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import eduApi from '@/api/eduApi';
@@ -81,6 +84,8 @@ interface ParticipateSurveyStore {
     isPublic?: boolean,
   ) => Promise<string>;
   isDeletingFile?: boolean;
+
+  submitAllOtherChoices: (surveyId: string, choicesMap: Record<string, string>, isPublic: boolean) => Promise<void>;
 
   reset: () => void;
 }
@@ -253,6 +258,37 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       return 'error';
     } finally {
       set({ isDeletingFile: false });
+    }
+  },
+
+  submitAllOtherChoices: async (
+    surveyId: string,
+    choicesMap: Record<string, string>,
+    isPublic: boolean,
+  ): Promise<void> => {
+    const bulkChoices: Record<string, ChoiceDto[]> = {};
+    Object.entries(choicesMap).forEach(([questionName, otherValue]) => {
+      if (otherValue.trim()) {
+        bulkChoices[questionName] = [{ name: otherValue, title: otherValue }];
+      }
+    });
+
+    if (Object.keys(bulkChoices).length === 0) {
+      return;
+    }
+
+    const endpoint = isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES;
+    try {
+      await eduApi.post(`${endpoint}/${surveyId}`, bulkChoices);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.status === Number(HttpStatusCode.Conflict)) {
+        const questionNames = (error.response?.data as { details?: { questionNames?: string[] } })?.details
+          ?.questionNames;
+        toast.error(t('survey.errors.choiceLimitReachedError', { questionNames: questionNames?.join(', ') ?? '' }));
+      } else {
+        handleApiError(error, set);
+      }
+      throw error;
     }
   },
 

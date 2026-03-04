@@ -102,7 +102,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async throwErrorIfSurveyIsNotAccessible(surveyId: string, user: JwtUser): Promise<void> {
+  async throwErrorIfSurveyIsNotAccessible(surveyId: string, user: JwtUser): Promise<Survey> {
     const survey = await this.findSurvey(surveyId, user);
     if (!survey) {
       throw new CustomHttpException(
@@ -112,6 +112,7 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
+    return survey;
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
@@ -127,7 +128,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async throwErrorIfSurveyIsNotPublic(surveyId: string): Promise<void> {
+  async throwErrorIfPublicSurveyIsNotAccessible(surveyId: string): Promise<Survey> {
     const survey = await this.findPublicSurvey(surveyId);
     if (!survey) {
       throw new CustomHttpException(
@@ -137,6 +138,7 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
+    return survey;
   }
 
   async throwErrorIfUserIsNotCreator(surveyId: string, user: JwtUser): Promise<void> {

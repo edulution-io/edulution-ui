@@ -17,13 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import {
+  ClearFilesEvent,
+  ChoicesRestful,
+  DownloadFileEvent,
+  Model,
+  Serializer,
+  SurveyModel,
+  UploadFilesEvent,
+  ValueChangedEvent,
+} from 'survey-core';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import RestfulChoicesChangedSsePayload from '@libs/survey/types/api/restfulChoicesChangedSsePayload';
+import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/surveyjs-comment-suffix';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import useSseEventListener from '@/hooks/useSseEventListener';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
@@ -67,13 +80,23 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
-    useParticipateSurveyStore();
+  const {
+    fetchAnswer,
+    isFetching,
+    answerSurvey,
+    previousAnswer,
+    uploadTempFile,
+    deleteTempFile,
+    submitAllOtherChoices,
+  } = useParticipateSurveyStore();
 
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
+
+  const pendingOtherChoicesRef = useRef(new Map<string, string>());
+  const isCompletingRef = useRef(false);
 
   const surveyParticipationModel = useMemo(() => {
     if (!selectedSurvey || !selectedSurvey.formula) {
@@ -94,27 +117,59 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       action: () => setOpenExportPDFDialog(true),
     });
 
-    newModel.onCompleting.add(async (surveyModel, completingEvent) => {
+    newModel.onCompleting.add((surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {
         throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
       }
-      const success = await answerSurvey(
-        {
-          surveyId: selectedSurvey.id,
-          answer: surveyModel.getData() as TSurveyAnswer,
-          isPublic: selectedSurvey.isPublic || isPublic || false,
-        },
-        surveyModel,
-        completingEvent,
-      );
-
-      if (success) {
-        if (!isPublic) {
-          if (updateOpenSurveys) void updateOpenSurveys();
-          if (updateAnsweredSurveys) void updateAnsweredSurveys();
-        }
-        toast.success(t('survey.participate.saveAnswerSuccess'));
+      if (isCompletingRef.current) {
+        return;
       }
+      // eslint-disable-next-line no-param-reassign
+      completingEvent.allow = false;
+      isCompletingRef.current = true;
+      const isSurveyPublic = selectedSurvey.isPublic || isPublic || false;
+
+      const submitPendingChoices = async (): Promise<boolean> => {
+        const pendingChoices = pendingOtherChoicesRef.current;
+        if (pendingChoices.size === 0) {
+          return true;
+        }
+        try {
+          const choicesMap = Object.fromEntries(pendingChoices);
+          await submitAllOtherChoices(selectedSurvey.id!, choicesMap, isSurveyPublic);
+          pendingChoices.clear();
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
+      void submitPendingChoices().then(async (choicesSucceeded) => {
+        if (!choicesSucceeded) {
+          isCompletingRef.current = false;
+          return;
+        }
+
+        const success = await answerSurvey(
+          {
+            surveyId: selectedSurvey.id!,
+            answer: surveyModel.getData() as TSurveyAnswer,
+            isPublic: isSurveyPublic,
+          },
+          surveyModel,
+          completingEvent,
+        );
+
+        if (success) {
+          if (!isPublic) {
+            if (updateOpenSurveys) void updateOpenSurveys();
+            if (updateAnsweredSurveys) void updateAnsweredSurveys();
+          }
+          toast.success(t('survey.participate.saveAnswerSuccess'));
+        } else {
+          isCompletingRef.current = false;
+        }
+      });
     });
 
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
@@ -226,6 +281,65 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     return newModel;
   }, [selectedSurvey, language]);
+
+  useEffect(() => {
+    if (!surveyParticipationModel || !selectedSurvey?.id) {
+      return undefined;
+    }
+    const handler = (sender: SurveyModel, options: ValueChangedEvent) => {
+      const { name } = options;
+      if (!name.endsWith(SURVEYJS_COMMENT_SUFFIX)) {
+        return;
+      }
+      const otherValue = options.value as unknown;
+      if (typeof otherValue !== 'string' || !otherValue.trim()) {
+        return;
+      }
+      const questionName = name.slice(0, -SURVEYJS_COMMENT_SUFFIX.length);
+      const question = sender.getQuestionByName(questionName);
+      if (!question || !question.showOtherItem) {
+        return;
+      }
+      pendingOtherChoicesRef.current.set(questionName, otherValue);
+    };
+    surveyParticipationModel.onValueChanged.add(handler);
+    return () => {
+      surveyParticipationModel.onValueChanged.remove(handler);
+    };
+  }, [surveyParticipationModel, selectedSurvey]);
+
+  useSseEventListener(
+    SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED,
+    (e: MessageEvent<string>) => {
+      if (!surveyParticipationModel || !selectedSurvey?.id) {
+        return;
+      }
+      const { surveyId, questionName } = JSON.parse(e.data) as RestfulChoicesChangedSsePayload;
+      if (surveyId !== selectedSurvey.id) {
+        return;
+      }
+      const question = surveyParticipationModel.getQuestionByName(questionName);
+      const choicesByUrl = question?.choicesByUrl as ChoicesRestful | undefined;
+      if (!choicesByUrl || choicesByUrl.isEmpty) {
+        return;
+      }
+      ChoicesRestful.clearCache();
+      // HAS TO BE FIXED SHOULD WORK LIKE THAT (DOES NOT RETURN UPDATE THE PARTICIPAITON OF ANOTHER USER)
+      const restful = choicesByUrl as unknown as Record<string, unknown>;
+      if ('lastObjHash' in restful) {
+        (choicesByUrl as unknown as { lastObjHash: string }).lastObjHash = '';
+      } else {
+        console.warn('Cannot find lastObjHash in ChoicesRestful instance.');
+        console.warn('It seems that there are major changes in surveyjs library.');
+        console.warn('Please notify a developer.');
+      }
+      choicesByUrl.run();
+    },
+    {
+      enabled: !!surveyParticipationModel && !!selectedSurvey?.id,
+      dependencies: [surveyParticipationModel, selectedSurvey],
+    },
+  );
 
   useEffect(() => {
     if (!selectedSurvey?.id) {

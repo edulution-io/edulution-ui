@@ -27,6 +27,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import type PullEvent from '@libs/docker/types/pullEvent';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import type MailFlagsChangedNotificationDto from '@libs/mail/types/mailFlagsChangedNotification.dto';
+import type RestfulChoicesChangedSsePayload from '@libs/survey/types/api/restfulChoicesChangedSsePayload';
 import { type Survey } from '../surveys/survey.schema';
 import { type Conference } from '../conferences/conference.schema';
 import { BulletinDocument } from '../bulletinboard/bulletin.schema';
@@ -48,6 +49,7 @@ type SseEventData =
   | TLDrawSyncLog
   | PullEvent
   | MailNewMailNotificationDto
-  | MailFlagsChangedNotificationDto;
+  | MailFlagsChangedNotificationDto
+  | RestfulChoicesChangedSsePayload;
 
 export default SseEventData;

@@ -55,6 +55,7 @@ import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPat
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
@@ -62,8 +63,8 @@ import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
-import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
@@ -77,6 +78,7 @@ import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
+import SurveysBackendLimiterService from './surveys-backend-limiter.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 import ValidatePathPipe from '../common/pipes/validatePath.pipe';
@@ -90,6 +92,7 @@ class SurveysController {
     private readonly surveyService: SurveysService,
     private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveysBackendLimiterService: SurveysBackendLimiterService,
     private readonly filesystemService: FilesystemService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
@@ -219,6 +222,7 @@ class SurveysController {
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
     await SurveysAttachmentService.onSurveyRemoval(surveyIds);
+    await this.surveysBackendLimiterService.onSurveyRemoval(surveyIds);
   }
 
   @Post(ANSWER)
@@ -336,6 +340,49 @@ class SurveysController {
     }
   }
 
+  @Post(`${CHOICES}/:surveyId`)
+  async appendBulkChoices(
+    @Param() params: { surveyId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Body() choicesMap: Record<string, ChoiceDto[]>,
+    @Res() res: Response,
+  ) {
+    const { surveyId } = params;
+    SurveysController.validateParams(params, ['surveyId']);
+    const survey = await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
+
+    Object.keys(choicesMap).forEach((questionName) => {
+      this.surveysBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed(survey, questionName);
+    });
+
+    await this.surveyAnswerService.validateAndAppendBulkChoices(surveyId, choicesMap);
+    return res.status(HttpStatus.OK).json({ message: 'success' });
+  }
+
+  @Post(`${CHOICES}/:surveyId/:questionId`)
+  async updateChoices(
+    @Param() params: { surveyId: string; questionId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Body() choices: ChoiceDto[],
+    @Res() res: Response,
+  ) {
+    const { surveyId, questionId } = params;
+    SurveysController.validateParams(params, ['surveyId', 'questionId']);
+    const survey = await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
+
+    const isCreator = survey.creator.username === currentUser?.preferred_username;
+    if (!isCreator) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        SurveysController.name,
+      );
+    }
+    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
+    return res.status(HttpStatus.OK).json({ message: 'success' });
+  }
+
   @Get(`${CHOICES}/:surveyId/:questionId`)
   async getChoices(
     @Param() params: { surveyId: string; questionId: string },
@@ -346,9 +393,21 @@ class SurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
+    SurveysController.validateParams(params, ['surveyId', 'questionId']);
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId, original === 'true');
-    return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
+    return choices;
+  }
+
+  @Delete(`${CHOICES}/:surveyId/:questionId`)
+  async deleteBackendLimiter(
+    @Param() params: { surveyId: string; questionId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+  ) {
+    const { surveyId, questionId } = params;
+    SurveysController.validateParams(params, ['surveyId', 'questionId']);
+    await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
+    await this.surveysBackendLimiterService.deleteBackendLimiter(surveyId, questionId);
   }
 
   @UseGuards(AdminGuard)

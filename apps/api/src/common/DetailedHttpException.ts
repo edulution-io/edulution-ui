@@ -17,11 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface ChoiceDto {
-  name: string;
-  title: string;
-  limit?: number;
-  isCustomUserEntry?: boolean;
+import { HttpException, HttpStatus } from '@nestjs/common';
+import ErrorMessage from '@libs/error/errorMessage';
+
+class DetailedHttpException extends HttpException {
+  constructor(errorMessage: ErrorMessage, details: string | string[] | Record<string, string | string[]>) {
+    super({ errorMessage, details, HttpStatusCode: HttpStatus.CONFLICT }, HttpStatus.CONFLICT);
+  }
 }
 
-export default ChoiceDto;
+export default DetailedHttpException;

@@ -1102,7 +1102,8 @@
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
       "missingIdError": "Fehlende Umfrage-ID.",
-      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
+      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst.",
+      "choiceLimitReachedError": "Die benutzerdefinierten Antwortmöglichkeiten für folgende Fragen konnten nicht gespeichert werden: {{questionNames}}. Bitte versuchen Sie es erneut."
     }
   },
   "survey-answer": {

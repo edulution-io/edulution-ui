@@ -24,9 +24,11 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import eduApi from '@/api/eduApi';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import useQuestionsContextMenuStore from './dialog/useQuestionsContextMenuStore';
 
 interface SurveyEditorPageStore {
   storedSurvey: SurveyDto | undefined;
@@ -36,12 +38,15 @@ interface SurveyEditorPageStore {
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingFile: boolean;
 
+  uploadBackendLimiters: (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => Promise<void>;
+  removeBackendLimiter: (surveyId: string, questionName: string) => Promise<void>;
+
   isOpenSurveysLogoDialog: boolean;
   setIsOpenSurveysLogoDialog: (state: boolean) => void;
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
-  updateOrCreateSurvey: (survey: SurveyDto) => Promise<boolean>;
+  updateOrCreateSurvey: (survey: SurveyDto) => Promise<string>;
   isLoading: boolean;
 
   isOpenSharePublicSurveyDialog: boolean;
@@ -87,7 +92,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       setIsOpenSharePublicSurveyDialog: (isOpenSharePublicSurveyDialog, publicSurveyId) =>
         set({ isOpenSharePublicSurveyDialog, publicSurveyId }),
 
-      updateOrCreateSurvey: async (survey: SurveyDto): Promise<boolean> => {
+      updateOrCreateSurvey: async (survey: SurveyDto): Promise<string> => {
         set({ isLoading: true });
         try {
           const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
@@ -100,10 +105,10 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           } else {
             set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
           }
-          return true;
+          return resultingSurvey.id || '';
         } catch (error) {
           handleApiError(error, set);
-          return false;
+          return '';
         } finally {
           set({ isLoading: false });
         }
@@ -125,6 +130,21 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         } finally {
           set({ isUploadingFile: false });
         }
+      },
+
+      uploadBackendLimiters: async (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => {
+        const { uploadBackendLimiter } = useQuestionsContextMenuStore.getState();
+        const promises = Object.keys(backendLimiters).map((questionName) =>
+          backendLimiters[questionName].length > 0
+            ? uploadBackendLimiter(surveyId, questionName, backendLimiters[questionName])
+            : Promise.resolve(),
+        );
+        await Promise.all(promises);
+      },
+
+      removeBackendLimiter: async (surveyId: string, questionName: string) => {
+        const { deleteBackendLimiters } = useQuestionsContextMenuStore.getState();
+        await deleteBackendLimiters(surveyId, questionName);
       },
 
       closeSharePublicSurveyDialog: () =>

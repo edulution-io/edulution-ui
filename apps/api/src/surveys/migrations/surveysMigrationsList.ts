@@ -19,8 +19,9 @@
 
 import migration000 from './surveysMigration000SurveyIds';
 import migration001 from './surveysMigration001Attachments';
+import migration002 from './surveysMigration002MoveBackendLimitersToOwnCollection';
 
 // Add new migrations here
-const surveysMigrationsList = [migration000, migration001];
+const surveysMigrationsList = [migration000, migration001, migration002];
 
 export default surveysMigrationsList;

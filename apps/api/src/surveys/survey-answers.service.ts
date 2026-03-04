@@ -28,14 +28,21 @@ import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
+import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/surveyjs-comment-suffix';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
+import CHOICES_DEFAULT_LIMIT from '@libs/survey/constants/choices-default-limit';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import CustomHttpException from '../common/CustomHttpException';
+import DetailedHttpException from '../common/DetailedHttpException';
+import SseService from '../sse/sse.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
+import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
 import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
@@ -48,8 +55,10 @@ class SurveyAnswersService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    @InjectModel(SurveysBackendLimiter.name) private surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>,
     private readonly groupsService: GroupsService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
+    private readonly sseService: SseService,
   ) {}
 
   async onModuleInit() {
@@ -85,45 +94,42 @@ class SurveyAnswersService implements OnModuleInit {
     questionName: string,
     returnOriginal: boolean = false,
   ): Promise<ChoiceDto[]> => {
-    const survey = await this.surveyModel.findById(surveyId);
-    if (!survey) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveyAnswersService.name,
-      );
+    const surveysBackendLimiter = await this.surveysBackendLimiterModel
+      .findOne({ surveyId: new Types.ObjectId(surveyId), questionName })
+      .exec();
+
+    if (!surveysBackendLimiter || !surveysBackendLimiter?.choices?.length) {
+      return [];
     }
 
-    const limiter = survey.backendLimiters?.find((limit) => limit.questionName === questionName);
-    if (!limiter?.choices?.length) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.NoBackendLimiters,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
-        SurveyAnswersService.name,
-      );
-    }
-
-    const possibleChoices = limiter.choices;
+    const possibleChoices = surveysBackendLimiter.choices;
     if (returnOriginal) {
       possibleChoices.sort((a, b) => a.title.localeCompare(b.title));
       return possibleChoices;
     }
 
-    const filteredChoices: ChoiceDto[] = [];
-    await Promise.all(
-      possibleChoices.map(async (choice) => {
-        const counter = await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
-        if (choice.limit === 0 || !counter || counter < choice.limit) {
-          filteredChoices.push(choice);
+    const results = await Promise.all(
+      possibleChoices.map(async (choice): Promise<ChoiceDto | null> => {
+        if (!choice.limit || choice.limit === 0) {
+          return choice;
         }
+        let counter = 0;
+        if (choice.isCustomUserEntry) {
+          counter += await this.countTotalChoiceSelectionsInSurveyAnswers(
+            surveyId,
+            `${questionName}${SURVEYJS_COMMENT_SUFFIX}`,
+            choice.title,
+          );
+        }
+        counter += await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
+        return counter < choice.limit ? choice : null;
       }),
     );
+    const filteredChoices = results.filter((choice): choice is ChoiceDto => choice !== null);
 
     filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
 
-    return filteredChoices;
+    return filteredChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   };
 
   static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceTitle: string): number => {
@@ -194,6 +200,107 @@ class SurveyAnswersService implements OnModuleInit {
       count += answerCount;
     });
     return count;
+  }
+
+  async validateAndAppendBulkChoices(surveyId: string, choicesMap: Record<string, ChoiceDto[]>): Promise<void> {
+    const objectId = new Types.ObjectId(surveyId);
+    const questionNames = Object.keys(choicesMap);
+
+    if (questionNames.length === 0) {
+      return;
+    }
+
+    const backendLimiters = await Promise.all(
+      questionNames.map((questionName) =>
+        this.surveysBackendLimiterModel.findOne({ surveyId: objectId, questionName }).exec(),
+      ),
+    );
+
+    const limitExceededQuestionNames: string[] = [];
+    const limitReachedQuestionNames: string[] = [];
+    const creationOperations: Array<{
+      questionName: string;
+      choiceLimit: number;
+      fn: () => Promise<{ modifiedCount: number }>;
+    }> = [];
+
+    await Promise.all(
+      questionNames.map(async (questionName, index) => {
+        const backendLimiter = backendLimiters[index];
+        if (!backendLimiter) {
+          return;
+        }
+
+        const newChoices = choicesMap[questionName];
+        if (!newChoices || newChoices.length === 0) {
+          return;
+        }
+
+        const showOtherItemChoice = backendLimiter.choices.find((choice) => choice.name === SHOW_OTHER_ITEM);
+        const otherItemLimit = showOtherItemChoice?.limit ?? CHOICES_DEFAULT_LIMIT;
+
+        const existingTitles = new Set(backendLimiter.choices.map((choice) => choice.title));
+
+        await Promise.all(
+          newChoices.map(async (newChoice) => {
+            if (existingTitles.has(newChoice.title)) {
+              if (otherItemLimit === 0) {
+                return;
+              }
+              const commentCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
+                surveyId,
+                `${questionName}${SURVEYJS_COMMENT_SUFFIX}`,
+                newChoice.title,
+              );
+              const answerCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
+                surveyId,
+                questionName,
+                newChoice.title,
+              );
+              const totalCount = commentCount + answerCount;
+              if (totalCount >= otherItemLimit) {
+                limitExceededQuestionNames.push(questionName);
+              } else if (totalCount + 1 === otherItemLimit) {
+                limitReachedQuestionNames.push(questionName);
+              }
+            } else {
+              creationOperations.push({
+                questionName,
+                choiceLimit: otherItemLimit,
+                fn: () =>
+                  this.surveysBackendLimiterModel
+                    .updateOne(
+                      { surveyId: objectId, questionName, 'choices.title': { $ne: newChoice.title } },
+                      { $push: { choices: { ...newChoice, limit: otherItemLimit, isCustomUserEntry: true } } },
+                    )
+                    .exec(),
+              });
+            }
+          }),
+        );
+      }),
+    );
+
+    if (limitExceededQuestionNames.length > 0) {
+      throw new DetailedHttpException(SurveyErrorMessages.ChoiceLimitReachedError, {
+        questionNames: limitExceededQuestionNames,
+      });
+    }
+
+    const questionNamesWeNotifyOtherUsersFor = limitReachedQuestionNames;
+    if (creationOperations.length > 0) {
+      const creations = await Promise.all(creationOperations.map(({ fn }) => fn()));
+      const questionNamesForNewSelectableChoices = new Set(
+        creationOperations
+          .filter((object, index) => creations[index].modifiedCount > 0 && object.choiceLimit !== 1)
+          .map(({ questionName }) => questionName),
+      );
+      questionNamesWeNotifyOtherUsersFor.concat([...questionNamesForNewSelectableChoices]);
+    }
+
+    questionNamesWeNotifyOtherUsersFor.forEach((questionName) => {
+      this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
+    });
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {

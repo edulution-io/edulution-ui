@@ -32,6 +32,7 @@ import SurveyAnswerAttachmentsService from './survey-answer-attachments.service'
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveyAnswersService from './survey-answers.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
+import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
 import {
   answeredSurvey01,
   answeredSurvey02,
@@ -62,9 +63,7 @@ import {
   newSurveyAnswerAnsweredSurvey05,
   openSurvey01,
   openSurvey02,
-  publicSurvey01,
-  publicSurvey02,
-  publicSurvey02AfterAddingValidAnswer,
+  publicSurvey02BackendLimiter,
   publicSurvey02QuestionNameWithLimiters,
   secondMockUser,
   secondParticipant,
@@ -90,6 +89,7 @@ describe('SurveyAnswersService', () => {
   let service: SurveyAnswersService;
   let model: Model<SurveyAnswerDocument>;
   let surveyModel: Model<SurveyDocument>;
+  let surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>;
 
   beforeEach(async () => {
     const notificationMock = {
@@ -114,6 +114,12 @@ describe('SurveyAnswersService', () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
+        {
+          provide: getModelToken(SurveysBackendLimiter.name),
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
@@ -127,6 +133,9 @@ describe('SurveyAnswersService', () => {
     service = module.get<SurveyAnswersService>(SurveyAnswersService);
     model = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
+    surveysBackendLimiterModel = module.get<Model<SurveysBackendLimiterDocument>>(
+      getModelToken(SurveysBackendLimiter.name),
+    );
   });
 
   afterEach(() => {
@@ -138,17 +147,23 @@ describe('SurveyAnswersService', () => {
   });
 
   describe('getSelectableChoices', () => {
-    it('Should return those choices that are still selectable (backend limit was not reached)', async () => {
+    it('Should return those choices that are still selectable (limit was not reached yet)', async () => {
       jest.spyOn(service, 'getSelectableChoices');
 
       service.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
         .mockReturnValueOnce(0)
-        .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
 
-      surveyModel.findById = jest.fn().mockReturnValue(publicSurvey02);
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue({
+          surveyId: idOfPublicSurvey02,
+          questionName: publicSurvey02QuestionNameWithLimiters,
+          choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
+          schemaVersion: 1,
+        }),
+      });
 
       const result = await service.getSelectableChoices(
         idOfPublicSurvey02.toString(),
@@ -160,7 +175,7 @@ describe('SurveyAnswersService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
     });
 
     it('Should return those choices that are still selectable even after adding a new answer (backend limit was not reached)', async () => {
@@ -168,12 +183,18 @@ describe('SurveyAnswersService', () => {
 
       service.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
-        .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
 
-      surveyModel.findById = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue({
+          surveyId: idOfPublicSurvey02,
+          questionName: publicSurvey02QuestionNameWithLimiters,
+          choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters],
+          schemaVersion: 1,
+        }),
+      });
 
       const result = await service.getSelectableChoices(
         idOfPublicSurvey02.toString(),
@@ -185,21 +206,22 @@ describe('SurveyAnswersService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
     });
 
-    it('Throw error when the backendLimit is not set', async () => {
+    it('Return empty array when the backendLimit is not set, to not throw an error when backendLimiter gets enabled', async () => {
       jest.spyOn(service, 'getSelectableChoices');
       jest.spyOn(service, 'countTotalChoiceSelectionsInSurveyAnswers');
 
-      surveyModel.findById = jest.fn().mockReturnValue(publicSurvey01);
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
 
-      try {
-        await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionNameWithLimiters);
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
-      }
+      const result = await service.getSelectableChoices(
+        idOfPublicSurvey01.toString(),
+        publicSurvey02QuestionNameWithLimiters,
+      );
+      expect(result).toEqual([]);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey01.toString(),

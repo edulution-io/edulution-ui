@@ -25,10 +25,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 interface SurveyDto {
   id?: string;
   formula: SurveyFormula;
-  backendLimiters?: {
-    questionName: string;
-    choices: ChoiceDto[];
-  }[];
+  backendLimiters?: Record<string, ChoiceDto[]>;
   saveNo: number;
   creator: AttendeeDto;
   invitedAttendees: AttendeeDto[];

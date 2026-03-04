@@ -24,11 +24,16 @@ import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import { HttpStatus } from '@nestjs/common';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import CustomHttpException from '../common/CustomHttpException';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answers.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
+import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
 import PublicSurveysController from './public-surveys.controller';
 import {
   filteredChoices,
@@ -40,6 +45,7 @@ import {
   publicSurvey01,
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
+  publicSurvey02BackendLimiter,
   publicSurvey02QuestionNameWithLimiters,
   surveyValidAnswerPublicSurvey02,
 } from './mocks';
@@ -52,13 +58,16 @@ import mockCacheManager from '../common/cache-manager.mock';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import SurveyBackendLimiterService from './surveys-backend-limiter.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
   let surveysService: SurveysService;
   let surveyAnswerService: SurveyAnswersService;
+  let surveyBackendLimiterService: SurveyBackendLimiterService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
+  let surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -83,6 +92,18 @@ describe(PublicSurveysController.name, () => {
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: jest.fn() },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
+        {
+          provide: SurveyBackendLimiterService,
+          useValue: {
+            throwErrorIfAppendingOwnChoicesIsNotAllowed: jest.fn(),
+          },
+        },
+        {
+          provide: getModelToken(SurveysBackendLimiter.name),
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
         {
           provide: EventEmitter2,
@@ -94,8 +115,12 @@ describe(PublicSurveysController.name, () => {
     controller = module.get<PublicSurveysController>(PublicSurveysController);
     surveysService = module.get<SurveysService>(SurveysService);
     surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveyBackendLimiterService = module.get<SurveyBackendLimiterService>(SurveyBackendLimiterService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
+    surveysBackendLimiterModel = module.get<Model<SurveysBackendLimiterDocument>>(
+      getModelToken(SurveysBackendLimiter.name),
+    );
   });
 
   afterEach(() => {
@@ -153,7 +178,7 @@ describe(PublicSurveysController.name, () => {
 
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
-      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       await controller.answerSurvey({
         surveyId: idOfPublicSurvey02.toString(),
@@ -200,9 +225,13 @@ describe(PublicSurveysController.name, () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
 
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
+      });
 
-      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
@@ -214,7 +243,7 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
     });
 
     it('Update Choices that getSelectableChoices() returns after adding a new answer', async () => {
@@ -222,14 +251,17 @@ describe(PublicSurveysController.name, () => {
 
       surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
-        .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
 
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02AfterAddingValidAnswer);
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
+      });
 
-      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
@@ -241,7 +273,60 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
+      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('validateAndAppendBulkChoices', () => {
+    const surveyId = idOfPublicSurvey02.toString();
+    const choicesMap: Record<string, ChoiceDto[]> = publicSurvey02BackendLimiter;
+    const mockRes = { status: jest.fn().mockReturnThis(), json: jest.fn().mockReturnThis() } as unknown as Parameters<
+      typeof controller.validateAndAppendBulkChoices
+    >[2];
+
+    it('should call getSurvey, validate permissions, and append choices', async () => {
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValue(publicSurvey02);
+      jest.spyOn(surveyAnswerService, 'validateAndAppendBulkChoices').mockResolvedValue(undefined);
+
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockResolvedValue({ choices: publicSurvey02BackendLimiter[publicSurvey02QuestionNameWithLimiters] }),
+      });
+
+      const questionNames = Object.keys(choicesMap);
+
+      await controller.validateAndAppendBulkChoices({ surveyId }, choicesMap, mockRes);
+
+      expect(surveysService.throwErrorIfPublicSurveyIsNotAccessible).toHaveBeenCalledWith(surveyId);
+      expect(surveyBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed).toHaveBeenCalledTimes(
+        questionNames.length,
+      );
+      questionNames.forEach((questionName, index) => {
+        expect(surveyBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed).toHaveBeenNthCalledWith(
+          index + 1,
+          publicSurvey02,
+          questionName,
+        );
+      });
+    });
+
+    it('should throw FORBIDDEN when a question does not allow custom choices', async () => {
+      jest.spyOn(surveyAnswerService, 'validateAndAppendBulkChoices');
+      surveysService.throwErrorIfPublicSurveyIsNotAccessible = jest.fn().mockResolvedValue(publicSurvey02);
+      (surveyBackendLimiterService.throwErrorIfAppendingOwnChoicesIsNotAllowed as jest.Mock).mockImplementation(() => {
+        throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.FORBIDDEN);
+      });
+
+      try {
+        await controller.validateAndAppendBulkChoices({ surveyId }, choicesMap, mockRes);
+        fail('Expected CustomHttpException to be thrown');
+      } catch (e) {
+        expect(e).toBeInstanceOf(CustomHttpException);
+        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.FORBIDDEN);
+      }
+
+      expect(surveyAnswerService.validateAndAppendBulkChoices).not.toHaveBeenCalled();
     });
   });
 });

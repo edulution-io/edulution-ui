@@ -31,6 +31,7 @@ const SSE_MESSAGE_TYPE = {
   SURVEY_CREATED: 'survey_created',
   SURVEY_UPDATED: 'survey_updated',
   SURVEY_DELETED: 'survey_deleted',
+  SURVEY_BACKEND_LIMITER_UPDATED: 'survey_backend_limiter_updated',
   BULLETIN_UPDATED: 'bulletin_update',
   APPCONFIG_UPDATED: 'appconfig_updated',
   FILESHARING_SHARE_FILES: 'filesharing_share_files',

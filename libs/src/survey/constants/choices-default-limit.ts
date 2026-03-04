@@ -17,11 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface ChoiceDto {
-  name: string;
-  title: string;
-  limit?: number;
-  isCustomUserEntry?: boolean;
-}
+const CHOICES_DEFAULT_LIMIT: number = 1;
 
-export default ChoiceDto;
+export default CHOICES_DEFAULT_LIMIT;
