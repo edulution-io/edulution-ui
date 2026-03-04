@@ -86,7 +86,7 @@
       "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten",
-      "accessGroupsOnlyHint": "Es können nur Zugriffsgruppen zugewiesen werden."
+      "accessGroupsOnlyHint": "Es können nur Nutzergruppen zugewiesen werden."
     },
     "errors": {
       "categoryNotFound": "Kategorie nicht gefunden",

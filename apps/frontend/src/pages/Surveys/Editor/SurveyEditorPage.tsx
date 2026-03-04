@@ -52,6 +52,7 @@ import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuS
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { Form } from '@/components/ui/Form';
 import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
@@ -209,14 +210,10 @@ const SurveyEditorPage = () => {
   const handleSaveSurvey = useCallback(async () => {
     if (!creator) return;
 
-    const formula = creator.JSON as SurveyFormula;
-    const saveNo = creator.saveNo || 0;
+    form.setValue('formula', creator.JSON as SurveyFormula);
+    form.setValue('saveNo', creator.saveNo || 0);
     const shouldUploadBackendLimiters = form.getValues('id') === undefined;
-    const resultingSurveyId = await updateOrCreateSurvey({
-      ...form.getValues(),
-      formula,
-      saveNo,
-    });
+    const resultingSurveyId = await updateOrCreateSurvey(form.getValues());
     if (resultingSurveyId) {
       if (shouldUploadBackendLimiters) {
         await uploadBackendLimiters(resultingSurveyId, form.getValues('backendLimiters') || {});
@@ -277,39 +274,38 @@ const SurveyEditorPage = () => {
 
   return (
     <PageLayout>
-      <div className="survey-editor h-full pt-1">
-        {creator && (
-          <SurveyCreatorComponent
-            creator={creator}
-            style={{ height: '100%', width: '100%' }}
-          />
-        )}
-      </div>
-      <FloatingButtonsBar config={config} />
-      <TemplateDialog
-        form={form}
-        creator={creator}
-        isOpenTemplateMenu={isOpenTemplateMenu}
-        setIsOpenTemplateMenu={setIsOpenTemplateMenu}
-      />
-      <SaveSurveyDialog
-        form={form}
-        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-        submitSurvey={handleSaveSurvey}
-        isSubmitting={isLoading}
-      />
-      <SurveysLogoSettingsDialog
-        surveyCreator={creator}
-        isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
-        setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
-      />
-      <QuestionsContextMenu
-        form={form}
-        isOpenQuestionContextMenu={isOpenQuestionContextMenu}
-        setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
-      />
-      <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
+      <Form {...form}>
+        <div className="survey-editor h-full pt-1">
+          {creator && (
+            <SurveyCreatorComponent
+              creator={creator}
+              style={{ height: '100%', width: '100%' }}
+            />
+          )}
+        </div>
+        <FloatingButtonsBar config={config} />
+        <TemplateDialog
+          creator={creator}
+          isOpenTemplateMenu={isOpenTemplateMenu}
+          setIsOpenTemplateMenu={setIsOpenTemplateMenu}
+        />
+        <SaveSurveyDialog
+          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+          submitSurvey={handleSaveSurvey}
+          isSubmitting={isLoading}
+        />
+        <SurveysLogoSettingsDialog
+          surveyCreator={creator}
+          isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
+          setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
+        />
+        <QuestionsContextMenu
+          isOpenQuestionContextMenu={isOpenQuestionContextMenu}
+          setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
+        />
+        <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
+      </Form>
     </PageLayout>
   );
 };
