@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'node:crypto';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -31,7 +31,7 @@ import { HTTP_HEADERS, HttpMethodsWebDav, WebdavRequestDepth } from '@libs/commo
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
-import sanitizePath from '@libs/filesystem/utils/sanitizePath';
+import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
 import WebdavService from '../webdav/webdav.service';
@@ -66,11 +66,13 @@ class CollaboraService {
     Logger.log(`Generating WOPI token for ${username}`, CollaboraService.name);
     const secret = await this.getWopiSecret();
 
-    const sanitizedPath = sanitizePath(filePath);
+    if (filePath.includes('..')) {
+      throw new BadRequestException(PathValidationErrorMessages.PathTraversal);
+    }
 
     const payload: WopiTokenPayload = {
       username,
-      filePath: sanitizedPath,
+      filePath,
       share,
       jti: randomUUID(),
     };
