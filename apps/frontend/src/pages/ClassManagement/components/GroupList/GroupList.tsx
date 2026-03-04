@@ -26,7 +26,7 @@ import GroupListCard from '@/pages/ClassManagement/components/GroupList/GroupLis
 import { useTranslation } from 'react-i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useClassManagementStore from '../../useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 
 interface GroupListProps {
   row: GroupColumn;
@@ -36,7 +36,7 @@ interface GroupListProps {
 const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
   const { t } = useTranslation();
   const { openDialogType } = useLessonStore();
-  const { selectedSchool } = useClassManagementStore();
+  const { selectedSchool } = useSchoolStore();
   const { isSuperAdmin } = useLdapGroups();
 
   const items = row.groups?.filter(
