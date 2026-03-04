@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+import DropdownSelectPanel from '@/components/ui/DropdownSelect/DropdownSelectPanel';
 
 const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-background`;
 
@@ -143,35 +144,6 @@ const DropdownSelect = ({
     if (searchEnabled) setQuery('');
   };
 
-  const selectOption = (option: DropdownOptions) => {
-    setQuery('');
-    handleChange(option.id);
-    closeMenu();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent, option: DropdownOptions) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      selectOption(option);
-    }
-  };
-
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.currentTarget.scrollTop += e.deltaY;
-  };
-
-  const touchStartY = useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const deltaY = touchStartY.current - e.touches[0].clientY;
-    e.currentTarget.scrollTop += deltaY;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
   const variantClasses = {
@@ -179,75 +151,40 @@ const DropdownSelect = ({
     dialog: VARIANT_COLORS.dialog,
   };
 
-  const optionVariantClasses = {
-    default: {
-      base: 'hover:bg-muted',
-      selected: 'bg-muted',
-    },
-    dialog: {
-      base: 'hover:bg-muted-light',
-      selected: 'bg-muted-light',
-    },
-  };
-
-  const PanelContent = (
-    <div
-      ref={menuRef}
-      className={cn(
-        'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
-        variantClasses[variant],
-      )}
-      style={
-        enablePortalUsage
-          ? {
-              maxHeight: MENU_MAX_HEIGHT,
-              top: menuPosition.top,
-              left: menuPosition.left,
-              width: menuPosition.width,
-            }
-          : {
-              maxHeight: MENU_MAX_HEIGHT,
-              width: Math.max(menuPosition.width, 130),
-            }
-      }
-      role="listbox"
-      id="dropdown-listbox"
-      onWheel={handleWheel}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-    >
-      {filteredOptions.map((option) => {
-        const label = translateLabel(option.name);
-        const selected = option.id === selectedVal;
-        const classes = optionVariantClasses[variant];
-
-        return (
-          <div
-            key={option.id}
-            role="option"
-            aria-selected={selected}
-            tabIndex={0}
-            onClick={() => selectOption(option)}
-            onKeyDown={(e) => handleKeyDown(e, option)}
-            className={cn('box-border block cursor-pointer px-2.5 py-2', selected ? classes.selected : classes.base)}
-            title={label}
-          >
-            {label}
-          </div>
-        );
-      })}
-      {filteredOptions.length === 0 && (
-        <div
-          className="box-border block cursor-default px-2.5 py-2"
-          aria-disabled="true"
-        >
-          {t('search.no-results')}
-        </div>
-      )}
-    </div>
+  const DropdownPanel = !enablePortalUsage ? (
+    <DropdownSelectPanel
+      menuRef={menuRef}
+      options={filteredOptions}
+      selectedVal={selectedVal}
+      handleChange={handleChange}
+      translateLabel={translateLabel}
+      setQuery={setQuery}
+      closeMenu={closeMenu}
+      variantClasses={variantClasses}
+      variant={variant}
+      maxHeight={MENU_MAX_HEIGHT}
+      menuPosition={menuPosition}
+      enablePortalUsage={enablePortalUsage}
+    />
+  ) : (
+    createPortal(
+      <DropdownSelectPanel
+        menuRef={menuRef}
+        options={filteredOptions}
+        selectedVal={selectedVal}
+        handleChange={handleChange}
+        translateLabel={translateLabel}
+        setQuery={setQuery}
+        closeMenu={closeMenu}
+        variantClasses={variantClasses}
+        variant={variant}
+        maxHeight={MENU_MAX_HEIGHT}
+        menuPosition={menuPosition}
+        enablePortalUsage={enablePortalUsage}
+      />,
+      document.body,
+    )
   );
-
-  const DropdownPanel = !enablePortalUsage ? PanelContent : createPortal(PanelContent, document.body);
 
   return (
     <div
