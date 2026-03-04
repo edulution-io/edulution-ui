@@ -23,7 +23,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 interface DeleteUserAccountsDialogProps {
   isOpen: boolean;
@@ -41,14 +41,14 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
   isLoading = false,
 }) => {
   const { language } = useLanguage();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const isMultiDelete = selectedAccounts.length > 1;
 
   const getAppDisplayName = (appName: string) => {
     const appConfig = appConfigs.find((appCfg) => appCfg.name === appName);
     if (!appConfig) return appName;
-    return getDisplayName(appConfig, language, isLmn);
+    return getDisplayName(appConfig, language, isSchoolEnvironment);
   };
 
   const handleConfirmDelete = async () => {

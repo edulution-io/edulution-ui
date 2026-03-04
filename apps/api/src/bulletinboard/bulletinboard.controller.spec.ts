@@ -19,8 +19,10 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
+import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import BulletinBoardController from './bulletinboard.controller';
 import BulletinBoardService from './bulletinboard.service';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 describe(BulletinBoardController.name, () => {
   let controller: BulletinBoardController;
@@ -48,6 +50,38 @@ describe(BulletinBoardController.name, () => {
 
       expect(status).toHaveBeenCalledWith(200);
       expect(json).toHaveBeenCalledWith('image.png');
+    });
+  });
+
+  describe('path validation for bulletin attachments', () => {
+    const pipe = new ValidatePathPipe(BULLETIN_TEMP_ATTACHMENTS_PATH);
+
+    describe('valid bulletin attachment filenames', () => {
+      it('should accept a UUID-prefixed attachment', () => {
+        expect(pipe.transform('a1b2c3d4-e5f6-7890-abcd-ef1234567890-image.png')).toBe(
+          'a1b2c3d4-e5f6-7890-abcd-ef1234567890-image.png',
+        );
+      });
+
+      it('should accept a simple image filename', () => {
+        expect(pipe.transform('photo.jpg')).toBe('photo.jpg');
+      });
+    });
+
+    describe('path traversal attacks on bulletin attachments', () => {
+      it('should sanitize traversal in attachment filename', () => {
+        const result = pipe.transform('../../../etc/shadow');
+        expect(result).not.toContain('..');
+      });
+
+      it('should strip encoded characters and remove traversal', () => {
+        const result = pipe.transform('file%2F..%2F..%2Fetc%2Fpasswd');
+        expect(result).toBe('file2F2F2Fetc2Fpasswd');
+      });
+
+      it('should return undefined for null input via the pipe', () => {
+        expect(pipe.transform(null as unknown as string)).toBeUndefined();
+      });
     });
   });
 });

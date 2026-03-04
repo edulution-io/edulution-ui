@@ -51,6 +51,7 @@ import {
   TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -78,6 +79,7 @@ import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -138,13 +140,12 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => {
+      createAttachmentUploadOptions(SURVEYS_TEMP_FILES_PATH, (req) => {
         const username = getUsernameFromRequest(req);
         return join(SURVEYS_TEMP_FILES_PATH, username);
       }),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileUrl = join(SURVEYS, FILES, file.filename);
     return res.status(HttpStatus.CREATED).json(fileUrl);
@@ -182,13 +183,20 @@ class SurveysController {
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
   async serveFileFromAnswer(
-    @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
+    @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
+    @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) questionId: string,
+    @Param('filename', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) filename: string,
     @GetCurrentUser() currentUser: JWTUser,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { userName, surveyId, questionId, filename } = params;
-    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId', 'filename']);
+    SurveysController.validateParams({ userName, surveyId, questionId, filename }, [
+      'userName',
+      'surveyId',
+      'questionId',
+      'filename',
+    ]);
     if (userName !== currentUser.preferred_username) {
       await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
     }
@@ -228,12 +236,13 @@ class SurveysController {
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   async serveFile(
-    @Param() params: { surveyId: string; questionId: string; filename: string },
+    @Param('surveyId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) questionId: string,
+    @Param('filename', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) filename: string,
     @GetCurrentUser() currentUser: JWTUser,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { surveyId, questionId, filename } = params;
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const path = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
     return this.filesystemService.serveFile(path, filename, req, res);
@@ -241,12 +250,11 @@ class SurveysController {
 
   @Get(`${FILES}/:filename`)
   async serveTempFile(
-    @Param() params: { filename: string },
+    @Param('filename', new ValidatePathPipe(SURVEYS_TEMP_FILES_PATH)) filename: string,
     @Req() req: Request,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
-    const { filename } = params;
     const path = join(SURVEYS, username);
     return this.filesystemService.serveTempFile(path, filename, req, res);
   }
@@ -257,6 +265,7 @@ class SurveysController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH,
         (req) => {
           const { userName, surveyId, questionId } = req.params || {};
           SurveysController.validateParams(req.params, ['userName', 'surveyId', 'questionId']);
@@ -267,15 +276,15 @@ class SurveysController {
       ),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async answeringFileUpload(
     @UploadedFile() file: Express.Multer.File,
-    @Param() params: { userName: string; surveyId: string; questionId: string },
+    @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
+    @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) questionId: string,
     @GetCurrentUser() currentUser: JWTUser,
     @Res() res: Response,
   ) {
-    const { userName, surveyId, questionId } = params;
-    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId']);
+    SurveysController.validateParams({ userName, surveyId, questionId }, ['userName', 'surveyId', 'questionId']);
     const path = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
     const filePath = join(path, file.filename);
     const url = `${SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
@@ -306,13 +315,19 @@ class SurveysController {
   }
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteTempQuestionAnswerFile(
-    @Param() params: { userName: string; surveyId: string; questionId: string; fileName?: string },
+    @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
+    @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) questionId: string,
+    @Param('fileName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) fileName: string,
     @GetCurrentUser() currentUser: JWTUser,
   ) {
-    const { userName, surveyId, questionId, fileName } = params;
-    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId']);
+    SurveysController.validateParams({ userName, surveyId, questionId, fileName }, [
+      'userName',
+      'surveyId',
+      'questionId',
+      'fileName',
+    ]);
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     if (fileName) {
       await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);

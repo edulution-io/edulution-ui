@@ -30,7 +30,11 @@ import {
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { ADMIN_GROUPS, DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import {
+  ADMIN_GROUPS,
+  DEPLOYMENT_TARGET_CACHE_KEY,
+  ORGANIZATION_TYPE_CACHE_KEY,
+} from '@libs/groups/constants/cacheKeys';
 import DEFAULT_THEME from '@libs/global-settings/constants/defaultTheme';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
@@ -54,6 +58,7 @@ class GlobalSettingsService implements OnModuleInit {
       );
 
       await this.setDeploymentTargetInCache();
+      await this.setOrganizationTypeInCache();
       await this.setAdminGroupsInCache();
 
       return;
@@ -93,6 +98,25 @@ class GlobalSettingsService implements OnModuleInit {
       return deploymentTarget;
     } catch (error) {
       Logger.warn(`Failed to update deployment target cache: ${(error as Error).message}`, GlobalSettings.name);
+      return null;
+    }
+  }
+
+  async setOrganizationTypeInCache() {
+    try {
+      const globalSetting = await this.getGlobalSettings('general.organizationType');
+      if (!globalSetting?.general?.organizationType) {
+        Logger.warn(`Global setting for organizationType not found`, GlobalSettings.name);
+        return null;
+      }
+
+      const { organizationType } = globalSetting.general;
+
+      await this.cacheManager.set(ORGANIZATION_TYPE_CACHE_KEY, organizationType);
+
+      return organizationType;
+    } catch (error) {
+      Logger.warn(`Failed to update organization type cache: ${(error as Error).message}`, GlobalSettings.name);
       return null;
     }
   }
@@ -196,6 +220,7 @@ class GlobalSettingsService implements OnModuleInit {
       await this.invalidateCache();
 
       await this.setDeploymentTargetInCache();
+      await this.setOrganizationTypeInCache();
       await this.setAdminGroupsInCache();
 
       return updateWriteResult;

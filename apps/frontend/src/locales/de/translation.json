@@ -69,6 +69,7 @@
     "categoryName": "Name der Kategorie",
     "bulletinUpdatedSuccessfully": "Mitteilung erfolgreich gespeichert",
     "bulletinCreatedSuccessfully": "Mitteilung erfolgreich erstellt",
+    "pushNotificationSentSuccessfully": "Push-Benachrichtigung erfolgreich gesendet",
     "bulletinsDeletedSuccessfully": "Mitteilungen erfolgreich gelöscht",
     "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
     "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
@@ -85,7 +86,7 @@
       "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten",
-      "accessGroupsOnlyHint": "Es können nur Zugriffsgruppen zugewiesen werden."
+      "accessGroupsOnlyHint": "Es können nur Nutzergruppen zugewiesen werden."
     },
     "errors": {
       "categoryNotFound": "Kategorie nicht gefunden",
@@ -100,8 +101,20 @@
       "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
       "attachmentNotFound": "Anhang nicht gefunden",
-      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
-    }
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen",
+      "pushOnlyMissingFields": "Push-Titel und Push-Nachricht sind für den Modus 'Nur Push' erforderlich"
+    },
+    "pushNotification": "Push-Benachrichtigung",
+    "saveMode": "Veröffentlichungsart",
+    "saveModes": {
+      "pushAndBulletin": "Push & Aushang",
+      "bulletinOnly": "Nur Aushang",
+      "pushOnly": "Nur Push"
+    },
+    "customPushTitle": "Titel der Pushbenachrichtigung",
+    "customPushTitlePlaceholder": "Aushang bereit",
+    "customPushBody": "Push-Nachricht",
+    "customPushBodyPlaceholder": "Neuer Aushang in {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Benachrichtigungen",
@@ -129,8 +142,17 @@
     "menu": {
       "all": "Alle",
       "messages": "Nachrichten",
-      "system": "System"
-    }
+      "system": "System",
+      "sent": "Gesendet"
+    },
+    "sentSection": "Gesendete Nachrichten",
+    "noSentNotifications": "Du hast keine Nachrichten gesendet",
+    "deleteAllSent": "Alle gesendeten löschen",
+    "confirmDeleteSent": "Möchtest du wirklich alle {{count}} gesendeten Nachrichten löschen? Diese werden auch bei den Empfängern gelöscht.",
+    "showRecipients": "Empfänger anzeigen",
+    "noRecipients": "Keine Empfänger",
+    "recipientsStats": "{{read}} von {{total}} haben gelesen",
+    "read": "Gelesen"
   },
   "appstore": {
     "title": "App-Store",
@@ -210,6 +232,7 @@
       "AddManagementGroupFailed": "Hinzufügen der Verwaltungsgruppe fehlgeschlagen",
       "GetUserSchoolClassesFailed": "Abrufen der Schulklassen des Benutzers fehlgeschlagen",
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
+      "UpdateSchoolClassFailed": "Aktualisierung der Schulklasse fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
       "GetUsersFailed": "Abrufen der Benutzer fehlgeschlagen",
@@ -229,7 +252,13 @@
       "GetManagementListFailed": "Abrufen der Verwaltungsliste fehlgeschlagen",
       "SaveManagementListFailed": "Speichern der Verwaltungsliste fehlgeschlagen",
       "SophomorixCheckFailed": "Sophomorix-Check fehlgeschlagen",
-      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen"
+      "SophomorixApplyFailed": "Sophomorix-Apply fehlgeschlagen",
+      "GetSophomorixStatusFailed": "Abrufen des Sophomorix-Status fehlgeschlagen",
+      "AddParentToStudentFailed": "Registrierung des Elternteils für den Schüler fehlgeschlagen",
+      "DeleteParentFromStudentFailed": "Löschen des Elternteils aus Schüler-Gruppe fehlgeschlagen",
+      "GetDevicesFailed": "Geräteliste konnte nicht geladen werden",
+      "SaveDevicesFailed": "Geräteliste konnte nicht gespeichert werden",
+      "ImportDevicesFailed": "Geräte-Import fehlgeschlagen"
     }
   },
   "ticketsystem": {
@@ -612,6 +641,9 @@
       "updateSuccess": "Projekt erfolgreich aktualisiert",
       "deleteSuccess": "Projekt erfolgreich gelöscht"
     },
+    "schoolClass": {
+      "updateSuccess": "Schulklasse erfolgreich aktualisiert"
+    },
     "sessions": {
       "createSuccess": "Sitzung erfolgreich erstellt",
       "updateSuccess": "Sitzung erfolgreich aktualisiert",
@@ -637,6 +669,7 @@
     "createmyProjects": "Projekt erstellen",
     "detailsmyProjects": "Details von Projekt",
     "myClasses": "Meine Klassen",
+    "editmyClasses": "Klasse bearbeiten",
     "detailsmyClasses": "Details der Klasse",
     "closeSession": "Schließen",
     "session": "Sitzung",
@@ -752,6 +785,7 @@
     "titleLmn": "SCHULSERVER",
     "titleGeneric": "SERVER",
     "menuTitle": "Benutzerverwaltung",
+    "parentAssignment": "Elternzuweisung",
     "description": "Benutzerkonten, Listen und Rollen anzeigen und verwalten.",
     "students": "Schüler",
     "teachers": "Lehrer",
@@ -764,7 +798,7 @@
     "globalbindusers": "Globale Binduser",
     "tabs": {
       "table": "Benutzer",
-      "list": "Listenverwaltung"
+      "list": "Import"
     },
     "filterUsers": "Benutzer filtern...",
     "loginClass": "Login / Klasse",
@@ -781,9 +815,11 @@
     "loginname": "Loginname",
     "mailAlias": "Mailadresse Alias",
     "class": "Klasse",
+    "classBusiness": "Primärgruppe",
     "sophomorixStatus": "Sophomorix-Status",
     "role": "Rolle",
     "schoolname": "Schulname",
+    "schoolnameBusiness": "Organisationskürzel",
     "userId": "Benutzer-ID (optional)",
     "birthdate": "Geburtsdatum",
     "deactivationDate": "Deaktivierungsdatum",
@@ -792,8 +828,8 @@
     "groupMembership": "Gruppenmitgliedschaft",
     "quota": "Quota",
     "noQuotaInfo": "Keine Quota-Informationen verfügbar",
-    "noListAvailable": "Für diesen Benutzertyp ist keine Listenverwaltung verfügbar.",
-    "listDescription": "Listenverwaltung für {{school}}/{{list}}.csv",
+    "noListAvailable": "Für diesen Benutzertyp ist kein Import verfügbar.",
+    "listDescription": "Import für {{school}}/{{list}}.csv",
     "csvPlaceholder": "CSV-Inhalt wird hier angezeigt...",
     "addUser": "Benutzer hinzufügen",
     "check": "Prüfen",
@@ -821,16 +857,18 @@
       "usersToUpdate": "Benutzer werden aktualisiert",
       "usersToDelete": "Benutzer werden gelöscht",
       "addNewUsers": "Neue Benutzer hinzufügen",
-      "updateUsers": "Benutzer versetzen",
+      "updateUsers": "Benutzer aktualisieren",
       "deleteUsers": "Benutzer entfernen",
       "apply": "Übernehmen",
       "noChanges": "Keine Änderungen erkannt. Die aktuellen Daten stimmen mit den vorhandenen Benutzerkonten überein.",
       "columns": {
         "class": "Klasse",
+        "classBusiness": "Primärgruppe",
         "login": "Login",
         "name": "Name",
         "role": "Rolle",
         "school": "Schule",
+        "schoolBusiness": "Organisationskürzel",
         "changes": "Änderungen",
         "file": "Datei",
         "reason": "Grund"
@@ -866,6 +904,59 @@
       "L": "Gesperrt",
       "K": "Löschbar",
       "R": "Entfernbar"
+    }
+  },
+  "deviceManagement": {
+    "menuTitle": "Geräteverwaltung",
+    "title": "Geräte",
+    "description": "Geräte anzeigen und verwalten.",
+    "addDevice": "Gerät hinzufügen",
+    "duplicateDevice": "Gerät duplizieren",
+    "apply": "Anwenden",
+    "applyConfirmTitle": "Geräteliste anwenden",
+    "applyConfirmMessage": "Die Geräteliste wird gespeichert und sofort importiert. Möchten Sie fortfahren?",
+    "applyStarted": "Geräteliste wird angewendet...",
+    "applyCompleted": "Geräteliste erfolgreich angewendet",
+    "listSaved": "Geräteliste erfolgreich gespeichert",
+    "validationFailed": "Bitte korrigieren Sie alle ungültigen Felder vor dem Speichern",
+    "duplicateFound": "Doppelte Einträge für Rechnername, MAC oder IP gefunden",
+    "columns": {
+      "room": "Raum",
+      "hostname": "Rechnername",
+      "group": "Gruppe",
+      "mac": "MAC",
+      "ip": "IP",
+      "sophomorixRole": "Sophomorix-Rolle",
+      "pxeFlag": "PXE"
+    },
+    "roles": {
+      "addc": "Domaincontroller",
+      "byod": "BYOD",
+      "classroom-studentcomputer": "Schüler-PC im Klassenzimmer",
+      "classroom-teachercomputer": "Lehrer-PC im Klassenzimmer",
+      "faculty-teachercomputer": "Fachbereich-Lehrer-PC",
+      "iponly": "IP-Only",
+      "mobile": "Handy",
+      "printer": "Drucker",
+      "router": "Router",
+      "server": "Server",
+      "staffcomputer": "Lehrer-PC",
+      "staffcomputerBusiness": "Computer",
+      "switch": "Switch",
+      "thinclient": "Thinclient",
+      "voip": "VOIP",
+      "wlan": "WLan"
+    },
+    "pxeFlags": {
+      "0": "Kein PXE",
+      "1": "Linbo-PXE",
+      "2": "Linbo-PXE + OPSI-PXE",
+      "3": "OPSI-PXE"
+    },
+    "csv": {
+      "title": "CSV",
+      "dropHint": "Datei hier hin schieben um sie zu importieren",
+      "download": "CSV Herunterladen"
     }
   },
   "select": "Auswählen",
@@ -1236,6 +1327,7 @@
         "notFoundError": "Einstellungen konnten nicht geladen werden."
       },
       "deploymentTarget": "Plattform",
+      "organizationType": "Organisationstyp",
       "ldap": {
         "title": "LDAP",
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
@@ -1617,6 +1709,39 @@
       "downloadButton": "Konfiguration herunterladen",
       "error": "Der VPN-Dienst ist derzeit nicht erreichbar. Bitte versuche es später erneut oder wende dich an einen Administrator."
     },
+    "parentChildPairing": {
+      "myParents": "Meine Eltern",
+      "myChildren": "Meine Kinder",
+      "descriptionStudent": "Hier kannst du eine Verknüpfung mit deinen Eltern herstellen.",
+      "descriptionParent": "Hier kannst du eine Verknüpfung mit deinen Kindern herstellen.",
+      "myCode": "Mein Zuweisungs-Code",
+      "myCodeDescriptionStudent": "Teile diesen Code mit deinem Elternteil. Der Code ist 5 Minuten gültig.",
+      "myCodeDescriptionParent": "Teile diesen Code mit deinem Kind. Der Code ist 5 Minuten gültig.",
+      "enterCode": "Code eingeben",
+      "enterCodeDescriptionStudent": "Gib den Zuweisungs-Code ein, den du von deinem Elternteil erhalten hast.",
+      "enterCodeDescriptionParent": "Gib den Zuweisungs-Code ein, den du von deinem Kind erhalten hast.",
+      "enterCodePlaceholder": "Zuweisungs-Code eingeben",
+      "submitCode": "Zuweisen",
+      "relationships": "Zuweisungen",
+      "noRelationships": "Noch keine Zuweisungen.",
+      "statusPending": "Ausstehend",
+      "statusAccepted": "Akzeptiert",
+      "statusRejected": "Abgelehnt",
+      "pairingSuccess": "Zuweisungsanfrage erfolgreich gesendet!",
+      "regenerateCode": "Neu generieren",
+      "codeRefreshed": "Neuer Zuweisungs-Code generiert.",
+      "codeExpired": "Der Code ist abgelaufen. Bitte einen neuen Code anfordern.",
+      "parent": "Elternteil",
+      "student": "Schüler",
+      "statusColumn": "Status",
+      "createdAt": "Erstellt am",
+      "accept": "Akzeptieren",
+      "reject": "Ablehnen",
+      "statusUpdated": "Status erfolgreich aktualisiert.",
+      "assignment": "Elternzuweisung",
+      "assignmentDescription": "Eltern-Schüler-Zuweisungen verwalten.",
+      "filterPlaceholder": "Nach Elternteil oder Schüler suchen..."
+    },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
@@ -1822,6 +1947,7 @@
     "date": "Datum",
     "time": "Uhrzeit",
     "revert": "Zurücksetzen",
+    "duplicate": "Duplizieren",
     "restart": "Neu starten",
     "kill": "Beenden",
     "install": "Installieren",
@@ -1949,6 +2075,38 @@
     "versionInfo": "Versionsübersicht",
     "system": "System",
     "versionMismatch": "Die Linuxmuster API-Version ist zu alt. Mindestens Version {{version}} wird benötigt."
+  },
+  "parentAssignment": {
+    "item": "{{count}} Zuweisung",
+    "items": "{{count}} Zuweisungen",
+    "rowSelected": "{{selected}} von {{total}} Zuweisung ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Zuweisungen ausgewählt"
+  },
+  "parentChildPairing": {
+    "assignment": "Elternzuweisung",
+    "assignmentDescription": "Eltern-Schüler-Zuweisungen verwalten.",
+    "filterPlaceholder": "Nach Elternteil oder Schüler suchen...",
+    "parent": "Elternteil",
+    "student": "Schüler",
+    "school": "Schule",
+    "statusColumn": "Status",
+    "createdAt": "Erstellt am",
+    "accept": "Akzeptieren",
+    "reject": "Ablehnen",
+    "statusAll": "Alle",
+    "statusPending": "Ausstehend",
+    "statusAccepted": "Akzeptiert",
+    "statusRejected": "Abgelehnt",
+    "statusUpdated": "Status erfolgreich aktualisiert.",
+    "errors": {
+      "codeNotFound": "Der Zuweisungs-Code wurde nicht gefunden.",
+      "codeExpired": "Der Zuweisungs-Code ist abgelaufen.",
+      "cannotPairWithSelf": "Du kannst dich nicht dir selbst zuweisen.",
+      "pairingAlreadyExists": "Diese Zuweisung existiert bereits.",
+      "pairingNotFound": "Die Zuweisung wurde nicht gefunden.",
+      "invalidRole": "Deine Rolle erlaubt keine Zuweisung.",
+      "incompatibleRoles": "Du kannst keinem anderen Schüler zugewiesen werden."
+    }
   },
   "whiteboard": {
     "title": "WHITEBOARD",
@@ -2318,6 +2476,22 @@
     "EDU_WG_DNS": {
       "title": "DNS-Server",
       "description": "Die DNS-Server-Adresse für die VPN-Verbindung."
+    },
+    "MOODLE_WWWROOT": {
+      "title": "WWW-Root",
+      "description": "Die vollständige URL, unter der Moodle erreichbar ist (z.B. https://moodle.example.com)."
+    },
+    "MOODLE_ADMIN_EMAIL": {
+      "title": "Admin E-Mail",
+      "description": "Die E-Mail-Adresse des Moodle-Administrators."
+    },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Admin Passwort",
+      "description": "Das Passwort des Moodle-Administrators."
+    },
+    "MOODLE_SITE_NAME": {
+      "title": "Website-Name",
+      "description": "Der angezeigte Name der Moodle-Instanz."
     }
   },
   "edulution-manager": {
@@ -2359,7 +2533,8 @@
       "containerCreationSuccessful": "Container erfolgreich erstellt.",
       "containerCreationFailed": "Container konnte nicht erstellt werden.",
       "containerUpdateSuccessful": "{{containerName}} erfolgreich aktualisiert.",
-      "containerAlreadyUpToDate": "{{containerName}} ist bereits aktuell."
+      "containerAlreadyUpToDate": "{{containerName}} ist bereits aktuell.",
+      "containerDeleted": "{{containerName}} erfolgreich gelöscht."
     },
     "status": {
       "running": "läuft",
@@ -2399,6 +2574,13 @@
     "description": "Hier kann die Plattform ausgewählt werden, an welche {{ appName }} angebunden wird.",
     "linuxmuster": "Linuxmuster",
     "generic": "Generisch"
+  },
+  "organizationType": {
+    "title": "Auswahl",
+    "description": "Hier kann der Organisationstyp ausgewählt werden.",
+    "school": "Schule",
+    "business": "Unternehmen",
+    "public-administration": "Öffentliche Verwaltung"
   },
   "webdavShare": {
     "displayName": "Anzeigename",

@@ -20,7 +20,6 @@
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
-import { randomBytes } from 'crypto';
 import type {
   BatchPeersRequest,
   BatchPeersResult,
@@ -35,6 +34,7 @@ import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMe
 import type WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
 import APPS from '@libs/appconfig/constants/apps';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import generateSecureToken from '@libs/common/utils/generateSecureToken';
 import GroupsService from '../groups/groups.service';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -43,8 +43,6 @@ const { EDU_WG_API_URL, EDU_WG_API_KEY } = process.env;
 
 const DEFAULT_WIREGUARD_URL = 'http://edulution-wireguard:8000/api/wireguard';
 const WIREGUARD_API_KEY_HEADER = 'EDU_WG_API_KEY';
-
-const generateApiKey = (): string => randomBytes(16).toString('hex');
 
 @Injectable()
 class WireguardService implements OnModuleInit {
@@ -98,7 +96,7 @@ class WireguardService implements OnModuleInit {
       }
 
       if (!currentApiKey) {
-        updatedOptions.apiKey = EDU_WG_API_KEY || generateApiKey();
+        updatedOptions.apiKey = EDU_WG_API_KEY || generateSecureToken();
         needsUpdate = true;
         Logger.log('Setting WireGuard API key', WireguardService.name);
       }

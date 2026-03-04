@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { OnlyOfficeCallbackStatus } from '../constants/onlyOfficeCallbackStatus';
+
 interface Action {
   type: 0 | 1 | 2;
   userid: string;
@@ -41,7 +43,7 @@ interface OnlyOfficeCallbackData {
   formsdataurl?: string;
   history?: History;
   key: string;
-  status: 1 | 2 | 3 | 4 | 6 | 7;
+  status: OnlyOfficeCallbackStatus;
   url: string;
   userdata?: string;
   users?: string[];

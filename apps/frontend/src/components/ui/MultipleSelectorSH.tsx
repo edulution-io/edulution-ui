@@ -33,6 +33,7 @@ import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useDebounceValue } from 'usehooks-ts';
+import useMedia from '@/hooks/useMedia';
 import { VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
 
 const MULTIPLE_SELECTOR_BASE_CLASSES =
@@ -209,10 +210,26 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>,
   ) => {
+    const { isMobileView, isTabletView } = useMedia();
     const inputRef = useRef<HTMLInputElement>(null);
     const triggerRef = useRef<HTMLDivElement>(null);
     const popoverContentRef = useRef<HTMLDivElement>(null);
     const touchStartY = useRef<number>(0);
+    const commandListCleanupRef = useRef<(() => void) | null>(null);
+    const commandListRef = useCallback((node: HTMLDivElement | null) => {
+      if (commandListCleanupRef.current) {
+        commandListCleanupRef.current();
+        commandListCleanupRef.current = null;
+      }
+      if (!node) return;
+      const handleWheel = (e: WheelEvent) => {
+        // eslint-disable-next-line no-param-reassign
+        node.scrollTop += e.deltaY;
+        e.preventDefault();
+      };
+      node.addEventListener('wheel', handleWheel, { passive: false });
+      commandListCleanupRef.current = () => node.removeEventListener('wheel', handleWheel);
+    }, []);
     const [open, setOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -498,10 +515,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             >
               {open && (
                 <CommandList
-                  onWheel={(e) => {
-                    e.currentTarget.scrollTop += e.deltaY;
-                    e.preventDefault();
-                  }}
+                  ref={commandListRef}
                   onTouchStart={(e) => {
                     touchStartY.current = e.touches[0].clientY;
                   }}
@@ -514,7 +528,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                   className={cn(
                     'w-full overflow-y-auto rounded-lg text-p outline-none animate-in scrollbar-thin',
                     variantClasses[variant],
-                    totalItemCount > 5 && 'pb-32',
+                    totalItemCount > 5 && (isMobileView || isTabletView) && 'pb-32',
                   )}
                 >
                   {isLoading ? (
@@ -539,7 +553,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                             {dropdowns.map((option) => (
                               <CommandItem
                                 key={option.value}
-                                value={option.value}
+                                value={option.label}
                                 disabled={option.disable}
                                 onMouseDown={(e) => {
                                   e.preventDefault();

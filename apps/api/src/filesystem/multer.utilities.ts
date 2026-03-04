@@ -17,28 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { extname } from 'path';
+import { basename, extname, resolve, sep } from 'node:path';
 import { Request } from 'express';
+import { BadRequestException } from '@nestjs/common';
 import { diskStorage, MulterError } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SVG_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/svgUploadAllowedMimeTypes';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
+import sanitizePath from '@libs/filesystem/utils/sanitizePath';
 
-/**
- * Generates a disk storage configuration that can dynamically
- * determine destination paths and file names.
- *
- * @param getDestinationPath - function returning the folder path, given the request
- * @param fileNameGenerator - optional function to generate the file name
- */
 export const createDiskStorage = (
+  basePath: string,
   getDestinationPath: (req: Request) => string,
   fileNameGenerator?: (req: Request, file: Express.Multer.File) => string,
 ) =>
   diskStorage({
     destination: (req, _file, callback) => {
       const folderPath = getDestinationPath(req);
+      const resolvedFolder = resolve(folderPath);
+      const resolvedBase = resolve(basePath);
+
+      if (!resolvedFolder.startsWith(resolvedBase + sep) && resolvedFolder !== resolvedBase) {
+        callback(new BadRequestException(PathValidationErrorMessages.OutsidePublicDirectory), '');
+        return;
+      }
+
       if (!existsSync(folderPath)) {
         mkdirSync(folderPath, { recursive: true });
       }
@@ -49,7 +54,8 @@ export const createDiskStorage = (
       if (fileNameGenerator) {
         fileName = fileNameGenerator(req, file);
       }
-      callback(null, fileName);
+      const sanitized = sanitizePath(basename(fileName));
+      callback(null, sanitized);
     },
   });
 
@@ -68,12 +74,13 @@ export const attachmentFileFilter = (
 };
 
 export const createAttachmentUploadOptions = (
+  basePath: string,
   getDestinationPath: (req: Request) => string,
   filter: boolean = true,
   fileNameGenerator?: (req: Request, file: Express.Multer.File) => string,
   maxFileSize?: number,
 ) => ({
-  storage: createDiskStorage(getDestinationPath, fileNameGenerator),
+  storage: createDiskStorage(basePath, getDestinationPath, fileNameGenerator),
   fileFilter: filter ? attachmentFileFilter : undefined,
   limits: maxFileSize ? { fileSize: maxFileSize } : { fileSize: MAXIMUM_UPLOAD_FILE_SIZE },
 });

@@ -379,7 +379,6 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getFileAsBase64(filePath: string): string {
     try {
       const fileBuffer = readFileSync(filePath);

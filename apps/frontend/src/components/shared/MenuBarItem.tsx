@@ -24,6 +24,7 @@ import { Button, cn } from '@edulution-io/ui-kit';
 import { useTranslation } from 'react-i18next';
 import MenuItem from '@libs/menubar/menuItem';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
+import useSubMenuStore from '@/store/useSubMenuStore';
 import MenuBarRenderIcon from './MenuBarRenderIcon';
 
 interface MenuBarItemProps {
@@ -50,6 +51,7 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
   onCloseMobileMenu,
 }) => {
   const { t } = useTranslation();
+  const parentId = useSubMenuStore((state) => state.parentId);
   const hasChildren = item.children && item.children.length > 0;
 
   const handleItemClick = useCallback(() => {
@@ -139,7 +141,7 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
       <div className="overflow-hidden">
         <div className="ml-2">
           {item.children?.map((child) => {
-            const isChildActive = activeSection === child.id || pathParts.includes(child.id);
+            const isChildActive = activeSection === child.id || (!!parentId && pathParts.includes(child.id));
             return (
               <Button
                 key={child.id}

@@ -20,35 +20,43 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faCircleInfo, faGrip, faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faDesktop, faGrip, faListCheck, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { LinuxmusterIcon } from '@/assets/icons';
 import {
   LINUXMUSTER_INFO_LOCATION,
   LINUXMUSTER_INFO_PATH,
   LINUXMUSTER_PATH,
+  PARENT_ASSIGNMENT_LOCATION,
+  PARENT_ASSIGNMENT_PATH,
   USER_MANAGEMENT_LOCATION,
   USER_MANAGEMENT_STUDENTS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import {
+  DEVICE_MANAGEMENT_LOCATION,
+  DEVICE_MANAGEMENT_PATH,
+} from '@libs/deviceManagement/constants/deviceManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 const useLinuxmusterMenu = (): MenuBarEntry => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment, isBusiness } = useOrganizationType();
 
   const navigateToLinuxmuster = useCallback(() => navigate(`/${LINUXMUSTER_PATH}`), [navigate]);
+  const navigateToParentAssignment = useCallback(() => navigate(`/${PARENT_ASSIGNMENT_PATH}`), [navigate]);
   const navigateToInfo = useCallback(() => navigate(`/${LINUXMUSTER_INFO_PATH}`), [navigate]);
   const navigateToUserManagement = useCallback(
     () => navigate(`/${USER_MANAGEMENT_STUDENTS_PATH}/${USER_MANAGEMENT_TABS.TABLE}`),
     [navigate],
   );
+  const navigateToDevices = useCallback(() => navigate(`/${DEVICE_MANAGEMENT_PATH}`), [navigate]);
 
   return useMemo(
     () => ({
-      title: isLmn ? 'usermanagement.titleLmn' : 'usermanagement.titleGeneric',
+      title: isSchoolEnvironment ? 'usermanagement.titleLmn' : 'usermanagement.titleGeneric',
       appName: APPS.LINUXMUSTER,
       icon: LinuxmusterIcon,
       color: 'hover:bg-ciGreenToBlue',
@@ -59,25 +67,46 @@ const useLinuxmusterMenu = (): MenuBarEntry => {
           icon: faGrip,
           action: navigateToLinuxmuster,
         },
-        ...(isLmn
+        {
+          id: USER_MANAGEMENT_LOCATION,
+          label: 'usermanagement.menuTitle',
+          icon: faListCheck,
+          action: navigateToUserManagement,
+        },
+        {
+          id: DEVICE_MANAGEMENT_LOCATION,
+          label: 'deviceManagement.menuTitle',
+          icon: faDesktop,
+          action: navigateToDevices,
+        },
+        ...(!isBusiness
           ? [
               {
-                id: USER_MANAGEMENT_LOCATION,
-                label: 'usermanagement.menuTitle',
-                icon: faListCheck,
-                action: navigateToUserManagement,
-              },
-              {
-                id: LINUXMUSTER_INFO_LOCATION,
-                label: 'linuxmuster.versionInfo',
-                icon: faCircleInfo,
-                action: navigateToInfo,
+                id: PARENT_ASSIGNMENT_LOCATION,
+                label: 'usermanagement.parentAssignment',
+                icon: faUserGroup,
+                action: navigateToParentAssignment,
               },
             ]
           : []),
+        {
+          id: LINUXMUSTER_INFO_LOCATION,
+          label: 'linuxmuster.versionInfo',
+          icon: faCircleInfo,
+          action: navigateToInfo,
+        },
       ],
     }),
-    [isLmn, t, navigateToLinuxmuster, navigateToUserManagement, navigateToInfo],
+    [
+      isSchoolEnvironment,
+      isBusiness,
+      t,
+      navigateToLinuxmuster,
+      navigateToUserManagement,
+      navigateToDevices,
+      navigateToParentAssignment,
+      navigateToInfo,
+    ],
   );
 };
 

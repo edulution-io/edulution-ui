@@ -27,7 +27,7 @@ import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import useMedia from '@/hooks/useMedia';
 import useLanguage from '@/hooks/useLanguage';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useSubMenuStore from '@/store/useSubMenuStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -51,7 +51,7 @@ const MenuBar: React.FC = () => {
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const { appConfigs } = useAppConfigsStore();
   const { language } = useLanguage();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
   const { isMobileView, isTabletView } = useMedia();
 
   const { pathParts, isSelected, expandedItems, toggleExpanded, getActiveColorClass, activeItem } =
@@ -63,14 +63,14 @@ const MenuBar: React.FC = () => {
   const shouldCollapse = isDesktopView && isCollapsed;
 
   const handleClickOutside = useCallback(() => {
-    if ((isMobileView || isTabletView) && isMobileMenuBarOpen) {
+    if ((isMobileView || isTabletView || isEdulutionApp) && isMobileMenuBarOpen) {
       closeMobileMenuBar();
     }
-  }, [isMobileView, isTabletView, isMobileMenuBarOpen, closeMobileMenuBar]);
+  }, [isMobileView, isTabletView, isEdulutionApp, isMobileMenuBarOpen, closeMobileMenuBar]);
 
   const handleCloseMobileMenu = useCallback(() => {
-    if (isMobileView || isTabletView) toggleMobileMenuBar();
-  }, [isMobileView, isTabletView, toggleMobileMenuBar]);
+    if (isMobileView || isTabletView || isEdulutionApp) toggleMobileMenuBar();
+  }, [isMobileView, isTabletView, isEdulutionApp, toggleMobileMenuBar]);
 
   useOnClickOutside(menubarRef, handleClickOutside);
 
@@ -81,7 +81,7 @@ const MenuBar: React.FC = () => {
   const activeColorClass = getActiveColorClass(menuBarEntries.color);
 
   const pageTitle = currentAppConfig
-    ? getDisplayName(currentAppConfig, language, isLmn)
+    ? getDisplayName(currentAppConfig, language, isSchoolEnvironment)
     : t(`${menuBarEntries.appName}.sidebar`);
 
   const menuBarContent = (

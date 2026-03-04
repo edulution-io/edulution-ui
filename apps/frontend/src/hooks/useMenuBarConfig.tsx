@@ -56,7 +56,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const surveysMenuConfig = useSurveysPageMenu();
   const classManagementMenuConfig = useClassManagementMenu();
   const linuxmusterMenuConfig = useLinuxmusterMenu();
-  const { sections } = useSubMenuStore();
+  const { sections, parentId } = useSubMenuStore();
   const { scrollToSection } = useScrollToSection();
 
   const menuBarConfigRegistry: Partial<Record<string, MenuBarEntry>> = useMemo(
@@ -97,9 +97,8 @@ const useMenuBarConfig = (): MenuBarEntry => {
 
   const getItemChildren = (itemId: string): MenuItem[] | undefined => {
     if (sectionChildren.length === 0) return undefined;
+    if (parentId && itemId !== parentId) return undefined;
     if (itemId === activeMenuItemId) return sectionChildren;
-    if (sectionChildren.some((c) => c.id === activeMenuItemId)) return sectionChildren;
-    if (!activeMenuItemId) return sectionChildren;
     return undefined;
   };
 
@@ -113,7 +112,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
         disableTranslation: item.disableTranslation,
         children: getItemChildren(item.id),
       })),
-    [configValues.menuItems, t, activeMenuItemId, sectionChildren],
+    [configValues.menuItems, t, activeMenuItemId, sectionChildren, parentId],
   );
 
   return useMemo(

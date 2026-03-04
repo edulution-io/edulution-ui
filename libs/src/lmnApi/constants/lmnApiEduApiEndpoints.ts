@@ -39,6 +39,7 @@ const LMN_API_EDU_API_ENDPOINTS = {
   USERS_QUOTA: 'quotas',
   SCHOOLS: `${LMN_API_EDU_API_ENDPOINT}/schools`,
   LIST_MANAGEMENT: `${LMN_API_EDU_API_ENDPOINT}/listmanagement`,
+  DEVICES: `${LMN_API_EDU_API_ENDPOINT}/devices/list`,
 } as const;
 
 export default LMN_API_EDU_API_ENDPOINTS;

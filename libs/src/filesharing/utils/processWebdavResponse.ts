@@ -19,8 +19,25 @@
 
 import { DirectoryFileDTO } from '../types/directoryFileDTO';
 
+const normalizeTrailingSlash = (path: string) => path.replace(/\/+$/, '');
+
+const isSelfReference = (filePath: string, currentPath: string): boolean => {
+  const normalizedFilePath = normalizeTrailingSlash(filePath);
+  const normalizedCurrentPath = normalizeTrailingSlash(currentPath);
+
+  if (!normalizedCurrentPath) return false;
+  if (normalizedFilePath === normalizedCurrentPath) return true;
+
+  if (normalizedFilePath.endsWith(normalizedCurrentPath)) {
+    const prefix = normalizedFilePath.slice(0, -normalizedCurrentPath.length);
+    return prefix.startsWith('/') && !prefix.slice(1).includes('/');
+  }
+
+  return false;
+};
+
 const processWebdavResponse = (response: DirectoryFileDTO[], currentPath: string) => {
-  const data = response.filter((file) => file.filePath !== currentPath);
+  const data = response.filter((file) => !isSelfReference(file.filePath, currentPath));
   return data.sort((a, b) => a.filename.localeCompare(b.filename));
 };
 

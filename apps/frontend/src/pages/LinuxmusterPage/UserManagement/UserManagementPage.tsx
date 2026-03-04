@@ -32,13 +32,9 @@ import USER_TYPES from '@libs/userManagement/constants/userTypes';
 import USER_TYPE_ICONS from '@libs/userManagement/constants/userTypeIcons';
 import ADMIN_SUB_TABS from '@libs/userManagement/constants/adminSubTabs';
 import ALL_TAB_OPTIONS from '@libs/userManagement/constants/allTabOptions';
-import isLmnVersionSupported from '@libs/lmnApi/utils/isLmnVersionSupported';
 import type UserType from '@libs/userManagement/types/userType';
 import SchoolSelectorDropdown from '@/pages/ClassManagement/components/SchoolSelectorDropdown';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import LmnVersionWarning from '../components/LmnVersionWarning';
 import UserTable from './components/UserTable/UserTable';
 import ListManagementTab from './components/ListManagement/ListManagementTab';
 import UserManagementFloatingButtons from './components/ListManagement/UserManagementFloatingButtons';
@@ -56,12 +52,8 @@ const UserManagementPage: React.FC<UserManagementPageProps> = ({ userType }) => 
   const { tabId } = useParams();
   const navigate = useNavigate();
   const { isSuperAdmin } = useLdapGroups();
-  const { isLmn } = useDeploymentTarget();
-  const lmnVersions = useLmnApiStore((s) => s.lmnVersions);
   const { selectedUserDetails, setSelectedUserDetails } = useUserManagementStore();
   useRegisterUserManagementSections();
-
-  const versionSupported = !isLmn || isLmnVersionSupported(lmnVersions['linuxmuster-api7']);
 
   const adminSubTabs = ADMIN_SUB_TABS[userType];
   const showSchoolSelector = isSuperAdmin && userType !== USER_TYPES.GLOBALADMINS;
@@ -102,16 +94,6 @@ const UserManagementPage: React.FC<UserManagementPageProps> = ({ userType }) => 
     description: t('usermanagement.description'),
     iconSrc: USER_TYPE_ICONS[userType],
   };
-
-  if (!versionSupported) {
-    return (
-      <PageLayout nativeAppHeader={nativeAppHeader}>
-        <div className="p-4">
-          <LmnVersionWarning />
-        </div>
-      </PageLayout>
-    );
-  }
 
   if (adminSubTabs) {
     if (!isMobileView && !isTabletView) {

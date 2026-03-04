@@ -26,30 +26,23 @@ const updateContainerConfig = (
   const placeholderPattern = /^<(.+)>$/;
 
   return containerConfig.map((service) => {
-    if (service.Env && typeof service.Env === 'object' && !Array.isArray(service.Env)) {
-      const envObj = service.Env as Record<string, string>;
-      const updatedEnvObj: Record<string, string> = {};
+    if (!Array.isArray(service.Env)) return service;
 
-      Object.keys(envObj).forEach((key) => {
-        const value = envObj[key];
-        if (typeof value === 'string') {
-          const match = value.match(placeholderPattern);
-          if (match && formValues) {
-            const placeholderName = match[1];
+    const updatedEnv = service.Env.map((entry) => {
+      const eqIndex = entry.indexOf('=');
+      if (eqIndex === -1) return entry;
 
-            updatedEnvObj[key] = formValues[placeholderName] ?? value;
-          } else {
-            updatedEnvObj[key] = value;
-          }
-        } else {
-          updatedEnvObj[key] = String(value);
-        }
-      });
+      const key = entry.slice(0, eqIndex);
+      const value = entry.slice(eqIndex + 1);
+      const match = value.match(placeholderPattern);
 
-      const updatedEnvArray = Object.entries(updatedEnvObj).map(([key, value]) => `${key}=${value}`);
-      return { ...service, Env: updatedEnvArray };
-    }
-    return service;
+      if (match && formValues) {
+        return `${key}=${formValues[match[1]] ?? value}`;
+      }
+      return entry;
+    });
+
+    return { ...service, Env: updatedEnv };
   });
 };
 

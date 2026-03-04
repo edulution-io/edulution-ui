@@ -1,0 +1,154 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import React from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
+import type ParentChildPairingDto from '@libs/parent-child-pairing/types/parentChildPairingDto';
+import type TableAction from '@libs/common/types/tableAction';
+import PARENT_CHILD_PAIRING_STATUS from '@libs/parent-child-pairing/constants/parentChildPairingStatus';
+import sortString from '@libs/common/utils/sortString';
+import Checkbox from '@/components/ui/Checkbox';
+import SortableHeader from '@/components/ui/Table/SortableHeader';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
+import TableActionCell from '@/components/ui/Table/TableActionCell';
+import ParentChildPairingStatusBadge from '@/components/shared/ParentChildPairingStatusBadge';
+
+const COLUMN_IDS = {
+  SELECT: 'select',
+  PARENT: 'parent',
+  STUDENT: 'student',
+  STATUS: 'status',
+  CREATED_AT: 'createdAt',
+  ACTIONS: 'actions',
+} as const;
+
+interface ParentAssignmentColumnsProps {
+  onAccept: (pairing: ParentChildPairingDto) => void;
+  onReject: (pairing: ParentChildPairingDto) => void;
+}
+
+const getParentAssignmentColumns = ({
+  onAccept,
+  onReject,
+}: ParentAssignmentColumnsProps): ColumnDef<ParentChildPairingDto>[] => [
+  {
+    id: COLUMN_IDS.SELECT,
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+        aria-label="Select all"
+      />
+    ),
+    enableSorting: false,
+    size: 50,
+    cell: ({ row }) => (
+      <SelectableCell
+        row={row}
+        isFirstColumn
+        className="max-w-0"
+      />
+    ),
+  },
+  {
+    id: COLUMN_IDS.PARENT,
+    meta: { translationId: 'parentChildPairing.parent' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
+    accessorFn: (row) => row.parent,
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.parent}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => sortString(rowA.original.parent, rowB.original.parent),
+  },
+  {
+    id: COLUMN_IDS.STUDENT,
+    meta: { translationId: 'parentChildPairing.student' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
+    accessorFn: (row) => row.student,
+    cell: ({ row }) => row.original.student,
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => sortString(rowA.original.student, rowB.original.student),
+  },
+  {
+    id: COLUMN_IDS.STATUS,
+    meta: { translationId: 'parentChildPairing.statusColumn' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
+    accessorFn: (row) => row.status,
+    size: 120,
+    cell: ({ row }) => <ParentChildPairingStatusBadge status={row.original.status} />,
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => sortString(rowA.original.status, rowB.original.status),
+  },
+  {
+    id: COLUMN_IDS.CREATED_AT,
+    meta: { translationId: 'parentChildPairing.createdAt' },
+    header: ({ column }) => <SortableHeader<ParentChildPairingDto, unknown> column={column} />,
+    accessorFn: (row) => row.createdAt,
+    size: 160,
+    cell: ({ row }) => {
+      const dateStr = row.original.createdAt;
+      if (!dateStr) return '-';
+      return new Date(dateStr).toLocaleString();
+    },
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => sortString(rowA.original.createdAt, rowB.original.createdAt),
+  },
+  {
+    id: COLUMN_IDS.ACTIONS,
+    header: () => null,
+    enableSorting: false,
+    size: 50,
+    cell: ({ row }) => {
+      const { status } = row.original;
+      const actions: TableAction<ParentChildPairingDto>[] = [];
+
+      if (status !== PARENT_CHILD_PAIRING_STATUS.ACCEPTED) {
+        actions.push({
+          icon: faCheck,
+          translationId: 'parentChildPairing.accept',
+          onClick: () => onAccept(row.original),
+        });
+      }
+
+      if (status !== PARENT_CHILD_PAIRING_STATUS.REJECTED) {
+        actions.push({
+          icon: faBan,
+          translationId: 'parentChildPairing.reject',
+          onClick: () => onReject(row.original),
+        });
+      }
+
+      if (actions.length === 0) return null;
+
+      return (
+        <TableActionCell
+          actions={actions}
+          row={row}
+        />
+      );
+    },
+  },
+];
+
+export default getParentAssignmentColumns;

@@ -36,6 +36,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { randomUUID } from 'crypto';
 import { SURVEYS, ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
@@ -51,6 +52,7 @@ import SurveyAnswerService from './survey-answers.service';
 import Public from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(PUBLIC_SURVEYS)
 @Controller(PUBLIC_SURVEYS)
@@ -102,11 +104,12 @@ class PublicSurveysController {
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
   async serveFile(
-    @Param() params: { surveyId: string; questionId: string; filename: string },
+    @Param('surveyId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) questionId: string,
+    @Param('filename', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) filename: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { surveyId, questionId, filename } = params;
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     const filePath = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
     return this.filesystemService.serveFile(filePath, filename, req, res);
@@ -119,6 +122,7 @@ class PublicSurveysController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH,
         (req) => {
           const { userName, surveyId, questionId } = req.params || {};
           PublicSurveysController.validateParams(req.params, ['userName', 'surveyId', 'questionId']);
@@ -129,13 +133,13 @@ class PublicSurveysController {
       ),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async answeringFileUpload(
     @UploadedFile() file: Express.Multer.File,
+    @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
+    @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) questionId: string,
     @Res() res: Response,
-    @Param() params: { userName: string; surveyId: string; questionId: string },
   ) {
-    const { userName, surveyId, questionId } = params;
     const path = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
     const filePath = join(path, file.filename);
     const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
@@ -167,12 +171,13 @@ class PublicSurveysController {
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   @Public()
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteTempAnswerFile(
-    @Param() params: { userName: string; surveyId: string; questionId: string; fileName?: string },
+    @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
+    @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) questionId: string,
+    @Param('fileName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) fileName?: string,
   ) {
-    const { userName, surveyId, questionId, fileName } = params;
-    PublicSurveysController.validateParams({ ...params }, ['userName', 'surveyId', 'questionId']);
+    PublicSurveysController.validateParams({ userName, surveyId, questionId }, ['userName', 'surveyId', 'questionId']);
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     if (fileName) {
       await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);
@@ -184,12 +189,19 @@ class PublicSurveysController {
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   @Public()
   async serveFileFromAnswer(
-    @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
+    @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
+    @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,
+    @Param('questionId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) questionId: string,
+    @Param('fileName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) fileName: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { userName, surveyId, questionId, fileName } = params;
-    PublicSurveysController.validateParams({ ...params }, ['userName', 'surveyId', 'questionId', 'fileName']);
+    PublicSurveysController.validateParams({ userName, surveyId, questionId, fileName }, [
+      'userName',
+      'surveyId',
+      'questionId',
+      'fileName',
+    ]);
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, req, res);
   }

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -26,11 +26,25 @@ import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDia
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import APPS from '@libs/appconfig/constants/apps';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 
 const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose }) => {
   const { homePath } = useUserPath();
   const navigate = useNavigate();
+  const { webdavShares } = useFileSharingStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
   const collectedFilesPath = `${homePath}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
+
+  const targetShare = useMemo(() => {
+    const nonRootShares = webdavShares.filter((share) => !share.isRootServer);
+    return nonRootShares.find((share) => {
+      const resolvedPath = createVariableSharePathname(share.pathname, share.pathVariables).replace(/\/+$/, '');
+      return resolvedPath.endsWith(homePath);
+    });
+  }, [webdavShares, createVariableSharePathname, homePath]);
 
   const getDialogBody = () => (
     <MoveContentDialogBody
@@ -45,7 +59,13 @@ const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, is
     <DialogFooterButtons
       handleClose={onClose}
       handleSubmit={() => {
-        navigate(`/filesharing?path=${collectedFilesPath}`);
+        if (!targetShare) return;
+        const shareRoot = createVariableSharePathname(targetShare.pathname, targetShare.pathVariables);
+        const navigationPath = `${shareRoot}${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
+        navigate({
+          pathname: `/${APPS.FILE_SHARING}/${targetShare.displayName}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(navigationPath)}`,
+        });
       }}
       submitButtonText={`classmanagement.${title}`}
     />
