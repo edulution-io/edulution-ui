@@ -45,6 +45,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useSchoolStore from '@/store/useSchoolStore';
 import DeleteGroupDialog from './DeleteGroupDialog';
 
 interface GroupDialogProps {
@@ -56,6 +57,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const { setOpenDialogType, openDialogType, userGroupToEdit, setUserGroupToEdit, member } = useLessonStore();
   const { user } = useLmnApiStore();
   const { isSuperAdmin } = useLdapGroups();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const [isFetching, setIsFetching] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { t } = useTranslation();
@@ -87,7 +89,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     admingroups: [],
     members: [],
     membergroups: [],
-    school: user?.school || '',
+    school: isSuperAdmin && selectedSchool ? selectedSchool : user?.school || '',
     proxyAddresses: '',
   };
 
