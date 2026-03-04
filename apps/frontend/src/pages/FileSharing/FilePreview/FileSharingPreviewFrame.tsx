@@ -63,7 +63,7 @@ const FileSharingPreviewFrame = () => {
     setIsFilePreviewDocked,
   } = useFileEditorStore();
   const { loadDownloadUrl } = useFileSharingDownloadStore();
-  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { setFileIsCurrentlyDisabled, fetchFiles, currentPath } = useFileSharingStore();
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const {
     hasUnsavedChanges,
@@ -123,9 +123,27 @@ const FileSharingPreviewFrame = () => {
 
   const performOpenInNewTab = () => {
     if (!currentlyEditingFile) return;
+    const { filename } = currentlyEditingFile;
     addFileToOpenInNewTab(currentlyEditingFile);
     window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
     resetPreview();
+
+    let hasReturned = false;
+    const listeners: { focus?: () => void; visibility?: () => void } = {};
+    const onReturn = () => {
+      if (hasReturned) return;
+      hasReturned = true;
+      if (listeners.focus) window.removeEventListener('focus', listeners.focus);
+      if (listeners.visibility) document.removeEventListener('visibilitychange', listeners.visibility);
+      void fetchFiles(webdavShare, currentPath, true);
+      void setFileIsCurrentlyDisabled(filename, true, 5000);
+    };
+    listeners.focus = () => onReturn();
+    listeners.visibility = () => {
+      if (document.visibilityState === 'visible') onReturn();
+    };
+    window.addEventListener('focus', listeners.focus);
+    document.addEventListener('visibilitychange', listeners.visibility);
   };
 
   const openInNewTab = () => {
@@ -161,6 +179,7 @@ const FileSharingPreviewFrame = () => {
     const { filename } = currentlyEditingFile;
     setIsEditMode(false);
     resetPreview();
+    await fetchFiles(webdavShare, currentPath, true);
     await setFileIsCurrentlyDisabled(filename, true, 5000);
     closingRef.current = false;
   };

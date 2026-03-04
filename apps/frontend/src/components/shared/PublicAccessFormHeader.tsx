@@ -44,7 +44,7 @@ const PublicAccessFormHeader = () => {
         data-testid="test-id-login-page-submit-button"
         onClick={() =>
           navigate(LOGIN_ROUTE, {
-            state: { from: location.pathname },
+            state: { from: `${location.pathname}${location.search}` },
           })
         }
       >

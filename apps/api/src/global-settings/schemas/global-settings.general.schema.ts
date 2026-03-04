@@ -20,6 +20,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import type DeploymentTarget from '@libs/common/types/deployment-target';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import type OrganizationType from '@libs/common/types/organization-type';
+import ORGANIZATION_TYPE from '@libs/common/constants/organization-type';
 import { DefaultLandingPage } from './global-settings.default-landing-page.schema';
 import { LdapSettings, LdapSettingsSchema } from './global-settings.ldap.settings.schema';
 
@@ -30,6 +32,9 @@ export class GeneralSettings {
 
   @Prop({ type: String, enum: DEPLOYMENT_TARGET, default: DEPLOYMENT_TARGET.LINUXMUSTER })
   deploymentTarget: DeploymentTarget;
+
+  @Prop({ type: String, enum: ORGANIZATION_TYPE, default: ORGANIZATION_TYPE.SCHOOL })
+  organizationType: OrganizationType;
 
   @Prop({ type: LdapSettingsSchema })
   ldap: LdapSettings;

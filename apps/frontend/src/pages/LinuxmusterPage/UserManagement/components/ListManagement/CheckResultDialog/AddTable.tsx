@@ -21,6 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import type { SophomorixCheckAddEntry } from '@libs/userManagement/types/sophomorixCheckResponse';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 interface AddTableProps {
   entries: Record<string, SophomorixCheckAddEntry>;
@@ -28,16 +29,29 @@ interface AddTableProps {
 
 const AddTable: React.FC<AddTableProps> = ({ entries }) => {
   const { t } = useTranslation();
+  const { isBusiness } = useOrganizationType();
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>{t('usermanagement.checkResult.columns.class')}</TableHead>
+          <TableHead>
+            {t(
+              isBusiness
+                ? 'usermanagement.checkResult.columns.classBusiness'
+                : 'usermanagement.checkResult.columns.class',
+            )}
+          </TableHead>
           <TableHead>{t('usermanagement.checkResult.columns.login')}</TableHead>
           <TableHead>{t('usermanagement.checkResult.columns.name')}</TableHead>
           <TableHead>{t('usermanagement.checkResult.columns.role')}</TableHead>
-          <TableHead>{t('usermanagement.checkResult.columns.school')}</TableHead>
+          <TableHead>
+            {t(
+              isBusiness
+                ? 'usermanagement.checkResult.columns.schoolBusiness'
+                : 'usermanagement.checkResult.columns.school',
+            )}
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

@@ -17,11 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsDate, IsMongoId, ValidateNested } from 'class-validator';
+import { IsDate, IsMongoId, IsString, ValidateNested } from 'class-validator';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 
 class BulletinResponseDto extends CreateBulletinDto {
+  @IsString()
+  declare title: string;
+
+  @IsString()
+  declare content: string;
+
   @ValidateNested()
   creator: AttendeeDto;
 

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheckService,
@@ -25,6 +25,7 @@ import {
   MongooseHealthIndicator,
   HealthIndicatorResult,
 } from '@nestjs/terminus';
+import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { Interval } from '@nestjs/schedule';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
@@ -32,7 +33,9 @@ import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 const { KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
 
 @Injectable()
-class HealthService {
+class HealthService implements OnModuleInit {
+  private buildInfo: Record<string, string | undefined> = {};
+
   constructor(
     private health: HealthCheckService,
     private mongoose: MongooseHealthIndicator,
@@ -40,23 +43,36 @@ class HealthService {
     private disk: DiskHealthIndicator,
     private httpService: HttpService,
     private webdavSharesService: WebdavSharesService,
+    private configService: ConfigService,
   ) {}
 
+  onModuleInit() {
+    this.buildInfo = {
+      version: this.configService.get<string>('version'),
+      commitSha: this.configService.get<string>('commitSha'),
+      buildDate: this.configService.get<string>('buildDate'),
+      buildNumber: this.configService.get<string>('buildNumber'),
+    };
+  }
+
   async checkEduApiResponding() {
-    return this.health.check([() => this.checkMongo()]);
+    const result = await this.health.check([() => this.checkMongo()]);
+    return { ...result, ...this.buildInfo };
   }
 
   async checkEduApiHealth() {
-    return this.health.check([() => this.checkMongo(), () => this.checkDiskStorage()]);
+    const result = await this.health.check([() => this.checkMongo(), () => this.checkDiskStorage()]);
+    return { ...result, ...this.buildInfo };
   }
 
   async getEduApiStats() {
-    return this.health.check([
+    const result = await this.health.check([
       () => this.checkMongo(),
       () => this.checkAuthServer(),
       () => this.checkWebDavServer(),
       () => this.checkDiskStorage(),
     ]);
+    return { ...result, ...this.buildInfo };
   }
 
   private checkMongo(): Promise<HealthIndicatorResult> {

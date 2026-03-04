@@ -73,7 +73,7 @@ const getCompressedImage = (file: File, maxSizeKB: number): Promise<string> =>
         }
 
         if (getBase64SizeInBytes(base64) > maxSizeKB * 1024) {
-          reject(new Error('usersettings.errors.notAbleToCompress'));
+          reject(new Error('usersettings.errors.notAbleToCompressImage'));
         } else {
           resolve(base64);
         }

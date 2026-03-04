@@ -119,6 +119,15 @@ export class LmnApiController {
     return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
   }
 
+  @Patch('school-classes')
+  async updateSchoolClass(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { formValues: GroupFormDto },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.lmnApiService.updateSchoolClass(lmnApiToken, body.formValues, username);
+  }
+
   @Put('school-classes/:schoolClass/:action')
   async toggleSchoolClassJoined(
     @Param() params: { schoolClass: string; action: GroupJoinState },
@@ -337,6 +346,25 @@ export class LmnApiController {
     @Body() body: { school: string; add: boolean; update: boolean; kill: boolean },
   ) {
     return this.lmnApiService.runSophomorixApply(lmnApiToken, body.school, body.add, body.update, body.kill);
+  }
+
+  @Get('devices/list/:school')
+  async getDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getDevices(lmnApiToken, school);
+  }
+
+  @Post('devices/list/:school')
+  async saveDevices(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param('school') school: string,
+    @Body() body: { data: ListManagementEntry[] },
+  ) {
+    return this.lmnApiService.saveDevices(lmnApiToken, school, body.data);
+  }
+
+  @Get('devices/list/:school/import-devices')
+  async getImportDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getImportDevices(lmnApiToken, school);
   }
 
   @Get('listmanagement/:school/:managementList')

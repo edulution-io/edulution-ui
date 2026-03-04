@@ -20,7 +20,7 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import { HttpStatusCode } from 'axios';
+import { HttpStatusCode, isAxiosError } from 'axios';
 
 type EduApiStore = {
   isEduApiHealthy: boolean | undefined;
@@ -49,9 +49,10 @@ const useEduApiStore = create<EduApiStore>((set) => ({
 
       set({ isEduApiHealthy });
       return isEduApiHealthy;
-    } catch (_e) {
-      set({ isEduApiHealthy: false });
-      return false;
+    } catch (e) {
+      const isAuthError = isAxiosError(e) && e.response?.status === Number(HttpStatusCode.Unauthorized);
+      set({ isEduApiHealthy: isAuthError });
+      return isAuthError;
     } finally {
       set({ isEduApiHealthyLoading: false });
     }

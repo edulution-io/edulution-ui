@@ -19,6 +19,7 @@
 
 import APPS from '@libs/appconfig/constants/apps';
 import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
+import getOrganizationType from '@libs/common/utils/getOrganizationType';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import DEFAULT_THEME from '@libs/global-settings/constants/defaultTheme';
 
@@ -49,6 +50,7 @@ const defaultValues: GlobalSettingsDto = {
       appName: APPS.DASHBOARD,
     },
     deploymentTarget: getDeploymentTarget(),
+    organizationType: getOrganizationType(),
     ldap: {
       binduser: {
         dn: LDAP_EDULUTION_BINDUSER_DN || '',

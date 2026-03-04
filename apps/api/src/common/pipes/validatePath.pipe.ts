@@ -17,12 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import path, { join } from 'path';
-import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
-import sanitizeFileName from '@libs/filesystem/utils/sanitizeFileName';
-
-const MAX_PATH_LENGTH = 300;
+import { Injectable, PipeTransform } from '@nestjs/common';
+import validatePath from '../utils/validatePath';
 
 @Injectable()
 class ValidatePathPipe implements PipeTransform<string | string[] | undefined, string | undefined> {
@@ -32,26 +28,7 @@ class ValidatePathPipe implements PipeTransform<string | string[] | undefined, s
     if (value === undefined || value === null) {
       return undefined;
     }
-
-    const raw = Array.isArray(value) ? join(...value) : value;
-    const trimmed = raw?.trim();
-
-    if (!trimmed) {
-      throw new BadRequestException(PathValidationErrorMessages.IsEmpty);
-    }
-    if (trimmed.length > MAX_PATH_LENGTH) {
-      throw new BadRequestException(PathValidationErrorMessages.PathTooLong);
-    }
-
-    const sanitized = sanitizeFileName(trimmed);
-    const fullPath = path.resolve(this.basePath, sanitized);
-    const baseResolved = path.resolve(this.basePath);
-
-    if (!fullPath.startsWith(baseResolved + path.sep) && fullPath !== baseResolved) {
-      throw new BadRequestException(PathValidationErrorMessages.OutsidePublicDirectory);
-    }
-
-    return sanitized;
+    return validatePath(this.basePath, value);
   }
 }
 

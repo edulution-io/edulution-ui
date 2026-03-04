@@ -33,6 +33,7 @@ import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
@@ -72,7 +73,10 @@ class BulletinBoardController {
   }
 
   @Get('attachments/:filename')
-  serveBulletinAttachment(@Param('filename') filename: string, @Res() res: Response) {
+  serveBulletinAttachment(
+    @Param('filename', new ValidatePathPipe(BULLETIN_TEMP_ATTACHMENTS_PATH)) filename: string,
+    @Res() res: Response,
+  ) {
     return this.bulletinBoardService.serveBulletinAttachmentIfExists(filename, res);
   }
 
@@ -82,13 +86,13 @@ class BulletinBoardController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        BULLETIN_TEMP_ATTACHMENTS_PATH,
         () => BULLETIN_TEMP_ATTACHMENTS_PATH,
         true,
         (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
       ),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     return res.status(200).json(file.filename);
   }

@@ -17,11 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const sanitizeFilename = (filename: string): string =>
-  filename
-    .replace(/\.\./g, '')
-    .replace(/\/+/g, '/')
-    .replace(/^\//, '')
-    .replace(/[^a-zA-Z0-9._\-/]/g, '');
+const ORGANIZATION_TYPE = {
+  SCHOOL: 'school',
+  BUSINESS: 'business',
+  PUBLIC_ADMINISTRATION: 'public-administration',
+} as const;
 
-export default sanitizeFilename;
+export default ORGANIZATION_TYPE;

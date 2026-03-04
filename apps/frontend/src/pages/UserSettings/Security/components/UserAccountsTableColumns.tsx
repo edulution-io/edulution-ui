@@ -26,7 +26,7 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLanguage from '@/hooks/useLanguage';
 import getDisplayName from '@/utils/getDisplayName';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import PasswordCell from './PasswordCell';
 
 const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
@@ -55,12 +55,12 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     cell: ({ row }) => {
       const { appConfigs } = useAppConfigsStore();
       const { language } = useLanguage();
-      const { isLmn } = useDeploymentTarget();
+      const { isSchoolEnvironment } = useOrganizationType();
 
       const displayName = () => {
         const appConfig = appConfigs.find((appCfg) => appCfg.name === row.original.appName);
         if (!appConfig) return row.original.appName;
-        return getDisplayName(appConfig, language, isLmn);
+        return getDisplayName(appConfig, language, isSchoolEnvironment);
       };
 
       return (

@@ -17,19 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum BulletinBoardErrorMessage {
-  CATEGORY_NOT_FOUND = 'bulletinboard.errors.categoryNotFound',
-  CATEGORY_DELETE_FAILED = 'bulletinboard.errors.categoryDeleteFailed',
-  INVALID_CATEGORY = 'bulletinboard.errors.invalidCategory',
-  BULLETIN_NOT_FOUND = 'bulletinboard.errors.bulletinNotFound',
-  UNAUTHORIZED_UPDATE_BULLETIN = 'bulletinboard.errors.unauthorizedUpdateBulletin',
-  UNAUTHORIZED_DELETE_BULLETIN = 'bulletinboard.errors.unauthorizedDeleteBulletin',
-  UNAUTHORIZED_CREATE_BULLETIN = 'bulletinboard.errors.unauthorizedCreateBulletin',
-  UNAUTHORIZED_CREATE_CATEGORY = 'bulletinboard.errors.unauthorizedCreateCategory',
-  UNAUTHORIZED_DELETE_CATEGORY = 'bulletinboard.errors.unauthorizedDeleteCategory',
-  UNAUTHORIZED_UPDATE_CATEGORY = 'bulletinboard.errors.unauthorizedUpdateCategory',
-  ATTACHMENT_NOT_FOUND = 'bulletinboard.errors.attachmentNotFound',
-  ATTACHMENT_DELETION_FAILED = 'bulletinboard.errors.attachmentDeletionFailed',
-}
+const BULLETIN_BOARD_ERROR_MESSAGE = {
+  CATEGORY_NOT_FOUND: 'bulletinboard.errors.categoryNotFound',
+  CATEGORY_DELETE_FAILED: 'bulletinboard.errors.categoryDeleteFailed',
+  INVALID_CATEGORY: 'bulletinboard.errors.invalidCategory',
+  BULLETIN_NOT_FOUND: 'bulletinboard.errors.bulletinNotFound',
+  UNAUTHORIZED_UPDATE_BULLETIN: 'bulletinboard.errors.unauthorizedUpdateBulletin',
+  UNAUTHORIZED_DELETE_BULLETIN: 'bulletinboard.errors.unauthorizedDeleteBulletin',
+  UNAUTHORIZED_CREATE_BULLETIN: 'bulletinboard.errors.unauthorizedCreateBulletin',
+  UNAUTHORIZED_CREATE_CATEGORY: 'bulletinboard.errors.unauthorizedCreateCategory',
+  UNAUTHORIZED_DELETE_CATEGORY: 'bulletinboard.errors.unauthorizedDeleteCategory',
+  UNAUTHORIZED_UPDATE_CATEGORY: 'bulletinboard.errors.unauthorizedUpdateCategory',
+  ATTACHMENT_NOT_FOUND: 'bulletinboard.errors.attachmentNotFound',
+  ATTACHMENT_DELETION_FAILED: 'bulletinboard.errors.attachmentDeletionFailed',
+  PUSH_ONLY_MISSING_FIELDS: 'bulletinboard.errors.pushOnlyMissingFields',
+} as const;
 
-export default BulletinBoardErrorMessage;
+type BulletinBoardErrorMessage = (typeof BULLETIN_BOARD_ERROR_MESSAGE)[keyof typeof BULLETIN_BOARD_ERROR_MESSAGE];
+
+export { BulletinBoardErrorMessage };
+export default BULLETIN_BOARD_ERROR_MESSAGE;

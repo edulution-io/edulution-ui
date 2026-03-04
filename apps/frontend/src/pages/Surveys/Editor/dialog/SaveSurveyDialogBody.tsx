@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
@@ -29,11 +29,8 @@ import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchU
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 
-interface SaveSurveyDialogBodyProps {
-  form: UseFormReturn<SurveyDto>;
-}
-
-const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
+const SaveSurveyDialogBody = () => {
+  const form = useFormContext<SurveyDto>();
   const { setValue, watch } = form;
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
