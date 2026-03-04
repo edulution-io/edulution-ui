@@ -28,7 +28,7 @@ interface CollaboraStoreState {
   accessTokenTTL: number;
   isLoading: boolean;
   error: string | null;
-  fetchWopiToken: (filePath: string, share: string, canWrite: boolean) => Promise<void>;
+  fetchWopiToken: (filePath: string, share: string) => Promise<void>;
   reset: () => void;
 }
 
@@ -42,12 +42,12 @@ const initialState = {
 const useCollaboraStore = create<CollaboraStoreState>((set) => ({
   ...initialState,
 
-  fetchWopiToken: async (filePath: string, share: string, canWrite: boolean) => {
+  fetchWopiToken: async (filePath: string, share: string) => {
     try {
       set({ isLoading: true, error: null });
       const { data } = await eduApi.post<WopiAccessToken>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COLLABORA_TOKEN}`,
-        { filePath, share, canWrite },
+        { filePath, share },
       );
       set({ accessToken: data.accessToken, accessTokenTTL: data.accessTokenTTL });
     } catch (error) {

@@ -24,23 +24,26 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import WopiAccessToken from '@libs/filesharing/types/wopiAccessToken';
+import WopiTokenPayload from '@libs/filesharing/types/wopiTokenPayload';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { WOPI_TOKEN_EXPIRY, WOPI_TOKEN_TTL_MS } from '@libs/filesharing/constants/wopi';
+import { HTTP_HEADERS, HttpMethodsWebDav, WebdavRequestDepth } from '@libs/common/types/http-methods';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
+import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
+import sanitizePath from '@libs/filesystem/utils/sanitizePath';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
-
-interface WopiTokenPayload {
-  username: string;
-  filePath: string;
-  share: string;
-  canWrite: boolean;
-  jti: string;
-}
+import WebdavService from '../webdav/webdav.service';
+import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 @Injectable()
 class CollaboraService {
   constructor(
     private readonly appConfigService: AppConfigService,
     private readonly jwtService: JwtService,
+    private readonly webdavService: WebdavService,
+    private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
   private async getWopiSecret(): Promise<string> {
@@ -59,20 +62,16 @@ class CollaboraService {
     return secret;
   }
 
-  async generateWopiToken(
-    username: string,
-    filePath: string,
-    share: string,
-    canWrite: boolean,
-  ): Promise<WopiAccessToken> {
+  async generateWopiToken(username: string, filePath: string, share: string): Promise<WopiAccessToken> {
     Logger.log(`Generating WOPI token for ${username}`, CollaboraService.name);
     const secret = await this.getWopiSecret();
 
+    const sanitizedPath = sanitizePath(filePath);
+
     const payload: WopiTokenPayload = {
       username,
-      filePath,
+      filePath: sanitizedPath,
       share,
-      canWrite,
       jti: randomUUID(),
     };
 
@@ -85,6 +84,32 @@ class CollaboraService {
       accessToken,
       accessTokenTTL: Date.now() + WOPI_TOKEN_TTL_MS,
     };
+  }
+
+  async getFileStat(username: string, filePath: string, share: string): Promise<DirectoryFileDTO | undefined> {
+    try {
+      const client = await this.webdavService.getClient(username, share);
+      const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+      const pathWithoutWebdav = getPathWithoutWebdav(filePath, webdavShare.pathname);
+      const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
+
+      const files = (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
+        client,
+        {
+          method: HttpMethodsWebDav.PROPFIND,
+          url,
+          data: DEFAULT_PROPFIND_XML,
+          headers: { [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONLY_SELF },
+        },
+        FileSharingErrorMessage.FileNotFound,
+        mapToDirectoryFiles,
+      )) as DirectoryFileDTO[];
+
+      return files[0];
+    } catch (error) {
+      Logger.error(`WOPI getFileStat failed for ${filePath}`, (error as Error).stack, CollaboraService.name);
+      return undefined;
+    }
   }
 
   async validateWopiToken(token: string): Promise<WopiTokenPayload> {

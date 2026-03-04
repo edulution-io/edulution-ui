@@ -18,6 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { cn } from '@edulution-io/ui-kit';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
@@ -40,17 +41,22 @@ const CollaboraEditor = ({
   accessTokenTTL,
   isOpenedInNewTab,
 }: CollaboraEditorProps) => {
+  const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
+  const formSubmittedRef = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (formRef.current) {
+      formSubmittedRef.current = true;
       formRef.current.submit();
     }
   }, [collaboraUrl, wopiSrc, accessToken]);
 
   const handleIframeLoad = useCallback(() => {
-    setIsLoading(false);
+    if (formSubmittedRef.current) {
+      setIsLoading(false);
+    }
   }, []);
 
   const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}`;
@@ -82,7 +88,7 @@ const CollaboraEditor = ({
       </form>
       <iframe
         name={COLLABORA_FRAME_NAME}
-        title="Collabora Online Editor"
+        title={t('filesharing.collaboraEditor')}
         className="h-full w-full border-none"
         allow={IFRAME_ALLOWED_CONFIG}
         onLoad={handleIframeLoad}

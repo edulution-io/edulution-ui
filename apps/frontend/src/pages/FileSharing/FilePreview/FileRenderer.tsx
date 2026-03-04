@@ -168,9 +168,7 @@ const FileRenderer: FC<FileRendererProps> = ({
       case FILE_PREVIEW_TYPE.COLLABORA:
         return (
           <Collabora
-            fileName={currentlyEditingFile.filename}
             filePath={currentlyEditingFile.filePath}
-            mode={editMode ? 'edit' : 'view'}
             isOpenedInNewTab={isOpenedInNewTab}
             webdavShare={webdavShare}
           />

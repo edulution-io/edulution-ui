@@ -71,6 +71,7 @@ const FileSharingPreviewFrame = () => {
     saveFile,
     reset: resetFileEditorContent,
   } = useFileEditorContentStore();
+  const { isOnlyOfficeActive, isCollaboraActive } = useActiveDocumentEditor();
   const windowSize = useWindowResize();
   const location = useLocation();
   const closingRef = useRef(false);
@@ -164,12 +165,15 @@ const FileSharingPreviewFrame = () => {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    if (currentlyEditingFile) {
+    const isCollaboraFile =
+      isCollaboraActive && !!currentlyEditingFile && isOfficeDocument(currentlyEditingFile.filePath);
+
+    if (currentlyEditingFile && !isCollaboraFile) {
       void loadDownloadUrl(currentlyEditingFile, webdavShare, controller.signal);
     }
 
     return () => controller.abort();
-  }, [currentlyEditingFile, isEditMode]);
+  }, [currentlyEditingFile, isEditMode, isCollaboraActive]);
 
   const performClose = async () => {
     if (!currentlyEditingFile) return;
@@ -227,8 +231,6 @@ const FileSharingPreviewFrame = () => {
     () => (isFilePreviewDocked ? { width, height } : undefined),
     [isFilePreviewDocked, width, height],
   );
-
-  const { isOnlyOfficeActive, isCollaboraActive } = useActiveDocumentEditor();
 
   const isEditableDoc =
     !!currentlyEditingFile && isOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);

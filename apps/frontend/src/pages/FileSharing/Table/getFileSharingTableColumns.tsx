@@ -55,7 +55,7 @@ const TYPE_COLUMN_WIDTH = 'w-1/12 lg:w-1/12 md:w-1/12';
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
-  isDocumentServerConfigured?: boolean,
+  isDocumentEditorConfigured?: boolean,
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -113,11 +113,11 @@ const getFileSharingTableColumns = (
             return;
           }
           const isEditableDoc = isOfficeDocument(row.original.filename);
-          if (isEditableDoc && !isDocumentServerConfigured && !isPdf) {
+          if (isEditableDoc && !isDocumentEditorConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }
-          if (isMobileView && isEditableDoc && isDocumentServerConfigured && !isPdf) {
+          if (isMobileView && isEditableDoc && isDocumentEditorConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }

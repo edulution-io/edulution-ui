@@ -26,16 +26,15 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { WOPI_BASE_PATH } from '@libs/filesharing/constants/wopi';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 import useCollaboraStore from '@/pages/FileSharing/FilePreview/Collabora/useCollaboraStore';
 
 interface UseCollaboraProps {
   filePath: string;
-  fileName: string;
-  mode: 'view' | 'edit';
   webdavShare?: string;
 }
 
-const useCollabora = ({ filePath, fileName, mode, webdavShare }: UseCollaboraProps) => {
+const useCollabora = ({ filePath, webdavShare }: UseCollaboraProps) => {
   const { webdavShare: webdavShareFromParams } = useParams();
   const resolvedWebdavShare = webdavShare ?? webdavShareFromParams;
 
@@ -44,14 +43,14 @@ const useCollabora = ({ filePath, fileName, mode, webdavShare }: UseCollaboraPro
   const { appConfigs } = useAppConfigsStore();
   const collaboraUrl = getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.COLLABORA_URL);
 
-  const fileId = btoa(filePath).replace(/[/+=]/g, '_');
+  const fileId = encodeBase64(filePath).replace(/[/+=]/g, '_');
   const wopiSrc = `${getFrontEndUrl()}/${EDU_API_ROOT}/${WOPI_BASE_PATH}/${fileId}`;
 
   useEffect(() => {
     if (resolvedWebdavShare) {
-      void fetchWopiToken(filePath, resolvedWebdavShare, mode === 'edit');
+      void fetchWopiToken(filePath, resolvedWebdavShare);
     }
-  }, [filePath, fileName, mode, resolvedWebdavShare]);
+  }, [filePath, resolvedWebdavShare, fetchWopiToken]);
 
   return {
     collaboraUrl: collaboraUrl || '',

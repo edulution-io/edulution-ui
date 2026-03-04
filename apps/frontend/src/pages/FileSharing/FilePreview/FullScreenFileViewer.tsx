@@ -60,7 +60,10 @@ const FullScreenFileViewer = () => {
   const initializeFile = async () => {
     const fileToOpen = filesToOpenInNewTab.find((f) => f.etag === fileETag);
     if (fileToOpen) {
-      await loadDownloadUrl(fileToOpen, webdavShare);
+      const isCollaboraFile = isCollaboraActive && isOfficeDocument(fileToOpen.filePath);
+      if (!isCollaboraFile) {
+        await loadDownloadUrl(fileToOpen, webdavShare);
+      }
       setCurrentlyEditingFile(fileToOpen);
       setIsLoading(false);
     }

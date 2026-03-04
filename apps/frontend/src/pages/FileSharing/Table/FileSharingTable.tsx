@@ -101,9 +101,11 @@ const FileSharingTable = () => {
   const { openDialog } = useFileSharingDialogStore();
   const startDownload = useStartWebdavFileDownload();
 
+  const isDocumentEditorConfigured = isDocumentServerConfigured || isCollaboraServerConfigured;
+
   const columns = useMemo(
-    () => getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured),
-    [isDocumentServerConfigured],
+    () => getFileSharingTableColumns(undefined, undefined, isDocumentEditorConfigured),
+    [isDocumentEditorConfigured],
   );
 
   const filesByPath = useMemo(() => {

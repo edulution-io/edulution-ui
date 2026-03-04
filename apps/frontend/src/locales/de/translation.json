@@ -422,6 +422,7 @@
     "print": "Drucken",
     "fileEditor": "Datei Editor",
     "filePreview": "Dateivorschau",
+    "collaboraEditor": "Collabora Online Editor",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
