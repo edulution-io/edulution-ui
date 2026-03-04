@@ -50,13 +50,16 @@ export class AppConfig extends Document {
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
 
+  @Prop({ type: Boolean, default: false })
+  usesPushNotifications: boolean;
+
   @Prop({ type: Number, required: true })
   position: number;
 
   @Prop({ type: Array, default: ALL_DISPLAY_LOCATIONS })
   displayLocations: AppDisplayLocationType[];
 
-  @Prop({ default: 10 })
+  @Prop({ default: 11 })
   schemaVersion: number;
 }
 
