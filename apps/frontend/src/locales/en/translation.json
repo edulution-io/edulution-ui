@@ -27,6 +27,7 @@
     "startConversation": "Write the first message",
     "inputPlaceholder": "Type a message...",
     "messageTooLong": "Message is too long",
+    "messageRequired": "Message must not be empty",
     "error": "Error",
     "errors": {
       "conversationNotFound": "Conversation not found",

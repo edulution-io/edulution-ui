@@ -17,5 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_MESSAGE_MAX_LENGTH = 20000;
-export default CHAT_MESSAGE_MAX_LENGTH;
+const SORT_DIRECTION = {
+  ASC: 'asc',
+  DESC: 'desc',
+} as const;
+
+type SortDirection = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION];
+
+export { SORT_DIRECTION, SortDirection };

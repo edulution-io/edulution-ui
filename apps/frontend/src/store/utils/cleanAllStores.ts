@@ -27,7 +27,6 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import useChatStore from '@/store/useChatStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
@@ -74,6 +73,7 @@ import useNotificationStore from '@/store/useNotificationStore';
 import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
 import useUserManagementStore from '@/pages/LinuxmusterPage/UserManagement/useUserManagementStore';
 import LAST_CHAT_GROUP_STORAGE_KEY from '@libs/chat/constants/lastChatGroupStorageKey';
+import useChatStore from '@/pages/Chat/useChatStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {

@@ -23,7 +23,6 @@ import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { SSE_RECONNECT_DELAY_MS } from '@libs/sse/constants/sseConfig';
 import useUserStore from './UserStore/useUserStore';
-import useEduApiStore from './EduApiStore/useEduApiStore';
 
 type SseStore = {
   eventSource: EventSource | null;
@@ -57,10 +56,6 @@ const useSseStore = create<SseStore>((set, get) => {
     });
 
     eventSource.addEventListener(SSE_MESSAGE_TYPE.PING, () => {
-      const { isEduApiHealthy } = useEduApiStore.getState();
-      if (isEduApiHealthy === false) {
-        void useEduApiStore.getState().getIsEduApiHealthy();
-      }
       set({ lastPingTime: Date.now(), reconnectAttempts: 0 });
     });
 

@@ -23,6 +23,7 @@ import {
   DefaultValuePipe,
   Get,
   Param,
+  ParseEnumPipe,
   ParseIntPipe,
   Post,
   Query,
@@ -34,6 +35,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
+import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
@@ -62,7 +64,8 @@ class ChatController {
     @GetCurrentUser() currentUser: JwtUser,
     @Query('limit', new DefaultValuePipe(CHAT_MESSAGES_DEFAULT_LIMIT), ParseIntPipe) limit: number,
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
-    @Query('sort', new DefaultValuePipe('asc')) sort: string,
+    @Query('sort', new DefaultValuePipe(SORT_DIRECTION.ASC), new ParseEnumPipe(SORT_DIRECTION))
+    sort: SortDirection,
   ): Promise<ChatMessageDocument[]> {
     const conversationType = validateConversationType(rawConversationType);
     const conversation = await this.chatService.getAuthorizedConversation(

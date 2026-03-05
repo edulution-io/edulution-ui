@@ -27,6 +27,7 @@
     "startConversation": "Schreibe die erste Nachricht",
     "inputPlaceholder": "Nachricht schreiben...",
     "messageTooLong": "Nachricht ist zu lang",
+    "messageRequired": "Nachricht darf nicht leer sein",
     "error": "Fehler",
     "errors": {
       "conversationNotFound": "Unterhaltung nicht gefunden",

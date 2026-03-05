@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -26,6 +26,7 @@ import CHAT_TYPES from '@libs/chat/constants/chatTypes';
 import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
+import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
 import type AllowedConversationType from '@libs/chat/types/allowedConversationType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
@@ -36,6 +37,7 @@ import PUSH_NOTIFICATION_CHANNEL_ID from '@libs/notification/constants/pushNotif
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import escapeHtml from '@libs/common/utils/escapeHtml';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
 import NotificationsService from '../notifications/notifications.service';
@@ -58,7 +60,10 @@ class ChatService {
     conversationType: AllowedConversationType,
     username: string,
   ): Promise<ConversationDocument | null> {
-    await this.verifyGroupAccess(groupName, conversationType, username);
+    const members = await this.verifyGroupAccess(groupName, conversationType, username);
+    if (members.length === 0) {
+      return null;
+    }
     return this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName, conversationType });
   }
 
@@ -88,16 +93,14 @@ class ChatService {
     conversationId: string,
     limit: number = CHAT_MESSAGES_DEFAULT_LIMIT,
     offset: number = 0,
-    sort: string = 'asc',
+    sort: SortDirection = SORT_DIRECTION.ASC,
   ): Promise<ChatMessageDocument[]> {
-    const messages = await this.chatMessageModel
+    return this.chatMessageModel
       .find({ conversationId })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: sort === SORT_DIRECTION.ASC ? 1 : -1 })
       .skip(offset)
       .limit(limit)
       .exec();
-
-    return sort === 'asc' ? messages.reverse() : messages;
   }
 
   async sendMessage(
@@ -108,18 +111,36 @@ class ChatService {
     currentUser: JwtUser,
     members: string[],
   ): Promise<ChatMessageDocument> {
-    const message = await this.chatMessageModel.create({
-      conversationId,
-      content,
-      role: CHAT_ROLES.USER,
-      createdBy: currentUser.preferred_username,
-      createdByUserFirstName: currentUser.given_name,
-      createdByUserLastName: currentUser.family_name,
-    });
+    let message: ChatMessageDocument;
+    try {
+      message = await this.chatMessageModel.create({
+        conversationId,
+        content: escapeHtml(content),
+        role: CHAT_ROLES.USER,
+        createdBy: currentUser.preferred_username,
+        createdByUserFirstName: currentUser.given_name,
+        createdByUserLastName: currentUser.family_name,
+      });
+    } catch (error) {
+      throw new CustomHttpException(
+        CHAT_ERROR_MESSAGES.MESSAGE_SEND_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        { conversationId, error: error instanceof Error ? error.message : 'Unknown error' },
+        ChatService.name,
+      );
+    }
 
-    await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
+    try {
+      await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
+    } catch (error) {
+      Logger.error(`Failed to update lastMessageAt for conversation ${conversationId}: ${error}`, ChatService.name);
+    }
 
-    await this.notifyGroupMembers(members, groupName, conversationType, message);
+    try {
+      await this.notifyGroupMembers(members, groupName, conversationType, message);
+    } catch (error) {
+      Logger.error(`Failed to notify group members for conversation ${conversationId}: ${error}`, ChatService.name);
+    }
 
     return message;
   }

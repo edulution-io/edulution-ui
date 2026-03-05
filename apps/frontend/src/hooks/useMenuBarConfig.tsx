@@ -111,7 +111,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
       configValues.menuItems.map((item) => ({
         id: item.id,
         label: item.disableTranslation ? item.label : t(item.label),
-        action: () => item.action?.(),
+        action: () => item.action(),
         icon: item.icon,
         disableTranslation: item.disableTranslation,
         children: getItemChildren(item.id),

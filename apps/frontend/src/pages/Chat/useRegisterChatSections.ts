@@ -23,7 +23,7 @@ import type Section from '@libs/menubar/section';
 import { CHAT_CLASSES_LOCATION, CHAT_GROUPS_LOCATION, CHAT_PATH } from '@libs/chat/constants/chatPaths';
 import isValidGroupTypeLocation from '@libs/chat/utils/isValidGroupTypeLocation';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
-import useChatStore from '@/store/useChatStore';
+import useChatStore from '@/pages/Chat/useChatStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useSubMenuStore from '@/store/useSubMenuStore';
 
@@ -61,7 +61,6 @@ const useRegisterChatSections = () => {
 
   useEffect(() => {
     setSections(sections, groupType);
-    return () => setSections([]);
   }, [sections, setSections, groupType]);
 };
 

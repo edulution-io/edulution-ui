@@ -28,14 +28,14 @@ import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import useChatStore from '@/store/useChatStore';
+import useChatStore from '@/pages/Chat/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
   const { t } = useTranslation();
   const form = useForm<ChatInputFormValues>({
-    mode: 'onChange',
+    mode: 'onSubmit',
     resolver: zodResolver(getChatInputFormSchema(t)),
     defaultValues: { message: '' },
   });
@@ -87,9 +87,9 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
       if (!data.message.trim() || isSending) return;
 
       const messageContent = data.message.trim();
-      form.reset();
 
       await sendMessage(conversationType, groupName, messageContent);
+      form.reset();
     },
     [isSending, conversationType, groupName, sendMessage, form],
   );

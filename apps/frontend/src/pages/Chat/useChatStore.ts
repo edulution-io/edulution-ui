@@ -19,9 +19,11 @@
 
 import { create } from 'zustand';
 import ChatMessage from '@libs/chat/types/chatMessage';
+import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import { CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
+import { SORT_DIRECTION } from '@libs/common/constants/sortDirection';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -42,7 +44,7 @@ interface ChatStore {
   fetchOlderMessages: () => Promise<void>;
   sendMessage: (conversationType: string, groupName: string, content: string) => Promise<void>;
   setCurrentConversation: (conversationType: string, groupName: string) => void;
-  addMessage: (message: ChatMessage) => void;
+  addMessage: (message: ChatMessageSsePayload) => void;
   reset: () => void;
 }
 
@@ -58,6 +60,8 @@ const initialState = {
   hasMoreMessages: false,
   isLoadingOlderMessages: false,
 };
+
+let fetchMessagesAbortController: AbortController | null = null;
 
 const useChatStore = create<ChatStore>((set, get) => ({
   ...initialState,
@@ -81,18 +85,23 @@ const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   fetchMessages: async (conversationType, groupName, limit = CHAT_MESSAGES_DEFAULT_LIMIT, offset = 0) => {
+    fetchMessagesAbortController?.abort();
+    fetchMessagesAbortController = new AbortController();
+
     set({ isLoading: true, error: null });
 
     try {
       const endpoint = getChatMessagesEndpoint(conversationType, groupName);
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
-        params: { limit, offset, sort: 'asc' },
+        params: { limit: limit + 1, offset, sort: SORT_DIRECTION.ASC },
+        signal: fetchMessagesAbortController.signal,
       });
 
       const { currentConversationType, currentGroupName } = get();
       if (currentConversationType !== conversationType || currentGroupName !== groupName) return;
 
-      set({ messages: response.data, hasMoreMessages: response.data.length === limit });
+      const hasMore = response.data.length > limit;
+      set({ messages: hasMore ? response.data.slice(0, limit) : response.data, hasMoreMessages: hasMore });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -109,15 +118,17 @@ const useChatStore = create<ChatStore>((set, get) => ({
     try {
       const endpoint = getChatMessagesEndpoint(currentConversationType, currentGroupName);
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
-        params: { limit: CHAT_MESSAGES_DEFAULT_LIMIT, offset: messages.length, sort: 'asc' },
+        params: { limit: CHAT_MESSAGES_DEFAULT_LIMIT + 1, offset: messages.length, sort: SORT_DIRECTION.ASC },
       });
 
       const { currentConversationType: currentType, currentGroupName: currentName } = get();
       if (currentType !== currentConversationType || currentName !== currentGroupName) return;
 
+      const hasMore = response.data.length > CHAT_MESSAGES_DEFAULT_LIMIT;
+      const olderMessages = hasMore ? response.data.slice(0, CHAT_MESSAGES_DEFAULT_LIMIT) : response.data;
       set((state) => ({
-        messages: [...response.data, ...state.messages],
-        hasMoreMessages: response.data.length === CHAT_MESSAGES_DEFAULT_LIMIT,
+        messages: [...olderMessages, ...state.messages],
+        hasMoreMessages: hasMore,
       }));
     } catch (error) {
       handleApiError(error, set);
@@ -163,6 +174,9 @@ const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   addMessage: (message) => {
+    const { currentConversationType, currentGroupName } = get();
+    if (message.conversationType !== currentConversationType || message.groupName !== currentGroupName) return;
+
     set((state) => {
       const exists = state.messages.some((m) => m.id === message.id);
       if (exists) return state;

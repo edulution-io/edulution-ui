@@ -26,8 +26,10 @@ import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Conversation.name, schema: ConversationSchema }]),
-    MongooseModule.forFeature([{ name: ChatMessage.name, schema: ChatMessageSchema }]),
+    MongooseModule.forFeature([
+      { name: Conversation.name, schema: ConversationSchema },
+      { name: ChatMessage.name, schema: ChatMessageSchema },
+    ]),
   ],
   controllers: [ChatController],
   providers: [ChatService],

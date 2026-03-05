@@ -17,5 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_MESSAGE_MAX_LENGTH = 20000;
-export default CHAT_MESSAGE_MAX_LENGTH;
+import HTML_ESCAPE_MAP from '@libs/common/constants/htmlEscapeMap';
+import HTML_ESCAPE_REGEX from '@libs/common/constants/htmlEscapeRegex';
+
+const escapeHtml = (text: string): string => text.replace(HTML_ESCAPE_REGEX, (char) => HTML_ESCAPE_MAP[char]);
+
+export default escapeHtml;

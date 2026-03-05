@@ -26,7 +26,7 @@ import { faComments, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@edulution-io/ui-kit';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import useChatStore from '@/store/useChatStore';
+import useChatStore from '@/pages/Chat/useChatStore';
 import isValidGroupTypeLocation from '@libs/chat/utils/isValidGroupTypeLocation';
 import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
 import LAST_CHAT_GROUP_STORAGE_KEY from '@libs/chat/constants/lastChatGroupStorageKey';

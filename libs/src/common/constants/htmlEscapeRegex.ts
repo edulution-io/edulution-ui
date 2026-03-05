@@ -17,5 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_MESSAGE_MAX_LENGTH = 20000;
-export default CHAT_MESSAGE_MAX_LENGTH;
+const HTML_ESCAPE_REGEX = /[&<>"']/g;
+
+export default HTML_ESCAPE_REGEX;

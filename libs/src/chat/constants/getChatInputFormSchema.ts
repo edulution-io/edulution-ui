@@ -23,10 +23,7 @@ import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
 
 const getChatInputFormSchema = (t: TFunction<'translation', undefined>) =>
   z.object({
-    message: z
-      .string()
-      .min(1)
-      .max(CHAT_MESSAGE_MAX_LENGTH, { message: t('chat.messageTooLong') }),
+    message: z.string().max(CHAT_MESSAGE_MAX_LENGTH, { message: t('chat.messageTooLong') }),
   });
 
 export default getChatInputFormSchema;

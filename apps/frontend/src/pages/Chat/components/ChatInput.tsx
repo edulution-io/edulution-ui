@@ -38,7 +38,7 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ form, onSubmit, isLoading, placeholder }) => {
   const { t } = useTranslation();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const messageValue = form.watch('message');
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ form, onSubmit, isLoading, placeh
   };
 
   const isMaxLength = messageValue.length > CHAT_MESSAGE_MAX_LENGTH;
-  const isDisabled = !messageValue.trim() || isLoading || !form.formState.isValid;
+  const isSubmitButtonDisabled = !messageValue.trim() || isLoading;
 
   return (
     <Form {...form}>
@@ -76,48 +76,52 @@ const ChatInput: React.FC<ChatInputProps> = ({ form, onSubmit, isLoading, placeh
             control={form.control}
             name="message"
             render={({ field }) => (
-              <div className="flex-1">
-                <FormControl>
-                  <Textarea
-                    name={field.name}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.value)}
-                    onBlur={field.onBlur}
-                    ref={(e) => {
-                      field.ref(e);
-                      (textareaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = e;
-                    }}
-                    onKeyDown={handleKeyDown}
-                    placeholder={placeholder || t('chat.inputPlaceholder')}
-                    className={cn(inputVariants(), 'max-h-32 min-h-10 resize-none overflow-y-auto py-2')}
-                    rows={1}
-                    disabled={isLoading}
+              <>
+                <div className="relative flex min-w-0 flex-1 flex-col">
+                  <FormControl>
+                    <Textarea
+                      name={field.name}
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      onBlur={field.onBlur}
+                      ref={(e) => {
+                        field.ref(e);
+                        textareaRef.current = e;
+                      }}
+                      onKeyDown={handleKeyDown}
+                      placeholder={placeholder || t('chat.inputPlaceholder')}
+                      className={cn(inputVariants(), 'max-h-32 min-h-10 resize-none overflow-y-auto py-2')}
+                      rows={1}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-between">
+                    <FormMessage />
+                    <span
+                      className={cn(
+                        'ml-auto text-xs',
+                        isMaxLength ? 'font-medium text-destructive' : 'text-muted-foreground',
+                      )}
+                    >
+                      {messageValue.length} / {CHAT_MESSAGE_MAX_LENGTH}
+                    </span>
+                  </div>
+                </div>
+                <Button
+                  type="submit"
+                  variant="btn-collaboration"
+                  size="icon"
+                  disabled={isSubmitButtonDisabled}
+                  className={cn('h-10 w-10 shrink-0', isSubmitButtonDisabled && 'opacity-50')}
+                >
+                  <FontAwesomeIcon
+                    icon={faPaperPlane}
+                    className="h-4 w-4"
                   />
-                </FormControl>
-                <FormMessage className="mt-1" />
-              </div>
+                </Button>
+              </>
             )}
           />
-          <Button
-            type="submit"
-            variant="btn-collaboration"
-            size="icon"
-            disabled={isDisabled}
-            className={cn('h-10 w-10 shrink-0', isDisabled && 'opacity-50')}
-          >
-            <FontAwesomeIcon
-              icon={faPaperPlane}
-              className="h-4 w-4"
-            />
-          </Button>
-        </div>
-        <div
-          className={cn(
-            'mt-1 text-right text-xs',
-            isMaxLength ? 'font-medium text-destructive' : 'text-muted-foreground',
-          )}
-        >
-          {messageValue.length} / {CHAT_MESSAGE_MAX_LENGTH}
         </div>
       </form>
     </Form>

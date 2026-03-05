@@ -27,6 +27,7 @@
     "startConversation": "Écrivez le premier message",
     "inputPlaceholder": "Tapez un message...",
     "messageTooLong": "Le message est trop long",
+    "messageRequired": "Le message ne doit pas être vide",
     "error": "Erreur",
     "errors": {
       "conversationNotFound": "Conversation introuvable",
