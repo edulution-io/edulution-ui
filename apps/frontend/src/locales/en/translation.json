@@ -2061,7 +2061,9 @@
     "errors": {
       "directoryCreationFailed": "Failed to create directory",
       "fileUploadFailed": "Failed to upload file",
-      "uploadError": "Error uploading files"
+      "uploadError": "Error uploading files",
+      "insufficientStorage": "Upload aborted: insufficient storage space",
+      "unauthorized": "Upload aborted: session expired, please log in again"
     }
   },
   "warnings": {

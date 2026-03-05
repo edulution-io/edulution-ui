@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { AxiosInstance, AxiosProgressEvent } from 'axios';
+import { AxiosInstance, AxiosProgressEvent, isAxiosError } from 'axios';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import buildOctetStreamUrl from '@libs/filesharing/utils/buildOctetStreamUrl';
@@ -71,6 +71,12 @@ const createFileUploader = (createFileUploaderDependencies: CreateFileUploaderDe
       return { name: fileName, success: true };
     } catch (error) {
       progress.markError();
+      if (
+        isAxiosError(error) &&
+        (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
+      ) {
+        throw error;
+      }
       return {
         name: fileName,
         success: false,

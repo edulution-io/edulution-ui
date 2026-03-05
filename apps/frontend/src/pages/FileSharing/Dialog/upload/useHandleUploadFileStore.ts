@@ -18,6 +18,7 @@
  */
 
 import { create } from 'zustand';
+import { isAxiosError } from 'axios';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
@@ -49,7 +50,11 @@ interface HandleUploadFileStore {
   updateFilesToUpload: (updater: (files: UploadItem[]) => UploadItem[]) => void;
   markUploading: (fileId: string, uploading: boolean) => void;
   setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => void;
-  uploadFiles: (currentPath: string, accessToken: string, share: string | undefined) => Promise<UploadResult[]>;
+  uploadFiles: (
+    currentPath: string,
+    getAccessToken: () => string | undefined,
+    share: string | undefined,
+  ) => Promise<UploadResult[]>;
   clearProgress: () => void;
   reset: () => void;
 }
@@ -106,8 +111,9 @@ const createDirectoryStructure = async (
   directories: string[],
   webdavShare: string | undefined,
   setDirectoryProgress: (current: number, total: number, share: string | undefined) => void,
-): Promise<void> => {
+): Promise<Set<string>> => {
   let createdCount = 0;
+  const failedDirectories = new Set<string>();
 
   await directories.reduce(async (previousPromise, directoryPath) => {
     await previousPromise;
@@ -117,18 +123,21 @@ const createDirectoryStructure = async (
     try {
       await createSingleDirectory(directoryPath, webdavShare);
       createdCount += 1;
-    } catch (error) {
+    } catch {
+      failedDirectories.add(directoryPath);
       toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
     }
   }, Promise.resolve());
 
   setDirectoryProgress(directories.length, directories.length, webdavShare);
+  return failedDirectories;
 };
 
 const uploadFolderFiles = async (
   files: File[],
   basePath: string,
   uploadFile: (file: File, uploadPath: string) => Promise<void>,
+  failedDirectories: Set<string>,
 ): Promise<void> => {
   await files.reduce(async (previousPromise, file) => {
     await previousPromise;
@@ -136,10 +145,25 @@ const uploadFolderFiles = async (
     const relativePath = file.webkitRelativePath || file.name;
     const cleanBasePath = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
     const uploadPath = `${cleanBasePath}/${relativePath}`;
+    const fileDirectory = uploadPath.slice(0, uploadPath.lastIndexOf('/'));
+
+    const isInFailedDirectory = Array.from(failedDirectories).some(
+      (failedDir) => fileDirectory === failedDir || fileDirectory.startsWith(`${failedDir}/`),
+    );
+
+    if (isInFailedDirectory) {
+      return;
+    }
 
     try {
       await uploadFile(file, uploadPath);
     } catch (error) {
+      if (
+        isAxiosError(error) &&
+        (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
+      ) {
+        throw error;
+      }
       toast.error(t('filesharing.filesharingUpload.errors.fileUploadFailed'));
     }
   }, Promise.resolve());
@@ -158,8 +182,8 @@ const uploadFolder = async (
 
   const directories = extractAllDirectories(folder, basePath);
 
-  await createDirectoryStructure(directories, webdavShare, setDirectoryProgress);
-  await uploadFolderFiles(folder.files, basePath, uploadFile);
+  const failedDirectories = await createDirectoryStructure(directories, webdavShare, setDirectoryProgress);
+  await uploadFolderFiles(folder.files, basePath, uploadFile, failedDirectories);
 };
 
 type FileUploader = (fileItem: UploadItem) => Promise<UploadResult>;
@@ -190,6 +214,12 @@ const processSingleUploadItem = async (
     }
     return await singleFileUploader(fileItem);
   } catch (error) {
+    if (
+      isAxiosError(error) &&
+      (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
+    ) {
+      throw error;
+    }
     return {
       name: fileItem.name,
       success: false,
@@ -284,7 +314,7 @@ const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
 
   uploadFiles: async (
     currentPath: string,
-    accessToken: string,
+    getAccessToken: () => string | undefined,
     webdavShare: string | undefined,
   ): Promise<UploadResult[]> => {
     const files = get().filesToUpload;
@@ -302,7 +332,7 @@ const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
       progressById: {},
     });
 
-    const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, accessToken);
+    const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, getAccessToken);
 
     const setProgressForFile = (fileId: string, fileName: string, share: string | undefined, progress: FileProgress) =>
       set((state) => ({
@@ -321,19 +351,33 @@ const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
 
     const outcomes: UploadResult[] = [];
 
-    await files.reduce(async (previousPromise, fileItem) => {
-      await previousPromise;
+    try {
+      await files.reduce(async (previousPromise, fileItem) => {
+        await previousPromise;
 
-      const result = await processSingleUploadItem(
-        fileItem,
-        currentPath,
-        webdavShare,
-        singleFileUploader,
-        get().setDirectoryCreationProgress,
-      );
+        const result = await processSingleUploadItem(
+          fileItem,
+          currentPath,
+          webdavShare,
+          singleFileUploader,
+          get().setDirectoryCreationProgress,
+        );
 
-      outcomes.push(result);
-    }, Promise.resolve());
+        outcomes.push(result);
+      }, Promise.resolve());
+    } catch (error) {
+      if (
+        isAxiosError(error) &&
+        (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
+      ) {
+        const status = error.response?.status;
+        if (status === 507) {
+          toast.error(t('filesharing.filesharingUpload.errors.insufficientStorage'));
+        } else {
+          toast.error(t('filesharing.filesharingUpload.errors.unauthorized'));
+        }
+      }
+    }
 
     return outcomes;
   },

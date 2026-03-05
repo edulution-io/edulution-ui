@@ -2063,7 +2063,9 @@
     "errors": {
       "directoryCreationFailed": "Fehler beim Erstellen des Ordners",
       "fileUploadFailed": "Fehler beim Hochladen des Ordner-Inhalts",
-      "uploadError": "Fehler beim Hochladen der Dateien"
+      "uploadError": "Fehler beim Hochladen der Dateien",
+      "insufficientStorage": "Upload abgebrochen: Nicht genügend Speicherplatz",
+      "unauthorized": "Upload abgebrochen: Sitzung abgelaufen, bitte erneut anmelden"
     },
     "preparingFolder": "Ordner wird vorbereitet"
   },

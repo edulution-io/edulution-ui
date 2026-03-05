@@ -33,7 +33,6 @@ const UploadFileDialog = () => {
   const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, updateFilesToUpload } =
     useHandleUploadFileStore();
 
-  const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
   const [remountKey, setRemountKey] = useState(0);
 
@@ -45,7 +44,7 @@ const UploadFileDialog = () => {
 
   const handleSubmit = async () => {
     closeUploadDialog();
-    await uploadFiles(currentPath, eduApiToken, webdavShare);
+    await uploadFiles(currentPath, () => useUserStore.getState().eduApiToken, webdavShare);
     setRemountKey((k) => k + 1);
   };
 

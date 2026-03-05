@@ -21,7 +21,11 @@ import axios, { AxiosInstance } from 'axios';
 
 type QueryParams = Record<string, string | number | boolean | undefined>;
 
-const createUploadClient = (baseURL: string, params: QueryParams, token?: string): AxiosInstance => {
+const createUploadClient = (
+  baseURL: string,
+  params: QueryParams,
+  getToken: () => string | undefined,
+): AxiosInstance => {
   const instance = axios.create({
     baseURL,
     withCredentials: true,
@@ -29,9 +33,13 @@ const createUploadClient = (baseURL: string, params: QueryParams, token?: string
     params,
   });
 
-  if (token) {
-    instance.defaults.headers.common.Authorization = `Bearer ${token}`;
-  }
+  instance.interceptors.request.use((config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.set('Authorization', `Bearer ${token}`);
+    }
+    return config;
+  });
 
   return instance;
 };
