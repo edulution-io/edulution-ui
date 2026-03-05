@@ -1703,7 +1703,15 @@
         "title": "Zeitplan – {{app}}",
         "startTime": "Von",
         "endTime": "Bis",
-        "days": "Tage"
+        "days": "Tage",
+        "applyTo": "Anwenden auf",
+        "allDays": "Alle Tage",
+        "onlyDay": "Nur {{day}}"
+      },
+      "calendar": {
+        "dragHint": "Kanten ziehen zum Anpassen",
+        "clickDayHint": "Block klicken zum Bearbeiten, Doppelklick zum Hinzufügen",
+        "selectApp": "App auswählen"
       }
     },
     "wireguard": {

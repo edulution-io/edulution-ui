@@ -17,13 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type NotificationScheduleDto from './notification-schedule.dto';
+const SCHEDULE_BLOCK_COLORS = [
+  '#3B82F6',
+  '#10B981',
+  '#F59E0B',
+  '#EF4444',
+  '#8B5CF6',
+  '#EC4899',
+  '#06B6D4',
+  '#F97316',
+  '#14B8A6',
+  '#6366F1',
+] as const;
 
-type UpdateNotificationPreferencesDto = {
-  pushEnabled?: boolean;
-  appName?: string;
-  appEnabled?: boolean;
-  appSchedules?: NotificationScheduleDto[];
-};
-
-export default UpdateNotificationPreferencesDto;
+export default SCHEDULE_BLOCK_COLORS;

@@ -1700,7 +1700,15 @@
         "title": "Schedule – {{app}}",
         "startTime": "From",
         "endTime": "To",
-        "days": "Days"
+        "days": "Days",
+        "applyTo": "Apply to",
+        "allDays": "All days",
+        "onlyDay": "Only {{day}}"
+      },
+      "calendar": {
+        "dragHint": "Drag edges to adjust time",
+        "clickDayHint": "Click block to edit, double-click to add",
+        "selectApp": "Select App"
       }
     },
     "wireguard": {

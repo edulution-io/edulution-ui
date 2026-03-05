@@ -29,12 +29,19 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 
+const APPLY_SCOPE_ALL = 'all';
+const APPLY_SCOPE_SINGLE = 'single';
+
 interface NotificationScheduleDialogProps {
   appDisplayName: string;
   currentSchedule: NotificationScheduleDto | undefined;
+  clickedDay?: number;
+  prefilledStartTime?: string;
+  prefilledEndTime?: string;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (schedule: NotificationScheduleDto) => void;
+  onSave: (schedules: NotificationScheduleDto[]) => void;
+  onDelete?: (dayToRemove?: number) => void;
 }
 
 interface ScheduleFormValues {
@@ -66,12 +73,19 @@ const dateToTimeString = (date: Date | null, fallbackHour: number): string => {
 const NotificationScheduleDialog: React.FC<NotificationScheduleDialogProps> = ({
   appDisplayName,
   currentSchedule,
+  clickedDay,
+  prefilledStartTime,
+  prefilledEndTime,
   isOpen,
   onClose,
   onSave,
+  onDelete,
 }) => {
   const { t } = useTranslation();
   const [days, setDays] = useState<Weekday[]>([...ALL_WEEKDAYS]);
+  const [applyScope, setApplyScope] = useState(APPLY_SCOPE_ALL);
+
+  const showScopeOption = clickedDay !== undefined && currentSchedule !== undefined && currentSchedule.days.length > 1;
 
   const form = useForm<ScheduleFormValues>({
     defaultValues: {
@@ -81,19 +95,21 @@ const NotificationScheduleDialog: React.FC<NotificationScheduleDialogProps> = ({
   });
 
   useEffect(() => {
+    const startTime = prefilledStartTime ?? currentSchedule?.startTime ?? null;
+    const endTime = prefilledEndTime ?? currentSchedule?.endTime ?? null;
+
+    form.reset({
+      startTime: timeStringToDate(startTime, DEFAULT_START_HOUR),
+      endTime: timeStringToDate(endTime, DEFAULT_END_HOUR),
+    });
+
     if (currentSchedule) {
-      form.reset({
-        startTime: timeStringToDate(currentSchedule.startTime, DEFAULT_START_HOUR),
-        endTime: timeStringToDate(currentSchedule.endTime, DEFAULT_END_HOUR),
-      });
       setDays(currentSchedule.days);
     } else {
-      form.reset({
-        startTime: timeStringToDate(null, DEFAULT_START_HOUR),
-        endTime: timeStringToDate(null, DEFAULT_END_HOUR),
-      });
-      setDays([...ALL_WEEKDAYS]);
+      setDays(clickedDay !== undefined ? [clickedDay as Weekday] : [...ALL_WEEKDAYS]);
     }
+
+    setApplyScope(APPLY_SCOPE_ALL);
   }, [currentSchedule, isOpen]);
 
   const handleDayToggle = (day: Weekday) => {
@@ -102,17 +118,80 @@ const NotificationScheduleDialog: React.FC<NotificationScheduleDialogProps> = ({
 
   const handleSave = () => {
     const values = form.getValues();
-    onSave({
-      enabled: true,
-      startTime: dateToTimeString(values.startTime, DEFAULT_START_HOUR),
-      endTime: dateToTimeString(values.endTime, DEFAULT_END_HOUR),
-      days,
-    });
+    const newStartTime = dateToTimeString(values.startTime, DEFAULT_START_HOUR);
+    const newEndTime = dateToTimeString(values.endTime, DEFAULT_END_HOUR);
+
+    if (applyScope === APPLY_SCOPE_SINGLE && clickedDay !== undefined && currentSchedule) {
+      const clickedWeekday = clickedDay as Weekday;
+      const remainingDays = currentSchedule.days.filter((d) => d !== clickedWeekday);
+      const result: NotificationScheduleDto[] = [];
+
+      if (remainingDays.length > 0) {
+        result.push({
+          enabled: true,
+          startTime: currentSchedule.startTime,
+          endTime: currentSchedule.endTime,
+          days: remainingDays,
+        });
+      }
+
+      result.push({
+        enabled: true,
+        startTime: newStartTime,
+        endTime: newEndTime,
+        days: [clickedWeekday],
+      });
+
+      onSave(result);
+    } else {
+      onSave([
+        {
+          enabled: true,
+          startTime: newStartTime,
+          endTime: newEndTime,
+          days,
+        },
+      ]);
+    }
+
     onClose();
   };
 
   const body = (
     <div className="flex flex-col divide-y divide-muted">
+      {showScopeOption && (
+        <div className="flex items-center gap-4 py-3">
+          <span className="text-background">{t('usersettings.notifications.schedule.applyTo')}</span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setApplyScope(APPLY_SCOPE_ALL)}
+              className={cn(
+                'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                applyScope === APPLY_SCOPE_ALL
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground',
+              )}
+            >
+              {t('usersettings.notifications.schedule.allDays')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setApplyScope(APPLY_SCOPE_SINGLE)}
+              className={cn(
+                'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                applyScope === APPLY_SCOPE_SINGLE
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground',
+              )}
+            >
+              {t('usersettings.notifications.schedule.onlyDay', {
+                day: t(`common.weekdaysShort.${clickedDay}`),
+              })}
+            </button>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between py-3">
         <span className="text-background">{t('usersettings.notifications.schedule.startTime')}</span>
         <DateTimePickerField
@@ -133,34 +212,46 @@ const NotificationScheduleDialog: React.FC<NotificationScheduleDialogProps> = ({
           allowPast
         />
       </div>
-      <div className="flex items-center justify-between py-3">
-        <span className="text-background">{t('usersettings.notifications.schedule.days')}</span>
-        <div className="flex gap-1.5">
-          {ALL_WEEKDAYS.map((day) => {
-            const isActive = days.includes(day);
-            return (
-              <button
-                key={day}
-                type="button"
-                onClick={() => handleDayToggle(day)}
-                className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-md text-xs font-semibold transition-colors',
-                  isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground',
-                )}
-              >
-                {t(`common.weekdaysShort.${day}`)}
-              </button>
-            );
-          })}
+      {applyScope === APPLY_SCOPE_ALL && (
+        <div className="flex items-center justify-between py-3">
+          <span className="text-background">{t('usersettings.notifications.schedule.days')}</span>
+          <div className="flex gap-1.5">
+            {ALL_WEEKDAYS.map((day) => {
+              const isActive = days.includes(day);
+              return (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => handleDayToggle(day)}
+                  className={cn(
+                    'flex h-8 w-8 items-center justify-center rounded-md text-xs font-semibold transition-colors',
+                    isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground',
+                  )}
+                >
+                  {t(`common.weekdaysShort.${day}`)}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
+
+  const handleDelete = () => {
+    if (applyScope === APPLY_SCOPE_SINGLE && clickedDay !== undefined) {
+      onDelete?.(clickedDay);
+    } else {
+      onDelete?.();
+    }
+    onClose();
+  };
 
   const footer = (
     <DialogFooterButtons
       handleClose={onClose}
       handleSubmit={handleSave}
+      handleDelete={onDelete ? handleDelete : undefined}
     />
   );
 

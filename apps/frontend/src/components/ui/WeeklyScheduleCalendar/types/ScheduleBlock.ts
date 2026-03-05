@@ -17,16 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const APP_NOTIFICATIONS_TABLE_COLUMNS = {
-  APP: 'app',
-  MONDAY: 'monday',
-  TUESDAY: 'tuesday',
-  WEDNESDAY: 'wednesday',
-  THURSDAY: 'thursday',
-  FRIDAY: 'friday',
-  SATURDAY: 'saturday',
-  SUNDAY: 'sunday',
-  ACTIVE: 'active',
-} as const;
+interface ScheduleBlock {
+  id: string;
+  label: string;
+  color: string;
+  startTime: string;
+  endTime: string;
+  days: number[];
+}
 
-export default APP_NOTIFICATIONS_TABLE_COLUMNS;
+export default ScheduleBlock;

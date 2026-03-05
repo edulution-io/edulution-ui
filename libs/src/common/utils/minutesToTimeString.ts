@@ -17,13 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type NotificationScheduleDto from './notification-schedule.dto';
-
-type UpdateNotificationPreferencesDto = {
-  pushEnabled?: boolean;
-  appName?: string;
-  appEnabled?: boolean;
-  appSchedules?: NotificationScheduleDto[];
+const minutesToTimeString = (totalMinutes: number): string => {
+  const clamped = Math.max(0, Math.min(1440, totalMinutes));
+  const h = Math.floor(clamped / 60);
+  const m = clamped % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 };
 
-export default UpdateNotificationPreferencesDto;
+export default minutesToTimeString;

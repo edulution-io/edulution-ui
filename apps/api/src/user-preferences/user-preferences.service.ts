@@ -83,10 +83,9 @@ class UserPreferencesService {
       setFields[`${USER_PREFERENCES_FIELDS.notifications}.apps.${updateDto.appName}.enabled`] = updateDto.appEnabled;
     }
 
-    if (updateDto.appName !== undefined && updateDto.appSchedule !== undefined) {
-      setFields[`${USER_PREFERENCES_FIELDS.notifications}.apps.${updateDto.appName}.schedules`] = [
-        updateDto.appSchedule,
-      ];
+    if (updateDto.appName !== undefined && updateDto.appSchedules !== undefined) {
+      setFields[`${USER_PREFERENCES_FIELDS.notifications}.apps.${updateDto.appName}.schedules`] =
+        updateDto.appSchedules;
     }
 
     const doc = await this.userPreferencesModel

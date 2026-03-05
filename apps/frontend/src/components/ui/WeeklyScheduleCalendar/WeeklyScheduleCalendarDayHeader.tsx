@@ -17,13 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type NotificationScheduleDto from './notification-schedule.dto';
+import React from 'react';
 
-type UpdateNotificationPreferencesDto = {
-  pushEnabled?: boolean;
-  appName?: string;
-  appEnabled?: boolean;
-  appSchedules?: NotificationScheduleDto[];
-};
+interface WeeklyScheduleCalendarDayHeaderProps {
+  dayLabels: string[];
+}
 
-export default UpdateNotificationPreferencesDto;
+const WeeklyScheduleCalendarDayHeader = ({ dayLabels }: WeeklyScheduleCalendarDayHeaderProps) => (
+  <div
+    className="sticky top-0 z-20 grid bg-white dark:bg-background"
+    style={{ gridTemplateColumns: `50px repeat(${7}, 1fr)` }}
+  >
+    <div />
+    {dayLabels.map((label) => (
+      <div
+        key={label}
+        className="border-b border-l border-muted py-2 text-center text-xs font-medium text-muted-foreground"
+      >
+        {label}
+      </div>
+    ))}
+  </div>
+);
+
+export default WeeklyScheduleCalendarDayHeader;

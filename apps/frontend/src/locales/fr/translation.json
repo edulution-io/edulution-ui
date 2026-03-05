@@ -1494,7 +1494,15 @@
         "title": "Horaire – {{app}}",
         "startTime": "De",
         "endTime": "À",
-        "days": "Jours"
+        "days": "Jours",
+        "applyTo": "Appliquer à",
+        "allDays": "Tous les jours",
+        "onlyDay": "Seulement {{day}}"
+      },
+      "calendar": {
+        "dragHint": "Glissez les bords pour ajuster",
+        "clickDayHint": "Cliquez pour modifier, double-cliquez pour ajouter",
+        "selectApp": "Sélectionner une application"
       }
     },
     "wireguard": {
