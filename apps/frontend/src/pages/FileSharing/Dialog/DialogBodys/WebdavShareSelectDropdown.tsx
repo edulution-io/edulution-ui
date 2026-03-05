@@ -20,7 +20,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownSelect } from '@/components';
-import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
+import DropdownOption from '@libs/ui/types/dropdownOption';
 import useFileSharingStore from '../../useFileSharingStore';
 
 type WebdavShareSelectDropdownProps = {
@@ -50,7 +50,7 @@ const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ w
     return webdavShares.filter((share) => !share.isRootServer && share.rootServer === rootServerName);
   }, [webdavShares, webdavShare, showRootOnly]);
 
-  const webdavShareOptions: DropdownOptions[] = filteredShares.map((item) => ({
+  const webdavShareOptions: DropdownOption[] = filteredShares.map((item) => ({
     id: item.displayName,
     name: item.displayName,
   }));

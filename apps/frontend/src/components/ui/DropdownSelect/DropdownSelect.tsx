@@ -17,23 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
+import DropdownOption from '@libs/ui/types/dropdownOption';
 import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
 import DropdownSelectPanel from '@/components/ui/DropdownSelect/DropdownSelectPanel';
 
 const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-background`;
 
-export type DropdownOptions = {
-  id: string;
-  name: string;
-};
-
 interface DropdownProps {
-  options: DropdownOptions[];
+  options: DropdownOption[];
   selectedVal: string;
   handleChange: (value: string) => void;
   openToTop?: boolean;
@@ -68,6 +64,7 @@ const DropdownSelect = ({
   const [openToTop, setOpenToTop] = useState(openToTopProp);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const listboxId = useId();
 
   const closeMenu = () => setIsOpen(false);
 
@@ -146,45 +143,33 @@ const DropdownSelect = ({
 
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
-  const variantClasses = {
-    default: VARIANT_COLORS.default,
-    dialog: VARIANT_COLORS.dialog,
-  };
+  const onSelect = useCallback(
+    (id: string) => {
+      setQuery('');
+      handleChange(id);
+      closeMenu();
+    },
+    [handleChange],
+  );
 
-  const DropdownPanel = !enablePortalUsage ? (
+  const panelStyle: React.CSSProperties = enablePortalUsage
+    ? { maxHeight: MENU_MAX_HEIGHT, top: menuPosition.top, left: menuPosition.left, width: menuPosition.width }
+    : { maxHeight: MENU_MAX_HEIGHT, width: Math.max(menuPosition.width, 130) };
+
+  const panel = (
     <DropdownSelectPanel
       menuRef={menuRef}
       options={filteredOptions}
       selectedVal={selectedVal}
-      handleChange={handleChange}
+      onSelect={onSelect}
       translateLabel={translateLabel}
-      setQuery={setQuery}
-      closeMenu={closeMenu}
-      variantClasses={variantClasses}
       variant={variant}
-      maxHeight={MENU_MAX_HEIGHT}
-      menuPosition={menuPosition}
-      enablePortalUsage={enablePortalUsage}
+      style={panelStyle}
+      listboxId={listboxId}
     />
-  ) : (
-    createPortal(
-      <DropdownSelectPanel
-        menuRef={menuRef}
-        options={filteredOptions}
-        selectedVal={selectedVal}
-        handleChange={handleChange}
-        translateLabel={translateLabel}
-        setQuery={setQuery}
-        closeMenu={closeMenu}
-        variantClasses={variantClasses}
-        variant={variant}
-        maxHeight={MENU_MAX_HEIGHT}
-        menuPosition={menuPosition}
-        enablePortalUsage={enablePortalUsage}
-      />,
-      document.body,
-    )
   );
+
+  const DropdownPanel = enablePortalUsage ? createPortal(panel, document.body) : panel;
 
   return (
     <div
@@ -193,7 +178,7 @@ const DropdownSelect = ({
       role="combobox"
       aria-expanded={isOpen}
       aria-haspopup="listbox"
-      aria-controls="dropdown-listbox"
+      aria-controls={listboxId}
     >
       <input
         type={searchEnabled ? 'text' : 'button'}
@@ -205,12 +190,12 @@ const DropdownSelect = ({
         onFocus={searchEnabled ? openMenu : undefined}
         readOnly={!searchEnabled}
         disabled={options.length === 0}
-        className={cn(DROPDOWN_SELECT_CLASSES, variantClasses[variant], {
+        className={cn(DROPDOWN_SELECT_CLASSES, VARIANT_COLORS[variant], {
           'cursor-text': searchEnabled,
           'cursor-pointer': !searchEnabled,
         })}
         aria-autocomplete={searchEnabled ? 'list' : undefined}
-        aria-controls="dropdown-listbox"
+        aria-controls={listboxId}
       />
 
       <div

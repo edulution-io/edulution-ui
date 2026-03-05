@@ -25,7 +25,8 @@ import 'survey-analytics/survey.analytics.min.css';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
 import '../dialogs/resultVisualizationDialog.css';
-import DropdownSelect, { DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
+import DropdownOption from '@libs/ui/types/dropdownOption';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,
@@ -55,7 +56,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
     el.dataset.replaced = 'true';
     el.style.display = 'none';
 
-    const options: DropdownOptions[] = Array.from(el.options).map((o) => ({
+    const options: DropdownOption[] = Array.from(el.options).map((o) => ({
       id: o.value,
       name: o.text,
     }));

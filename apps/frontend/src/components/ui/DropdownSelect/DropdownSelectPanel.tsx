@@ -21,53 +21,36 @@ import React, { useRef } from 'react';
 import { cn } from '@edulution-io/ui-kit';
 import { useTranslation } from 'react-i18next';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-
-export type DropdownOptions = {
-  id: string;
-  name: string;
-};
+import DropdownOption from '@libs/ui/types/dropdownOption';
+import { VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
 
 interface DropdownSelectPanelProps {
   menuRef: React.RefObject<HTMLDivElement>;
-  options: DropdownOptions[];
+  options: DropdownOption[];
   selectedVal: string;
-  handleChange: (value: string) => void;
+  onSelect: (id: string) => void;
   translateLabel: (label: string) => string;
-  setQuery: (query: string) => void;
-  closeMenu: () => void;
-  variantClasses: { default: string; dialog: string };
   variant: DropdownVariant;
-  maxHeight: number;
-  menuPosition: { top: number; left: number; width: number };
-  enablePortalUsage: boolean;
+  style: React.CSSProperties;
+  listboxId: string;
 }
 
 const DropdownSelectPanel = ({
   menuRef,
   options,
   selectedVal,
-  handleChange,
+  onSelect,
   translateLabel,
-  setQuery,
-  closeMenu,
-  variantClasses,
   variant,
-  maxHeight,
-  menuPosition,
-  enablePortalUsage,
+  style,
+  listboxId,
 }: DropdownSelectPanelProps) => {
   const { t } = useTranslation();
 
-  const selectOption = (option: DropdownOptions) => {
-    setQuery('');
-    handleChange(option.id);
-    closeMenu();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent, option: DropdownOptions) => {
+  const handleKeyDown = (e: React.KeyboardEvent, optionId: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      selectOption(option);
+      onSelect(optionId);
     }
   };
 
@@ -103,23 +86,11 @@ const DropdownSelectPanel = ({
       ref={menuRef}
       className={cn(
         'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
-        variantClasses[variant],
+        VARIANT_COLORS[variant],
       )}
-      style={
-        enablePortalUsage
-          ? {
-              maxHeight,
-              top: menuPosition.top,
-              left: menuPosition.left,
-              width: menuPosition.width,
-            }
-          : {
-              maxHeight,
-              width: Math.max(menuPosition.width, 130),
-            }
-      }
+      style={style}
       role="listbox"
-      id="dropdown-listbox"
+      id={listboxId}
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -135,8 +106,8 @@ const DropdownSelectPanel = ({
             role="option"
             aria-selected={selected}
             tabIndex={0}
-            onClick={() => selectOption(option)}
-            onKeyDown={(e) => handleKeyDown(e, option)}
+            onClick={() => onSelect(option.id)}
+            onKeyDown={(e) => handleKeyDown(e, option.id)}
             className={cn('box-border block cursor-pointer px-2.5 py-2', selected ? classes.selected : classes.base)}
             title={label}
           >
