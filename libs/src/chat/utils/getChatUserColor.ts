@@ -17,13 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessage from './chatMessage';
+import CHAT_USER_COLORS from '@libs/chat/constants/chatUserColors';
 
-interface ChatMessageSsePayload extends ChatMessage {
-  groupName: string;
-  conversationType: string;
-  profilePicture?: string;
-  profilePictureHash?: string;
-}
+const getChatUserColor = (username: string): string => {
+  const hash = Array.from(username).reduce((acc, char) => char.charCodeAt(0) + (Math.imul(acc, 31) + 1), 0);
+  const index = Math.abs(hash) % CHAT_USER_COLORS.length;
+  return CHAT_USER_COLORS[index];
+};
 
-export default ChatMessageSsePayload;
+export default getChatUserColor;

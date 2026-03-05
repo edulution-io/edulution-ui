@@ -17,13 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessage from './chatMessage';
+import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 
-interface ChatMessageSsePayload extends ChatMessage {
-  groupName: string;
-  conversationType: string;
-  profilePicture?: string;
-  profilePictureHash?: string;
-}
+const computeSha256Hash = async (data: string): Promise<string> => {
+  const encoder = new TextEncoder();
+  const buffer = await crypto.subtle.digest(HashAlgorithm, encoder.encode(data));
+  const hashArray = Array.from(new Uint8Array(buffer));
+  return hashArray.map((byte) => byte.toString(16).padStart(2, '0')).join('');
+};
 
-export default ChatMessageSsePayload;
+export default computeSha256Hash;

@@ -110,6 +110,8 @@ class ChatService {
     content: string,
     currentUser: JwtUser,
     members: string[],
+    profilePicture?: string,
+    profilePictureHash?: string,
   ): Promise<ChatMessageDocument> {
     let message: ChatMessageDocument;
     try {
@@ -137,7 +139,7 @@ class ChatService {
     }
 
     try {
-      await this.notifyGroupMembers(members, groupName, conversationType, message);
+      await this.notifyGroupMembers(members, groupName, conversationType, message, profilePicture, profilePictureHash);
     } catch (error) {
       Logger.error(`Failed to notify group members for conversation ${conversationId}: ${error}`, ChatService.name);
     }
@@ -150,13 +152,15 @@ class ChatService {
     groupName: string,
     conversationType: string,
     message: ChatMessageDocument,
+    profilePicture?: string,
+    profilePictureHash?: string,
   ): Promise<void> {
     const recipients = members.filter((member) => member !== message.createdBy);
     if (recipients.length === 0) {
       return;
     }
 
-    const payload = { ...message.toJSON(), groupName, conversationType };
+    const payload = { ...message.toJSON(), groupName, conversationType, profilePicture, profilePictureHash };
     this.sseService.sendEventToUsers(recipients, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
     const sourceId = `${conversationType}/${groupName}`;

@@ -17,13 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessage from './chatMessage';
+const formatIsoDateToTimeString = (iso: string, locale: string | undefined = 'de-DE') =>
+  new Date(iso).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
 
-interface ChatMessageSsePayload extends ChatMessage {
-  groupName: string;
-  conversationType: string;
-  profilePicture?: string;
-  profilePictureHash?: string;
-}
-
-export default ChatMessageSsePayload;
+export default formatIsoDateToTimeString;
