@@ -34,6 +34,7 @@ interface CollaboraEditorProps {
 
 const COLLABORA_FRAME_NAME = 'collabora-frame';
 const COLLABORA_EDITOR_PATH = '/browser/dist/cool.html';
+const COLLABORA_MIN_WIDTH_PX = 800;
 
 const CollaboraEditor = ({
   collaboraUrl,
@@ -66,7 +67,7 @@ const CollaboraEditor = ({
   const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}&permission=${permission}`;
 
   return (
-    <div className={cn('relative h-full w-full', { 'h-dvh': isOpenedInNewTab })}>
+    <div className={cn('relative h-full w-full overflow-x-auto', { 'h-dvh': isOpenedInNewTab })}>
       {isLoading && (
         <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
           <CircleLoader />
@@ -93,7 +94,8 @@ const CollaboraEditor = ({
       <iframe
         name={COLLABORA_FRAME_NAME}
         title={t('filesharing.collaboraEditor')}
-        className="h-full w-full border-none"
+        className="h-full border-none"
+        style={{ minWidth: COLLABORA_MIN_WIDTH_PX }}
         allow={IFRAME_ALLOWED_CONFIG}
         onLoad={handleIframeLoad}
       />
