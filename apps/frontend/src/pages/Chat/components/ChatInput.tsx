@@ -17,71 +17,114 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { KeyboardEvent, FormEvent } from 'react';
+import React, { useRef, useEffect, KeyboardEvent } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button, cn } from '@edulution-io/ui-kit';
+import { Form, FormControl, FormFieldSH, FormMessage } from '@/components/ui/Form';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
+import ChatInputFormValues from '@libs/chat/types/chatInputFormValues';
 
 interface ChatInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: (e?: FormEvent) => Promise<void>;
+  form: UseFormReturn<ChatInputFormValues>;
+  onSubmit: (data: ChatInputFormValues) => Promise<void>;
   isLoading: boolean;
   placeholder?: string;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoading, placeholder }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ form, onSubmit, isLoading, placeholder }) => {
   const { t } = useTranslation();
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const messageValue = form.watch('message');
+
+  useEffect(() => {
+    if (!isLoading) {
+      textareaRef.current?.focus();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [messageValue]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (value.trim() && !isLoading) {
-        void onSubmit();
-      }
+      void form.handleSubmit(onSubmit)();
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (value.trim() && !isLoading) {
-      void onSubmit(e);
-    }
-  };
-
-  const isDisabled = !value.trim() || isLoading;
+  const isMaxLength = messageValue.length > CHAT_MESSAGE_MAX_LENGTH;
+  const isSubmitButtonDisabled = !messageValue.trim() || isLoading;
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-background/80 flex items-end gap-2 border-t p-4 backdrop-blur-sm"
-    >
-      <Textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder || t('chat.inputPlaceholder')}
-        className="max-h-32 min-h-[42px] flex-1 resize-none rounded-xl py-2 [field-sizing:content]"
-        rows={1}
-        maxLength={CHAT_MESSAGE_MAX_LENGTH}
-        disabled={isLoading}
-      />
-      <Button
-        type="submit"
-        variant="btn-collaboration"
-        size="icon"
-        disabled={isDisabled}
-        className={cn('h-[42px] w-[42px] shrink-0 self-end rounded-xl', isDisabled && 'opacity-50')}
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="bg-background/80 flex flex-col border-t border-muted p-4 backdrop-blur-sm"
       >
-        <FontAwesomeIcon
-          icon={faPaperPlane}
-          className="h-4 w-4"
-        />
-      </Button>
-    </form>
+        <div className="flex items-end gap-2">
+          <FormFieldSH
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <>
+                <div className="relative flex min-w-0 flex-1 flex-col">
+                  <FormControl>
+                    <Textarea
+                      name={field.name}
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      onBlur={field.onBlur}
+                      ref={(e) => {
+                        field.ref(e);
+                        textareaRef.current = e;
+                      }}
+                      onKeyDown={handleKeyDown}
+                      placeholder={placeholder || t('chat.inputPlaceholder')}
+                      className={cn(inputVariants(), 'max-h-32 min-h-10 resize-none overflow-y-auto py-2')}
+                      rows={1}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <div className="absolute -bottom-5 left-0 right-0 flex items-center justify-between">
+                    <FormMessage />
+                    <span
+                      className={cn(
+                        'ml-auto text-xs',
+                        isMaxLength ? 'font-medium text-destructive' : 'text-muted-foreground',
+                      )}
+                    >
+                      {messageValue.length} / {CHAT_MESSAGE_MAX_LENGTH}
+                    </span>
+                  </div>
+                </div>
+                <Button
+                  type="submit"
+                  variant="btn-collaboration"
+                  size="icon"
+                  disabled={isSubmitButtonDisabled}
+                  className={cn('h-10 w-10 shrink-0', isSubmitButtonDisabled && 'opacity-50')}
+                >
+                  <FontAwesomeIcon
+                    icon={faPaperPlane}
+                    className="h-4 w-4"
+                  />
+                </Button>
+              </>
+            )}
+          />
+        </div>
+      </form>
+    </Form>
   );
 };
 

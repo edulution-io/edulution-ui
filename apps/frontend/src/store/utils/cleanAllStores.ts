@@ -28,7 +28,6 @@ import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
-import useChatStore from '@/store/useChatStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
@@ -74,6 +73,8 @@ import useParentChildPairingStore from '@/pages/UserSettings/ParentChildPairing/
 import useNotificationStore from '@/store/useNotificationStore';
 import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
 import useUserManagementStore from '@/pages/LinuxmusterPage/UserManagement/useUserManagementStore';
+import LAST_CHAT_GROUP_STORAGE_KEY from '@libs/chat/constants/lastChatGroupStorageKey';
+import useChatStore from '@/pages/Chat/useChatStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -135,6 +136,7 @@ const cleanAllStores = async () => {
   useParentChildPairingStore.getState().reset();
   useParentAssignmentStore.getState().reset();
   useNotificationStore.getState().reset();
+  localStorage.removeItem(LAST_CHAT_GROUP_STORAGE_KEY);
   localStorage.removeItem('i18nextLng');
   localStorage.removeItem('user-management-storage');
   localStorage.removeItem('device-management-storage');

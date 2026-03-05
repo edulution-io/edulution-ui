@@ -17,5 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_MESSAGE_MAX_LENGTH = 20000;
-export default CHAT_MESSAGE_MAX_LENGTH;
+import { BadRequestException } from '@nestjs/common';
+import AllowedConversationType from '@libs/chat/types/allowedConversationType';
+import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
+import isAllowedConversationType from '@libs/chat/utils/isAllowedConversationType';
+
+const validateConversationType = (value: string): AllowedConversationType => {
+  if (!isAllowedConversationType(value)) {
+    throw new BadRequestException(CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE);
+  }
+  return value;
+};
+
+export default validateConversationType;

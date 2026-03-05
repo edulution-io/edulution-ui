@@ -17,5 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_MESSAGE_MAX_LENGTH = 20000;
-export default CHAT_MESSAGE_MAX_LENGTH;
+import { z } from 'zod';
+import { TFunction } from 'i18next';
+import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
+
+const getChatInputFormSchema = (t: TFunction<'translation', undefined>) =>
+  z.object({
+    message: z.string().max(CHAT_MESSAGE_MAX_LENGTH, { message: t('chat.messageTooLong') }),
+  });
+
+export default getChatInputFormSchema;

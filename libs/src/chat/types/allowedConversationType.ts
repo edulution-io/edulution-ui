@@ -17,5 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_MESSAGE_MAX_LENGTH = 20000;
-export default CHAT_MESSAGE_MAX_LENGTH;
+import ALLOWED_CONVERSATION_TYPES from '@libs/chat/constants/allowedConversationTypes';
+
+type AllowedConversationType = (typeof ALLOWED_CONVERSATION_TYPES)[number];
+
+export default AllowedConversationType;

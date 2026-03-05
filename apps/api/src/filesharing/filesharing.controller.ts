@@ -32,7 +32,6 @@ import {
   Query,
   Req,
   Res,
-  StreamableFile,
 } from '@nestjs/common';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -50,7 +49,6 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import { pipeline } from 'stream/promises';
 import { randomUUID } from 'crypto';
 import APPS from '@libs/appconfig/constants/apps';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -143,23 +141,13 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     const stream = await this.filesharingService.getWebDavFileStream(username, filePath, share);
-
     const filename = filePath.split('/').pop() || randomUUID();
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
-    res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
-
-    try {
-      await pipeline(stream, res);
-    } catch (error) {
-      if (!res.headersSent) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          message: 'Error while streaming file',
-          details: (error as Error).message,
-        });
-      } else {
-        res.end();
-      }
-    }
+    await this.filesharingService.streamToResponse(
+      stream,
+      res,
+      filename,
+      RequestResponseContentType.APPLICATION_OCTET_STREAM,
+    );
   }
 
   @Get(FileSharingApiEndpoints.THUMBNAIL)
@@ -281,7 +269,7 @@ class FilesharingController {
     @Param('publicShareId') publicShareId: string,
     @Query('share') share: string,
     @Body('password') password: string | undefined,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
     @GetCurrentUser({ required: false }) currentUser?: JWTUser,
   ) {
     const { stream, filename, fileType } = await this.filesharingService.getPublicShare(
@@ -291,15 +279,12 @@ class FilesharingController {
       password,
     );
 
-    res.set({
-      [HTTP_HEADERS.ContentDisposition]: `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
-      [HTTP_HEADERS.ContentType]:
-        fileType === ContentType.FILE
-          ? RequestResponseContentType.APPLICATION_OCTET_STREAM
-          : RequestResponseContentType.APPLICATION_ZIP,
-    });
+    const contentType =
+      fileType === ContentType.FILE
+        ? RequestResponseContentType.APPLICATION_OCTET_STREAM
+        : RequestResponseContentType.APPLICATION_ZIP;
 
-    return new StreamableFile(stream);
+    await this.filesharingService.streamToResponse(stream, res, filename, contentType);
   }
 }
 

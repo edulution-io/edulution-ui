@@ -39,7 +39,6 @@ class AccessGuard implements CanActivate {
   ) {}
 
   @OnEvent(EVENT_EMITTER_EVENTS.APP_ACCESS_MAP_UPDATED as string)
-  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/class-methods-use-this
   handleAppAccessMapUpdated() {
     clearAccessCache();
   }

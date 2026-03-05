@@ -26,6 +26,8 @@
     "noMessages": "No messages yet",
     "startConversation": "Write the first message",
     "inputPlaceholder": "Type a message...",
+    "messageTooLong": "Message is too long",
+    "messageRequired": "Message must not be empty",
     "error": "Error",
     "errors": {
       "conversationNotFound": "Conversation not found",
@@ -113,7 +115,7 @@
       "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
       "editableByUsersAndGroupsTitle": "Manage Bulletins",
-      "accessGroupsOnlyHint": "Only access groups can be assigned."
+      "accessGroupsOnlyHint": "Only user groups can be assigned."
     },
     "errors": {
       "categoryNotFound": "Category not found",

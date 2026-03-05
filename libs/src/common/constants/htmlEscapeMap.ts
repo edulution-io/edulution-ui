@@ -17,8 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ALLOWED_CHAT_SOPHOMORIX_TYPES from '@libs/chat/constants/allowedChatSophomorixTypes';
+const HTML_ESCAPE_MAP: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
 
-type AllowedChatSophomorixType = (typeof ALLOWED_CHAT_SOPHOMORIX_TYPES)[number];
-
-export default AllowedChatSophomorixType;
+export default HTML_ESCAPE_MAP;

@@ -17,45 +17,55 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { zodResolver } from '@hookform/resolvers/zod';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
+import ChatInputFormValues from '@libs/chat/types/chatInputFormValues';
+import getChatInputFormSchema from '@libs/chat/constants/getChatInputFormSchema';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
-import useChatStore from '@/store/useChatStore';
+import useChatStore from '@/pages/Chat/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
-  const [input, setInput] = useState('');
+  const { t } = useTranslation();
+  const form = useForm<ChatInputFormValues>({
+    mode: 'onSubmit',
+    resolver: zodResolver(getChatInputFormSchema(t)),
+    defaultValues: { message: '' },
+  });
   const { messages, isLoading, isSending, error, fetchMessages, sendMessage, setCurrentConversation, addMessage } =
     useChatStore();
   const user = useUserStore((state) => state.user);
   const currentUsername = user?.username;
 
-  const sophomorixType = LOCATION_TO_GROUP_TYPE[groupTypeLocation];
+  const conversationType = LOCATION_TO_GROUP_TYPE[groupTypeLocation];
 
   const groupNameRef = useRef(groupName);
-  const sophomorixTypeRef = useRef(sophomorixType);
+  const conversationTypeRef = useRef(conversationType);
 
   useEffect(() => {
     groupNameRef.current = groupName;
-    sophomorixTypeRef.current = sophomorixType;
-  }, [groupName, sophomorixType]);
+    conversationTypeRef.current = conversationType;
+  }, [groupName, conversationType]);
 
   useEffect(() => {
-    setCurrentConversation(sophomorixType, groupName);
-    void fetchMessages(sophomorixType, groupName);
-  }, [sophomorixType, groupName, setCurrentConversation, fetchMessages]);
+    setCurrentConversation(conversationType, groupName);
+    void fetchMessages(conversationType, groupName);
+  }, [conversationType, groupName, setCurrentConversation, fetchMessages]);
 
   const handleNewMessage = useCallback(
     (e: MessageEvent<string>) => {
       try {
         const payload = JSON.parse(e.data) as ChatMessageSsePayload;
 
-        if (payload.groupName !== groupNameRef.current || payload.sophomorixType !== sophomorixTypeRef.current) {
+        if (payload.groupName !== groupNameRef.current || payload.conversationType !== conversationTypeRef.current) {
           return;
         }
 
@@ -77,25 +87,22 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
   useSseEventListener(SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE, handleNewMessage, { enabled: true });
 
-  const handleSubmit = useCallback(
-    async (e?: FormEvent): Promise<void> => {
-      e?.preventDefault();
+  const onSubmit = useCallback(
+    async (data: ChatInputFormValues): Promise<void> => {
+      if (!data.message.trim() || isSending) return;
 
-      if (!input.trim() || isSending) return;
+      const messageContent = data.message.trim();
 
-      const messageContent = input.trim();
-      setInput('');
-
-      await sendMessage(sophomorixType, groupName, messageContent);
+      await sendMessage(conversationType, groupName, messageContent);
+      form.reset();
     },
-    [input, isSending, sophomorixType, groupName, sendMessage],
+    [isSending, conversationType, groupName, sendMessage, form],
   );
 
   return {
     messages,
-    input,
-    setInput,
-    handleSubmit,
+    form,
+    onSubmit,
     isLoading: isLoading || isSending,
     error: error ? new Error(error) : null,
   };

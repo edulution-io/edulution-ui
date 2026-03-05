@@ -19,11 +19,10 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import { Card } from '@/components/shared/Card';
-import Input from '@/components/shared/Input';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import Separator from '@/components/ui/Separator';
 
 interface PublicSurveyParticipationIdDisplayProps {
@@ -50,13 +49,22 @@ const PublicSurveyParticipationIdDisplay = ({ publicUserId }: PublicSurveyPartic
         <div className="mx-4">
           <p>{t('survey.participate.idText')}</p>
           <div className="mx-8 my-4 flex flex-row items-center justify-center">
-            <Input
+            <InputWithActionIcons
               type="text"
+              variant="dialog"
               value={publicUserId}
               readOnly
-              className="w-[560px] cursor-pointer"
-              onClick={() => copyToClipboard(publicUserId)}
-              icon={<FontAwesomeIcon icon={faCopy} />}
+              className="max-w-[620px]"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                copyToClipboard(publicUserId);
+              }}
+              actionIcons={[
+                {
+                  icon: faCopy,
+                  onClick: () => copyToClipboard(publicUserId),
+                },
+              ]}
             />
           </div>
         </div>

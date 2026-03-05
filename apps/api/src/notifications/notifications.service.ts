@@ -261,7 +261,7 @@ class NotificationsService {
           pushNotification: updateData.pushNotification,
           content: updateData.content,
           data: updateData.data,
-          createdBy: updateData.createdBy,
+          updatedBy: updateData.createdBy,
         },
       },
     );
@@ -353,7 +353,14 @@ class NotificationsService {
         },
       },
       { $unwind: '$notification' },
-      { $match: { 'notification.createdBy': { $ne: username }, ...additionalNotificationMatch } },
+      {
+        $match: {
+          $expr: {
+            $ne: [{ $ifNull: ['$notification.updatedBy', '$notification.createdBy'] }, username],
+          },
+          ...additionalNotificationMatch,
+        },
+      },
     ];
   }
 
@@ -402,6 +409,7 @@ class NotificationsService {
       createdAt: userNotificationData.notification.createdAt,
       updatedAt: userNotificationData.notification.updatedAt,
       createdBy: userNotificationData.notification.createdBy,
+      updatedBy: userNotificationData.notification.updatedBy,
       readAt: userNotificationData.readAt,
     }));
 

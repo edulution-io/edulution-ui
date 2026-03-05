@@ -32,6 +32,7 @@ import {
   ALL_SCHOOLS_CACHE_KEY,
   DEPLOYMENT_TARGET_CACHE_KEY,
   GROUP_WITH_MEMBERS_CACHE_KEY,
+  USER_GROUPS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -297,6 +298,7 @@ class GroupsService {
       await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
 
       await this.updateGroupsWithMembersInCache(allGroups);
+      await this.buildUserGroupsReverseIndex(allGroups);
 
       if (!this.groupsCacheInitialized) {
         this.groupsCacheInitialized = true;
@@ -558,20 +560,7 @@ class GroupsService {
   }
 
   async getUserGroupsAndProjects(username: string): Promise<UserChatGroups> {
-    const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
-
-    const memberGroups = (
-      await Promise.all(
-        allGroups.map(async (group) => {
-          const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-            `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-          );
-
-          const isMember = groupWithMembers?.members?.some((m) => m.username === username);
-          return isMember ? group : null;
-        }),
-      )
-    ).filter((group): group is Group => group !== null);
+    const memberGroups = (await this.cacheManager.get<Group[]>(`${USER_GROUPS_CACHE_KEY}${username}`)) || [];
 
     const deploymentTarget = await this.cacheManager.get<string>(DEPLOYMENT_TARGET_CACHE_KEY);
 
@@ -599,6 +588,32 @@ class GroupsService {
       }));
 
     return { classes, projects, groups: [] };
+  }
+
+  private async buildUserGroupsReverseIndex(allGroups: Group[]): Promise<void> {
+    const userGroupsMap = new Map<string, Group[]>();
+
+    await Promise.all(
+      allGroups.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+
+        groupWithMembers?.members?.forEach((member) => {
+          const existing = userGroupsMap.get(member.username) || [];
+          existing.push(group);
+          userGroupsMap.set(member.username, existing);
+        });
+      }),
+    );
+
+    await Promise.all(
+      Array.from(userGroupsMap.entries()).map(([username, groups]) =>
+        this.cacheManager.set(`${USER_GROUPS_CACHE_KEY}${username}`, groups, GROUPS_CACHE_TTL_MS),
+      ),
+    );
+
+    Logger.debug(`Built user-groups reverse index for ${userGroupsMap.size} users`, GroupsService.name);
   }
 
   private static isSchoolClass(groupName: string): boolean {

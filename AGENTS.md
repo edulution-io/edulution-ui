@@ -46,6 +46,8 @@
 - Only use @fortawesome/free-solid-svg-icons for icons
 - Many UI components are wrappers for shadcn/@radix-ui components (component/filename postfix with "SH"). We use our custom wrappers instead.
 - Instead of using manual URLSearchParams, build it with axios's built-in params option
+- Use generic types over unsafe type casting
+- Every input field must be wrapped in `react-hook-form` using our custom components from `@/components/ui/Form`: `Form` (FormProvider), `FormFieldSH` (Controller), `FormControl`, `FormMessage`, `FormLabel`, `FormItem`. Always use `useForm<T>()` to create the form instance, pass validation via `rules` prop on `FormFieldSH`, and submit via `form.handleSubmit(onSubmit)`. Never use raw `<input>`, `<textarea>`, or `<select>` without these wrappers.
 
 ## Testing Guidelines
 

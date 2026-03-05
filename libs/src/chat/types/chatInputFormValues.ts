@@ -17,16 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { BadRequestException } from '@nestjs/common';
-import AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
-import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
-import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
+interface ChatInputFormValues {
+  message: string;
+}
 
-const validateChatSophomorixType = (value: string): AllowedChatSophomorixType => {
-  if (!isAllowedChatSophomorixType(value)) {
-    throw new BadRequestException(CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE);
-  }
-  return value;
-};
-
-export default validateChatSophomorixType;
+export default ChatInputFormValues;

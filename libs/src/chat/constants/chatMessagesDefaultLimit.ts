@@ -17,5 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_MESSAGES_DEFAULT_LIMIT = 20;
+const CHAT_MESSAGES_DEFAULT_LIMIT = 50;
 export default CHAT_MESSAGES_DEFAULT_LIMIT;

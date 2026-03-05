@@ -56,7 +56,7 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
 
   const handleItemClick = useCallback(() => {
     onCloseMobileMenu();
-    item.action?.();
+    item.action();
     if (hasChildren && !isExpanded) {
       onToggleExpand();
     }
@@ -149,7 +149,7 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
                 variant="btn-ghost"
                 onClick={() => {
                   onCloseMobileMenu();
-                  child.action?.();
+                  child.action();
                 }}
                 className={cn(
                   'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',

@@ -17,10 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ALLOWED_CHAT_SOPHOMORIX_TYPES from '@libs/chat/constants/allowedChatSophomorixTypes';
-import AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
+const HTML_ESCAPE_REGEX = /[&<>"']/g;
 
-const isAllowedChatSophomorixType = (value: string): value is AllowedChatSophomorixType =>
-  ALLOWED_CHAT_SOPHOMORIX_TYPES.includes(value as AllowedChatSophomorixType);
-
-export default isAllowedChatSophomorixType;
+export default HTML_ESCAPE_REGEX;

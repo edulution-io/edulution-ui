@@ -19,10 +19,12 @@
 
 import { create } from 'zustand';
 import ChatMessage from '@libs/chat/types/chatMessage';
+import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import { CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import computeSha256Hash from '@libs/common/utils/computeSha256Hash';
+import { SORT_DIRECTION } from '@libs/common/constants/sortDirection';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
@@ -33,7 +35,7 @@ interface ChatStore {
   isLoading: boolean;
   isSending: boolean;
   error: string | null;
-  currentSophomorixType: string | null;
+  currentConversationType: string | null;
   currentGroupName: string | null;
   userGroups: UserChatGroups | null;
   isLoadingGroups: boolean;
@@ -41,11 +43,11 @@ interface ChatStore {
   isLoadingOlderMessages: boolean;
 
   fetchUserGroups: () => Promise<number>;
-  fetchMessages: (sophomorixType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
+  fetchMessages: (conversationType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
   fetchOlderMessages: () => Promise<void>;
-  sendMessage: (sophomorixType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
-  setCurrentConversation: (sophomorixType: string, groupName: string) => void;
-  addMessage: (message: ChatMessage) => void;
+  sendMessage: (conversationType: string, groupName: string, content: string) => Promise<void>;
+  setCurrentConversation: (conversationType: string, groupName: string) => void;
+  addMessage: (message: ChatMessageSsePayload) => void;
   reset: () => void;
 }
 
@@ -54,13 +56,15 @@ const initialState = {
   isLoading: false,
   isSending: false,
   error: null,
-  currentSophomorixType: null,
+  currentConversationType: null,
   currentGroupName: null,
   userGroups: null,
   isLoadingGroups: false,
   hasMoreMessages: false,
   isLoadingOlderMessages: false,
 };
+
+let fetchMessagesAbortController: AbortController | null = null;
 
 const useChatStore = create<ChatStore>((set, get) => ({
   ...initialState,
@@ -83,21 +87,24 @@ const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  fetchMessages: async (sophomorixType, groupName, limit = CHAT_MESSAGES_DEFAULT_LIMIT, offset = 0) => {
+  fetchMessages: async (conversationType, groupName, limit = CHAT_MESSAGES_DEFAULT_LIMIT, offset = 0) => {
+    fetchMessagesAbortController?.abort();
+    fetchMessagesAbortController = new AbortController();
+
     set({ isLoading: true, error: null });
 
     try {
-      const endpoint = getChatMessagesEndpoint(sophomorixType, groupName);
+      const endpoint = getChatMessagesEndpoint(conversationType, groupName);
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
-        params: { limit, offset },
+        params: { limit: limit + 1, offset, sort: SORT_DIRECTION.ASC },
+        signal: fetchMessagesAbortController.signal,
       });
 
-      const { currentSophomorixType, currentGroupName } = get();
-      if (currentSophomorixType !== sophomorixType || currentGroupName !== groupName) return;
+      const { currentConversationType, currentGroupName } = get();
+      if (currentConversationType !== conversationType || currentGroupName !== groupName) return;
 
-      const messages = [...response.data].reverse();
-
-      set({ messages, hasMoreMessages: response.data.length === limit });
+      const hasMore = response.data.length > limit;
+      set({ messages: hasMore ? response.data.slice(0, limit) : response.data, hasMoreMessages: hasMore });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -106,25 +113,25 @@ const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   fetchOlderMessages: async () => {
-    const { currentSophomorixType, currentGroupName, messages, isLoadingOlderMessages } = get();
-    if (!currentSophomorixType || !currentGroupName || isLoadingOlderMessages) return;
+    const { currentConversationType, currentGroupName, messages, isLoadingOlderMessages } = get();
+    if (!currentConversationType || !currentGroupName || isLoadingOlderMessages) return;
 
     set({ isLoadingOlderMessages: true, error: null });
 
     try {
-      const endpoint = getChatMessagesEndpoint(currentSophomorixType, currentGroupName);
+      const endpoint = getChatMessagesEndpoint(currentConversationType, currentGroupName);
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
-        params: { limit: CHAT_MESSAGES_DEFAULT_LIMIT, offset: messages.length },
+        params: { limit: CHAT_MESSAGES_DEFAULT_LIMIT + 1, offset: messages.length, sort: SORT_DIRECTION.ASC },
       });
 
-      const { currentSophomorixType: currentType, currentGroupName: currentName } = get();
-      if (currentType !== currentSophomorixType || currentName !== currentGroupName) return;
+      const { currentConversationType: currentType, currentGroupName: currentName } = get();
+      if (currentType !== currentConversationType || currentName !== currentGroupName) return;
 
-      const olderMessages = [...response.data].reverse();
-
+      const hasMore = response.data.length > CHAT_MESSAGES_DEFAULT_LIMIT;
+      const olderMessages = hasMore ? response.data.slice(0, CHAT_MESSAGES_DEFAULT_LIMIT) : response.data;
       set((state) => ({
         messages: [...olderMessages, ...state.messages],
-        hasMoreMessages: response.data.length === CHAT_MESSAGES_DEFAULT_LIMIT,
+        hasMoreMessages: hasMore,
       }));
     } catch (error) {
       handleApiError(error, set);
@@ -133,11 +140,11 @@ const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  sendMessage: async (sophomorixType, groupName, content) => {
+  sendMessage: async (conversationType, groupName, content) => {
     set({ isSending: true, error: null });
 
     try {
-      const endpoint = getChatMessagesEndpoint(sophomorixType, groupName);
+      const endpoint = getChatMessagesEndpoint(conversationType, groupName);
       const body: Record<string, string> = { content };
 
       const thumbnailPhoto = useLmnApiStore.getState().user?.thumbnailPhoto;
@@ -160,28 +167,25 @@ const useChatStore = create<ChatStore>((set, get) => ({
         useChatProfilePictureStore.getState().setLastSentProfilePictureHash(profilePictureHash);
       }
 
-      const { currentSophomorixType, currentGroupName } = get();
-      if (currentSophomorixType !== sophomorixType || currentGroupName !== groupName) return null;
+      const { currentConversationType, currentGroupName } = get();
+      if (currentConversationType !== conversationType || currentGroupName !== groupName) return;
 
       set((state) => ({
         messages: [...state.messages, newMessage],
       }));
-
-      return newMessage;
     } catch (error) {
       handleApiError(error, set);
-      return null;
     } finally {
       set({ isSending: false });
     }
   },
 
-  setCurrentConversation: (sophomorixType, groupName) => {
-    const { currentSophomorixType, currentGroupName } = get();
+  setCurrentConversation: (conversationType, groupName) => {
+    const { currentConversationType, currentGroupName } = get();
 
-    if (currentSophomorixType !== sophomorixType || currentGroupName !== groupName) {
+    if (currentConversationType !== conversationType || currentGroupName !== groupName) {
       set({
-        currentSophomorixType: sophomorixType,
+        currentConversationType: conversationType,
         currentGroupName: groupName,
         messages: [],
         hasMoreMessages: false,
@@ -191,6 +195,9 @@ const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   addMessage: (message) => {
+    const { currentConversationType, currentGroupName } = get();
+    if (message.conversationType !== currentConversationType || message.groupName !== currentGroupName) return;
+
     set((state) => {
       const exists = state.messages.some((m) => m.id === message.id);
       if (exists) return state;
