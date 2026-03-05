@@ -86,6 +86,7 @@ import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useNotificationStore from '@/store/useNotificationStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import useSentryStore from '@/store/useSentryStore';
 import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import useSseStore from '@/store/useSseStore';
@@ -149,6 +150,7 @@ const cleanAllStores = async () => {
   useQuestionsContextMenuStore.getState().reset();
   useReplaceFilesDialogStore.getState().reset();
   useResultDialogStore.getState().reset();
+  useSchoolStore.getState().reset();
   useSelectCreateDockerContainerDialogStore.getState().reset();
   useSentryStore.getState().reset();
   useSessionFlagsStore.getState().reset();

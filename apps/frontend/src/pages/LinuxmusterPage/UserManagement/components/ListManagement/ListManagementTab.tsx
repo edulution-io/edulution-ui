@@ -21,7 +21,7 @@ import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import type UserType from '@libs/userManagement/types/userType';
 import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
@@ -39,7 +39,7 @@ interface ListManagementTabProps {
 const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const effectiveSchool = isSuperAdmin ? selectedSchool : selectedSchool || user?.school || '';
   const {

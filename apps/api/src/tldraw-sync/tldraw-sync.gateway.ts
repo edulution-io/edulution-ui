@@ -47,7 +47,6 @@ class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
     private readonly jwtService: JwtService,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
     Logger.log(`TLDrawSyncGateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`, TLDrawSyncGateway.name);
   }

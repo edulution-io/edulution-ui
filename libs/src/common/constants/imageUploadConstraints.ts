@@ -17,23 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import IORedis from 'ioredis';
-import redisConnection from '../redis.connection';
-import GlobalSettingsService from '../../global-settings/global-settings.service';
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_MAXIMUM = 16 * 1024;
 
-@Injectable()
-export default class DevCacheFlushService implements OnApplicationBootstrap {
-  constructor(private readonly globalSettings: GlobalSettingsService) {}
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE = 8 * 1024;
 
-  async onApplicationBootstrap() {
-    if (process.env.NODE_ENV !== 'development') return;
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM = 4 * 1024;
 
-    const client = new IORedis(redisConnection);
-    await client.flushdb();
-    await client.quit();
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_SMALL = 512;
 
-    await this.globalSettings.setDeploymentTargetInCache();
-    await this.globalSettings.setOrganizationTypeInCache();
-  }
-}
+export const IMAGE_MAX_DIMENSION_LARGE = 3840;
+
+export const IMAGE_MAX_DIMENSION_MEDIUM = 2048;

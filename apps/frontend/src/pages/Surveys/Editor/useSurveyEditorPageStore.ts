@@ -27,6 +27,11 @@ import { SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants
 import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
+import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM,
+  IMAGE_MAX_DIMENSION_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface SurveyEditorPageStore {
   storedSurvey: SurveyDto | undefined;
@@ -113,7 +118,12 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         set({ isUploadingFile: true });
         try {
           const formData = new FormData();
-          formData.append('file', file);
+          const compressedFile = await convertImageFileToCompressedWebp(
+            file,
+            IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM,
+            IMAGE_MAX_DIMENSION_LARGE,
+          );
+          formData.append('file', compressedFile);
           const response = await eduApi.post<string>(`${SURVEY_FILE_ATTACHMENT_ENDPOINT}`, formData, {
             headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
           });
