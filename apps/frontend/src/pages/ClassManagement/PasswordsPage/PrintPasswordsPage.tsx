@@ -34,7 +34,7 @@ import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat
 import ClassSelectionList from '@/pages/ClassManagement/components/ClassList/ClassSelectionList';
 import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
 import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
-import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 
 const PrintPasswordsPage: React.FC = () => {
   const { t } = useTranslation();

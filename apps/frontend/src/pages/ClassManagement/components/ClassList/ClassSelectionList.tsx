@@ -22,7 +22,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import { useTranslation } from 'react-i18next';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useClassManagementStore from '../../useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import ClassSelectionCard from './ClassSelectionCard';
 
 interface ClassSelectionListProps {
@@ -45,7 +45,7 @@ const ClassSelectionList = ({
   onCsvClick,
 }: ClassSelectionListProps) => {
   const { t } = useTranslation();
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   const handlePdfClick = (event: React.MouseEvent, group: LmnApiSchoolClass) => {

@@ -32,7 +32,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 import ClassSelectionList from '@/pages/ClassManagement/components/ClassList/ClassSelectionList';
-import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 import ClassListsFloatingButtonsBar from './ClassListsFloatingButtonsBar';
 import ClassListsDialog from './ClassListsDialog';
 

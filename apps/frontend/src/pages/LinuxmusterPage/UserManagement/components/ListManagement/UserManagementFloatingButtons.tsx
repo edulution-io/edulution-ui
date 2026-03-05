@@ -23,7 +23,7 @@ import { toast } from 'sonner';
 import { faCheck, faFileCsv, faRotateLeft, faSave, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import type UserType from '@libs/userManagement/types/userType';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
 import {
@@ -46,7 +46,7 @@ interface UserManagementFloatingButtonsProps {
 
 const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps> = ({ userType }) => {
   const { t } = useTranslation();
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const {
     isSaving,
     isCheckLoading,
