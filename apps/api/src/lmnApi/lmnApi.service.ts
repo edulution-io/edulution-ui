@@ -42,7 +42,7 @@ import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import { Agent as HttpsAgent } from 'https';
-import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import GroupForm from '@libs/groups/types/groupForm';

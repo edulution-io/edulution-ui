@@ -23,13 +23,17 @@ import { useTranslation } from 'react-i18next';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import ClassList from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassList';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
+import ClassSelectionList from '@/pages/ClassManagement/components/ClassList/ClassSelectionList';
+import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
+import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
 import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const PrintPasswordsPage: React.FC = () => {
@@ -40,6 +44,8 @@ const PrintPasswordsPage: React.FC = () => {
   const [selectedClasses, setSelectedClasses] = useState<LmnApiSchoolClass[]>([]);
   const { isSuperAdmin } = useLdapGroups();
   const [isLoading, setIsLoading] = useState(false);
+  const [classToPrint, setClassToPrint] = useState<LmnApiSchoolClass | null>(null);
+  const [formatToPrint, setFormatToPrint] = useState<FileExportFormat | null>(null);
 
   useEffect(() => {
     if (!lmnApiToken) return;
@@ -73,6 +79,16 @@ const PrintPasswordsPage: React.FC = () => {
 
   const activeSchool = selectedClasses.length > 0 ? selectedClasses[0].sophomorixSchoolname : null;
 
+  const handlePdfClick = (group: LmnApiSchoolClass) => {
+    setFormatToPrint(FILE_EXPORT_FORMAT.PDF);
+    setClassToPrint(group);
+  };
+
+  const handleCsvClick = (group: LmnApiSchoolClass) => {
+    setFormatToPrint(FILE_EXPORT_FORMAT.CSV);
+    setClassToPrint(group);
+  };
+
   return (
     <PageLayout>
       <div className="mb-2 flex w-full flex-col gap-2 pt-1 md:flex-row md:items-center md:gap-4">
@@ -95,16 +111,31 @@ const PrintPasswordsPage: React.FC = () => {
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h3>{t(`classmanagement.printPasswords`)}</h3>
-            <ClassList
+            <h3>{t('classmanagement.printPasswords')}</h3>
+            <ClassSelectionList
               row={row}
               selectedClasses={selectedClasses}
               setSelectedClasses={setSelectedClasses}
               activeSchool={activeSchool}
+              floatingBar={<PasswordsFloatingButtonsBar selectedClasses={selectedClasses} />}
+              onPdfClick={handlePdfClick}
+              onCsvClick={handleCsvClick}
             />
           </div>
         ))}
       </div>
+
+      {classToPrint && formatToPrint && (
+        <PrintPasswordsDialog
+          title={formatToPrint}
+          selectedClasses={[classToPrint]}
+          onClose={() => {
+            setClassToPrint(null);
+            setFormatToPrint(null);
+          }}
+        />
+      )}
+
       <LoadingIndicatorDialog isOpen={isLoading} />
     </PageLayout>
   );

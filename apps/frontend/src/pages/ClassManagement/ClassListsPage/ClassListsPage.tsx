@@ -29,8 +29,9 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
-import ClassSelectionList from '@/pages/ClassManagement/components/ClassSelectionList';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
+import ClassSelectionList from '@/pages/ClassManagement/components/ClassList/ClassSelectionList';
 import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 import ClassListsFloatingButtonsBar from './ClassListsFloatingButtonsBar';
 import ClassListsDialog from './ClassListsDialog';
@@ -79,12 +80,12 @@ const ClassListsPage: React.FC = () => {
   const activeSchool = selectedClasses.length > 0 ? selectedClasses[0].sophomorixSchoolname : null;
 
   const handlePdfClick = (group: LmnApiSchoolClass) => {
-    setFormatToDownload(FileExportFormat.PDF);
+    setFormatToDownload(FILE_EXPORT_FORMAT.PDF);
     setClassToDownload(group);
   };
 
   const handleCsvClick = (group: LmnApiSchoolClass) => {
-    setFormatToDownload(FileExportFormat.CSV);
+    setFormatToDownload(FILE_EXPORT_FORMAT.CSV);
     setClassToDownload(group);
   };
 

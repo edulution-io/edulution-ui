@@ -22,7 +22,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import { useTranslation } from 'react-i18next';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useClassManagementStore from '../useClassManagementStore';
+import useClassManagementStore from '../../useClassManagementStore';
 import ClassSelectionCard from './ClassSelectionCard';
 
 interface ClassSelectionListProps {

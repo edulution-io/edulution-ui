@@ -20,7 +20,8 @@
 import React, { useState } from 'react';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { faFileCsv, faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import { useTranslation } from 'react-i18next';
@@ -42,13 +43,13 @@ const PasswordsFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ select
     buttons: [
       {
         icon: faFilePdf,
-        text: t(`classmanagement.${FileExportFormat.PDF}`),
-        onClick: () => setIsDialogOpen(FileExportFormat.PDF),
+        text: t(`classmanagement.${FILE_EXPORT_FORMAT.PDF}`),
+        onClick: () => setIsDialogOpen(FILE_EXPORT_FORMAT.PDF),
       },
       {
         icon: faFileCsv,
-        text: t(`classmanagement.${FileExportFormat.CSV}`),
-        onClick: () => setIsDialogOpen(FileExportFormat.CSV),
+        text: t(`classmanagement.${FILE_EXPORT_FORMAT.CSV}`),
+        onClick: () => setIsDialogOpen(FILE_EXPORT_FORMAT.CSV),
       },
     ],
     keyPrefix: 'class-management-page-floating-button_',

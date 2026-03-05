@@ -18,11 +18,12 @@
  */
 
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 
-const downloadFileFromBuffer = (data: ArrayBuffer, filename: string, format: FileExportFormat) => {
+const downloadFileFromBuffer = (data: BlobPart, filename: string, format: FileExportFormat) => {
   const mimeType =
-    format === FileExportFormat.CSV
+    format === FILE_EXPORT_FORMAT.CSV
       ? `${RequestResponseContentType.TEXT_CSV};charset=utf-8;`
       : RequestResponseContentType.APPLICATION_PDF;
 

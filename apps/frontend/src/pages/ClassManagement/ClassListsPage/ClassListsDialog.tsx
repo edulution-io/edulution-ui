@@ -21,7 +21,7 @@ import React from 'react';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useClassListsStore from './useClassListsStore';
