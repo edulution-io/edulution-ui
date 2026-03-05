@@ -70,6 +70,7 @@ import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import useParentAssignmentStore from '@/pages/LinuxmusterPage/ParentAssignment/useParentAssignmentStore';
 import useParentChildPairingStore from '@/pages/UserSettings/ParentChildPairing/useParentChildPairingStore';
 import useNotificationStore from '@/store/useNotificationStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
 import useUserManagementStore from '@/pages/LinuxmusterPage/UserManagement/useUserManagementStore';
 import useSseStore from '../useSseStore';
@@ -114,6 +115,7 @@ const cleanAllStores = async () => {
   usePublicShareStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
+  useSchoolStore.getState().reset();
   useSelectCreateDockerContainerDialogStore.getState().reset();
   useSessionFlagsStore.getState().reset();
   useSidebarStore.getState().reset();

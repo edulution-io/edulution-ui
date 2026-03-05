@@ -17,8 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const convertImageFileToWebp = async (file: File, quality = 1): Promise<File> => {
-  if (file.type === 'image/webp') return file;
+import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
+
+const convertImageFileToCompressedWebp = async (
+  file: File,
+  maxSizeKB: number,
+  maxDimension?: number,
+): Promise<File> => {
+  if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.type) || !file.type.startsWith('image/')) return file;
 
   try {
     const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -35,17 +41,38 @@ const convertImageFileToWebp = async (file: File, quality = 1): Promise<File> =>
       img.src = dataUrl;
     });
 
+    let width = image.naturalWidth || image.width;
+    let height = image.naturalHeight || image.height;
+    if (maxDimension && (width > maxDimension || height > maxDimension)) {
+      const aspectRatio = width / height;
+      if (width > height) {
+        width = maxDimension;
+        height = Math.round(maxDimension / aspectRatio);
+      } else {
+        height = maxDimension;
+        width = Math.round(maxDimension * aspectRatio);
+      }
+    }
+
     const canvas = document.createElement('canvas');
-    canvas.width = image.naturalWidth || image.width;
-    canvas.height = image.naturalHeight || image.height;
+    canvas.width = width;
+    canvas.height = height;
     const context = canvas.getContext('2d');
     if (!context) return file;
 
-    context.drawImage(image, 0, 0);
+    context.drawImage(image, 0, 0, width, height);
 
-    const blob = await new Promise<Blob | null>((resolve) => {
-      canvas.toBlob((b) => resolve(b), 'image/webp', quality);
-    });
+    const compressToBlob = async (q: number): Promise<Blob | null> => {
+      const b = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob((result) => resolve(result), 'image/webp', q);
+      });
+      if (b && b.size > maxSizeKB * 1024 && q > 0.1) {
+        return compressToBlob(Math.round((q - 0.1) * 10) / 10);
+      }
+      return b;
+    };
+
+    const blob = await compressToBlob(0.9);
 
     if (!blob) return file;
 
@@ -55,4 +82,4 @@ const convertImageFileToWebp = async (file: File, quality = 1): Promise<File> =>
   }
 };
 
-export default convertImageFileToWebp;
+export default convertImageFileToCompressedWebp;

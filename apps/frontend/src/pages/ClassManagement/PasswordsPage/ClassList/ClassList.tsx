@@ -24,7 +24,7 @@ import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/P
 import ClassListCard from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassListCard';
 import { useTranslation } from 'react-i18next';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useClassManagementStore from '../../useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 
 interface EnrolGroupListProps {
   row: Omit<GroupColumn, 'icon'>;
@@ -35,7 +35,7 @@ interface EnrolGroupListProps {
 
 const ClassList = ({ row, selectedClasses, setSelectedClasses, activeSchool }: EnrolGroupListProps) => {
   const { t } = useTranslation();
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   return (

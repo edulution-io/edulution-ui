@@ -23,6 +23,7 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
@@ -35,7 +36,8 @@ const UserProjectOrSchoolClassSearch = () => {
   const { t } = useTranslation();
   const { member, setMember } = useLessonStore();
   const { user, fetchUser } = useLmnApiStore();
-  const { searchGroupsOrUsers, fetchSchoolClass, fetchProject, selectedSchool } = useClassManagementStore();
+  const { searchGroupsOrUsers, fetchSchoolClass, fetchProject } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const [selectedValues, setSelectedValues] = useState<MultipleSelectorOptionSH[]>([]);
   const { groupName } = useParams();
   const { isSuperAdmin } = useLdapGroups();
