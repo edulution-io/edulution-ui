@@ -18,8 +18,10 @@
  */
 
 import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import SOURCE_TYPE_TO_APP from '@libs/notification/constants/sourceTypeToApp';
 import DEEP_LINK_SOURCE_TYPES from '@libs/notification/constants/deepLinkSourceTypes';
+import toChatRoute from '@libs/chat/utils/toChatRoute';
 
 const getNotificationSourceRoute = (sourceType?: NotificationSourceType, sourceId?: string): string | undefined => {
   if (!sourceType) {
@@ -30,7 +32,8 @@ const getNotificationSourceRoute = (sourceType?: NotificationSourceType, sourceI
     return undefined;
   }
   if (sourceId && DEEP_LINK_SOURCE_TYPES.includes(sourceType)) {
-    return `/${app}/${sourceId}`;
+    const resolvedSourceId = sourceType === NOTIFICATION_SOURCE_TYPE.CHAT ? toChatRoute(sourceId) : sourceId;
+    return `/${app}/${resolvedSourceId}`;
   }
   return `/${app}`;
 };

@@ -43,6 +43,7 @@ import getSettingsRoutes from '@/router/routes/getSettingsRoutes';
 import getClassManagementRoutes from '@/router/routes/getClassManagementRoutes';
 import getSurveyRoutes from '@/router/routes/getSurveyRoutes';
 import getFileSharingRoutes from '@/router/routes/getFileSharingRoutes';
+import getChatRoutes from '@/router/routes/getChatRoutes';
 import getLinuxmusterRoutes from '@/router/routes/getLinuxmusterRoutes';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
@@ -117,6 +118,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     {getSurveyRoutes()}
     {getFileSharingRoutes()}
     {getLinuxmusterRoutes()}
+    {getChatRoutes()}
   </>
 );
 

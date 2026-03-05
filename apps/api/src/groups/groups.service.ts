@@ -30,14 +30,21 @@ import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import {
   ALL_GROUPS_CACHE_KEY,
   ALL_SCHOOLS_CACHE_KEY,
+  DEPLOYMENT_TARGET_CACHE_KEY,
   GROUP_WITH_MEMBERS_CACHE_KEY,
+  USER_GROUPS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserChatGroups from '@libs/chat/types/userChatGroups';
+import SYSTEM_GROUP_PREFIXES from '@libs/groups/constants/systemGroupPrefixes';
+import SYSTEM_GROUP_SUFFIXES from '@libs/groups/constants/systemGroupSuffixes';
+import SYSTEM_GROUP_EXACT_EXCLUDES from '@libs/groups/constants/systemGroupExactExcludes';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 import SCHOOLS_PREFIX from '@libs/lmnApi/constants/prefixes/schoolsPrefix';
@@ -291,6 +298,7 @@ class GroupsService {
       await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
 
       await this.updateGroupsWithMembersInCache(allGroups);
+      await this.buildUserGroupsReverseIndex(allGroups);
 
       if (!this.groupsCacheInitialized) {
         this.groupsCacheInitialized = true;
@@ -549,6 +557,69 @@ class GroupsService {
     } catch (error) {
       Logger.error(`Failed to delete group ${groupPath} from cache: ${(error as Error).message}`, GroupsService.name);
     }
+  }
+
+  async getUserGroupsAndProjects(username: string): Promise<UserChatGroups> {
+    const memberGroups = (await this.cacheManager.get<Group[]>(`${USER_GROUPS_CACHE_KEY}${username}`)) || [];
+
+    const deploymentTarget = await this.cacheManager.get<string>(DEPLOYMENT_TARGET_CACHE_KEY);
+
+    if (deploymentTarget === DEPLOYMENT_TARGET.GENERIC) {
+      const groups = memberGroups.map((group) => ({
+        name: group.path.startsWith('/') ? group.path.substring(1) : group.name,
+        path: group.path,
+      }));
+
+      return { classes: [], projects: [], groups };
+    }
+
+    const classes = memberGroups
+      .filter((group) => !group.path.startsWith(PROJECTS_PREFIX) && GroupsService.isSchoolClass(group.name))
+      .map((group) => ({
+        name: group.path.startsWith('/') ? group.path.substring(1) : group.name,
+        path: group.path,
+      }));
+
+    const projects = memberGroups
+      .filter((group) => group.path.startsWith(PROJECTS_PREFIX))
+      .map((group) => ({
+        name: group.path.replace(PROJECTS_PREFIX, ''),
+        path: group.path,
+      }));
+
+    return { classes, projects, groups: [] };
+  }
+
+  private async buildUserGroupsReverseIndex(allGroups: Group[]): Promise<void> {
+    const userGroupsMap = new Map<string, Group[]>();
+
+    await Promise.all(
+      allGroups.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+
+        groupWithMembers?.members?.forEach((member) => {
+          const existing = userGroupsMap.get(member.username) || [];
+          existing.push(group);
+          userGroupsMap.set(member.username, existing);
+        });
+      }),
+    );
+
+    await Promise.all(
+      Array.from(userGroupsMap.entries()).map(([username, groups]) =>
+        this.cacheManager.set(`${USER_GROUPS_CACHE_KEY}${username}`, groups, GROUPS_CACHE_TTL_MS),
+      ),
+    );
+
+    Logger.debug(`Built user-groups reverse index for ${userGroupsMap.size} users`, GroupsService.name);
+  }
+
+  private static isSchoolClass(groupName: string): boolean {
+    if (SYSTEM_GROUP_EXACT_EXCLUDES.includes(groupName as (typeof SYSTEM_GROUP_EXACT_EXCLUDES)[number])) return false;
+    if (SYSTEM_GROUP_PREFIXES.some((prefix) => groupName.startsWith(prefix))) return false;
+    return !SYSTEM_GROUP_SUFFIXES.some((suffix) => groupName.endsWith(suffix));
   }
 }
 

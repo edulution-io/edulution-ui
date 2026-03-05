@@ -33,6 +33,7 @@ import {
   SurveysMenuIcon,
   WhiteBoardIcon,
   VPNIcon,
+  ChatIcon,
 } from '@/assets/icons';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
@@ -157,6 +158,12 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.WHITEBOARD,
     icon: WhiteBoardIcon,
+    isNativeApp: true,
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
+  },
+  {
+    id: APPS.CHAT,
+    icon: ChatIcon,
     isNativeApp: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },

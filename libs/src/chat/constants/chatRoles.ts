@@ -17,14 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES = {
-  SCHOOL_CLASS: 'schoolclass',
-  PARENTS: 'parents',
-  TEACHERS: 'teachers',
-  STAFF_MEMBERS: 'staffmembers',
-  DEVICES: 'devices',
-  PROJECTS: 'projects',
-  STUDENTS: 'students',
+const CHAT_ROLES = {
+  USER: 'user',
 } as const;
 
-export default SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES;
+export default CHAT_ROLES;

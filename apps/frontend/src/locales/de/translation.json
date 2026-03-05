@@ -10,6 +10,34 @@
   "public": "Öffentlich",
   "actions": "Aktionen",
   "logo": "Logo",
+  "chat": {
+    "title": "Chat",
+    "sidebar": "Chat",
+    "conversationWith": "Unterhaltung mit",
+    "selectConversation": "Unterhaltung auswählen",
+    "chatWith": "Chat mit",
+    "schoolClass": "Schulklasse",
+    "schoolClasses": "Schulklassen",
+    "project": "Projekt",
+    "projects": "Projekte",
+    "group": "Gruppe",
+    "groups": "Gruppen",
+    "selectFromSidebar": "Wähle eine Klasse oder ein Projekt aus der Seitenleiste",
+    "noMessages": "Noch keine Nachrichten",
+    "startConversation": "Schreibe die erste Nachricht",
+    "inputPlaceholder": "Nachricht schreiben...",
+    "messageTooLong": "Nachricht ist zu lang",
+    "error": "Fehler",
+    "errors": {
+      "conversationNotFound": "Unterhaltung nicht gefunden",
+      "unauthorizedAccess": "Nicht autorisiert",
+      "messageSendFailed": "Nachricht konnte nicht gesendet werden",
+      "invalidGroupType": "Ungültiger Gruppentyp"
+    },
+    "refreshGroups": "Gruppen aktualisieren",
+    "groupsFound": "{{count}} Gruppe(n) gefunden",
+    "loadOlderMessages": "Ältere Nachrichten laden"
+  },
   "bulletinboard": {
     "settings": "Einstellungen",
     "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
@@ -300,10 +328,6 @@
       "confirmDeleteProviderConfig": "Möchtest du diese E-Mail-Provider-Konfiguration wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "deleteProviderConfig": "E-Mail-Provider-Konfiguration löschen"
     }
-  },
-  "chat": {
-    "title": "CHAT",
-    "sidebar": "Chat"
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
