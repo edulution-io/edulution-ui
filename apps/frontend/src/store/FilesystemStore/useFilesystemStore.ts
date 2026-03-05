@@ -25,8 +25,12 @@ import handleApiError from '@/utils/handleApiError';
 import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import ThemeType from '@libs/common/types/themeType';
-import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import AssetSource from '@libs/filesystem/types/AssetSource';
+import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_MAX_DIMENSION_LARGE,
+  IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface FilesystemStore {
   fetchImage: (url: string, variant?: ThemeType) => Promise<{ source: AssetSource; content: string } | null>;
@@ -104,11 +108,15 @@ const useFilesystemStore = create<FilesystemStore>((set) => ({
     try {
       const form = new FormData();
       form.append('destination', destination);
-      form.append('filename', filename);
-
       if (file instanceof File) {
-        const webpFile = await convertImageFileToWebp(file);
-        form.append('file', webpFile, filename);
+        const webpFile = await convertImageFileToCompressedWebp(
+          file,
+          IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+          IMAGE_MAX_DIMENSION_LARGE,
+        );
+
+        form.append('filename', webpFile.name);
+        form.append('file', webpFile, webpFile.name);
       } else if (file instanceof Blob) {
         const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
 
@@ -117,6 +125,7 @@ const useFilesystemStore = create<FilesystemStore>((set) => ({
           ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
 
         const wrapped = new File([file], fullName, { type });
+        form.append('filename', fullName);
         form.append('file', wrapped, fullName);
       } else {
         return false;

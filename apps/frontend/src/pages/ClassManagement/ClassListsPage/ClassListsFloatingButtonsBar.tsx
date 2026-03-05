@@ -25,13 +25,13 @@ import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import { useTranslation } from 'react-i18next';
-import PrintPasswordsDialog from './PrintPasswordsDialog';
+import ClassListsDialog from './ClassListsDialog';
 
-interface FloatingButtonsBarProps {
+interface ClassListsFloatingButtonsBarProps {
   selectedClasses: LmnApiSchoolClass[];
 }
 
-const PasswordsFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ selectedClasses }) => {
+const ClassListsFloatingButtonsBar: React.FC<ClassListsFloatingButtonsBarProps> = ({ selectedClasses }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<FileExportFormat | null>(null);
   const { t } = useTranslation();
 
@@ -52,21 +52,21 @@ const PasswordsFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ select
         onClick: () => setIsDialogOpen(FILE_EXPORT_FORMAT.CSV),
       },
     ],
-    keyPrefix: 'class-management-page-floating-button_',
+    keyPrefix: 'class-lists-page-floating-button_',
   };
 
   return (
     <>
       <FloatingButtonsBar config={config} />
-      {isDialogOpen ? (
-        <PrintPasswordsDialog
+      {isDialogOpen && (
+        <ClassListsDialog
           title={isDialogOpen}
           selectedClasses={selectedClasses}
           onClose={() => setIsDialogOpen(null)}
         />
-      ) : null}
+      )}
     </>
   );
 };
 
-export default PasswordsFloatingButtonsBar;
+export default ClassListsFloatingButtonsBar;
