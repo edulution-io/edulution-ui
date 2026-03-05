@@ -20,7 +20,10 @@
 import { useMemo } from 'react';
 import { ClassManagementIcon, CreateProjectIcon, EnrolIcon, PrintIcon, LearningManagementIcon } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
+import { faListUl } from '@fortawesome/free-solid-svg-icons';
 import {
+  CLASS_MANAGEMENT_CLASS_LISTS_LOCATION,
+  CLASS_MANAGEMENT_CLASS_LISTS_PATH,
   CLASS_MANAGEMENT_ENROL_LOCATION,
   CLASS_MANAGEMENT_ENROL_PATH,
   CLASS_MANAGEMENT_LESSON_LOCATION,
@@ -60,6 +63,12 @@ const useClassManagementMenu = (): MenuBarEntry => {
           label: 'classmanagement.printPasswords',
           icon: PrintIcon,
           action: () => navigate(CLASS_MANAGEMENT_PRINT_PASSWORDS_PATH),
+        },
+        {
+          id: CLASS_MANAGEMENT_CLASS_LISTS_LOCATION,
+          label: 'classmanagement.classLists',
+          icon: faListUl,
+          action: () => navigate(CLASS_MANAGEMENT_CLASS_LISTS_PATH),
         },
         {
           id: CLASS_MANAGEMENT_PROJECTS_LOCATION,

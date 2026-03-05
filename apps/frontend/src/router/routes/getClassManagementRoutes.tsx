@@ -20,6 +20,7 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import {
+  CLASS_MANAGEMENT_CLASS_LISTS_LOCATION,
   CLASS_MANAGEMENT_ENROL_LOCATION,
   CLASS_MANAGEMENT_LESSON_LOCATION,
   CLASS_MANAGEMENT_PATH,
@@ -29,6 +30,7 @@ import {
 import LessonPage from '@/pages/ClassManagement/LessonPage/LessonPage';
 import EnrolPage from '@/pages/ClassManagement/EnrolPage/EnrolPage';
 import PrintPasswordsPage from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsPage';
+import ClassListsPage from '@/pages/ClassManagement/ClassListsPage/ClassListsPage';
 import ProjectsPage from '@/pages/ClassManagement/ProjectsPage/ProjectsPage';
 
 const getClassManagementRoutes = () => [
@@ -60,6 +62,10 @@ const getClassManagementRoutes = () => [
     <Route
       path={CLASS_MANAGEMENT_PRINT_PASSWORDS_LOCATION}
       element={<PrintPasswordsPage />}
+    />
+    <Route
+      path={CLASS_MANAGEMENT_CLASS_LISTS_LOCATION}
+      element={<ClassListsPage />}
     />
     <Route
       path={CLASS_MANAGEMENT_PROJECTS_LOCATION}

@@ -27,6 +27,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import useClassListsStore from '@/pages/ClassManagement/ClassListsPage/useClassListsStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
@@ -86,6 +87,7 @@ const cleanAllStores = async () => {
   useBulletinBoardEditorialStore.getState().reset();
   useBulletinBoardStore.getState().reset();
   useBulletinCategoryTableStore.getState().reset();
+  useClassListsStore.getState().reset();
   useClassManagementStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();

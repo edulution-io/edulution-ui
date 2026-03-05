@@ -17,26 +17,46 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import GroupColumn from '@libs/groups/types/groupColumn';
-import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
-import ClassListCard from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassListCard';
 import { useTranslation } from 'react-i18next';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSchoolStore from '@/store/useSchoolStore';
+import ClassSelectionCard from './ClassSelectionCard';
 
-interface EnrolGroupListProps {
+interface ClassSelectionListProps {
   row: Omit<GroupColumn, 'icon'>;
   selectedClasses: LmnApiSchoolClass[];
   setSelectedClasses: React.Dispatch<React.SetStateAction<LmnApiSchoolClass[]>>;
   activeSchool: string | null;
+  floatingBar: ReactNode;
+  onPdfClick: (group: LmnApiSchoolClass) => void;
+  onCsvClick: (group: LmnApiSchoolClass) => void;
 }
 
-const ClassList = ({ row, selectedClasses, setSelectedClasses, activeSchool }: EnrolGroupListProps) => {
+const ClassSelectionList = ({
+  row,
+  selectedClasses,
+  setSelectedClasses,
+  activeSchool,
+  floatingBar,
+  onPdfClick,
+  onCsvClick,
+}: ClassSelectionListProps) => {
   const { t } = useTranslation();
   const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
+
+  const handlePdfClick = (event: React.MouseEvent, group: LmnApiSchoolClass) => {
+    event.stopPropagation();
+    onPdfClick(group);
+  };
+
+  const handleCsvClick = (event: React.MouseEvent, group: LmnApiSchoolClass) => {
+    event.stopPropagation();
+    onCsvClick(group);
+  };
 
   return (
     <div className="flex flex-row flex-wrap">
@@ -44,21 +64,23 @@ const ClassList = ({ row, selectedClasses, setSelectedClasses, activeSchool }: E
         row.groups
           .filter((group) => !isSuperAdmin || (group as LmnApiSchoolClass).sophomorixSchoolname === selectedSchool)
           .map((group) => (
-            <ClassListCard
+            <ClassSelectionCard
               key={(group as LmnApiSchoolClass).dn}
               group={group as LmnApiSchoolClass}
               selectedClasses={selectedClasses}
               setSelectedClasses={setSelectedClasses}
               disabled={!!activeSchool && (group as LmnApiSchoolClass).sophomorixSchoolname !== activeSchool}
+              onPdfClick={handlePdfClick}
+              onCsvClick={handleCsvClick}
             />
           ))
       ) : (
         <div className="mt-3">{t('classmanagement.notMemberOfClass')}</div>
       )}
 
-      <PasswordsFloatingButtonsBar selectedClasses={selectedClasses} />
+      {floatingBar}
     </div>
   );
 };
 
-export default ClassList;
+export default ClassSelectionList;

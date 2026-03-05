@@ -21,6 +21,8 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@edulution-io/ui-kit';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import downloadFileFromBuffer from '@libs/classManagement/utils/downloadFileFromBuffer';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DropZone from '@/components/ui/DropZone';
 
@@ -70,13 +72,7 @@ const CsvDialog: React.FC<CsvDialogProps> = ({ isOpen, onClose, title, initialCs
   };
 
   const handleDownload = () => {
-    const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = downloadFilename;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
+    downloadFileFromBuffer(csvText, downloadFilename, FILE_EXPORT_FORMAT.CSV);
   };
 
   const lineCount = csvText.split('\n').length;
