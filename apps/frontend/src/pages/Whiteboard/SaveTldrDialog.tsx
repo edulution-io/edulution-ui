@@ -36,7 +36,6 @@ const SaveTldrDialog: React.FC = () => {
   const { t } = useTranslation();
 
   const { updateFilesToUpload, uploadFiles } = useHandleUploadFileStore();
-  const { eduApiToken } = useUserStore();
   const { editor, isDialogOpen, setIsDialogOpen } = useWhiteboardEditorStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
@@ -58,7 +57,7 @@ const SaveTldrDialog: React.FC = () => {
       isZippedFolder: false,
     });
     updateFilesToUpload(() => [uploadFile]);
-    await uploadFiles(targetDir, eduApiToken, selectedWebdavShare);
+    await uploadFiles(targetDir, () => useUserStore.getState().eduApiToken, selectedWebdavShare);
     setIsDialogOpen(false);
   };
 

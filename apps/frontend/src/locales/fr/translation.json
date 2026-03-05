@@ -1847,7 +1847,9 @@
     "errors": {
       "directoryCreationFailed": "Échec de la création du répertoire",
       "fileUploadFailed": "Échec du téléchargement du fichier",
-      "uploadError": "Erreur lors du téléchargement des fichiers"
+      "uploadError": "Erreur lors du téléchargement des fichiers",
+      "insufficientStorage": "Téléchargement interrompu : espace de stockage insuffisant",
+      "unauthorized": "Téléchargement interrompu : session expirée, veuillez vous reconnecter"
     }
   },
   "linuxmuster": {
