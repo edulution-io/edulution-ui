@@ -30,6 +30,7 @@ import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faFileCirclePlus, faFolder, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
+import MAX_FILES_PER_FOLDER from '@libs/ui/constants/maxFilesPerFolder';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
@@ -67,6 +68,12 @@ const UploadContentBody = () => {
         [...normal, ...folders].map((file) => Object.assign(file, { id: getRandomUUID() })),
         files,
       );
+
+      const foldersExceedingFileLimit = folders
+        .filter((folder) => (folder.files?.length ?? 0) > MAX_FILES_PER_FOLDER)
+        .map((folder) => folder.folderName ?? folder.name);
+
+      setTooLargeFolders((prev) => [...new Set([...prev, ...foldersExceedingFileLimit])]);
 
       setOversizedFiles((prev) => [
         ...prev,
@@ -144,7 +151,7 @@ const UploadContentBody = () => {
         const newTotalSize = newFiles.reduce((sum, f) => sum + f.size, 0);
         const newSizeMB = bytesToMegabytes(newTotalSize);
 
-        if (newSizeMB > maxSizeMB) {
+        if (newSizeMB > maxSizeMB || newFiles.length > MAX_FILES_PER_FOLDER) {
           setTooLargeFolders((prevFolders) => [...new Set([...prevFolders, file.folderName])]);
           return file;
         }
