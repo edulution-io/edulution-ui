@@ -17,19 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import ReactDOM, { Root } from 'react-dom/client';
 import { SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
 import '../dialogs/resultVisualizationDialog.css';
+import DropdownOption from '@libs/ui/types/dropdownOption';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,
   defaultChartType: 'bar',
   showToolbar: false,
-  allowDynamicLayout: false,
+  allowDynamicLayout: true,
   allowHideQuestions: false,
 };
 
@@ -45,6 +48,47 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
 
   const [survey, setSurvey] = useState<SurveyModel | null>(null);
   const [visuPanel, setVisuPanel] = useState<VisualizationPanel | null>(null);
+  const rootsRef = useRef<Map<HTMLSelectElement, Root>>(new Map());
+
+  const mountDropdownOnSelect = (nativeSelect: HTMLSelectElement) => {
+    const el = nativeSelect;
+    if (el.dataset.replaced) return;
+    el.dataset.replaced = 'true';
+    el.style.display = 'none';
+
+    const options: DropdownOption[] = Array.from(el.options).map((o) => ({
+      id: o.value,
+      name: o.text,
+    }));
+
+    const wrapper = document.createElement('div');
+    el.insertAdjacentElement('afterend', wrapper);
+
+    const root = ReactDOM.createRoot(wrapper);
+
+    const renderDropdown = (val: string) => {
+      root.render(
+        <DropdownSelect
+          options={options}
+          selectedVal={val}
+          handleChange={(newVal: string) => {
+            el.value = newVal;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            renderDropdown(newVal);
+          }}
+          enableSearch={false}
+          enablePortalUsage={false}
+        />,
+      );
+    };
+
+    renderDropdown(el.value);
+    rootsRef.current.set(el, root);
+  };
+
+  const replaceAllSelects = (container: HTMLElement) => {
+    container.querySelectorAll<HTMLSelectElement>('select').forEach(mountDropdownOnSelect);
+  };
 
   if (survey == null) {
     const surveyModel = new SurveyModel(formula);
@@ -63,16 +107,24 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
   useEffect(() => {
     visuPanel?.render('surveyVisuPanel');
 
-    const component = document.getElementById('surveyVisuPanel');
+    const container = document.getElementById('surveyVisuPanel');
+    if (!container) return undefined;
+
+    setTimeout(() => replaceAllSelects(container), 0);
+
+    const observer = new MutationObserver(() => replaceAllSelects(container));
+    observer.observe(container, { childList: true, subtree: true });
+
     return () => {
-      if (component) {
-        component.innerHTML = '';
-      }
+      observer.disconnect();
+      rootsRef.current.forEach((root) => root.unmount());
+      rootsRef.current.clear();
+      container.innerHTML = '';
     };
   }, [visuPanel]);
 
   return (
-    <div className="rounded">
+    <div className="result-visualization rounded">
       <div id="surveyVisuPanel" />
     </div>
   );

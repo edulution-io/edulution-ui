@@ -17,22 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
+import DropdownOption from '@libs/ui/types/dropdownOption';
 import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+import DropdownSelectPanel from '@/components/ui/DropdownSelect/DropdownSelectPanel';
 
 const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-background`;
 
-export type DropdownOptions = {
-  id: string;
-  name: string;
-};
-
 interface DropdownProps {
-  options: DropdownOptions[];
+  options: DropdownOption[];
   selectedVal: string;
   handleChange: (value: string) => void;
   openToTop?: boolean;
@@ -40,6 +37,8 @@ interface DropdownProps {
   variant?: DropdownVariant;
   placeholder?: string;
   translate?: boolean;
+  enableSearch?: boolean;
+  enablePortalUsage?: boolean;
 }
 
 const MENU_MAX_HEIGHT = 125;
@@ -54,15 +53,18 @@ const DropdownSelect = ({
   variant = 'default',
   placeholder = '',
   translate = true,
+  enableSearch = true,
+  enablePortalUsage = true,
 }: DropdownProps) => {
   const { t } = useTranslation();
-  const searchEnabled = options.length > 3;
+  const searchEnabled = enableSearch && options.length > 3;
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
   const [openToTop, setOpenToTop] = useState(openToTopProp);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const listboxId = useId();
 
   const closeMenu = () => setIsOpen(false);
 
@@ -139,52 +141,35 @@ const DropdownSelect = ({
     if (searchEnabled) setQuery('');
   };
 
-  const selectOption = (option: DropdownOptions) => {
-    setQuery('');
-    handleChange(option.id);
-    closeMenu();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent, option: DropdownOptions) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      selectOption(option);
-    }
-  };
-
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.currentTarget.scrollTop += e.deltaY;
-  };
-
-  const touchStartY = useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const deltaY = touchStartY.current - e.touches[0].clientY;
-    e.currentTarget.scrollTop += deltaY;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
-  const variantClasses = {
-    default: VARIANT_COLORS.default,
-    dialog: VARIANT_COLORS.dialog,
-  };
+  const onSelect = useCallback(
+    (id: string) => {
+      setQuery('');
+      handleChange(id);
+      closeMenu();
+    },
+    [handleChange],
+  );
 
-  const optionVariantClasses = {
-    default: {
-      base: 'hover:bg-muted',
-      selected: 'bg-muted',
-    },
-    dialog: {
-      base: 'hover:bg-muted-light',
-      selected: 'bg-muted-light',
-    },
-  };
+  const panelStyle: React.CSSProperties = enablePortalUsage
+    ? { maxHeight: MENU_MAX_HEIGHT, top: menuPosition.top, left: menuPosition.left, width: menuPosition.width }
+    : { maxHeight: MENU_MAX_HEIGHT, width: Math.max(menuPosition.width, 130) };
+
+  const panel = (
+    <DropdownSelectPanel
+      menuRef={menuRef}
+      options={filteredOptions}
+      selectedVal={selectedVal}
+      onSelect={onSelect}
+      translateLabel={translateLabel}
+      variant={variant}
+      style={panelStyle}
+      listboxId={listboxId}
+    />
+  );
+
+  const DropdownPanel = enablePortalUsage ? createPortal(panel, document.body) : panel;
 
   return (
     <div
@@ -193,7 +178,7 @@ const DropdownSelect = ({
       role="combobox"
       aria-expanded={isOpen}
       aria-haspopup="listbox"
-      aria-controls="dropdown-listbox"
+      aria-controls={listboxId}
     >
       <input
         type={searchEnabled ? 'text' : 'button'}
@@ -205,12 +190,12 @@ const DropdownSelect = ({
         onFocus={searchEnabled ? openMenu : undefined}
         readOnly={!searchEnabled}
         disabled={options.length === 0}
-        className={cn(DROPDOWN_SELECT_CLASSES, variantClasses[variant], {
+        className={cn(DROPDOWN_SELECT_CLASSES, VARIANT_COLORS[variant], {
           'cursor-text': searchEnabled,
           'cursor-pointer': !searchEnabled,
         })}
         aria-autocomplete={searchEnabled ? 'list' : undefined}
-        aria-controls="dropdown-listbox"
+        aria-controls={listboxId}
       />
 
       <div
@@ -220,60 +205,7 @@ const DropdownSelect = ({
         })}
       />
 
-      {isOpen &&
-        createPortal(
-          <div
-            ref={menuRef}
-            className={cn(
-              'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
-              variantClasses[variant],
-            )}
-            style={{
-              maxHeight: MENU_MAX_HEIGHT,
-              top: menuPosition.top,
-              left: menuPosition.left,
-              width: menuPosition.width,
-            }}
-            role="listbox"
-            id="dropdown-listbox"
-            onWheel={handleWheel}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-          >
-            {filteredOptions.map((option) => {
-              const label = translateLabel(option.name);
-              const selected = option.id === selectedVal;
-              const classes = optionVariantClasses[variant];
-
-              return (
-                <div
-                  key={option.id}
-                  role="option"
-                  aria-selected={selected}
-                  tabIndex={0}
-                  onClick={() => selectOption(option)}
-                  onKeyDown={(e) => handleKeyDown(e, option)}
-                  className={cn(
-                    'box-border block cursor-pointer px-2.5 py-2',
-                    selected ? classes.selected : classes.base,
-                  )}
-                  title={label}
-                >
-                  {label}
-                </div>
-              );
-            })}
-            {filteredOptions.length === 0 && (
-              <div
-                className="box-border block cursor-default px-2.5 py-2"
-                aria-disabled="true"
-              >
-                {t('search.no-results')}
-              </div>
-            )}
-          </div>,
-          document.body,
-        )}
+      {isOpen && DropdownPanel}
     </div>
   );
 };
