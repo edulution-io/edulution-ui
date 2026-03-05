@@ -22,7 +22,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import { Migration } from '../../migration/migration.type';
 import { AppConfig } from '../appconfig.schema';
 
-const APPS_WITH_PUSH_NOTIFICATIONS = [APPS.BULLETIN_BOARD, APPS.CONFERENCES, APPS.SURVEYS];
+const APPS_WITH_PUSH_NOTIFICATIONS = [APPS.BULLETIN_BOARD, APPS.CONFERENCES, APPS.SURVEYS, APPS.MAIL];
 
 const migration010: Migration<AppConfig> = {
   name: '010-add-uses-push-notifications',
