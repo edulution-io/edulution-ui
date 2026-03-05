@@ -17,9 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum PrintPasswordsFormat {
-  PDF = 'pdf',
-  CSV = 'csv',
-}
+const FILE_EXPORT_FORMAT = {
+  PDF: 'pdf',
+  CSV: 'csv',
+} as const;
 
-export default PrintPasswordsFormat;
+type FileExportFormat = (typeof FILE_EXPORT_FORMAT)[keyof typeof FILE_EXPORT_FORMAT];
+
+export { FILE_EXPORT_FORMAT };
+export default FileExportFormat;

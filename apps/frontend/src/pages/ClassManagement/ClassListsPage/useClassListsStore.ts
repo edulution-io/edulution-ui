@@ -22,34 +22,60 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
-import PrintPasswordsStore from '@libs/classManagement/types/store/printPasswordsStore';
-import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import downloadFileFromBuffer from '@libs/classManagement/utils/downloadFileFromBuffer';
+import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 
-const initialState = {
+interface ClassListsStoreState {
+  isLoading: boolean;
+  error: Error | null;
+}
+
+interface ClassListsStoreActions {
+  downloadStudentsList: (schoolclass: string, format: FileExportFormat) => Promise<void>;
+  downloadStudentsLists: (schoolclasses: LmnApiSchoolClass[], format: FileExportFormat) => Promise<void>;
+  reset: () => void;
+}
+
+type ClassListsStore = ClassListsStoreState & ClassListsStoreActions;
+
+const initialState: ClassListsStoreState = {
   isLoading: false,
   error: null,
 };
 
-const usePrintPasswordsStore = create<PrintPasswordsStore>((set) => ({
+const useClassListsStore = create<ClassListsStore>((set, get) => ({
   ...initialState,
 
-  printPasswords: async (options: PrintPasswordsRequest) => {
+  downloadStudentsList: async (schoolclass: string, format: FileExportFormat) => {
     set({ error: null, isLoading: true });
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
-      const response = await eduApi.post<ArrayBuffer>(
-        LMN_API_EDU_API_ENDPOINTS.PRINT_PASSWORDS,
-        { options },
+      const response = await eduApi.get<ArrayBuffer>(
+        `${LMN_API_EDU_API_ENDPOINTS.STUDENTS_LIST}/${schoolclass}/${format}`,
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           responseType: ResponseType.ARRAYBUFFER,
         },
       );
 
-      const filename = `${options.schoolclasses.join('-')}-${options.school}-passwords.${options.format}`;
-      downloadFileFromBuffer(response.data, filename, options.format);
+      const filename = `${schoolclass}-students-list.${format}`;
+      downloadFileFromBuffer(response.data, filename, format);
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  downloadStudentsLists: async (schoolclasses: LmnApiSchoolClass[], format: FileExportFormat) => {
+    set({ error: null, isLoading: true });
+    try {
+      await schoolclasses.reduce(
+        (chain, schoolclass) => chain.then(() => get().downloadStudentsList(schoolclass.cn, format)),
+        Promise.resolve(),
+      );
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -60,4 +86,4 @@ const usePrintPasswordsStore = create<PrintPasswordsStore>((set) => ({
   reset: () => set({ ...initialState }),
 }));
 
-export default usePrintPasswordsStore;
+export default useClassListsStore;

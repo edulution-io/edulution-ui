@@ -35,6 +35,7 @@ import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import useClassListsStore from '@/pages/ClassManagement/ClassListsPage/useClassListsStore';
 import useReplaceFilesDialogStore from '@/pages/FileSharing/Dialog/useReplaceFilesDialogStore';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
@@ -107,6 +108,7 @@ const cleanAllStores = async () => {
   useBulletinBoardEditorialStore.getState().reset();
   useBulletinBoardStore.getState().reset();
   useBulletinCategoryTableStore.getState().reset();
+  useClassListsStore.getState().reset();
   useClassManagementStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
