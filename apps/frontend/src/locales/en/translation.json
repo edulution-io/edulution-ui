@@ -1685,6 +1685,32 @@
       "title": "User Interface",
       "description": "Here you can customize the user interface settings according to your preferences."
     },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Here you can manage your notification preferences.",
+      "pushNotifications": "Push Notifications",
+      "pushNotificationsDescription": "Receive push notifications on your device.",
+      "appNotifications": "App Notifications",
+      "appNotificationsDescription": "Choose which apps you want to receive notifications from.",
+      "table": {
+        "app": "App",
+        "active": "Active"
+      },
+      "schedule": {
+        "title": "Schedule – {{app}}",
+        "startTime": "From",
+        "endTime": "To",
+        "days": "Days",
+        "applyTo": "Apply to",
+        "allDays": "All days",
+        "onlyDay": "Only {{day}}"
+      },
+      "calendar": {
+        "dragHint": "Drag edges to adjust time",
+        "clickDayHint": "Click block to edit, double-click to add",
+        "selectApp": "Select App"
+      }
+    },
     "wireguard": {
       "title": "VPN Access",
       "description": "Here you can view and configure your WireGuard VPN access.",
@@ -1897,6 +1923,15 @@
     "logout": "Logout",
     "selected": "selected",
     "save": "Save",
+    "weekdaysShort": {
+      "0": "Mo",
+      "1": "Tu",
+      "2": "We",
+      "3": "Th",
+      "4": "Fr",
+      "5": "Sa",
+      "6": "Su"
+    },
     "successful": "Successful",
     "failed": "Failed",
     "login": "Login",

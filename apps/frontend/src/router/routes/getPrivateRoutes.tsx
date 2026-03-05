@@ -26,6 +26,7 @@ import {
   USER_INTERFACE_PATH,
   MAILS_PATH,
   MOBILE_ACCESS_PATH,
+  NOTIFICATIONS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
@@ -38,6 +39,7 @@ import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsP
 import UserInterfaceSettingsPage from '@/pages/UserSettings/Language/UserInterfaceSettingsPage';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/MobileFileAccessSetupBox';
 import UserSettingsWireguardPage from '@/pages/UserSettings/WireguardAccess/UserSettingsWireguardPage';
+import NotificationsSettingsPage from '@/pages/UserSettings/Notifications/NotificationsSettingsPage';
 import ParentChildPairingPage from '@/pages/UserSettings/ParentChildPairing/ParentChildPairingPage';
 import getSettingsRoutes from '@/router/routes/getSettingsRoutes';
 import getClassManagementRoutes from '@/router/routes/getClassManagementRoutes';
@@ -92,6 +94,10 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       <Route
         path={USER_INTERFACE_PATH}
         element={<UserInterfaceSettingsPage />}
+      />
+      <Route
+        path={NOTIFICATIONS_PATH}
+        element={<NotificationsSettingsPage />}
       />
       <Route
         path={MOBILE_ACCESS_PATH}

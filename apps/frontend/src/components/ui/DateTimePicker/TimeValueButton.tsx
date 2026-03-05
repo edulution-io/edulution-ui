@@ -21,29 +21,31 @@ import React, { useCallback } from 'react';
 import { cn, Button } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 
-interface MinuteButtonProps {
-  minute: number;
-  currentMinute: number;
-  onChangeMinute: (minute: number) => void;
+interface TimeValueButtonProps {
+  value: number;
+  selectedValue: number;
+  onSelect: (value: number) => void;
   variant: DropdownVariant;
 }
-const MinuteButton = ({ minute, currentMinute, onChangeMinute, variant }: MinuteButtonProps) => {
+
+const TimeValueButton = ({ value, selectedValue, onSelect, variant }: TimeValueButtonProps) => {
   const handleClick = useCallback(() => {
-    onChangeMinute(minute);
-  }, [minute, onChangeMinute]);
+    onSelect(value);
+  }, [value, onSelect]);
 
   return (
     <Button
-      variant={currentMinute === minute ? 'btn-outline' : 'btn-small'}
-      className={cn('aspect-square max-h-[25px] max-w-[64px] shrink-0 sm:w-full', {
-        'bg-background text-foreground': variant === 'default',
-        'bg-white text-background dark:bg-accent dark:text-secondary': variant === 'dialog',
-      })}
+      variant={selectedValue === value ? 'btn-outline' : 'btn-small'}
+      className={cn(
+        'aspect-square max-h-[25px] max-w-[64px] shrink-0 sm:w-full',
+        variant === 'default' && 'bg-background text-foreground',
+        variant === 'dialog' && 'bg-white text-background dark:bg-accent dark:text-secondary',
+      )}
       onClick={handleClick}
     >
-      {minute.toString().padStart(2, '0')}
+      {value.toString().padStart(2, '0')}
     </Button>
   );
 };
 
-export default MinuteButton;
+export default TimeValueButton;

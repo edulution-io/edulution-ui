@@ -24,6 +24,8 @@ import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-prefe
 import fieldsToProjection from '@libs/common/utils/fieldsToProjection';
 import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
 import UpdateBulletinBoardGridRowsDto from '@libs/user-preferences/types/update-bulletin-board-grid-rows.dto';
+import UpdateNotificationPreferencesDto from '@libs/user-preferences/types/update-notification-preferences.dto';
+import type NotificationPreferencesDto from '@libs/user-preferences/types/notification-preferences.dto';
 import { UserPreferences, UserPreferencesDocument } from './user-preferences.schema';
 
 @Injectable()
@@ -43,6 +45,7 @@ class UserPreferencesService {
     return {
       collapsedBulletins: doc?.collapsedBulletins ?? {},
       bulletinBoardGridRows: doc?.bulletinBoardGridRows ?? '1',
+      notifications: doc?.notifications ?? { pushEnabled: true, apps: {} },
     };
   }
 
@@ -64,6 +67,53 @@ class UserPreferencesService {
         { new: true, upsert: true },
       )
       .lean();
+  }
+
+  async updateNotificationPreferences(
+    username: string,
+    updateDto: UpdateNotificationPreferencesDto,
+  ): Promise<NotificationPreferencesDto> {
+    const setFields: Record<string, unknown> = {};
+
+    if (updateDto.pushEnabled !== undefined) {
+      setFields[`${USER_PREFERENCES_FIELDS.notifications}.pushEnabled`] = updateDto.pushEnabled;
+    }
+
+    if (updateDto.appName !== undefined && updateDto.appEnabled !== undefined) {
+      setFields[`${USER_PREFERENCES_FIELDS.notifications}.apps.${updateDto.appName}.enabled`] = updateDto.appEnabled;
+    }
+
+    if (updateDto.appName !== undefined && updateDto.appSchedules !== undefined) {
+      setFields[`${USER_PREFERENCES_FIELDS.notifications}.apps.${updateDto.appName}.schedules`] =
+        updateDto.appSchedules;
+    }
+
+    const doc = await this.userPreferencesModel
+      .findOneAndUpdate({ username }, { $set: setFields }, { new: true, upsert: true })
+      .lean();
+
+    const notifications = doc?.notifications;
+
+    return {
+      pushEnabled: notifications?.pushEnabled ?? true,
+      apps: (notifications?.apps ?? {}) as unknown as NotificationPreferencesDto['apps'],
+    };
+  }
+
+  async getNotificationPreferencesByUsernames(usernames: string[]): Promise<Map<string, NotificationPreferencesDto>> {
+    const docs = await this.userPreferencesModel
+      .find({ username: { $in: usernames } })
+      .select({ username: 1, notifications: 1, _id: 0 })
+      .lean();
+
+    const result = new Map<string, NotificationPreferencesDto>();
+    docs.forEach((doc) => {
+      if (doc.notifications) {
+        result.set(doc.username, doc.notifications as unknown as NotificationPreferencesDto);
+      }
+    });
+
+    return result;
   }
 
   async unsetCollapsedForBulletins(bulletinIds: string[]): Promise<void> {

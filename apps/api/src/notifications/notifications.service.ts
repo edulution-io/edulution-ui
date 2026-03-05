@@ -33,8 +33,11 @@ import BULK_INSERT_BATCH_SIZE from '@libs/common/constants/bulkInsertBatchSize';
 import BulkInsertResult from '@libs/common/types/bulkInsertResult';
 import SAME_SOURCE_PUSH_DEBOUNCE_MINUTES from '@libs/notification/constants/sameSourcePushDebounceMinutes';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import SOURCE_TYPE_TO_APP from '@libs/notification/constants/sourceTypeToApp';
+import shouldSendPushForUser from '@libs/user-preferences/utils/shouldSendPush';
 import UsersService from '../users/users.service';
 import SseService from '../sse/sse.service';
+import UserPreferencesService from '../user-preferences/user-preferences.service';
 import PushNotificationQueue from './queue/push-notification.queue';
 import { Notification, NotificationDocument } from './notification.schema';
 import { UserNotification, UserNotificationDocument } from './userNotification.schema';
@@ -44,6 +47,7 @@ class NotificationsService {
   constructor(
     private userService: UsersService,
     private sseService: SseService,
+    private userPreferencesService: UserPreferencesService,
     private pushNotificationQueue: PushNotificationQueue,
     @InjectModel(Notification.name) private notificationModel: Model<NotificationDocument>,
     @InjectModel(UserNotification.name) private userNotificationModel: Model<UserNotificationDocument>,
@@ -58,6 +62,24 @@ class NotificationsService {
     const timeSinceLastPush = Date.now() - notification.lastPushSentAt.getTime();
 
     return timeSinceLastPush >= debounceMs;
+  }
+
+  private async filterUsernamesByPreferences(
+    usernames: string[],
+    sourceType?: NotificationSourceType,
+  ): Promise<string[]> {
+    if (!sourceType) {
+      return usernames;
+    }
+
+    const appId = SOURCE_TYPE_TO_APP[sourceType];
+    if (!appId) {
+      return usernames;
+    }
+
+    const prefsMap = await this.userPreferencesService.getNotificationPreferencesByUsernames(usernames);
+
+    return usernames.filter((username) => shouldSendPushForUser(prefsMap.get(username), appId));
   }
 
   private async updateLastPushSentAt(notificationId: string): Promise<void> {
@@ -101,8 +123,12 @@ class NotificationsService {
       }
 
       if (!skipPush) {
-        const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
-        await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
+        const eligibleUsernames = await this.filterUsernamesByPreferences(usernames, createNotificationDto?.sourceType);
+
+        if (eligibleUsernames.length > 0) {
+          const uniqueTokens = await this.userService.getPushTokensByUsernames(eligibleUsernames);
+          await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
+        }
 
         if (notification) {
           await this.updateLastPushSentAt(String(notification.id));
@@ -270,8 +296,13 @@ class NotificationsService {
     this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
 
     if (!skipPush && NotificationsService.shouldSendPush(existingNotification)) {
-      const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
-      await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
+      const eligibleUsernames = await this.filterUsernamesByPreferences(usernames, updateData.sourceType);
+
+      if (eligibleUsernames.length > 0) {
+        const uniqueTokens = await this.userService.getPushTokensByUsernames(eligibleUsernames);
+        await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
+      }
+
       await this.updateLastPushSentAt(notificationId);
       await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.SENT);
     } else if (!skipPush) {

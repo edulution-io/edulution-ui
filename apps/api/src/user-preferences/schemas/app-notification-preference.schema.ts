@@ -18,31 +18,15 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { NotificationPreferences, NotificationPreferencesSchema } from './schemas/notification-preferences.schema';
+import { NotificationScheduleSchema, NotificationSchedule } from './notification-schedule.schema';
 
-export type UserPreferencesDocument = UserPreferences & Document;
+@Schema({ _id: false })
+export class AppNotificationPreference {
+  @Prop({ type: Boolean, default: true })
+  enabled: boolean;
 
-@Schema({ timestamps: true })
-export class UserPreferences extends Document {
-  @Prop({ type: String, required: true, unique: true, index: true })
-  username: string;
-
-  @Prop({
-    type: Map,
-    of: Boolean,
-    default: {},
-  })
-  collapsedBulletins: Record<string, boolean>;
-
-  @Prop({
-    type: String,
-    default: '1',
-  })
-  bulletinBoardGridRows: string;
-
-  @Prop({ type: NotificationPreferencesSchema, default: () => ({}) })
-  notifications: NotificationPreferences;
+  @Prop({ type: [NotificationScheduleSchema], default: [] })
+  schedules: NotificationSchedule[];
 }
 
-export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
+export const AppNotificationPreferenceSchema = SchemaFactory.createForClass(AppNotificationPreference);

@@ -17,32 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { NotificationPreferences, NotificationPreferencesSchema } from './schemas/notification-preferences.schema';
+import React from 'react';
 
-export type UserPreferencesDocument = UserPreferences & Document;
-
-@Schema({ timestamps: true })
-export class UserPreferences extends Document {
-  @Prop({ type: String, required: true, unique: true, index: true })
-  username: string;
-
-  @Prop({
-    type: Map,
-    of: Boolean,
-    default: {},
-  })
-  collapsedBulletins: Record<string, boolean>;
-
-  @Prop({
-    type: String,
-    default: '1',
-  })
-  bulletinBoardGridRows: string;
-
-  @Prop({ type: NotificationPreferencesSchema, default: () => ({}) })
-  notifications: NotificationPreferences;
+interface WeeklyScheduleCalendarDayHeaderProps {
+  dayLabels: string[];
 }
 
-export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
+const WeeklyScheduleCalendarDayHeader = ({ dayLabels }: WeeklyScheduleCalendarDayHeaderProps) => (
+  <div
+    className="sticky top-0 z-20 grid bg-white dark:bg-background"
+    style={{ gridTemplateColumns: `50px repeat(${7}, 1fr)` }}
+  >
+    <div />
+    {dayLabels.map((label) => (
+      <div
+        key={label}
+        className="border-b border-l border-muted py-2 text-center text-xs font-medium text-muted-foreground"
+      >
+        {label}
+      </div>
+    ))}
+  </div>
+);
+
+export default WeeklyScheduleCalendarDayHeader;

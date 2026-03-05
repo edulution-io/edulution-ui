@@ -17,32 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { NotificationPreferences, NotificationPreferencesSchema } from './schemas/notification-preferences.schema';
+import type NotificationPreferencesDto from '@libs/user-preferences/types/notification-preferences.dto';
+import isWithinSchedule from '@libs/user-preferences/utils/isWithinSchedule';
 
-export type UserPreferencesDocument = UserPreferences & Document;
+const shouldSendPush = (prefs: NotificationPreferencesDto | undefined, appId: string): boolean => {
+  if (!prefs) {
+    return true;
+  }
 
-@Schema({ timestamps: true })
-export class UserPreferences extends Document {
-  @Prop({ type: String, required: true, unique: true, index: true })
-  username: string;
+  if (!prefs.pushEnabled) {
+    return false;
+  }
 
-  @Prop({
-    type: Map,
-    of: Boolean,
-    default: {},
-  })
-  collapsedBulletins: Record<string, boolean>;
+  const appPref = prefs.apps[appId];
+  if (!appPref) {
+    return true;
+  }
 
-  @Prop({
-    type: String,
-    default: '1',
-  })
-  bulletinBoardGridRows: string;
+  if (!appPref.enabled) {
+    return false;
+  }
 
-  @Prop({ type: NotificationPreferencesSchema, default: () => ({}) })
-  notifications: NotificationPreferences;
-}
+  if (appPref.schedules?.length) {
+    return appPref.schedules.some(isWithinSchedule);
+  }
 
-export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
+  return true;
+};
+
+export default shouldSendPush;

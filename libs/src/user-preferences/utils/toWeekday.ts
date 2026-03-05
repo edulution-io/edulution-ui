@@ -17,32 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { NotificationPreferences, NotificationPreferencesSchema } from './schemas/notification-preferences.schema';
+import type Weekday from '@libs/common/constants/weekday';
 
-export type UserPreferencesDocument = UserPreferences & Document;
+const toWeekday = (jsDay: number): Weekday => ((jsDay + 6) % 7) as Weekday;
 
-@Schema({ timestamps: true })
-export class UserPreferences extends Document {
-  @Prop({ type: String, required: true, unique: true, index: true })
-  username: string;
-
-  @Prop({
-    type: Map,
-    of: Boolean,
-    default: {},
-  })
-  collapsedBulletins: Record<string, boolean>;
-
-  @Prop({
-    type: String,
-    default: '1',
-  })
-  bulletinBoardGridRows: string;
-
-  @Prop({ type: NotificationPreferencesSchema, default: () => ({}) })
-  notifications: NotificationPreferences;
-}
-
-export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
+export default toWeekday;

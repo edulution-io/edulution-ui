@@ -70,6 +70,7 @@ import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import useParentAssignmentStore from '@/pages/LinuxmusterPage/ParentAssignment/useParentAssignmentStore';
 import useParentChildPairingStore from '@/pages/UserSettings/ParentChildPairing/useParentChildPairingStore';
 import useNotificationStore from '@/store/useNotificationStore';
+import useUserPreferencesStore from '@/store/useUserPreferencesStore';
 import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
 import useUserManagementStore from '@/pages/LinuxmusterPage/UserManagement/useUserManagementStore';
 import useSseStore from '../useSseStore';
@@ -131,6 +132,7 @@ const cleanAllStores = async () => {
   useParentChildPairingStore.getState().reset();
   useParentAssignmentStore.getState().reset();
   useNotificationStore.getState().reset();
+  useUserPreferencesStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   localStorage.removeItem('user-management-storage');
   localStorage.removeItem('device-management-storage');
