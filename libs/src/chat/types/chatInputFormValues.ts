@@ -17,16 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UseFormReturn } from 'react-hook-form';
-import ChatMessage from '@libs/chat/types/chatMessage';
-import ChatInputFormValues from '@libs/chat/types/chatInputFormValues';
-
-interface ChatAdapter {
-  messages: ChatMessage[];
-  form: UseFormReturn<ChatInputFormValues>;
-  onSubmit: (data: ChatInputFormValues) => Promise<void>;
-  isLoading: boolean;
-  error?: Error | null;
+interface ChatInputFormValues {
+  message: string;
 }
 
-export default ChatAdapter;
+export default ChatInputFormValues;

@@ -17,8 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
+import ChatInputFormValues from '@libs/chat/types/chatInputFormValues';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
@@ -28,7 +30,7 @@ import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
-  const [input, setInput] = useState('');
+  const form = useForm<ChatInputFormValues>({ defaultValues: { message: '' } });
   const { messages, isLoading, isSending, error, fetchMessages, sendMessage, setCurrentConversation, addMessage } =
     useChatStore();
   const user = useUserStore((state) => state.user);
@@ -72,25 +74,22 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
   useSseEventListener(SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE, handleNewMessage, { enabled: true });
 
-  const handleSubmit = useCallback(
-    async (e?: FormEvent): Promise<void> => {
-      e?.preventDefault();
+  const onSubmit = useCallback(
+    async (data: ChatInputFormValues): Promise<void> => {
+      if (!data.message.trim() || isSending) return;
 
-      if (!input.trim() || isSending) return;
-
-      const messageContent = input.trim();
-      setInput('');
+      const messageContent = data.message.trim();
+      form.reset();
 
       await sendMessage(sophomorixType, groupName, messageContent);
     },
-    [input, isSending, sophomorixType, groupName, sendMessage],
+    [isSending, sophomorixType, groupName, sendMessage, form],
   );
 
   return {
     messages,
-    input,
-    setInput,
-    handleSubmit,
+    form,
+    onSubmit,
     isLoading: isLoading || isSending,
     error: error ? new Error(error) : null,
   };
