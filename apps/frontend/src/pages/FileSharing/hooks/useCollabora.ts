@@ -35,12 +35,12 @@ interface UseCollaboraProps {
 }
 
 const useCollabora = ({ filePath, webdavShare }: UseCollaboraProps) => {
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { webdavShare: webdavShareFromParams } = useParams();
   const resolvedWebdavShare = webdavShare ?? webdavShareFromParams;
 
   const { accessToken, accessTokenTTL, isLoading, fetchWopiToken } = useCollaboraStore();
 
-  const { appConfigs } = useAppConfigsStore();
   const collaboraUrl = getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.COLLABORA_URL);
 
   const fileId = encodeBase64(filePath).replace(/[/+=]/g, '_');

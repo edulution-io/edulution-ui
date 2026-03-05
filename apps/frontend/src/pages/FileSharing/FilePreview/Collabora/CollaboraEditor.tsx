@@ -28,6 +28,7 @@ interface CollaboraEditorProps {
   wopiSrc: string;
   accessToken: string;
   accessTokenTTL: number;
+  editMode?: boolean;
   isOpenedInNewTab?: boolean;
 }
 
@@ -39,6 +40,7 @@ const CollaboraEditor = ({
   wopiSrc,
   accessToken,
   accessTokenTTL,
+  editMode,
   isOpenedInNewTab,
 }: CollaboraEditorProps) => {
   const { t } = useTranslation();
@@ -48,10 +50,11 @@ const CollaboraEditor = ({
 
   useEffect(() => {
     if (formRef.current) {
+      setIsLoading(true);
       formSubmittedRef.current = true;
       formRef.current.submit();
     }
-  }, [collaboraUrl, wopiSrc, accessToken]);
+  }, [collaboraUrl, wopiSrc, accessToken, editMode]);
 
   const handleIframeLoad = useCallback(() => {
     if (formSubmittedRef.current) {
@@ -59,7 +62,8 @@ const CollaboraEditor = ({
     }
   }, []);
 
-  const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}`;
+  const permission = editMode ? 'edit' : 'readonly';
+  const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}&permission=${permission}`;
 
   return (
     <div className={cn('relative h-full w-full', { 'h-dvh': isOpenedInNewTab })}>

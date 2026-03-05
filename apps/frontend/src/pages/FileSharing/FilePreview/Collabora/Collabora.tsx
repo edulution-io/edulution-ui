@@ -23,11 +23,12 @@ import useCollabora from '@/pages/FileSharing/hooks/useCollabora';
 
 interface CollaboraProps {
   filePath: string;
+  editMode?: boolean;
   isOpenedInNewTab?: boolean;
   webdavShare?: string;
 }
 
-const Collabora = ({ filePath, isOpenedInNewTab, webdavShare }: CollaboraProps) => {
+const Collabora = ({ filePath, editMode, isOpenedInNewTab, webdavShare }: CollaboraProps) => {
   const { collaboraUrl, wopiSrc, accessToken, accessTokenTTL, isLoading } = useCollabora({
     filePath,
     webdavShare,
@@ -41,6 +42,7 @@ const Collabora = ({ filePath, isOpenedInNewTab, webdavShare }: CollaboraProps) 
       wopiSrc={wopiSrc}
       accessToken={accessToken}
       accessTokenTTL={accessTokenTTL}
+      editMode={editMode}
       isOpenedInNewTab={isOpenedInNewTab}
     />
   );
