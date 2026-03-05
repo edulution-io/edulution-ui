@@ -169,6 +169,7 @@ const FileRenderer: FC<FileRendererProps> = ({
         return (
           <Collabora
             filePath={currentlyEditingFile.filePath}
+            editMode={editMode}
             isOpenedInNewTab={isOpenedInNewTab}
             webdavShare={webdavShare}
           />

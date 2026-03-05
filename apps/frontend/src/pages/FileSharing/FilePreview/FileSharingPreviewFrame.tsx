@@ -250,7 +250,7 @@ const FileSharingPreviewFrame = () => {
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const canToggleEditMode = isOfficeDocument(currentlyEditingFile?.filename || '') || isTextFile || isDrawioFile;
+  const canToggleEditMode = isEditableDoc || isTextFile || isDrawioFile;
   const isTextEditMode = isEditMode && isTextFile;
   const isDrawioEditMode = isEditMode && isDrawioFile;
   const showSaveButton = isTextEditMode || isDrawioEditMode;

@@ -24,7 +24,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { ACTIVE_DOCUMENT_EDITOR } from '@libs/filesharing/constants/activeDocumentEditor';
 
 const useActiveDocumentEditor = () => {
-  const { appConfigs } = useAppConfigsStore();
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -38,11 +38,9 @@ const useActiveDocumentEditor = () => {
     ExtendedOptionKeys.COLLABORA_URL,
   );
 
-  const activeEditor = getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR,
-  );
+  const activeEditor =
+    getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR) ??
+    ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE;
 
   const isOnlyOfficeActive = isDocumentServerConfigured && activeEditor !== ACTIVE_DOCUMENT_EDITOR.COLLABORA;
   const isCollaboraActive = isCollaboraServerConfigured && activeEditor === ACTIVE_DOCUMENT_EDITOR.COLLABORA;
