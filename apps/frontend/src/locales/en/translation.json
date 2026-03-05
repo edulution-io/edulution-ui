@@ -422,6 +422,7 @@
     "fileEditor": "File editor",
     "selectFile": "Select file",
     "filePreview": "File preview",
+    "collaboraEditor": "Collabora Online Editor",
     "saveFile": "Save file",
     "print": "Print",
     "loadingDocument": "Loading document...",
@@ -460,7 +461,8 @@
       "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
       "CopyFailed": "Copy failed",
-      "FileFormatNotSupported": "File format is not supported"
+      "FileFormatNotSupported": "File format is not supported",
+      "WopiTokenInvalid": "WOPI token invalid or expired"
     },
     "singleDownload": {
       "promptInfo": "Your file download has started.",
@@ -1427,6 +1429,10 @@
         },
         "onlyOffice": {
           "title": "Only Office Integration",
+          "description": ""
+        },
+        "collabora": {
+          "title": "Collabora Online Integration",
           "description": ""
         },
         "imapMailFeed": {
@@ -2398,6 +2404,14 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "collaboraUrlTitle": "Collabora URL",
+    "collaboraUrl": "Enter the Collabora Online URL",
+    "collaboraWopiSecretTitle": "Collabora WOPI Secret",
+    "collaboraWopiSecretDescription": "Enter the shared WOPI secret for Collabora Online",
+    "activeDocumentEditorTitle": "Active Document Editor",
+    "activeDocumentEditorDescription": "Choose which document editor to use for office documents",
+    "activeDocumentEditor.onlyoffice": "OnlyOffice",
+    "activeDocumentEditor.collabora": "Collabora Online",
     "drawioUrlTitle": "Draw.io URL",
     "drawioUrlDescription": "Enter the URL of your self-hosted Draw.io instance",
     "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",

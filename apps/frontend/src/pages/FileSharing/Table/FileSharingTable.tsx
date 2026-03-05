@@ -32,10 +32,8 @@ import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharing
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import useActiveDocumentEditor from '@/pages/FileSharing/hooks/useActiveDocumentEditor';
 import ContentType from '@libs/filesharing/types/contentType';
 import { GRID_ICON_SIZE, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import VIEW_MODE from '@libs/common/constants/viewMode';
@@ -62,7 +60,6 @@ const FileSharingTable = () => {
   const { webdavShare } = useParams();
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading, currentPath, webdavShares } =
     useFileSharingStore();
 
@@ -95,19 +92,20 @@ const FileSharingTable = () => {
   const viewMode = getViewMode(APPS.FILE_SHARING);
   const isGridView = viewMode === VIEW_MODE.grid;
 
-  const isDocumentServerConfigured = !!getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
-  );
+  const { isDocumentServerConfigured, isCollaboraServerConfigured } = useActiveDocumentEditor();
 
-  const { handleFileOpen } = useFileOpen({ isDocumentServerConfigured });
+  const { handleFileOpen } = useFileOpen({
+    isDocumentServerConfigured,
+    isCollaboraConfigured: isCollaboraServerConfigured,
+  });
   const { openDialog } = useFileSharingDialogStore();
   const startDownload = useStartWebdavFileDownload();
 
+  const isDocumentEditorConfigured = isDocumentServerConfigured || isCollaboraServerConfigured;
+
   const columns = useMemo(
-    () => getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured),
-    [isDocumentServerConfigured],
+    () => getFileSharingTableColumns(undefined, undefined, isDocumentEditorConfigured),
+    [isDocumentEditorConfigured],
   );
 
   const filesByPath = useMemo(() => {

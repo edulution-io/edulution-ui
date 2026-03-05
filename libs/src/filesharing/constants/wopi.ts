@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
+const WOPI_TOKEN_EXPIRY = '24h';
+const WOPI_TOKEN_TTL_MS = 86400000;
+const WOPI_BASE_PATH = 'wopi/files';
 
-export type TOnlyOfficeDocumentTypes = (typeof OnlyOfficeDocumentTypes)[keyof typeof OnlyOfficeDocumentTypes];
+export { WOPI_TOKEN_EXPIRY, WOPI_TOKEN_TTL_MS, WOPI_BASE_PATH };

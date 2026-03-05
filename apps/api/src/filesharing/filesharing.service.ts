@@ -46,6 +46,7 @@ import { PublicShare, PublicShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
 import OnlyofficeService from './onlyoffice.service';
+import CollaboraService from './collabora.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import QueueService from '../queue/queue.service';
 import CustomHttpException from '../common/CustomHttpException';
@@ -57,6 +58,7 @@ class FilesharingService {
     @InjectModel(PublicShare.name)
     private readonly shareModel: Model<PublicShareDocument>,
     private readonly onlyofficeService: OnlyofficeService,
+    private readonly collaboraService: CollaboraService,
     private readonly fileSystemService: FilesystemService,
     private readonly dynamicQueueService: QueueService,
     private readonly webDavService: WebdavService,
@@ -237,6 +239,10 @@ class FilesharingService {
 
   async getOnlyOfficeToken(payload: string) {
     return this.onlyofficeService.generateOnlyOfficeToken(payload);
+  }
+
+  async getCollaboraToken(username: string, filePath: string, share: string) {
+    return this.collaboraService.generateWopiToken(username, filePath, share);
   }
 
   async handleCallback(req: Request, res: Response, path: string, filename: string, username: string, share: string) {
