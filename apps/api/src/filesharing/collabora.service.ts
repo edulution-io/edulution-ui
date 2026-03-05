@@ -32,7 +32,6 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
-import sanitizePath from '@libs/filesystem/utils/sanitizePath';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
 import WebdavService from '../webdav/webdav.service';
@@ -67,14 +66,13 @@ class CollaboraService {
     Logger.log(`Generating WOPI token for ${username}`, CollaboraService.name);
     const secret = await this.getWopiSecret();
 
-    const sanitizedFilePath = sanitizePath(filePath);
-    if (!sanitizedFilePath) {
+    if (filePath.includes('..')) {
       throw new BadRequestException(PathValidationErrorMessages.PathTraversal);
     }
 
     const payload: WopiTokenPayload = {
       username,
-      filePath: sanitizedFilePath,
+      filePath,
       share,
       jti: randomUUID(),
     };

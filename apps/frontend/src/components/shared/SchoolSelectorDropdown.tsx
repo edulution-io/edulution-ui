@@ -21,11 +21,14 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownSelect } from '@/components';
 import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
-import useClassManagementStore from '../useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 
 const SchoolSelectorDropdown: React.FC = () => {
   const { t } = useTranslation();
-  const { selectedSchool, setSelectedSchool, schools, getSchools } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
+  const setSelectedSchool = useSchoolStore((s) => s.setSelectedSchool);
+  const schools = useSchoolStore((s) => s.schools);
+  const getSchools = useSchoolStore((s) => s.getSchools);
 
   useEffect(() => {
     void getSchools();

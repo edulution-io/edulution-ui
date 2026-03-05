@@ -33,7 +33,7 @@ import USER_TYPE_ICONS from '@libs/userManagement/constants/userTypeIcons';
 import ADMIN_SUB_TABS from '@libs/userManagement/constants/adminSubTabs';
 import ALL_TAB_OPTIONS from '@libs/userManagement/constants/allTabOptions';
 import type UserType from '@libs/userManagement/types/userType';
-import SchoolSelectorDropdown from '@/pages/ClassManagement/components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import UserTable from './components/UserTable/UserTable';
 import ListManagementTab from './components/ListManagement/ListManagementTab';

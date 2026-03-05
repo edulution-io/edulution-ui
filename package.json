@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "2.0.23",
+  "version": "2.0.29",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -209,7 +209,7 @@
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
-    "@vitejs/plugin-react-swc": "^3.5.0",
+    "@vitejs/plugin-react": "^5.1.4",
     "autoprefixer": "^10.4.17",
     "chalk": "^5.4.1",
     "eslint": "^8.57.0",
@@ -236,10 +236,10 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1",
-    "vite": "^5.0.8",
-    "vite-plugin-dts": "^4.5.0",
+    "vite": "npm:rolldown-vite@7.3.1",
+    "vite-plugin-dts": "^4.5.4",
     "vite-plugin-svgr": "^4.5.0",
-    "vitest": "^1.6.1",
+    "vitest": "^3.2.2",
     "webpack-cli": "^6.0.1"
   }
 }

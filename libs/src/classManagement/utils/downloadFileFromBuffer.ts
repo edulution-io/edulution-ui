@@ -17,15 +17,28 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 
-interface PrintPasswordsRequest {
-  format: FileExportFormat;
-  one_per_page: boolean;
-  pdflatex: boolean;
-  school: string;
-  nosplit_names: boolean;
-  schoolclasses: string[];
-}
+const downloadFileFromBuffer = (data: BlobPart, filename: string, format: FileExportFormat) => {
+  const mimeType =
+    format === FILE_EXPORT_FORMAT.CSV
+      ? `${RequestResponseContentType.TEXT_CSV};charset=utf-8;`
+      : RequestResponseContentType.APPLICATION_PDF;
 
-export default PrintPasswordsRequest;
+  const blob = new Blob([data], { type: mimeType });
+  const url = window.URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode?.removeChild(link);
+
+  window.URL.revokeObjectURL(url);
+};
+
+export default downloadFileFromBuffer;

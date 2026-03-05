@@ -22,42 +22,46 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
-import PrintPasswordsStore from '@libs/classManagement/types/store/printPasswordsStore';
-import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
-import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
-import downloadFileFromBuffer from '@libs/classManagement/utils/downloadFileFromBuffer';
+import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+
+interface SchoolState {
+  schools: LmnApiSchools[];
+  selectedSchool: string;
+}
+
+interface SchoolActions {
+  reset: () => void;
+  setSelectedSchool: (school: string) => void;
+  getSchools: () => Promise<void>;
+}
+
+type SchoolStore = SchoolState & SchoolActions;
 
 const initialState = {
-  isLoading: false,
-  error: null,
+  schools: [] as LmnApiSchools[],
+  selectedSchool: '',
 };
 
-const usePrintPasswordsStore = create<PrintPasswordsStore>((set) => ({
+const useSchoolStore = create<SchoolStore>((set) => ({
   ...initialState,
 
-  printPasswords: async (options: PrintPasswordsRequest) => {
-    set({ error: null, isLoading: true });
+  setSelectedSchool: (school) => set({ selectedSchool: school }),
+
+  getSchools: async () => {
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
-      const response = await eduApi.post<ArrayBuffer>(
-        LMN_API_EDU_API_ENDPOINTS.PRINT_PASSWORDS,
-        { options },
-        {
-          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          responseType: ResponseType.ARRAYBUFFER,
-        },
-      );
+      const { data } = await eduApi.get<LmnApiSchools[]>(LMN_API_EDU_API_ENDPOINTS.SCHOOLS, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
 
-      const filename = `${options.schoolclasses.join('-')}-${options.school}-passwords.${options.format}`;
-      downloadFileFromBuffer(response.data, filename, options.format);
+      set({ schools: data });
     } catch (error) {
       handleApiError(error, set);
-    } finally {
-      set({ isLoading: false });
     }
   },
 
   reset: () => set({ ...initialState }),
 }));
 
-export default usePrintPasswordsStore;
+export default useSchoolStore;
