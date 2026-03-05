@@ -62,8 +62,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ form, onSubmit, isLoading, placeh
     }
   };
 
-  const isMaxLength = messageValue.length >= CHAT_MESSAGE_MAX_LENGTH;
-  const isDisabled = !messageValue.trim() || isLoading || isMaxLength;
+  const isMaxLength = messageValue.length > CHAT_MESSAGE_MAX_LENGTH;
+  const isDisabled = !messageValue.trim() || isLoading || !form.formState.isValid;
 
   return (
     <Form {...form}>
@@ -75,18 +75,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ form, onSubmit, isLoading, placeh
           <FormFieldSH
             control={form.control}
             name="message"
-            rules={{
-              required: true,
-              maxLength: {
-                value: CHAT_MESSAGE_MAX_LENGTH,
-                message: t('chat.messageTooLong'),
-              },
-            }}
             render={({ field }) => (
               <div className="flex-1">
                 <FormControl>
                   <Textarea
-                    {...field}
+                    name={field.name}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    onBlur={field.onBlur}
                     ref={(e) => {
                       field.ref(e);
                       (textareaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = e;
@@ -95,7 +91,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ form, onSubmit, isLoading, placeh
                     placeholder={placeholder || t('chat.inputPlaceholder')}
                     className={cn(inputVariants(), 'max-h-32 min-h-10 resize-none overflow-y-auto py-2')}
                     rows={1}
-                    maxLength={CHAT_MESSAGE_MAX_LENGTH}
                     disabled={isLoading}
                   />
                 </FormControl>

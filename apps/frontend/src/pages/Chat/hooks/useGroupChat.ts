@@ -19,8 +19,11 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { zodResolver } from '@hookform/resolvers/zod';
 import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import ChatInputFormValues from '@libs/chat/types/chatInputFormValues';
+import getChatInputFormSchema from '@libs/chat/constants/getChatInputFormSchema';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
@@ -30,7 +33,12 @@ import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
-  const form = useForm<ChatInputFormValues>({ defaultValues: { message: '' } });
+  const { t } = useTranslation();
+  const form = useForm<ChatInputFormValues>({
+    mode: 'onChange',
+    resolver: zodResolver(getChatInputFormSchema(t)),
+    defaultValues: { message: '' },
+  });
   const { messages, isLoading, isSending, error, fetchMessages, sendMessage, setCurrentConversation, addMessage } =
     useChatStore();
   const user = useUserStore((state) => state.user);

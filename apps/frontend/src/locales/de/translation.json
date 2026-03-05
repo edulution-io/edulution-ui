@@ -26,6 +26,7 @@
     "noMessages": "Noch keine Nachrichten",
     "startConversation": "Schreibe die erste Nachricht",
     "inputPlaceholder": "Nachricht schreiben...",
+    "messageTooLong": "Nachricht ist zu lang",
     "error": "Fehler",
     "errors": {
       "conversationNotFound": "Unterhaltung nicht gefunden",
