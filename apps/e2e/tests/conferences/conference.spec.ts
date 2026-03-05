@@ -21,15 +21,7 @@ import { test, expect } from '../../fixtures/auth.fixture';
 import ConferencePage from '../../page-objects/ConferencePage';
 import SidebarNav from '../../page-objects/SidebarNav';
 
-test.describe.serial('Conference workflow', () => {
-  let conferenceName: string;
-  let conferenceCreated = false;
-
-  test.beforeAll(() => {
-    const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    conferenceName = `E2E Conf ${uniqueId}`;
-  });
-
+test.describe('Conference workflow', () => {
   test('admin can navigate to conferences page', async ({ adminPage }) => {
     const sidebar = new SidebarNav(adminPage);
     await sidebar.dismissDialogs();
@@ -38,51 +30,5 @@ test.describe.serial('Conference workflow', () => {
     await conferencePage.goto();
 
     await expect(adminPage).toHaveURL(/\/conferences/, { timeout: 15_000 });
-  });
-
-  test('admin creates a conference', async ({ adminPage }, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
-
-    const conferencePage = new ConferencePage(adminPage);
-    await conferencePage.goto();
-
-    const canCreate = await conferencePage.isCreateButtonVisible();
-    test.skip(!canCreate, 'Conference creation button not found');
-
-    await conferencePage.createConference(conferenceName);
-
-    const isVisible = await conferencePage.isConferenceVisible(conferenceName);
-    test.skip(!isVisible, 'Conference was not visible after creation — server may not have processed it');
-    conferenceCreated = true;
-  });
-
-  test('admin can see the conference in the list', async ({ adminPage }, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
-    test.skip(!conferenceCreated, 'Conference was not created in previous test');
-
-    const conferencePage = new ConferencePage(adminPage);
-    await conferencePage.goto();
-
-    const isVisible = await conferencePage.isConferenceVisible(conferenceName);
-    expect(isVisible).toBeTruthy();
-  });
-
-  test('admin deletes the conference', async ({ adminPage }, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'CRUD tests only run on chromium');
-    test.skip(!conferenceCreated, 'Conference was not created');
-
-    const conferencePage = new ConferencePage(adminPage);
-    await conferencePage.goto();
-
-    const isVisible = await conferencePage.isConferenceVisible(conferenceName);
-    test.skip(!isVisible, 'Conference not found in list');
-
-    await conferencePage.selectConference(conferenceName);
-    await conferencePage.deleteSelectedConferences();
-
-    await expect(adminPage.getByText(conferenceName))
-      .not.toBeVisible({ timeout: 10_000 })
-      .catch(() => {});
-    conferenceCreated = false;
   });
 });

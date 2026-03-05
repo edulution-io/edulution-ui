@@ -27,12 +27,12 @@ class ConferencePage extends BasePage {
     await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  private floatingButton(label: string) {
-    return this.page.locator('button').filter({ has: this.page.locator(`[aria-label="${label}"]`) });
+  private floatingButton(pattern: RegExp) {
+    return this.page.locator('button').filter({ has: this.page.getByLabel(pattern) });
   }
 
   async isCreateButtonVisible(): Promise<boolean> {
-    return this.floatingButton('Erstellen')
+    return this.floatingButton(/erstellen|create/i)
       .first()
       .isVisible({ timeout: FLOATING_BUTTON_TIMEOUT })
       .catch(() => false);
@@ -40,13 +40,15 @@ class ConferencePage extends BasePage {
 
   async createConference(name: string): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Erstellen').first().click();
+    await this.floatingButton(/erstellen|create/i)
+      .first()
+      .click();
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
     await dialog.getByLabel(/name/i).first().fill(name);
-    await dialog.getByRole('button', { name: /speichern/i }).click();
+    await dialog.getByRole('button', { name: /speichern|save/i }).click();
     await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 
@@ -64,12 +66,14 @@ class ConferencePage extends BasePage {
 
   async deleteSelectedConferences(): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Löschen').first().click();
+    await this.floatingButton(/löschen|delete/i)
+      .first()
+      .click();
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
-    await dialog.getByRole('button', { name: /löschen/i }).click();
+    await dialog.getByRole('button', { name: /löschen|delete/i }).click();
     await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 }

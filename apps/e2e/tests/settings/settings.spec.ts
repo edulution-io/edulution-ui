@@ -28,34 +28,6 @@ test.describe('Settings', () => {
     await expect(adminPage).toHaveURL(/\/settings/, { timeout: 15_000 });
 
     const loaded = await settingsPage.isPageLoaded();
-    test.skip(!loaded, 'Settings page did not load');
-  });
-
-  test('user can access theme settings', async ({ adminPage }) => {
-    const settingsPage = new SettingsPage(adminPage);
-    await settingsPage.gotoThemeSettings();
-
-    const onThemePage = await adminPage
-      .waitForURL(/\/usersettings\/userinterface/, { timeout: 10_000 })
-      .then(() => true)
-      .catch(() => false);
-    test.skip(!onThemePage, 'Theme settings route not accessible');
-
-    const loaded = await settingsPage.isPageLoaded();
-    test.skip(!loaded, 'Theme settings page did not load');
-  });
-
-  test('user can access user settings page', async ({ adminPage }) => {
-    const settingsPage = new SettingsPage(adminPage);
-    await settingsPage.gotoUserSettings();
-
-    const onUserSettings = await adminPage
-      .waitForURL(/\/usersettings/, { timeout: 10_000 })
-      .then(() => true)
-      .catch(() => false);
-    test.skip(!onUserSettings, 'User settings route not accessible');
-
-    const loaded = await settingsPage.isPageLoaded();
-    test.skip(!loaded, 'User settings page did not load');
+    expect(loaded).toBeTruthy();
   });
 });

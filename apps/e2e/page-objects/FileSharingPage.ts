@@ -29,8 +29,8 @@ class FileSharingPage extends BasePage {
     await this.page.waitForLoadState('load').catch(() => {});
   }
 
-  private floatingButton(label: string) {
-    return this.page.locator('button').filter({ has: this.page.locator(`[aria-label="${label}"]`) });
+  private floatingButton(pattern: RegExp) {
+    return this.page.locator('button').filter({ has: this.page.getByLabel(pattern) });
   }
 
   breadcrumb(): Locator {
@@ -42,7 +42,7 @@ class FileSharingPage extends BasePage {
   }
 
   async isUploadButtonVisible(): Promise<boolean> {
-    return this.floatingButton('Hochladen')
+    return this.floatingButton(/hochladen|upload/i)
       .first()
       .isVisible({ timeout: FLOATING_BUTTON_TIMEOUT })
       .catch(() => false);
@@ -50,8 +50,12 @@ class FileSharingPage extends BasePage {
 
   async uploadFile(filePath: string): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Hochladen').first().waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
-    await this.floatingButton('Hochladen').first().click({ force: true });
+    await this.floatingButton(/hochladen|upload/i)
+      .first()
+      .waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
+    await this.floatingButton(/hochladen|upload/i)
+      .first()
+      .click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 15_000 });
@@ -59,7 +63,7 @@ class FileSharingPage extends BasePage {
     const fileInput = dialog.locator('input[type="file"]').first();
     await fileInput.setInputFiles(filePath);
 
-    await dialog.getByRole('button', { name: /hochladen/i }).click();
+    await dialog.getByRole('button', { name: /hochladen|upload/i }).click();
     await dialog.waitFor({ state: 'hidden', timeout: 15_000 }).catch(() => {});
   }
 
@@ -77,28 +81,34 @@ class FileSharingPage extends BasePage {
 
   async deleteSelectedFiles(): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Löschen').first().waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
-    await this.floatingButton('Löschen').first().click({ force: true });
+    await this.floatingButton(/löschen|delete/i)
+      .first()
+      .waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
+    await this.floatingButton(/löschen|delete/i)
+      .first()
+      .click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
-    await dialog.getByRole('button', { name: /fortfahren/i }).click();
+    await dialog.getByRole('button', { name: /fortfahren|continue|confirm/i }).click();
     await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 
   async createFolder(name: string): Promise<void> {
     await this.dismissOverlays();
-    await this.floatingButton('Ordner erstellen')
+    await this.floatingButton(/ordner erstellen|create folder/i)
       .first()
       .waitFor({ state: 'visible', timeout: FLOATING_BUTTON_TIMEOUT });
-    await this.floatingButton('Ordner erstellen').first().click({ force: true });
+    await this.floatingButton(/ordner erstellen|create folder/i)
+      .first()
+      .click({ force: true });
 
     const dialog = this.page.getByRole('dialog');
     await dialog.waitFor({ state: 'visible', timeout: 15_000 });
 
     await dialog.locator('input').first().fill(name);
-    await dialog.getByRole('button', { name: /erstellen/i }).click();
+    await dialog.getByRole('button', { name: /erstellen|create/i }).click();
     await dialog.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   }
 }
