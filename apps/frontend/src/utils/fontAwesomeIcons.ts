@@ -31,28 +31,12 @@ export interface FontAwesomeIcon {
   path: string;
 }
 
-const brandIconsGlob = import.meta.glob<string>('@/assets/icons/fontawsome-brands/*.svg', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-});
+const brandIconKeys = Object.keys(import.meta.glob('/public/assets/fontawsome-brands/*.svg', { eager: false }));
 
-const solidIconsGlob = import.meta.glob<string>('@/assets/icons/fontawsome-solid/*.svg', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-});
+const solidIconKeys = Object.keys(import.meta.glob('/public/assets/fontawsome-solid/*.svg', { eager: false }));
 
 const getIconUrl = (fileName: string, category: IconCategory): string => {
-  const iconGlob = category === ICON_CATEGORY_BRANDS ? brandIconsGlob : solidIconsGlob;
   const identifier = category === ICON_CATEGORY_BRANDS ? FONT_AWESOME_BRANDS_IDENTIFIER : FONT_AWESOME_SOLID_IDENTIFIER;
-  const globKey = Object.keys(iconGlob).find((key) => key.endsWith(`/${fileName}.svg`));
-  const globUrl = globKey ? iconGlob[globKey] : '';
-
-  if (globUrl && globUrl.startsWith('/src/')) {
-    return globUrl;
-  }
-
   return `/assets/${identifier}/${fileName}.svg`;
 };
 
@@ -68,8 +52,8 @@ const parseIconFromPath = (sourcePath: string, category: IconCategory): FontAwes
 };
 
 export const getFontAwesomeIconList = (): FontAwesomeIcon[] => {
-  const brands = Object.keys(brandIconsGlob).map((path) => parseIconFromPath(path, ICON_CATEGORY_BRANDS));
-  const solid = Object.keys(solidIconsGlob).map((path) => parseIconFromPath(path, ICON_CATEGORY_SOLID));
+  const brands = brandIconKeys.map((path) => parseIconFromPath(path, ICON_CATEGORY_BRANDS));
+  const solid = solidIconKeys.map((path) => parseIconFromPath(path, ICON_CATEGORY_SOLID));
 
   return [...brands, ...solid].sort((a, b) => a.name.localeCompare(b.name));
 };

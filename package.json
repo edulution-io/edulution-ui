@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "2.0.26",
+  "version": "2.0.27",
   "scripts": {
     "test": "nx run-many --target=test --projects=api,frontend",
     "test:all": "nx run-many --target=test --projects=api,frontend && nx run e2e:e2e",
@@ -216,6 +216,7 @@
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
+    "@vitejs/plugin-react": "^5.1.4",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
@@ -248,8 +249,8 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1",
-    "vite": "^5.0.8",
-    "vite-plugin-dts": "^4.5.0",
+    "vite": "npm:rolldown-vite@7.3.1",
+    "vite-plugin-dts": "^4.5.4",
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "^3.2.4",
     "webpack-cli": "^6.0.1"
