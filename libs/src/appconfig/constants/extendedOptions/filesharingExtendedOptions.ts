@@ -20,6 +20,7 @@
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import { ACTIVE_DOCUMENT_EDITOR } from '@libs/filesharing/constants/activeDocumentEditor';
 
 const FILE_SHARING_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
@@ -29,6 +30,18 @@ const FILE_SHARING_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     type: ExtendedOptionField.switch,
     value: false,
     width: 'full',
+  },
+  {
+    name: ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR,
+    description: 'appExtendedOptions.activeDocumentEditorDescription',
+    title: 'appExtendedOptions.activeDocumentEditorTitle',
+    type: ExtendedOptionField.dropdown,
+    value: ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE,
+    width: 'full',
+    options: [
+      { id: ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE, name: 'appExtendedOptions.activeDocumentEditor.onlyoffice' },
+      { id: ACTIVE_DOCUMENT_EDITOR.COLLABORA, name: 'appExtendedOptions.activeDocumentEditor.collabora' },
+    ],
   },
 ];
 

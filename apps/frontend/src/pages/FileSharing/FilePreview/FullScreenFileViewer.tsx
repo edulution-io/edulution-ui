@@ -27,12 +27,10 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import PageLayout from '@/components/structure/layout/PageLayout';
 import PageTitle from '@/components/PageTitle';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
+import useActiveDocumentEditor from '@/pages/FileSharing/hooks/useActiveDocumentEditor';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -48,7 +46,7 @@ const FullScreenFileViewer = () => {
 
   const { filesToOpenInNewTab, currentlyEditingFile, setCurrentlyEditingFile } = useFileEditorStore();
   const { hasUnsavedChanges, hasDrawioUnsavedChanges, isSaving, saveFile } = useFileEditorContentStore();
-  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
+  const { isOnlyOfficeActive, isCollaboraActive } = useActiveDocumentEditor();
 
   const [isLoading, setIsLoading] = useState(true);
   const fileETag = searchParams.get('file');
@@ -57,16 +55,15 @@ const FullScreenFileViewer = () => {
   const isTextFile = isTextExtension(fileExtension);
   const isDrawioFile = isDrawioExtension(fileExtension);
 
-  const isDocumentServerConfigured = !!getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
-  );
+  const isCollaboraDoc = isCollaboraActive && !!currentlyEditingFile && isOfficeDocument(currentlyEditingFile.filePath);
 
   const initializeFile = async () => {
     const fileToOpen = filesToOpenInNewTab.find((f) => f.etag === fileETag);
     if (fileToOpen) {
-      await loadDownloadUrl(fileToOpen, webdavShare);
+      const isCollaboraFile = isCollaboraActive && isOfficeDocument(fileToOpen.filePath);
+      if (!isCollaboraFile) {
+        await loadDownloadUrl(fileToOpen, webdavShare);
+      }
       setCurrentlyEditingFile(fileToOpen);
       setIsLoading(false);
     }
@@ -83,7 +80,7 @@ const FullScreenFileViewer = () => {
   if (isLoading || isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl)
     return <LoadingIndicatorDialog isOpen />;
 
-  if (!temporaryDownloadUrl) return null;
+  if (!temporaryDownloadUrl && !isCollaboraDoc) return null;
 
   const hasTextChanges = isTextFile && hasUnsavedChanges();
   const hasDrawioChanges = isDrawioFile && hasDrawioUnsavedChanges();
@@ -98,7 +95,8 @@ const FullScreenFileViewer = () => {
       <FileRenderer
         editMode
         isOpenedInNewTab
-        isOnlyOfficeConfigured={isDocumentServerConfigured}
+        isOnlyOfficeConfigured={isOnlyOfficeActive}
+        isCollaboraConfigured={isCollaboraActive}
         webdavShare={webdavShare}
       />
       {showSaveButton && (
