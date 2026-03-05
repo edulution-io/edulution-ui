@@ -39,7 +39,7 @@ import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
-import validateChatSophomorixType from './validateChatSophomorixType';
+import validateConversationType from './validateConversationType';
 
 @ApiTags(APPS.CHAT)
 @ApiBearerAuth()
@@ -55,19 +55,19 @@ class ChatController {
     return this.groupsService.getUserGroupsAndProjects(currentUser.preferred_username);
   }
 
-  @Get('conversations/:sophomorixType/:groupName/messages')
+  @Get('conversations/:conversationType/:groupName/messages')
   async getMessages(
-    @Param('sophomorixType') rawSophomorixType: string,
+    @Param('conversationType') rawConversationType: string,
     @Param('groupName') groupName: string,
     @GetCurrentUser() currentUser: JwtUser,
     @Query('limit', new DefaultValuePipe(CHAT_MESSAGES_DEFAULT_LIMIT), ParseIntPipe) limit: number,
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
     @Query('sort', new DefaultValuePipe('asc')) sort: string,
   ): Promise<ChatMessageDocument[]> {
-    const sophomorixType = validateChatSophomorixType(rawSophomorixType);
+    const conversationType = validateConversationType(rawConversationType);
     const conversation = await this.chatService.getAuthorizedConversation(
       groupName,
-      sophomorixType,
+      conversationType,
       currentUser.preferred_username,
     );
 
@@ -78,25 +78,25 @@ class ChatController {
     return this.chatService.getMessages(String(conversation.id), limit, offset, sort);
   }
 
-  @Post('conversations/:sophomorixType/:groupName/messages')
+  @Post('conversations/:conversationType/:groupName/messages')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async sendMessage(
-    @Param('sophomorixType') rawSophomorixType: string,
+    @Param('conversationType') rawConversationType: string,
     @Param('groupName') groupName: string,
     @Body() dto: CreateMessageDto,
     @GetCurrentUser() currentUser: JwtUser,
   ): Promise<ChatMessageDocument> {
-    const sophomorixType = validateChatSophomorixType(rawSophomorixType);
+    const conversationType = validateConversationType(rawConversationType);
     const { conversation, members } = await this.chatService.getOrCreateAuthorizedConversation(
       groupName,
-      sophomorixType,
+      conversationType,
       currentUser.preferred_username,
     );
 
     return this.chatService.sendMessage(
       String(conversation.id),
       groupName,
-      sophomorixType,
+      conversationType,
       dto.content,
       currentUser,
       members,

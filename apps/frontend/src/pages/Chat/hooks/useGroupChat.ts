@@ -44,27 +44,27 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   const user = useUserStore((state) => state.user);
   const currentUsername = user?.username;
 
-  const sophomorixType = LOCATION_TO_GROUP_TYPE[groupTypeLocation];
+  const conversationType = LOCATION_TO_GROUP_TYPE[groupTypeLocation];
 
   const groupNameRef = useRef(groupName);
-  const sophomorixTypeRef = useRef(sophomorixType);
+  const conversationTypeRef = useRef(conversationType);
 
   useEffect(() => {
     groupNameRef.current = groupName;
-    sophomorixTypeRef.current = sophomorixType;
-  }, [groupName, sophomorixType]);
+    conversationTypeRef.current = conversationType;
+  }, [groupName, conversationType]);
 
   useEffect(() => {
-    setCurrentConversation(sophomorixType, groupName);
-    void fetchMessages(sophomorixType, groupName);
-  }, [sophomorixType, groupName, setCurrentConversation, fetchMessages]);
+    setCurrentConversation(conversationType, groupName);
+    void fetchMessages(conversationType, groupName);
+  }, [conversationType, groupName, setCurrentConversation, fetchMessages]);
 
   const handleNewMessage = useCallback(
     (e: MessageEvent<string>) => {
       try {
         const payload = JSON.parse(e.data) as ChatMessageSsePayload;
 
-        if (payload.groupName !== groupNameRef.current || payload.sophomorixType !== sophomorixTypeRef.current) {
+        if (payload.groupName !== groupNameRef.current || payload.conversationType !== conversationTypeRef.current) {
           return;
         }
 
@@ -89,9 +89,9 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
       const messageContent = data.message.trim();
       form.reset();
 
-      await sendMessage(sophomorixType, groupName, messageContent);
+      await sendMessage(conversationType, groupName, messageContent);
     },
-    [isSending, sophomorixType, groupName, sendMessage, form],
+    [isSending, conversationType, groupName, sendMessage, form],
   );
 
   return {

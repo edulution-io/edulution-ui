@@ -25,5 +25,5 @@ export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
 
 export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
 
-export const getChatMessagesEndpoint = (sophomorixType: string, groupName: string): string =>
-  `${CHAT_CONVERSATIONS_ENDPOINT}/${sophomorixType}/${encodeURIComponent(groupName)}/messages`;
+export const getChatMessagesEndpoint = (conversationType: string, groupName: string): string =>
+  `${CHAT_CONVERSATIONS_ENDPOINT}/${conversationType}/${encodeURIComponent(groupName)}/messages`;

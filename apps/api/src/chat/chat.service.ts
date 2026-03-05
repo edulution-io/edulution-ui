@@ -26,7 +26,7 @@ import CHAT_TYPES from '@libs/chat/constants/chatTypes';
 import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
-import type AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
+import type AllowedConversationType from '@libs/chat/types/allowedConversationType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
@@ -55,27 +55,27 @@ class ChatService {
 
   async getAuthorizedConversation(
     groupName: string,
-    sophomorixType: AllowedChatSophomorixType,
+    conversationType: AllowedConversationType,
     username: string,
   ): Promise<ConversationDocument | null> {
-    await this.verifyGroupAccess(groupName, sophomorixType, username);
-    return this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName, sophomorixType });
+    await this.verifyGroupAccess(groupName, conversationType, username);
+    return this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName, conversationType });
   }
 
   async getOrCreateAuthorizedConversation(
     groupName: string,
-    sophomorixType: AllowedChatSophomorixType,
+    conversationType: AllowedConversationType,
     username: string,
   ): Promise<{ conversation: ConversationDocument; members: string[] }> {
-    const members = await this.verifyGroupAccess(groupName, sophomorixType, username);
+    const members = await this.verifyGroupAccess(groupName, conversationType, username);
 
     const conversation = await this.conversationModel.findOneAndUpdate(
-      { type: CHAT_TYPES.GROUP, groupName, sophomorixType },
+      { type: CHAT_TYPES.GROUP, groupName, conversationType },
       {
         $setOnInsert: {
           type: CHAT_TYPES.GROUP,
           groupName,
-          sophomorixType,
+          conversationType,
         },
       },
       { upsert: true, new: true },
@@ -103,7 +103,7 @@ class ChatService {
   async sendMessage(
     conversationId: string,
     groupName: string,
-    sophomorixType: AllowedChatSophomorixType,
+    conversationType: AllowedConversationType,
     content: string,
     currentUser: JwtUser,
     members: string[],
@@ -119,7 +119,7 @@ class ChatService {
 
     await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
 
-    await this.notifyGroupMembers(members, groupName, sophomorixType, message);
+    await this.notifyGroupMembers(members, groupName, conversationType, message);
 
     return message;
   }
@@ -127,7 +127,7 @@ class ChatService {
   private async notifyGroupMembers(
     members: string[],
     groupName: string,
-    sophomorixType: string,
+    conversationType: string,
     message: ChatMessageDocument,
   ): Promise<void> {
     const recipients = members.filter((member) => member !== message.createdBy);
@@ -135,10 +135,10 @@ class ChatService {
       return;
     }
 
-    const payload = { ...message.toJSON(), groupName, sophomorixType };
+    const payload = { ...message.toJSON(), groupName, conversationType };
     this.sseService.sendEventToUsers(recipients, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
-    const sourceId = `${sophomorixType}/${groupName}`;
+    const sourceId = `${conversationType}/${groupName}`;
 
     await this.notificationsService.upsertNotificationForSource(
       recipients,
@@ -147,7 +147,7 @@ class ChatService {
         subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
         body: message.content,
         channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
-        data: { groupName, sophomorixType, conversationId: message.conversationId.toString() },
+        data: { groupName, conversationType, conversationId: message.conversationId.toString() },
       },
       message.createdBy,
       {
@@ -161,7 +161,7 @@ class ChatService {
     );
   }
 
-  private static readonly CACHE_PATH_PREFIX: Record<AllowedChatSophomorixType, string> = {
+  private static readonly CACHE_PATH_PREFIX: Record<AllowedConversationType, string> = {
     [SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS]: '/',
     [SOPHOMORIX_GROUP_TYPES.PROJECT]: PROJECTS_PREFIX,
     [GENERIC_CHAT_GROUP_TYPE]: '/',
@@ -169,10 +169,10 @@ class ChatService {
 
   private async verifyGroupAccess(
     groupName: string,
-    sophomorixType: AllowedChatSophomorixType,
+    conversationType: AllowedConversationType,
     username: string,
   ): Promise<string[]> {
-    const cachePath = `${ChatService.CACHE_PATH_PREFIX[sophomorixType]}${groupName}`;
+    const cachePath = `${ChatService.CACHE_PATH_PREFIX[conversationType]}${groupName}`;
     const group = await this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${cachePath}`);
 
     if (!group) {
@@ -183,7 +183,7 @@ class ChatService {
       throw new CustomHttpException(
         CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
         HttpStatus.FORBIDDEN,
-        { groupName, sophomorixType },
+        { groupName, conversationType },
         ChatService.name,
       );
     }

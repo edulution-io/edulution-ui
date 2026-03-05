@@ -18,15 +18,15 @@
  */
 
 import { BadRequestException } from '@nestjs/common';
-import AllowedChatSophomorixType from '@libs/chat/types/allowedChatSophomorixType';
+import AllowedConversationType from '@libs/chat/types/allowedConversationType';
 import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
-import isAllowedChatSophomorixType from '@libs/chat/utils/isAllowedChatSophomorixType';
+import isAllowedConversationType from '@libs/chat/utils/isAllowedConversationType';
 
-const validateChatSophomorixType = (value: string): AllowedChatSophomorixType => {
-  if (!isAllowedChatSophomorixType(value)) {
+const validateConversationType = (value: string): AllowedConversationType => {
+  if (!isAllowedConversationType(value)) {
     throw new BadRequestException(CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE);
   }
   return value;
 };
 
-export default validateChatSophomorixType;
+export default validateConversationType;

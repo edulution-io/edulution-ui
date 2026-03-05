@@ -32,7 +32,7 @@ export class Conversation {
   groupName: string;
 
   @Prop({ type: String, required: true })
-  sophomorixType: string;
+  conversationType: string;
 
   @Prop({ type: Date, index: true })
   lastMessageAt: Date;
@@ -43,7 +43,7 @@ export class Conversation {
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation);
 
-ConversationSchema.index({ groupName: 1, sophomorixType: 1 }, { unique: true });
+ConversationSchema.index({ groupName: 1, conversationType: 1 }, { unique: true });
 
 ConversationSchema.set('toJSON', {
   virtuals: true,
