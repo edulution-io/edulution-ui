@@ -30,11 +30,6 @@ class SidebarNav extends BasePage {
     await this.page.waitForURL('**/filesharing**');
   }
 
-  async navigateToMail(): Promise<void> {
-    await this.page.getByRole('link', { name: /mail/i }).click();
-    await this.page.waitForURL('**/mail**');
-  }
-
   async navigateToConferences(): Promise<void> {
     await this.page.getByRole('link', { name: /conference/i }).click();
     await this.page.waitForURL('**/conferences**');
@@ -49,41 +44,32 @@ class SidebarNav extends BasePage {
     const closeButton = this.page.getByRole('button', { name: /close|schließen/i });
     const isVisible = await closeButton
       .first()
-      .isVisible({ timeout: 500 })
+      .waitFor({ state: 'visible', timeout: 2_000 })
+      .then(() => true)
       .catch(() => false);
+
     if (isVisible) {
       await closeButton.first().click();
-      await closeButton
+      await this.page
+        .getByRole('dialog')
         .first()
-        .waitFor({ state: 'hidden', timeout: 2000 })
+        .waitFor({ state: 'hidden', timeout: 3_000 })
         .catch(() => {});
     }
   }
 
   async logout(): Promise<void> {
     await this.dismissDialogs();
-    const userMenuTrigger = this.page
-      .locator('[key="usermenu"]')
-      .or(this.page.locator('img[alt*="avatar" i]'))
-      .or(this.page.getByRole('img').last());
 
-    await userMenuTrigger
-      .first()
-      .waitFor({ state: 'visible', timeout: 10_000 })
-      .catch(() => {});
-    await userMenuTrigger.first().click({ timeout: 5_000 });
+    const userMenuTrigger = this.page.locator('[aria-haspopup="menu"]').last();
+    await userMenuTrigger.waitFor({ state: 'visible', timeout: 10_000 });
+    await userMenuTrigger.click({ timeout: 5_000 });
 
-    const logoutItem = this.page
-      .getByRole('menuitem', { name: /logout|abmelden/i })
-      .or(this.page.locator('[role="menuitem"]').filter({ hasText: /logout|abmelden/i }))
-      .or(this.page.getByText(/logout|abmelden/i));
+    const logoutItem = this.page.getByRole('menuitem', { name: /logout|abmelden/i });
+    await logoutItem.waitFor({ state: 'visible', timeout: 5_000 });
+    await logoutItem.click({ timeout: 5_000 });
 
-    await logoutItem
-      .first()
-      .waitFor({ state: 'visible', timeout: 10_000 })
-      .catch(() => {});
-    await logoutItem.first().click({ force: true, timeout: 10_000 });
-    await this.page.waitForURL('**/login**', { waitUntil: 'commit' }).catch(() => {});
+    await this.page.waitForURL('**/login**', { timeout: 20_000 });
   }
 }
 

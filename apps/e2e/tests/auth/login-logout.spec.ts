@@ -56,11 +56,12 @@ test.describe('Login and Logout', () => {
 
   test('user can logout', async ({ adminPage }) => {
     await gracefulGoto(adminPage, '/dashboard');
+    await adminPage.waitForLoadState('domcontentloaded').catch(() => {});
 
     const sidebarNav = new SidebarNav(adminPage);
     await sidebarNav.logout();
 
-    await expect(adminPage).toHaveURL(/\/login/);
+    await expect(adminPage).toHaveURL(/\/login/, { timeout: 20_000 });
   });
 
   test('unauthenticated user is redirected to login', async ({ browser }) => {
