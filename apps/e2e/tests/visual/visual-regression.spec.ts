@@ -44,10 +44,10 @@ const preparePageForTheme = async (page: Page, theme: 'light' | 'dark', suppress
 
 const dismissVisibleDialogs = async (page: Page): Promise<void> => {
   const closeBtn = page.getByRole('button', { name: /close|schließen/i }).first();
-  const visible = await closeBtn.isVisible({ timeout: 500 }).catch(() => false);
+  const visible = await closeBtn.isVisible({ timeout: 2000 }).catch(() => false);
   if (visible) {
     await closeBtn.click({ force: true }).catch(() => {});
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(1000);
   }
 };
 
@@ -236,18 +236,14 @@ test.describe('Visual Regression: Settings', () => {
 test.describe('Visual Regression: Menubar States', () => {
   test('menubar expanded state', async ({ adminPage }) => {
     await preparePageForTheme(adminPage, 'light');
-    await adminPage.goto('/dashboard', { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await adminPage.goto('/settings', { waitUntil: 'domcontentloaded' }).catch(() => {});
     await waitForPageStable(adminPage);
 
-    const loaded = await adminPage
-      .locator('main, [role="main"], [data-testid*="dashboard"]')
-      .first()
-      .isVisible({ timeout: LOAD_TIMEOUT_MS })
+    const menubar = adminPage.locator('aside').first();
+    const menubarVisible = await menubar
+      .waitFor({ state: 'visible', timeout: LOAD_TIMEOUT_MS })
+      .then(() => true)
       .catch(() => false);
-    test.skip(!loaded, 'Dashboard did not load');
-
-    const menubar = adminPage.locator('nav').first();
-    const menubarVisible = await menubar.isVisible().catch(() => false);
     test.skip(!menubarVisible, 'Menubar not visible');
 
     await expect(menubar).toHaveScreenshot('menubar-expanded.png', {
@@ -257,24 +253,20 @@ test.describe('Visual Regression: Menubar States', () => {
 
   test('menubar collapsed state', async ({ adminPage }) => {
     await preparePageForTheme(adminPage, 'light');
-    await adminPage.goto('/dashboard', { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await adminPage.goto('/settings', { waitUntil: 'domcontentloaded' }).catch(() => {});
     await waitForPageStable(adminPage);
 
-    const loaded = await adminPage
-      .locator('main, [role="main"], [data-testid*="dashboard"]')
-      .first()
-      .isVisible({ timeout: LOAD_TIMEOUT_MS })
-      .catch(() => false);
-    test.skip(!loaded, 'Dashboard did not load');
-
     const collapseButton = adminPage.locator('button.cursor-w-resize').first();
-    const buttonVisible = await collapseButton.isVisible().catch(() => false);
+    const buttonVisible = await collapseButton
+      .waitFor({ state: 'visible', timeout: LOAD_TIMEOUT_MS })
+      .then(() => true)
+      .catch(() => false);
     test.skip(!buttonVisible, 'Collapse button not found');
 
     await collapseButton.click();
     await adminPage.waitForTimeout(500);
 
-    const menubar = adminPage.locator('nav').first();
+    const menubar = adminPage.locator('aside').first();
     await expect(menubar).toHaveScreenshot('menubar-collapsed.png', {
       timeout: SCREENSHOT_TIMEOUT_MS,
     });

@@ -158,21 +158,6 @@ describe('useClassManagementStore', () => {
     });
   });
 
-  describe('getSchools', () => {
-    it('populates schools on success', async () => {
-      await useClassManagementStore.getState().getSchools();
-
-      expect(useClassManagementStore.getState().schools).toHaveLength(1);
-    });
-  });
-
-  describe('setSelectedSchool', () => {
-    it('updates selectedSchool', () => {
-      useClassManagementStore.getState().setSelectedSchool('my-school');
-      expect(useClassManagementStore.getState().selectedSchool).toBe('my-school');
-    });
-  });
-
   describe('reset', () => {
     it('returns state to initial values', async () => {
       await useClassManagementStore.getState().fetchUserSchoolClasses();

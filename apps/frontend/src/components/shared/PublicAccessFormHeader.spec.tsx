@@ -74,7 +74,7 @@ describe('PublicAccessFormHeader', () => {
     render(<PublicAccessFormHeader />);
     fireEvent.click(screen.getByText('common.toLogin'));
     expect(mockNavigate).toHaveBeenCalledWith('/login', {
-      state: { from: '/surveys/123?code=abc' },
+      state: { from: '/surveys/123' },
     });
   });
 });

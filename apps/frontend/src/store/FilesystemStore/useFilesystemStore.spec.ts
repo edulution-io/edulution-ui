@@ -19,7 +19,7 @@
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), info: vi.fn(), success: vi.fn() } }));
 vi.mock('@/i18n', () => ({ default: { t: (key: string) => key }, t: (key: string) => key }));
-vi.mock('@libs/common/utils/convertImageFileToWebp', () => ({
+vi.mock('@libs/common/utils/convertImageFileToCompressedWebp', () => ({
   default: vi.fn((file: File) => Promise.resolve(file)),
 }));
 vi.mock('mime', () => ({
