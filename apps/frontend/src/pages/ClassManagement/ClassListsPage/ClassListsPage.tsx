@@ -32,11 +32,11 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 import ClassSelectionList from '@/pages/ClassManagement/components/ClassList/ClassSelectionList';
-import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
-import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
 import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
+import ClassListsFloatingButtonsBar from './ClassListsFloatingButtonsBar';
+import ClassListsDialog from './ClassListsDialog';
 
-const PrintPasswordsPage: React.FC = () => {
+const ClassListsPage: React.FC = () => {
   const { t } = useTranslation();
   const { getOwnUser, user, lmnApiToken } = useLmnApiStore();
   const { userSchoolClasses, fetchUserSchoolClasses } = useClassManagementStore();
@@ -44,8 +44,8 @@ const PrintPasswordsPage: React.FC = () => {
   const [selectedClasses, setSelectedClasses] = useState<LmnApiSchoolClass[]>([]);
   const { isSuperAdmin } = useLdapGroups();
   const [isLoading, setIsLoading] = useState(false);
-  const [classToPrint, setClassToPrint] = useState<LmnApiSchoolClass | null>(null);
-  const [formatToPrint, setFormatToPrint] = useState<FileExportFormat | null>(null);
+  const [classToDownload, setClassToDownload] = useState<LmnApiSchoolClass | null>(null);
+  const [formatToDownload, setFormatToDownload] = useState<FileExportFormat | null>(null);
 
   useEffect(() => {
     if (!lmnApiToken) return;
@@ -80,13 +80,13 @@ const PrintPasswordsPage: React.FC = () => {
   const activeSchool = selectedClasses.length > 0 ? selectedClasses[0].sophomorixSchoolname : null;
 
   const handlePdfClick = (group: LmnApiSchoolClass) => {
-    setFormatToPrint(FILE_EXPORT_FORMAT.PDF);
-    setClassToPrint(group);
+    setFormatToDownload(FILE_EXPORT_FORMAT.PDF);
+    setClassToDownload(group);
   };
 
   const handleCsvClick = (group: LmnApiSchoolClass) => {
-    setFormatToPrint(FILE_EXPORT_FORMAT.CSV);
-    setClassToPrint(group);
+    setFormatToDownload(FILE_EXPORT_FORMAT.CSV);
+    setClassToDownload(group);
   };
 
   return (
@@ -105,19 +105,19 @@ const PrintPasswordsPage: React.FC = () => {
       </div>
 
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto text-background scrollbar-thin">
-        <p className="mt-2 min-w-full">{t('classmanagement.printPasswordsPageDescription')}</p>
+        <p className="mt-2 min-w-full">{t('classmanagement.classListsPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h3>{t('classmanagement.printPasswords')}</h3>
+            <h3>{t('classmanagement.classLists')}</h3>
             <ClassSelectionList
               row={row}
               selectedClasses={selectedClasses}
               setSelectedClasses={setSelectedClasses}
               activeSchool={activeSchool}
-              floatingBar={<PasswordsFloatingButtonsBar selectedClasses={selectedClasses} />}
+              floatingBar={<ClassListsFloatingButtonsBar selectedClasses={selectedClasses} />}
               onPdfClick={handlePdfClick}
               onCsvClick={handleCsvClick}
             />
@@ -125,13 +125,13 @@ const PrintPasswordsPage: React.FC = () => {
         ))}
       </div>
 
-      {classToPrint && formatToPrint && (
-        <PrintPasswordsDialog
-          title={formatToPrint}
-          selectedClasses={[classToPrint]}
+      {classToDownload && formatToDownload && (
+        <ClassListsDialog
+          title={formatToDownload}
+          selectedClasses={[classToDownload]}
           onClose={() => {
-            setClassToPrint(null);
-            setFormatToPrint(null);
+            setClassToDownload(null);
+            setFormatToDownload(null);
           }}
         />
       )}
@@ -141,4 +141,4 @@ const PrintPasswordsPage: React.FC = () => {
   );
 };
 
-export default PrintPasswordsPage;
+export default ClassListsPage;

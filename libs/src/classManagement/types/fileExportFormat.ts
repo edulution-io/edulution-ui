@@ -17,15 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+const FILE_EXPORT_FORMAT = {
+  PDF: 'pdf',
+  CSV: 'csv',
+} as const;
 
-interface PrintPasswordsRequest {
-  format: FileExportFormat;
-  one_per_page: boolean;
-  pdflatex: boolean;
-  school: string;
-  nosplit_names: boolean;
-  schoolclasses: string[];
-}
+type FileExportFormat = (typeof FILE_EXPORT_FORMAT)[keyof typeof FILE_EXPORT_FORMAT];
 
-export default PrintPasswordsRequest;
+export { FILE_EXPORT_FORMAT };
+export default FileExportFormat;

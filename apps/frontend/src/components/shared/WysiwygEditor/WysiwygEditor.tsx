@@ -27,6 +27,11 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
+import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+  IMAGE_MAX_DIMENSION_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface WysiwygEditorProps {
   value: string;
@@ -59,7 +64,12 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     }
 
     try {
-      const uploadedFilename = await onUpload(file);
+      const compressedFile = await convertImageFileToCompressedWebp(
+        file,
+        IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE,
+        IMAGE_MAX_DIMENSION_LARGE,
+      );
+      const uploadedFilename = await onUpload(compressedFile);
       const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
 
       const quillInstance = quillRef.current?.getEditor();

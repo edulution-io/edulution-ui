@@ -59,6 +59,7 @@ enum LmnApiErrorMessage {
   GetDevicesFailed = 'lmnApi.errors.GetDevicesFailed',
   SaveDevicesFailed = 'lmnApi.errors.SaveDevicesFailed',
   ImportDevicesFailed = 'lmnApi.errors.ImportDevicesFailed',
+  GetStudentsListFailed = 'lmnApi.errors.GetStudentsListFailed',
 }
 
 export default LmnApiErrorMessage;
