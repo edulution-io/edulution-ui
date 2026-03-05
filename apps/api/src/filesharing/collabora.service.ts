@@ -94,7 +94,8 @@ class CollaboraService {
     try {
       const client = await this.webdavService.getClient(username, share);
       const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-      const pathWithoutWebdav = getPathWithoutWebdav(filePath, webdavShare.pathname);
+      const normalizedFilePath = filePath.startsWith('/') ? filePath : `/${filePath}`;
+      const pathWithoutWebdav = getPathWithoutWebdav(normalizedFilePath, webdavShare.pathname);
       const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
       const files = (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(

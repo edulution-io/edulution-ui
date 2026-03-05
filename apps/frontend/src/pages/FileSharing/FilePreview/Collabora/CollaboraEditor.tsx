@@ -63,7 +63,13 @@ const CollaboraEditor = ({
   }, []);
 
   const permission = editMode ? 'edit' : 'readonly';
-  const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}&permission=${permission}`;
+  const iframeSrc = [
+    `${collaboraUrl}${COLLABORA_EDITOR_PATH}`,
+    `?WOPISrc=${encodeURIComponent(wopiSrc)}`,
+    `&permission=${permission}`,
+    `&access_token=${encodeURIComponent(accessToken)}`,
+    `&access_token_ttl=${accessTokenTTL}`,
+  ].join('');
 
   return (
     <div className={cn('relative h-full w-full', { 'h-dvh': isOpenedInNewTab })}>
