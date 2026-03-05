@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsNumber, IsString, ValidateNested } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import { type AppConfigOptions } from './appConfigOptionsType';
@@ -46,6 +46,9 @@ class AppConfigDto {
 
   @ValidateNested()
   extendedOptions?: ExtendedOptionKeysDto;
+
+  @IsBoolean()
+  usesPushNotifications?: boolean;
 
   @IsNumber()
   position: number;
