@@ -35,6 +35,8 @@ interface CollaboraEditorProps {
 const COLLABORA_FRAME_NAME = 'collabora-frame';
 const COLLABORA_EDITOR_PATH = '/browser/dist/cool.html';
 const COLLABORA_MIN_WIDTH_PX = 800;
+const COLLABORA_MSG_ACTION_CLOSE = 'Action_Close';
+const COLLABORA_BLANK_URL = 'about:blank';
 
 const CollaboraEditor = ({
   collaboraUrl,
@@ -46,8 +48,11 @@ const CollaboraEditor = ({
 }: CollaboraEditorProps) => {
   const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const formSubmittedRef = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const collaboraOrigin = collaboraUrl ? new URL(collaboraUrl).origin : '';
 
   useEffect(() => {
     if (formRef.current) {
@@ -56,6 +61,19 @@ const CollaboraEditor = ({
       formRef.current.submit();
     }
   }, [collaboraUrl, wopiSrc, accessToken, editMode]);
+
+  useEffect(
+    () => () => {
+      if (iframeRef.current?.contentWindow) {
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ MessageId: COLLABORA_MSG_ACTION_CLOSE }),
+          collaboraOrigin,
+        );
+        iframeRef.current.src = COLLABORA_BLANK_URL;
+      }
+    },
+    [],
+  );
 
   const handleIframeLoad = useCallback(() => {
     if (formSubmittedRef.current) {
@@ -92,6 +110,7 @@ const CollaboraEditor = ({
         />
       </form>
       <iframe
+        ref={iframeRef}
         name={COLLABORA_FRAME_NAME}
         title={t('filesharing.collaboraEditor')}
         className="h-full w-full border-none"
