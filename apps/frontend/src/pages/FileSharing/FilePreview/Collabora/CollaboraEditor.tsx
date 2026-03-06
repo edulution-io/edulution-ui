@@ -94,7 +94,7 @@ const CollaboraEditor = ({
       <iframe
         name={COLLABORA_FRAME_NAME}
         title={t('filesharing.collaboraEditor')}
-        className="h-full border-none"
+        className="h-full w-full border-none"
         style={{ minWidth: COLLABORA_MIN_WIDTH_PX }}
         allow={IFRAME_ALLOWED_CONFIG}
         onLoad={handleIframeLoad}

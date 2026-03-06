@@ -47,7 +47,7 @@ const useCollaboraStore = create<CollaboraStoreState>((set) => ({
       set({ isLoading: true, error: null });
       const { data } = await eduApi.post<WopiAccessToken>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COLLABORA_TOKEN}`,
-        { filePath, share },
+        { filePath, share, origin: window.location.origin },
       );
       set({ accessToken: data.accessToken, accessTokenTTL: data.accessTokenTTL });
     } catch (error) {

@@ -62,7 +62,7 @@ class CollaboraService {
     return secret;
   }
 
-  async generateWopiToken(username: string, filePath: string, share: string): Promise<WopiAccessToken> {
+  async generateWopiToken(username: string, filePath: string, share: string, origin: string): Promise<WopiAccessToken> {
     Logger.log(`Generating WOPI token for ${username}`, CollaboraService.name);
     const secret = await this.getWopiSecret();
 
@@ -74,6 +74,7 @@ class CollaboraService {
       username,
       filePath,
       share,
+      origin,
       jti: randomUUID(),
     };
 

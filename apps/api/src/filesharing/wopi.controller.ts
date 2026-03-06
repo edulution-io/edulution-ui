@@ -58,7 +58,7 @@ class WopiController {
       UserFriendlyName: tokenData.username,
       UserCanWrite: true,
       UserCanNotWriteRelative: true,
-      PostMessageOrigin: process.env.EDULUTION_BASE_DOMAIN || '',
+      PostMessageOrigin: tokenData.origin,
       LastModifiedTime: fileStat?.lastmod ?? new Date().toISOString(),
       Version: fileStat?.etag ?? Date.now().toString(),
     };
