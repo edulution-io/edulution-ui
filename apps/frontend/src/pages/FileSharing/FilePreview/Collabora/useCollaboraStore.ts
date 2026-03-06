@@ -23,11 +23,16 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import WopiAccessToken from '@libs/filesharing/types/wopiAccessToken';
 import handleApiError from '@/utils/handleApiError';
 
+const COLLABORA_DISCOVERY_PATH = '/hosting/discovery';
+const COLLABORA_FALLBACK_EDITOR_PATH = '/browser/dist/cool.html';
+
 interface CollaboraStoreState {
   accessToken: string;
   accessTokenTTL: number;
+  editorPath: string;
   isLoading: boolean;
   error: string | null;
+  fetchEditorPath: (collaboraUrl: string) => Promise<void>;
   fetchWopiToken: (filePath: string, share: string) => Promise<void>;
   reset: () => void;
 }
@@ -35,12 +40,39 @@ interface CollaboraStoreState {
 const initialState = {
   accessToken: '',
   accessTokenTTL: 0,
+  editorPath: COLLABORA_FALLBACK_EDITOR_PATH,
   isLoading: false,
   error: null,
 };
 
-const useCollaboraStore = create<CollaboraStoreState>((set) => ({
+const parseEditorPathFromDiscovery = (xml: string, collaboraUrl: string): string => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xml, 'text/xml');
+  const action = doc.querySelector('action[name="edit"]');
+  const urlSrc = action?.getAttribute('urlsrc');
+  if (!urlSrc) return COLLABORA_FALLBACK_EDITOR_PATH;
+
+  const url = new URL(urlSrc);
+  const path = url.pathname;
+  const collaboraPath = new URL(collaboraUrl).pathname;
+  return collaboraPath.length > 1 ? path.replace(collaboraPath, '') : path;
+};
+
+const useCollaboraStore = create<CollaboraStoreState>((set, get) => ({
   ...initialState,
+
+  fetchEditorPath: async (collaboraUrl: string) => {
+    if (get().editorPath !== COLLABORA_FALLBACK_EDITOR_PATH) return;
+
+    try {
+      const response = await fetch(`${collaboraUrl}${COLLABORA_DISCOVERY_PATH}`);
+      const xml = await response.text();
+      const editorPath = parseEditorPathFromDiscovery(xml, collaboraUrl);
+      set({ editorPath });
+    } catch {
+      set({ editorPath: COLLABORA_FALLBACK_EDITOR_PATH });
+    }
+  },
 
   fetchWopiToken: async (filePath: string, share: string) => {
     try {
@@ -57,7 +89,7 @@ const useCollaboraStore = create<CollaboraStoreState>((set) => ({
     }
   },
 
-  reset: () => set(initialState),
+  reset: () => set({ ...initialState, editorPath: get().editorPath }),
 }));
 
 export default useCollaboraStore;

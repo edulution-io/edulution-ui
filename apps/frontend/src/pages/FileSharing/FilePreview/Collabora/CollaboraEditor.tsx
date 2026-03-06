@@ -28,12 +28,12 @@ interface CollaboraEditorProps {
   wopiSrc: string;
   accessToken: string;
   accessTokenTTL: number;
+  editorPath: string;
   editMode?: boolean;
   isOpenedInNewTab?: boolean;
 }
 
 const COLLABORA_FRAME_NAME = 'collabora-frame';
-const COLLABORA_EDITOR_PATH = '/browser/dist/cool.html';
 const COLLABORA_MIN_WIDTH_PX = 800;
 const COLLABORA_MSG_ACTION_CLOSE = 'Action_Close';
 const COLLABORA_BLANK_URL = 'about:blank';
@@ -43,6 +43,7 @@ const CollaboraEditor = ({
   wopiSrc,
   accessToken,
   accessTokenTTL,
+  editorPath,
   editMode,
   isOpenedInNewTab,
 }: CollaboraEditorProps) => {
@@ -82,7 +83,7 @@ const CollaboraEditor = ({
   }, []);
 
   const permission = editMode ? 'edit' : 'readonly';
-  const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}&permission=${permission}`;
+  const iframeSrc = `${collaboraUrl}${editorPath}?WOPISrc=${encodeURIComponent(wopiSrc)}&permission=${permission}`;
 
   return (
     <div className={cn('relative h-full w-full overflow-x-auto', { 'h-dvh': isOpenedInNewTab })}>
