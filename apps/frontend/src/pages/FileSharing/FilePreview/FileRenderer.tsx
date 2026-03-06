@@ -168,6 +168,7 @@ const FileRenderer: FC<FileRendererProps> = ({
       case FILE_PREVIEW_TYPE.COLLABORA:
         return (
           <Collabora
+            key={currentlyEditingFile.filePath}
             filePath={currentlyEditingFile.filePath}
             editMode={editMode}
             isOpenedInNewTab={isOpenedInNewTab}
