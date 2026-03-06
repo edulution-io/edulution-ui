@@ -28,6 +28,7 @@ import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import QueueService from '../queue/queue.service';
 import UsersService from '../users/users.service';
+import CollaboraService from './collabora.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 describe(FilesharingService.name, () => {
@@ -96,6 +97,7 @@ describe(FilesharingService.name, () => {
         { provide: FilesystemService, useValue: { fileLocation: jest.fn() } },
         { provide: QueueService, useValue: queueService },
         { provide: UsersService, useValue: usersService },
+        { provide: CollaboraService, useValue: { generateWopiToken: jest.fn() } },
         { provide: WebdavSharesService, useValue: webdavSharesService },
       ],
     }).compile();

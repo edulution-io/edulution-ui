@@ -56,9 +56,18 @@ vi.mock('@/hooks/useMedia', () => ({
   default: () => ({ isMobileView: false }),
 }));
 
-vi.mock('i18next', () => ({
-  t: (key: string) => key,
-}));
+vi.mock('i18next', () => {
+  const i18n = {
+    t: (key: string) => key,
+    use: () => i18n,
+    init: () => i18n,
+    language: 'en',
+    changeLanguage: vi.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
+  };
+  return { default: i18n, ...i18n };
+});
 
 vi.mock('@edulution-io/ui-kit', () => ({
   cn: (...args: any[]) => args.filter(Boolean).join(' '),
@@ -91,7 +100,7 @@ vi.mock('@libs/filesharing/utils/isDrawioExtension', () => ({
   default: vi.fn((ext: string) => ext === 'drawio'),
 }));
 
-vi.mock('@libs/filesharing/utils/isOnlyOfficeDocument', () => ({
+vi.mock('@libs/filesharing/utils/isOfficeDocument', () => ({
   default: vi.fn(() => false),
 }));
 
@@ -121,7 +130,10 @@ vi.mock('@libs/filesharing/constants/textPreviewElementId', () => ({
 
 vi.mock('@/components/ui/ImageComponent', () => ({
   default: ({ downloadLink, altText }: any) => (
-    <div data-testid="image-component" data-src={downloadLink}>
+    <div
+      data-testid="image-component"
+      data-src={downloadLink}
+    >
       {altText}
     </div>
   ),
@@ -129,7 +141,11 @@ vi.mock('@/components/ui/ImageComponent', () => ({
 
 vi.mock('@/components/ui/MediaComponent', () => ({
   default: ({ url, isVideo }: any) => (
-    <div data-testid="media-component" data-url={url} data-video={String(isVideo)} />
+    <div
+      data-testid="media-component"
+      data-url={url}
+      data-video={String(isVideo)}
+    />
   ),
 }));
 
@@ -137,12 +153,21 @@ vi.mock('@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice', () => ({
   default: (props: any) => <div data-testid="onlyoffice-component" />,
 }));
 
+vi.mock('@/pages/FileSharing/FilePreview/Collabora/Collabora', () => ({
+  default: (props: any) => <div data-testid="collabora-component" />,
+}));
+
 vi.mock('@/pages/FileSharing/FilePreview/DrawioViewer/DrawioViewer', () => ({
   default: (props: any) => <div data-testid="drawio-viewer" />,
 }));
 
 vi.mock('@/components/shared/PDFViewer/PdfViewer', () => ({
-  default: ({ fetchUrl }: any) => <div data-testid="pdf-viewer" data-url={fetchUrl} />,
+  default: ({ fetchUrl }: any) => (
+    <div
+      data-testid="pdf-viewer"
+      data-url={fetchUrl}
+    />
+  ),
 }));
 
 vi.mock('@/components/ui/Renderer/TextPreview', () => ({
