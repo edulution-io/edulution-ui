@@ -17,16 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
-import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
-import GENERIC_CHAT_GROUP_TYPE from '@libs/chat/constants/genericChatGroupType';
-import DIRECT_CHAT_CONVERSATION_TYPE from '@libs/chat/constants/directChatConversationType';
+const DIRECT_CHAT_CONVERSATION_TYPE = 'direct';
 
-const GROUP_TYPE_TO_LOCATION: Record<string, string> = {
-  [SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS]: CHAT_GROUP_TYPE_LOCATIONS.CLASSES,
-  [SOPHOMORIX_GROUP_TYPES.PROJECT]: CHAT_GROUP_TYPE_LOCATIONS.PROJECTS,
-  [GENERIC_CHAT_GROUP_TYPE]: CHAT_GROUP_TYPE_LOCATIONS.GROUPS,
-  [DIRECT_CHAT_CONVERSATION_TYPE]: CHAT_GROUP_TYPE_LOCATIONS.DIRECT,
-};
-
-export default GROUP_TYPE_TO_LOCATION;
+export default DIRECT_CHAT_CONVERSATION_TYPE;

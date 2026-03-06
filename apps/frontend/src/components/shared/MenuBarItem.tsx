@@ -52,7 +52,12 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
 }) => {
   const { t } = useTranslation();
   const parentId = useSubMenuStore((state) => state.parentId);
+  const searchTerm = useSubMenuStore((state) => state.searchTerm);
   const hasChildren = item.children && item.children.length > 0;
+  const lowerSearch = searchTerm.toLowerCase();
+  const filteredChildren = hasChildren
+    ? item.children?.filter((child) => child.label.toLowerCase().includes(lowerSearch))
+    : undefined;
 
   const handleItemClick = useCallback(() => {
     onCloseMobileMenu();
@@ -140,7 +145,7 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
     >
       <div className="overflow-hidden">
         <div className="ml-2">
-          {item.children?.map((child) => {
+          {filteredChildren?.map((child) => {
             const isChildActive = activeSection === child.id || (!!parentId && pathParts.includes(child.id));
             return (
               <Button

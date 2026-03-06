@@ -17,9 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import useSubMenuStore from '@/store/useSubMenuStore';
 
 const getActiveColorClass = (color: string) => color.split(':')[1] ?? color;
 
@@ -49,6 +50,8 @@ const useMenuBarSelection = (menuBarEntries: MenuBarEntry) => {
   }, [pathParts, menuBarEntries.menuItems]);
 
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const searchTerm = useSubMenuStore((state) => state.searchTerm);
+  const expandedBeforeSearchRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (isSelected) {
@@ -58,6 +61,17 @@ const useMenuBarSelection = (menuBarEntries: MenuBarEntry) => {
       });
     }
   }, [isSelected]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      expandedBeforeSearchRef.current = new Set(expandedItems);
+      const allIds = new Set(menuBarEntries.menuItems.map((item) => item.id));
+      setExpandedItems(allIds);
+    } else if (expandedBeforeSearchRef.current.size > 0) {
+      setExpandedItems(expandedBeforeSearchRef.current);
+      expandedBeforeSearchRef.current = new Set();
+    }
+  }, [searchTerm]);
 
   const toggleExpanded = useCallback((itemId: string) => {
     setExpandedItems((prev) => {

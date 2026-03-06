@@ -19,11 +19,13 @@
 
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import GENERIC_CHAT_GROUP_TYPE from '@libs/chat/constants/genericChatGroupType';
+import DIRECT_CHAT_CONVERSATION_TYPE from '@libs/chat/constants/directChatConversationType';
 
 const ALLOWED_CONVERSATION_TYPES = [
   SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS,
   SOPHOMORIX_GROUP_TYPES.PROJECT,
   GENERIC_CHAT_GROUP_TYPE,
+  DIRECT_CHAT_CONVERSATION_TYPE,
 ] as const;
 
 export default ALLOWED_CONVERSATION_TYPES;

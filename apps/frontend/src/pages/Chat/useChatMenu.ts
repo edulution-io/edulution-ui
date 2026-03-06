@@ -19,7 +19,7 @@
 
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserGear, faUser } from '@fortawesome/free-solid-svg-icons';
 import { ChatIcon } from '@/assets/icons';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import APPS from '@libs/appconfig/constants/apps';
@@ -27,6 +27,8 @@ import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import {
   CHAT_CLASSES_LOCATION,
   CHAT_CLASSES_PATH,
+  CHAT_DIRECT_LOCATION,
+  CHAT_DIRECT_PATH,
   CHAT_GROUPS_LOCATION,
   CHAT_GROUPS_PATH,
   CHAT_PROJECTS_LOCATION,
@@ -40,6 +42,14 @@ const useChatMenu = (): MenuBarEntry => {
   const navigateToClasses = useCallback(() => navigate(`/${CHAT_CLASSES_PATH}`), [navigate]);
   const navigateToProjects = useCallback(() => navigate(`/${CHAT_PROJECTS_PATH}`), [navigate]);
   const navigateToGroups = useCallback(() => navigate(`/${CHAT_GROUPS_PATH}`), [navigate]);
+  const navigateToDirect = useCallback(() => navigate(`/${CHAT_DIRECT_PATH}`), [navigate]);
+
+  const directMessageItem = {
+    id: CHAT_DIRECT_LOCATION,
+    label: 'chat.directMessages',
+    icon: faUser,
+    action: navigateToDirect,
+  };
 
   return useMemo(
     () => ({
@@ -55,6 +65,7 @@ const useChatMenu = (): MenuBarEntry => {
               icon: faUsers,
               action: navigateToGroups,
             },
+            directMessageItem,
           ]
         : [
             {
@@ -69,9 +80,10 @@ const useChatMenu = (): MenuBarEntry => {
               icon: faUserGear,
               action: navigateToProjects,
             },
+            directMessageItem,
           ],
     }),
-    [isGeneric, navigateToClasses, navigateToProjects, navigateToGroups],
+    [isGeneric, navigateToClasses, navigateToProjects, navigateToGroups, navigateToDirect],
   );
 };
 

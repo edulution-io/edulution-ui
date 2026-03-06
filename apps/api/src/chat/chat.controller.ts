@@ -34,6 +34,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
+import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
@@ -55,6 +56,11 @@ class ChatController {
   @Get('groups')
   async getUserGroups(@GetCurrentUser() currentUser: JwtUser): Promise<UserChatGroups> {
     return this.groupsService.getUserGroupsAndProjects(currentUser.preferred_username);
+  }
+
+  @Get('contacts')
+  async getUserContacts(@GetCurrentUser() currentUser: JwtUser): Promise<GroupMemberDto[]> {
+    return this.groupsService.getUserContacts(currentUser.preferred_username);
   }
 
   @Get('conversations/:conversationType/:groupName/messages')

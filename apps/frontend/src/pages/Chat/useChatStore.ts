@@ -21,7 +21,12 @@ import { create } from 'zustand';
 import ChatMessage from '@libs/chat/types/chatMessage';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
-import { CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
+import {
+  CHAT_USER_CONTACTS_ENDPOINT,
+  CHAT_USER_GROUPS_ENDPOINT,
+  getChatMessagesEndpoint,
+} from '@libs/chat/constants/chatApiEndpoints';
+import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import computeSha256Hash from '@libs/common/utils/computeSha256Hash';
 import { SORT_DIRECTION } from '@libs/common/constants/sortDirection';
@@ -41,8 +46,11 @@ interface ChatStore {
   isLoadingGroups: boolean;
   hasMoreMessages: boolean;
   isLoadingOlderMessages: boolean;
+  contacts: GroupMemberDto[];
+  isLoadingContacts: boolean;
 
   fetchUserGroups: () => Promise<number>;
+  fetchContacts: () => Promise<void>;
   fetchMessages: (conversationType: string, groupName: string, limit?: number, offset?: number) => Promise<void>;
   fetchOlderMessages: () => Promise<void>;
   sendMessage: (conversationType: string, groupName: string, content: string) => Promise<void>;
@@ -62,6 +70,8 @@ const initialState = {
   isLoadingGroups: false,
   hasMoreMessages: false,
   isLoadingOlderMessages: false,
+  contacts: [],
+  isLoadingContacts: false,
 };
 
 let fetchMessagesAbortController: AbortController | null = null;
@@ -84,6 +94,21 @@ const useChatStore = create<ChatStore>((set, get) => ({
       return 0;
     } finally {
       set({ isLoadingGroups: false });
+    }
+  },
+
+  fetchContacts: async () => {
+    if (get().isLoadingContacts) return;
+
+    set({ isLoadingContacts: true, error: null });
+
+    try {
+      const response = await eduApi.get<GroupMemberDto[]>(CHAT_USER_CONTACTS_ENDPOINT);
+      set({ contacts: response.data });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoadingContacts: false });
     }
   },
 

@@ -22,22 +22,30 @@ import Section from '@libs/menubar/section';
 
 interface SubMenuStore {
   sections: Section[];
+  sectionsByParent: Record<string, Section[]>;
   parentId: string | null;
   activeSection: string | null;
   sectionToOpen: string | null;
+  searchTerm: string;
   setSections: (sections: Section[], parentId?: string) => void;
+  setSectionsByParent: (sectionsByParent: Record<string, Section[]>) => void;
   setActiveSection: (id: string | null) => void;
+  setSearchTerm: (term: string) => void;
   requestOpenSection: (id: string) => void;
   clearOpenRequest: () => void;
 }
 
 const useSubMenuStore = create<SubMenuStore>((set) => ({
   sections: [],
+  sectionsByParent: {},
   parentId: null,
   activeSection: null,
   sectionToOpen: null,
-  setSections: (sections, parentId) => set({ sections, parentId: parentId ?? null }),
+  searchTerm: '',
+  setSections: (sections, parentId) => set({ sections, parentId: parentId ?? null, searchTerm: '' }),
+  setSectionsByParent: (sectionsByParent) => set({ sectionsByParent }),
   setActiveSection: (id) => set({ activeSection: id }),
+  setSearchTerm: (term) => set({ searchTerm: term }),
   requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
   clearOpenRequest: () => set({ sectionToOpen: null }),
 }));

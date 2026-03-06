@@ -23,6 +23,8 @@ export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
 
 export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
 
+export const CHAT_USER_CONTACTS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/contacts`;
+
 export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
 
 export const getChatMessagesEndpoint = (conversationType: string, groupName: string): string =>

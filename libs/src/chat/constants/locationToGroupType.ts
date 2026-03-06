@@ -20,12 +20,14 @@
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 import GENERIC_CHAT_GROUP_TYPE from '@libs/chat/constants/genericChatGroupType';
+import DIRECT_CHAT_CONVERSATION_TYPE from '@libs/chat/constants/directChatConversationType';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 
 const LOCATION_TO_GROUP_TYPE: Record<GroupTypeLocation, string> = {
   [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS,
   [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: SOPHOMORIX_GROUP_TYPES.PROJECT,
   [CHAT_GROUP_TYPE_LOCATIONS.GROUPS]: GENERIC_CHAT_GROUP_TYPE,
+  [CHAT_GROUP_TYPE_LOCATIONS.DIRECT]: DIRECT_CHAT_CONVERSATION_TYPE,
 };
 
 export default LOCATION_TO_GROUP_TYPE;

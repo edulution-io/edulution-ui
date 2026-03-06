@@ -20,6 +20,7 @@
 import React from 'react';
 import MenuItem from '@libs/menubar/menuItem';
 import MenuBarItem from './MenuBarItem';
+import MenuBarSearch from './MenuBarSearch';
 
 interface MenuBarItemListProps {
   menuItems: MenuItem[];
@@ -43,23 +44,28 @@ const MenuBarItemList: React.FC<MenuBarItemListProps> = ({
   pathParts,
   onToggleExpand,
   onCloseMobileMenu,
-}) => (
-  <div className="flex-1 overflow-y-auto pb-10">
-    {menuItems.map((item) => (
-      <MenuBarItem
-        key={item.id}
-        item={item}
-        isActive={isSelected === item.id}
-        isExpanded={expandedItems.has(item.id)}
-        shouldCollapse={shouldCollapse}
-        activeColorClass={activeColorClass}
-        activeSection={activeSection}
-        pathParts={pathParts}
-        onToggleExpand={() => onToggleExpand(item.id)}
-        onCloseMobileMenu={onCloseMobileMenu}
-      />
-    ))}
-  </div>
-);
+}) => {
+  const totalChildren = menuItems.reduce((sum, item) => sum + (item.children?.length ?? 0), 0);
+
+  return (
+    <div className="flex-1 overflow-y-auto pb-10">
+      {totalChildren > 5 && !shouldCollapse && <MenuBarSearch />}
+      {menuItems.map((item) => (
+        <MenuBarItem
+          key={item.id}
+          item={item}
+          isActive={isSelected === item.id}
+          isExpanded={expandedItems.has(item.id)}
+          shouldCollapse={shouldCollapse}
+          activeColorClass={activeColorClass}
+          activeSection={activeSection}
+          pathParts={pathParts}
+          onToggleExpand={() => onToggleExpand(item.id)}
+          onCloseMobileMenu={onCloseMobileMenu}
+        />
+      ))}
+    </div>
+  );
+};
 
 export default MenuBarItemList;

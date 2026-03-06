@@ -32,6 +32,7 @@ import {
   ALL_SCHOOLS_CACHE_KEY,
   DEPLOYMENT_TARGET_CACHE_KEY,
   GROUP_WITH_MEMBERS_CACHE_KEY,
+  USER_CONTACTS_CACHE_KEY,
   USER_GROUPS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
@@ -559,6 +560,10 @@ class GroupsService {
     }
   }
 
+  async getUserContacts(username: string): Promise<GroupMemberDto[]> {
+    return (await this.cacheManager.get<GroupMemberDto[]>(`${USER_CONTACTS_CACHE_KEY}${username}`)) ?? [];
+  }
+
   async getUserGroupsAndProjects(username: string): Promise<UserChatGroups> {
     const memberGroups = (await this.cacheManager.get<Group[]>(`${USER_GROUPS_CACHE_KEY}${username}`)) || [];
 
@@ -592,6 +597,7 @@ class GroupsService {
 
   private async buildUserGroupsReverseIndex(allGroups: Group[]): Promise<void> {
     const userGroupsMap = new Map<string, Group[]>();
+    const userContactsMap = new Map<string, Map<string, GroupMemberDto>>();
 
     await Promise.all(
       allGroups.map(async (group) => {
@@ -599,19 +605,41 @@ class GroupsService {
           `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
         );
 
-        groupWithMembers?.members?.forEach((member) => {
+        const members = groupWithMembers?.members ?? [];
+
+        members.forEach((member) => {
           const existing = userGroupsMap.get(member.username) || [];
           existing.push(group);
           userGroupsMap.set(member.username, existing);
         });
+
+        const isChatGroup = group.path.startsWith(PROJECTS_PREFIX) || GroupsService.isSchoolClass(group.name);
+        if (isChatGroup) {
+          members.forEach((member) => {
+            const contacts = userContactsMap.get(member.username) ?? new Map<string, GroupMemberDto>();
+            members.forEach((other) => {
+              if (other.username !== member.username) {
+                contacts.set(other.username, other);
+              }
+            });
+            userContactsMap.set(member.username, contacts);
+          });
+        }
       }),
     );
 
-    await Promise.all(
-      Array.from(userGroupsMap.entries()).map(([username, groups]) =>
+    await Promise.all([
+      ...Array.from(userGroupsMap.entries()).map(([username, groups]) =>
         this.cacheManager.set(`${USER_GROUPS_CACHE_KEY}${username}`, groups, GROUPS_CACHE_TTL_MS),
       ),
-    );
+      ...Array.from(userContactsMap.entries()).map(([username, contactsMap]) =>
+        this.cacheManager.set(
+          `${USER_CONTACTS_CACHE_KEY}${username}`,
+          Array.from(contactsMap.values()),
+          GROUPS_CACHE_TTL_MS,
+        ),
+      ),
+    ]);
 
     Logger.debug(`Built user-groups reverse index for ${userGroupsMap.size} users`, GroupsService.name);
   }

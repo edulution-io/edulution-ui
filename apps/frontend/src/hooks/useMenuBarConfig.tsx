@@ -58,7 +58,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const classManagementMenuConfig = useClassManagementMenu();
   const linuxmusterMenuConfig = useLinuxmusterMenu();
   const chatMenuConfig = useChatMenu();
-  const { sections, parentId } = useSubMenuStore();
+  const { sections, sectionsByParent, parentId, searchTerm } = useSubMenuStore();
   const { scrollToSection } = useScrollToSection();
 
   const menuBarConfigRegistry: Partial<Record<string, MenuBarEntry>> = useMemo(
@@ -98,8 +98,22 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const rootPathName = getFromPathName(pathname, 1);
   const configValues = menuBarConfigRegistry[rootPathName] ?? DISABLED_MENU_BAR_ENTRY;
   const activeMenuItemId = getFromPathName(pathname, 2);
+  const isSearching = searchTerm.length > 0;
 
   const getItemChildren = (itemId: string): MenuItem[] | undefined => {
+    if (isSearching) {
+      const itemSections = sectionsByParent[itemId];
+      if (itemSections && itemSections.length > 0) {
+        return itemSections.map((section) => ({
+          id: section.id,
+          label: section.label,
+          icon: '',
+          action: section.action ?? (() => scrollToSection(section.id)),
+          disableTranslation: true,
+        }));
+      }
+      return undefined;
+    }
     if (sectionChildren.length === 0) return undefined;
     if (parentId && itemId !== parentId) return undefined;
     if (itemId === activeMenuItemId) return sectionChildren;
@@ -116,7 +130,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
         disableTranslation: item.disableTranslation,
         children: getItemChildren(item.id),
       })),
-    [configValues.menuItems, t, activeMenuItemId, sectionChildren, parentId],
+    [configValues.menuItems, t, activeMenuItemId, sectionChildren, parentId, isSearching, sectionsByParent],
   );
 
   return useMemo(

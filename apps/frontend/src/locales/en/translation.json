@@ -22,6 +22,7 @@
     "projects": "Projects",
     "group": "Group",
     "groups": "Groups",
+    "directMessages": "Direct Messages",
     "selectFromSidebar": "Select a class or project from the sidebar",
     "noMessages": "No messages yet",
     "startConversation": "Write the first message",
