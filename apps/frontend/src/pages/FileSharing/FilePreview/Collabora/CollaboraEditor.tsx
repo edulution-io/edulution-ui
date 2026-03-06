@@ -28,33 +28,61 @@ interface CollaboraEditorProps {
   wopiSrc: string;
   accessToken: string;
   accessTokenTTL: number;
+  editorPath: string;
   editMode?: boolean;
   isOpenedInNewTab?: boolean;
 }
 
 const COLLABORA_FRAME_NAME = 'collabora-frame';
-const COLLABORA_EDITOR_PATH = '/browser/dist/cool.html';
+const COLLABORA_MIN_WIDTH_PX = 800;
+const COLLABORA_MSG_ACTION_CLOSE = 'Action_Close';
+const COLLABORA_BLANK_URL = 'about:blank';
+const COLLABORA_CLEANUP_DELAY_MS = 250;
 
 const CollaboraEditor = ({
   collaboraUrl,
   wopiSrc,
   accessToken,
   accessTokenTTL,
+  editorPath,
   editMode,
   isOpenedInNewTab,
 }: CollaboraEditorProps) => {
   const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const formSubmittedRef = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (formRef.current) {
-      setIsLoading(true);
-      formSubmittedRef.current = true;
-      formRef.current.submit();
+  const collaboraOrigin = collaboraUrl ? new URL(collaboraUrl).origin : '';
+
+  const closeIframe = useCallback(() => {
+    if (iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({ MessageId: COLLABORA_MSG_ACTION_CLOSE }),
+        collaboraOrigin,
+      );
+      iframeRef.current.src = COLLABORA_BLANK_URL;
     }
-  }, [collaboraUrl, wopiSrc, accessToken, editMode]);
+  }, [collaboraOrigin]);
+
+  useEffect(() => {
+    if (!formRef.current || !accessToken) return undefined;
+
+    closeIframe();
+
+    const timerId = setTimeout(() => {
+      if (formRef.current) {
+        setIsLoading(true);
+        formSubmittedRef.current = true;
+        formRef.current.submit();
+      }
+    }, COLLABORA_CLEANUP_DELAY_MS);
+
+    return () => clearTimeout(timerId);
+  }, [collaboraUrl, wopiSrc, accessToken, editMode, closeIframe]);
+
+  useEffect(() => closeIframe, [closeIframe]);
 
   const handleIframeLoad = useCallback(() => {
     if (formSubmittedRef.current) {
@@ -63,10 +91,10 @@ const CollaboraEditor = ({
   }, []);
 
   const permission = editMode ? 'edit' : 'readonly';
-  const iframeSrc = `${collaboraUrl}${COLLABORA_EDITOR_PATH}?WOPISrc=${encodeURIComponent(wopiSrc)}&permission=${permission}`;
+  const iframeSrc = `${collaboraUrl}${editorPath}?WOPISrc=${encodeURIComponent(wopiSrc)}&permission=${permission}`;
 
   return (
-    <div className={cn('relative h-full w-full', { 'h-dvh': isOpenedInNewTab })}>
+    <div className={cn('relative h-full w-full overflow-x-auto', { 'h-dvh': isOpenedInNewTab })}>
       {isLoading && (
         <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
           <CircleLoader />
@@ -91,9 +119,11 @@ const CollaboraEditor = ({
         />
       </form>
       <iframe
+        ref={iframeRef}
         name={COLLABORA_FRAME_NAME}
         title={t('filesharing.collaboraEditor')}
         className="h-full w-full border-none"
+        style={{ minWidth: COLLABORA_MIN_WIDTH_PX }}
         allow={IFRAME_ALLOWED_CONFIG}
         onLoad={handleIframeLoad}
       />

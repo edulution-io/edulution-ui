@@ -181,8 +181,11 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.COLLABORA_TOKEN)
-  getCollaboraToken(@Body() body: { filePath: string; share: string }, @GetCurrentUsername() username: string) {
-    return this.filesharingService.getCollaboraToken(username, body.filePath, body.share);
+  getCollaboraToken(
+    @Body() body: { filePath: string; share: string; origin: string },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.getCollaboraToken(username, body.filePath, body.share, body.origin);
   }
 
   @Post(FileSharingApiEndpoints.DUPLICATE)

@@ -62,7 +62,7 @@ class CollaboraService {
     return secret;
   }
 
-  async generateWopiToken(username: string, filePath: string, share: string): Promise<WopiAccessToken> {
+  async generateWopiToken(username: string, filePath: string, share: string, origin: string): Promise<WopiAccessToken> {
     Logger.log(`Generating WOPI token for ${username}`, CollaboraService.name);
     const secret = await this.getWopiSecret();
 
@@ -74,6 +74,7 @@ class CollaboraService {
       username,
       filePath,
       share,
+      origin,
       jti: randomUUID(),
     };
 
@@ -92,7 +93,8 @@ class CollaboraService {
     try {
       const client = await this.webdavService.getClient(username, share);
       const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-      const pathWithoutWebdav = getPathWithoutWebdav(filePath, webdavShare.pathname);
+      const normalizedFilePath = filePath.startsWith('/') ? filePath : `/${filePath}`;
+      const pathWithoutWebdav = getPathWithoutWebdav(normalizedFilePath, webdavShare.pathname);
       const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
       const files = (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(

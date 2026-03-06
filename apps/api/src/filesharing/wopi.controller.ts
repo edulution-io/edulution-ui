@@ -58,7 +58,7 @@ class WopiController {
       UserFriendlyName: tokenData.username,
       UserCanWrite: true,
       UserCanNotWriteRelative: true,
-      PostMessageOrigin: process.env.EDULUTION_BASE_DOMAIN || '',
+      PostMessageOrigin: tokenData.origin,
       LastModifiedTime: fileStat?.lastmod ?? new Date().toISOString(),
       Version: fileStat?.etag ?? Date.now().toString(),
     };
@@ -72,7 +72,8 @@ class WopiController {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
     const client = await this.webdavService.getClient(tokenData.username, tokenData.share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(tokenData.share);
-    const pathWithoutWebdav = getPathWithoutWebdav(tokenData.filePath, webdavShare.pathname);
+    const normalizedFilePath = tokenData.filePath.startsWith('/') ? tokenData.filePath : `/${tokenData.filePath}`;
+    const pathWithoutWebdav = getPathWithoutWebdav(normalizedFilePath, webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
     const stream = await FilesystemService.fetchFileStream(url, client);
@@ -95,7 +96,8 @@ class WopiController {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
 
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(tokenData.share);
-    const pathWithoutWebdav = getPathWithoutWebdav(tokenData.filePath, webdavShare.pathname);
+    const normalizedFilePath = tokenData.filePath.startsWith('/') ? tokenData.filePath : `/${tokenData.filePath}`;
+    const pathWithoutWebdav = getPathWithoutWebdav(normalizedFilePath, webdavShare.pathname);
 
     const contentType =
       (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;

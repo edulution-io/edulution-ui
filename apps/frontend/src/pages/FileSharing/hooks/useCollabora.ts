@@ -39,7 +39,8 @@ const useCollabora = ({ filePath, webdavShare }: UseCollaboraProps) => {
   const { webdavShare: webdavShareFromParams } = useParams();
   const resolvedWebdavShare = webdavShare ?? webdavShareFromParams;
 
-  const { accessToken, accessTokenTTL, isLoading, fetchWopiToken } = useCollaboraStore();
+  const { accessToken, accessTokenTTL, editorPath, isLoading, fetchWopiToken, fetchEditorPath, reset } =
+    useCollaboraStore();
 
   const collaboraUrl = getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.COLLABORA_URL);
 
@@ -47,16 +48,24 @@ const useCollabora = ({ filePath, webdavShare }: UseCollaboraProps) => {
   const wopiSrc = `${getFrontEndUrl()}/${EDU_API_ROOT}/${WOPI_BASE_PATH}/${fileId}`;
 
   useEffect(() => {
+    if (collaboraUrl) {
+      void fetchEditorPath(collaboraUrl);
+    }
+  }, [collaboraUrl]);
+
+  useEffect(() => {
+    reset();
     if (resolvedWebdavShare) {
       void fetchWopiToken(filePath, resolvedWebdavShare);
     }
-  }, [filePath, resolvedWebdavShare, fetchWopiToken]);
+  }, [filePath, resolvedWebdavShare]);
 
   return {
     collaboraUrl: collaboraUrl || '',
     wopiSrc,
     accessToken,
     accessTokenTTL,
+    editorPath,
     isLoading,
   };
 };

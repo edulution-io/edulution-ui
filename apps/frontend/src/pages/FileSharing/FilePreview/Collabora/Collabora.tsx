@@ -29,7 +29,7 @@ interface CollaboraProps {
 }
 
 const Collabora = ({ filePath, editMode, isOpenedInNewTab, webdavShare }: CollaboraProps) => {
-  const { collaboraUrl, wopiSrc, accessToken, accessTokenTTL, isLoading } = useCollabora({
+  const { collaboraUrl, wopiSrc, accessToken, accessTokenTTL, editorPath, isLoading } = useCollabora({
     filePath,
     webdavShare,
   });
@@ -42,6 +42,7 @@ const Collabora = ({ filePath, editMode, isOpenedInNewTab, webdavShare }: Collab
       wopiSrc={wopiSrc}
       accessToken={accessToken}
       accessTokenTTL={accessTokenTTL}
+      editorPath={editorPath}
       editMode={editMode}
       isOpenedInNewTab={isOpenedInNewTab}
     />

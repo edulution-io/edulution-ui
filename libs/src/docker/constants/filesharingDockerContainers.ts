@@ -17,12 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface WopiTokenPayload {
-  username: string;
-  filePath: string;
-  share: string;
-  origin: string;
-  jti: string;
-}
+import { ACTIVE_DOCUMENT_EDITOR, ActiveDocumentEditorType } from '@libs/filesharing/constants/activeDocumentEditor';
 
-export default WopiTokenPayload;
+const FILESHARING_DOCKER_CONTAINERS: Record<ActiveDocumentEditorType, string> = {
+  [ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE]: 'edulution-onlyoffice',
+  [ACTIVE_DOCUMENT_EDITOR.COLLABORA]: 'edulution-collabora',
+} as const;
+
+export default FILESHARING_DOCKER_CONTAINERS;
