@@ -38,6 +38,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(true);
+  const isAutoScrollingRef = useRef(false);
   const prevScrollHeightRef = useRef(0);
   const [isMounted, setIsMounted] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
@@ -57,6 +58,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        if (isAutoScrollingRef.current) return;
         shouldAutoScrollRef.current = entry.isIntersecting;
         setIsAtBottom(entry.isIntersecting);
         if (entry.isIntersecting) {
@@ -97,13 +99,25 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
     const lastMessage = messages[messages.length - 1];
     const isOwnMessage = lastMessage?.createdBy === user?.username;
 
+    if (shouldAutoScrollRef.current || isOwnMessage) {
+      isAutoScrollingRef.current = true;
+      setIsAtBottom(true);
+    }
+
     const frameId = requestAnimationFrame(() => {
       if (prevScrollHeightRef.current > 0) {
         const newScrollHeight = container.scrollHeight;
         container.scrollTop = newScrollHeight - prevScrollHeightRef.current;
         prevScrollHeightRef.current = 0;
+        isAutoScrollingRef.current = false;
       } else if (shouldAutoScrollRef.current || isOwnMessage) {
+        shouldAutoScrollRef.current = true;
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        requestAnimationFrame(() => {
+          isAutoScrollingRef.current = false;
+        });
+      } else {
+        isAutoScrollingRef.current = false;
       }
     });
 
