@@ -37,6 +37,7 @@ const COLLABORA_FRAME_NAME = 'collabora-frame';
 const COLLABORA_MIN_WIDTH_PX = 800;
 const COLLABORA_MSG_ACTION_CLOSE = 'Action_Close';
 const COLLABORA_BLANK_URL = 'about:blank';
+const COLLABORA_CLEANUP_DELAY_MS = 250;
 
 const CollaboraEditor = ({
   collaboraUrl,
@@ -55,26 +56,33 @@ const CollaboraEditor = ({
 
   const collaboraOrigin = collaboraUrl ? new URL(collaboraUrl).origin : '';
 
-  useEffect(() => {
-    if (formRef.current) {
-      setIsLoading(true);
-      formSubmittedRef.current = true;
-      formRef.current.submit();
+  const closeIframe = useCallback(() => {
+    if (iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({ MessageId: COLLABORA_MSG_ACTION_CLOSE }),
+        collaboraOrigin,
+      );
+      iframeRef.current.src = COLLABORA_BLANK_URL;
     }
-  }, [collaboraUrl, wopiSrc, accessToken, editMode]);
+  }, [collaboraOrigin]);
 
-  useEffect(
-    () => () => {
-      if (iframeRef.current?.contentWindow) {
-        iframeRef.current.contentWindow.postMessage(
-          JSON.stringify({ MessageId: COLLABORA_MSG_ACTION_CLOSE }),
-          collaboraOrigin,
-        );
-        iframeRef.current.src = COLLABORA_BLANK_URL;
+  useEffect(() => {
+    if (!formRef.current || !accessToken) return undefined;
+
+    closeIframe();
+
+    const timerId = setTimeout(() => {
+      if (formRef.current) {
+        setIsLoading(true);
+        formSubmittedRef.current = true;
+        formRef.current.submit();
       }
-    },
-    [],
-  );
+    }, COLLABORA_CLEANUP_DELAY_MS);
+
+    return () => clearTimeout(timerId);
+  }, [collaboraUrl, wopiSrc, accessToken, editMode, closeIframe]);
+
+  useEffect(() => closeIframe, [closeIframe]);
 
   const handleIframeLoad = useCallback(() => {
     if (formSubmittedRef.current) {
