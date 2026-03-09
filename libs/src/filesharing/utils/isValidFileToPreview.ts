@@ -21,7 +21,7 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
@@ -32,7 +32,7 @@ const isValidFileToPreview = (file: DirectoryFileDTO | null): boolean => {
   }
   const extension = getFileExtension(file.filePath);
   return (
-    isOnlyOfficeDocument(file.filePath) ||
+    isOfficeDocument(file.filePath) ||
     isDrawioExtension(extension) ||
     isImageExtension(extension) ||
     isPdfExtension(extension) ||

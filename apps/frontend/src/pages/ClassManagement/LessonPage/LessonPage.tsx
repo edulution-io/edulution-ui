@@ -47,7 +47,7 @@ import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import { Button } from '@edulution-io/ui-kit';
-import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 
 const LessonPage = () => {
   const {

@@ -28,6 +28,7 @@ interface UseSentryStore {
   init: (config: SentryConfig) => Promise<void>;
   fetchAndInitSentry: () => Promise<void>;
   clear: () => void;
+  reset: () => void;
 }
 
 type PersistedSentryStore = (
@@ -75,6 +76,8 @@ const useSentryStore = create<UseSentryStore>(
       clear: () => {
         set({ initialized: false, config: null });
       },
+
+      reset: () => {},
     }),
     {
       name: 'sentryConfig',

@@ -33,6 +33,7 @@ const AppConfigSectionsKeys = {
   urlHandling: 'urlHandling',
   appLogo: 'appLogo',
   wireguard: 'wireguard',
+  collabora: 'collabora',
 } as const;
 
 export default AppConfigSectionsKeys;

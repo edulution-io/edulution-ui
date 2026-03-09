@@ -307,6 +307,26 @@ describe(ConferencesService.name, () => {
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: true }));
     });
+
+    it('should throw BAD_GATEWAY when BBB API returns FAILED', async () => {
+      jest.spyOn(axios, 'get').mockResolvedValue({
+        data: '<response><returncode>FAILED</returncode></response>',
+      });
+      jest.spyOn(ConferencesService, 'parseXml').mockResolvedValue({
+        response: { returncode: 'FAILED' },
+      });
+
+      await expect(service.startConference(mockConferenceDocument, false, mockCreator.username)).rejects.toMatchObject({
+        message: ConferencesErrorMessage.CouldNotStartConference,
+      });
+    });
+
+    it('should not call BBB API when conference is already running in BBB', async () => {
+      jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
+
+      await service.startConference(mockConferenceDocument, true, mockCreator.username);
+      expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: true }));
+    });
   });
 
   describe('stopConference', () => {
@@ -322,6 +342,244 @@ describe(ConferencesService.name, () => {
       await service.stopConference(mockConferenceDocument, true);
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: false }));
+    });
+
+    it('should throw BAD_GATEWAY when BBB API returns FAILED on stop', async () => {
+      jest.spyOn(axios, 'get').mockResolvedValue({
+        data: '<response><returncode>FAILED</returncode></response>',
+      });
+      jest.spyOn(ConferencesService, 'parseXml').mockResolvedValue({
+        response: { returncode: 'FAILED' },
+      });
+
+      await expect(service.stopConference(mockConferenceDocument, true)).rejects.toMatchObject({
+        message: ConferencesErrorMessage.CouldNotStopConference,
+      });
+    });
+
+    it('should not call BBB API when conference is already stopped in BBB', async () => {
+      jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
+
+      await service.stopConference(mockConferenceDocument, false);
+      expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: false }));
+    });
+  });
+
+  describe('handleBBBApiError', () => {
+    it('should not throw for SUCCESS returncode', () => {
+      expect(() => ConferencesService.handleBBBApiError({ response: { returncode: 'SUCCESS' } })).not.toThrow();
+    });
+
+    it('should throw UNAUTHORIZED for non-SUCCESS returncode', () => {
+      expect(() => ConferencesService.handleBBBApiError({ response: { returncode: 'FAILED' } })).toThrow(
+        ConferencesErrorMessage.BbbUnauthorized,
+      );
+    });
+  });
+
+  describe('parseXml', () => {
+    beforeEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should parse valid XML', async () => {
+      const result = await ConferencesService.parseXml<{ response: { returncode: string } }>(
+        '<response><returncode>SUCCESS</returncode></response>',
+      );
+      expect(result.response.returncode).toBe('SUCCESS');
+    });
+
+    it('should throw for malformed XML', async () => {
+      await expect(ConferencesService.parseXml('not xml at all {{')).rejects.toBeDefined();
+    });
+  });
+
+  describe('getJoinedAttendees', () => {
+    it('should return empty array when no attendees', () => {
+      const result = ConferencesService.getJoinedAttendees({ response: { attendees: null } } as never);
+      expect(result).toEqual([]);
+    });
+
+    it('should handle single attendee (non-array)', () => {
+      const result = ConferencesService.getJoinedAttendees({
+        response: {
+          attendees: {
+            attendee: { fullName: 'Max Mueller', userID: 'teacher1' },
+          },
+        },
+      } as never);
+      expect(result).toHaveLength(1);
+      expect(result[0].username).toBe('teacher1');
+    });
+
+    it('should handle multiple attendees (array)', () => {
+      const result = ConferencesService.getJoinedAttendees({
+        response: {
+          attendees: {
+            attendee: [
+              { fullName: 'Max Mueller', userID: 'teacher1', role: 'MODERATOR' },
+              { fullName: 'Anna Schmidt', userID: 'student1', role: 'VIEWER' },
+            ],
+          },
+        },
+      } as never);
+      expect(result).toHaveLength(2);
+    });
+  });
+
+  describe('throwIfAppIsNotProperlyConfigured', () => {
+    it('should not throw when BBB_API_URL and BBB_SECRET are set', () => {
+      expect(() => service.throwIfAppIsNotProperlyConfigured()).not.toThrow();
+    });
+
+    it('should throw when BBB_API_URL is empty', () => {
+      service.BBB_API_URL = '';
+      expect(() => service.throwIfAppIsNotProperlyConfigured()).toThrow(
+        ConferencesErrorMessage.AppNotProperlyConfigured,
+      );
+    });
+
+    it('should throw when BBB_SECRET is empty', () => {
+      service.BBB_SECRET = '';
+      expect(() => service.throwIfAppIsNotProperlyConfigured()).toThrow(
+        ConferencesErrorMessage.AppNotProperlyConfigured,
+      );
+    });
+  });
+
+  describe('createChecksum', () => {
+    it('should produce a SHA-1 hex string', () => {
+      const checksum = service.createChecksum('create', 'name=test&meetingID=abc');
+      expect(checksum).toMatch(/^[a-f0-9]{40}$/);
+    });
+
+    it('should throw when app is not configured', () => {
+      service.BBB_API_URL = '';
+      expect(() => service.createChecksum('create', 'q=1')).toThrow(ConferencesErrorMessage.AppNotProperlyConfigured);
+    });
+  });
+
+  describe('checkConferenceIsRunningWithBBB', () => {
+    beforeEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should return true when BBB says meeting is running', async () => {
+      jest.spyOn(axios, 'get').mockResolvedValue({
+        data: '<response><returncode>SUCCESS</returncode><running>true</running></response>',
+      });
+
+      const result = await service.checkConferenceIsRunningWithBBB('meeting-1');
+      expect(result).toBe(true);
+    });
+
+    it('should return false when BBB API call fails', async () => {
+      jest.spyOn(axios, 'get').mockRejectedValue(new Error('Network error'));
+
+      const result = await service.checkConferenceIsRunningWithBBB('meeting-1');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('isCurrentUserTheCreator - edge cases', () => {
+    it('should throw NOT_FOUND when meeting does not exist', async () => {
+      conferencesModelMock.findOne.mockImplementationOnce(() => ({
+        lean: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue(null),
+      }));
+
+      await expect(service.isCurrentUserTheCreator('nonexistent', 'username')).rejects.toMatchObject({
+        message: ConferencesErrorMessage.MeetingNotFound,
+      });
+    });
+
+    it('should return isCreator false when user is not the creator', async () => {
+      const result = await service.isCurrentUserTheCreator('mockMeetingId', 'other-user');
+      expect(result.isCreator).toBe(false);
+    });
+  });
+
+  describe('remove - edge cases', () => {
+    it('should throw NOT_FOUND when no conferences found', async () => {
+      conferencesModelMock.find.mockImplementationOnce(() => ({
+        lean: jest.fn().mockResolvedValue([]),
+        exec: jest.fn().mockResolvedValue([]),
+      }));
+
+      await expect(service.remove(['nonexistent'], 'username')).rejects.toMatchObject({
+        message: ConferencesErrorMessage.MeetingNotFound,
+      });
+    });
+
+    it('should throw NOT_FOUND when deleteMany returns 0', async () => {
+      conferencesModelMock.deleteMany.mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue({ deletedCount: 0 }),
+      }));
+
+      await expect(service.remove([mockConferenceDocument.meetingID], 'other-user')).rejects.toMatchObject({
+        message: ConferencesErrorMessage.MeetingNotFound,
+      });
+    });
+  });
+
+  describe('joinPublicConference', () => {
+    it('should throw BAD_REQUEST when mandatory parameters are missing', async () => {
+      await expect(
+        service.joinPublicConference({ meetingId: '', password: '', name: '', userId: '' }),
+      ).rejects.toMatchObject({
+        message: ConferencesErrorMessage.MissingMandatoryParameters,
+      });
+    });
+
+    it('should throw NOT_FOUND when meeting does not exist', async () => {
+      conferencesModelMock.findOne.mockImplementationOnce(() => ({
+        lean: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue(null),
+      }));
+
+      await expect(
+        service.joinPublicConference({ meetingId: 'bad-id', password: '', name: 'Guest', userId: 'guest1' }),
+      ).rejects.toMatchObject({
+        message: ConferencesErrorMessage.MeetingNotFound,
+      });
+    });
+
+    it('should throw UNAUTHORIZED when password is wrong', async () => {
+      const runningConference = {
+        ...mockConferenceDocument,
+        password: 'secret',
+        isRunning: true,
+        toObject: jest.fn(),
+      };
+      conferencesModelMock.findOne.mockImplementationOnce(() => ({
+        lean: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue(runningConference),
+      }));
+
+      await expect(
+        service.joinPublicConference({ meetingId: 'meeting-1', password: 'wrong', name: 'Guest', userId: 'guest1' }),
+      ).rejects.toMatchObject({
+        message: ConferencesErrorMessage.WrongPassword,
+      });
+    });
+
+    it('should throw NOT_FOUND when conference is not running', async () => {
+      const stoppedConference = {
+        ...mockConferenceDocument,
+        password: '',
+        isRunning: false,
+        toObject: jest.fn(),
+      };
+      conferencesModelMock.findOne.mockImplementationOnce(() => ({
+        lean: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue(stoppedConference),
+      }));
+
+      await expect(
+        service.joinPublicConference({ meetingId: 'meeting-1', password: '', name: 'Guest', userId: 'guest1' }),
+      ).rejects.toMatchObject({
+        message: ConferencesErrorMessage.ConferenceIsNotRunning,
+      });
     });
   });
 

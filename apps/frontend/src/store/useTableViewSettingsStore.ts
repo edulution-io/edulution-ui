@@ -36,6 +36,7 @@ interface TableViewSettingsStore {
   setFileCategoryFilter: (appKey: string, category: FileCategory, enabled: boolean) => void;
   getFileCategoryFilters: (appKey: string) => FileCategoryFilters;
   getViewMode: (key: string) => ViewModeType;
+  reset: () => void;
 }
 
 type PersistedTableViewSettingsStore = (
@@ -117,6 +118,8 @@ const useTableViewSettingsStore = create<TableViewSettingsStore>(
         const { fileCategoryFilters } = get();
         return fileCategoryFilters[appKey] ?? defaultFileCategoryFilters;
       },
+
+      reset: () => set(initialValues),
     }),
     {
       name: 'view-mode',

@@ -19,7 +19,7 @@
 
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { create } from 'zustand';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import handleApiError from '@/utils/handleApiError';
@@ -93,7 +93,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
       const blobUrl = await get().createDownloadBlobUrl(file.filePath, share, signal);
       set({ temporaryDownloadUrl: blobUrl });
 
-      if (isOnlyOfficeDocument(file.filename)) {
+      if (isOfficeDocument(file.filename)) {
         const publicUrl = await get().getPublicDownloadUrl(file.filePath, file.filePath, share, signal);
         if (publicUrl) {
           set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicUrl}` });
