@@ -17,9 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum PrintPasswordsFormat {
-  PDF = 'pdf',
-  CSV = 'csv',
-}
+const WOPI_TOKEN_EXPIRY = '24h';
+const WOPI_TOKEN_TTL_MS = 86400000;
+const WOPI_BASE_PATH = 'wopi/files';
 
-export default PrintPasswordsFormat;
+export { WOPI_TOKEN_EXPIRY, WOPI_TOKEN_TTL_MS, WOPI_BASE_PATH };

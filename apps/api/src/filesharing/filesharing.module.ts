@@ -26,6 +26,8 @@ import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import ThumbnailService from './thumbnail.service';
 import OnlyofficeService from './onlyoffice.service';
+import CollaboraService from './collabora.service';
+import WopiController from './wopi.controller';
 import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
 import QueueService from '../queue/queue.service';
 import CollectFileConsumer from './consumers/collectFile.consumer';
@@ -43,11 +45,12 @@ import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
     }),
     MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]),
   ],
-  controllers: [FilesharingController],
+  controllers: [FilesharingController, WopiController],
   providers: [
     FilesharingService,
     ThumbnailService,
     OnlyofficeService,
+    CollaboraService,
     QueueService,
     DuplicateFileConsumer,
     CollectFileConsumer,

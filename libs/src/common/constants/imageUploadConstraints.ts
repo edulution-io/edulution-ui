@@ -17,6 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_MAXIMUM = 16 * 1024;
 
-export type TOnlyOfficeDocumentTypes = (typeof OnlyOfficeDocumentTypes)[keyof typeof OnlyOfficeDocumentTypes];
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_LARGE = 8 * 1024;
+
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_MEDIUM = 4 * 1024;
+
+export const IMAGE_COMPRESSION_MAX_SIZE_KB_SMALL = 512;
+
+export const IMAGE_MAX_DIMENSION_LARGE = 3840;
+
+export const IMAGE_MAX_DIMENSION_MEDIUM = 2048;

@@ -149,7 +149,6 @@ class SurveysController {
       }),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileUrl = join(SURVEYS, FILES, file.filename);
     return res.status(HttpStatus.CREATED).json(fileUrl);
@@ -281,7 +280,6 @@ class SurveysController {
       ),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async answeringFileUpload(
     @UploadedFile() file: Express.Multer.File,
     @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
@@ -321,7 +319,6 @@ class SurveysController {
   }
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteTempQuestionAnswerFile(
     @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
     @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,

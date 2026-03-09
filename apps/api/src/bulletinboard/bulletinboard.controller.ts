@@ -93,7 +93,6 @@ class BulletinBoardController {
       ),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     return res.status(200).json(file.filename);
   }

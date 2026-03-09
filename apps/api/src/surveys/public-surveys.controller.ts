@@ -136,7 +136,6 @@ class PublicSurveysController {
       ),
     ),
   )
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async answeringFileUpload(
     @UploadedFile() file: Express.Multer.File,
     @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
@@ -175,7 +174,6 @@ class PublicSurveysController {
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   @Public()
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteTempAnswerFile(
     @Param('userName', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) userName: string,
     @Param('surveyId', new ValidatePathPipe(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH)) surveyId: string,

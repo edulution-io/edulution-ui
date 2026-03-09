@@ -47,7 +47,6 @@ class ThumbnailService implements OnModuleInit {
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onModuleInit(): Promise<void> {
     try {
       await FilesystemService.ensureDirectoryExists(THUMBNAIL_CACHE_PATH);
@@ -61,7 +60,6 @@ class ThumbnailService implements OnModuleInit {
     name: 'CleanupThumbnailCache',
     timeZone: 'UTC',
   })
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async handleCacheCleanup(): Promise<void> {
     Logger.debug('CronJob: CleanupThumbnailCache (running once every morning at 03:30 UTC)', ThumbnailService.name);
     await ThumbnailService.enforceMaxCacheSize();

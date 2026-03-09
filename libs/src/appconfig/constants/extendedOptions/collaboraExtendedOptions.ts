@@ -17,13 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
-import { TOnlyOfficeDocumentTypes } from '@libs/filesharing/types/onlyOfficeDocumentTypesType';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-const isOnlyOfficeDocument = (filePath: string): boolean => {
-  const fileExtension = filePath.split('.').pop()?.toLowerCase() as TOnlyOfficeDocumentTypes;
+const COLLABORA_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.COLLABORA_URL,
+    description: 'appExtendedOptions.collaboraUrl',
+    title: 'appExtendedOptions.collaboraUrlTitle',
+    type: ExtendedOptionField.input,
+    value: '',
+    width: 'full',
+  },
+  {
+    name: ExtendedOptionKeys.COLLABORA_WOPI_SECRET,
+    title: 'appExtendedOptions.collaboraWopiSecretTitle',
+    description: 'appExtendedOptions.collaboraWopiSecretDescription',
+    type: ExtendedOptionField.password,
+    value: '',
+    width: 'full',
+  },
+];
 
-  return fileExtension ? Object.values(OnlyOfficeDocumentTypes).includes(fileExtension) : false;
-};
-
-export default isOnlyOfficeDocument;
+export default COLLABORA_EXTENDED_OPTIONS;

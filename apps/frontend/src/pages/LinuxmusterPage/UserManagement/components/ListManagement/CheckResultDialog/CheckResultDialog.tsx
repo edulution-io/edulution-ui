@@ -53,12 +53,14 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
   const [addChecked, setAddChecked] = useState(true);
   const [updateChecked, setUpdateChecked] = useState(true);
   const [killChecked, setKillChecked] = useState(true);
+  const [activeTab, setActiveTab] = useState<string>(CHECK_RESULT_TAB_VALUES.OVERVIEW);
 
   useEffect(() => {
     if (isOpen) {
       setAddChecked(true);
       setUpdateChecked(true);
       setKillChecked(true);
+      setActiveTab(CHECK_RESULT_TAB_VALUES.OVERVIEW);
     }
   }, [isOpen]);
 
@@ -102,7 +104,10 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
     if (isError) return <ErrorBody checkResult={checkResult} />;
     return (
       <div className="flex max-h-[80vh] flex-col overflow-y-auto text-base scrollbar-thin">
-        <Tabs defaultValue={CHECK_RESULT_TAB_VALUES.OVERVIEW}>
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+        >
           <TabsList>
             <TabsTrigger value={CHECK_RESULT_TAB_VALUES.OVERVIEW}>
               {t('usermanagement.checkResult.overview')}
@@ -152,6 +157,22 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
     );
   };
 
+  const getSubmitAction = (): { label: string; handler: () => void } => {
+    switch (activeTab) {
+      case CHECK_RESULT_TAB_VALUES.ADD:
+        return { label: 'usermanagement.checkResult.add', handler: () => onApply(true, false, false) };
+      case CHECK_RESULT_TAB_VALUES.UPDATE:
+        return { label: 'usermanagement.checkResult.update', handler: () => onApply(false, true, false) };
+      case CHECK_RESULT_TAB_VALUES.DELETE:
+        return { label: 'usermanagement.checkResult.delete', handler: () => onApply(false, false, true) };
+      default:
+        return {
+          label: 'usermanagement.checkResult.apply',
+          handler: () => onApply(hasAdd && addChecked, hasUpdate && updateChecked, hasKill && killChecked),
+        };
+    }
+  };
+
   const getFooter = () => {
     if (isError || !hasAnyChanges) {
       return (
@@ -161,11 +182,12 @@ const CheckResultDialog: React.FC<CheckResultDialogProps> = ({
         />
       );
     }
+    const { label, handler } = getSubmitAction();
     return (
       <DialogFooterButtons
         handleClose={onClose}
-        handleSubmit={() => onApply(hasAdd && addChecked, hasUpdate && updateChecked, hasKill && killChecked)}
-        submitButtonText="usermanagement.checkResult.apply"
+        handleSubmit={handler}
+        submitButtonText={label}
         disableSubmit={isApplying}
         disableCancel={isApplying}
       />

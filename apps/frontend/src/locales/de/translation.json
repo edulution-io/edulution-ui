@@ -227,6 +227,7 @@
       "UpdateUserSessionsFailed": "Aktualisierung der Benutzersitzung fehlgeschlagen",
       "StartExamModeFailed": "Start des Prüfungsmodus fehlgeschlagen",
       "PrintPasswordsFailed": "Drucken der Passwörter fehlgeschlagen",
+      "GetStudentsListFailed": "Herunterladen der Schülerliste fehlgeschlagen",
       "StopExamModeFailed": "Beenden des Prüfungsmodus fehlgeschlagen",
       "RemoveManagementGroupFailed": "Entfernen der Verwaltungsgruppe fehlgeschlagen",
       "AddManagementGroupFailed": "Hinzufügen der Verwaltungsgruppe fehlgeschlagen",
@@ -422,6 +423,7 @@
     "print": "Drucken",
     "fileEditor": "Datei Editor",
     "filePreview": "Dateivorschau",
+    "collaboraEditor": "Collabora Online Editor",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
@@ -458,7 +460,8 @@
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen",
-      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
+      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt",
+      "WopiTokenInvalid": "WOPI-Token ungültig oder abgelaufen"
     },
     "singleDownload": {
       "promptInfo": "Dein Dateidownload wurde gestartet.",
@@ -663,6 +666,10 @@
     "lesson": "Unterricht",
     "enrol": "Einschreiben",
     "printPasswords": "Passwörter drucken",
+    "classLists": "Klassenlisten",
+    "classListsPageDescription": "Laden Sie Schülerlisten für einzelne Klassen herunter oder wählen Sie mehrere Klassen aus, um diese gleichzeitig herunterzuladen.",
+    "pdfStudentsListDescription": "Eine PDF-Schülerliste für diese Schulklassen herunterladen",
+    "csvStudentsListDescription": "Eine CSV-Schülerliste für diese Schulklassen herunterladen",
     "Printers": "Drucker",
     "projects": "Projekte",
     "editmyProjects": "Projekt beabeiten",
@@ -1426,6 +1433,10 @@
         },
         "onlyOffice": {
           "title": "Only Office Integration",
+          "description": ""
+        },
+        "collabora": {
+          "title": "Collabora Online Integration",
           "description": ""
         },
         "imapMailFeed": {
@@ -2415,6 +2426,14 @@
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "collaboraUrlTitle": "Collabora URL",
+    "collaboraUrl": "Gib hier die Collabora Online URL ein",
+    "collaboraWopiSecretTitle": "Collabora WOPI-Geheimschlüssel",
+    "collaboraWopiSecretDescription": "Gib hier den gemeinsamen WOPI-Geheimschlüssel für Collabora Online ein",
+    "activeDocumentEditorTitle": "Aktiver Dokumenten-Editor",
+    "activeDocumentEditorDescription": "Wähle den Dokumenten-Editor für Office-Dokumente",
+    "activeDocumentEditor.onlyoffice": "OnlyOffice",
+    "activeDocumentEditor.collabora": "Collabora Online",
     "drawioUrlTitle": "Draw.io URL",
     "drawioUrlDescription": "Gib die URL der selbst gehosteten Draw.io-Instanz ein",
     "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",

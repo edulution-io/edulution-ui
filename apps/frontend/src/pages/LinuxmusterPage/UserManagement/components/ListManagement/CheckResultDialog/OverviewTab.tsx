@@ -72,7 +72,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
           value="add"
           label={t('usermanagement.checkResult.usersToAdd', { count: addCount })}
           count={addCount}
-          headerClassName="bg-blue-600/20 text-blue-300"
+          headerClassName="bg-blue-600/20 text-blue-700 dark:text-blue-300"
         >
           {hasAdd ? <AddTable entries={addEntries} /> : null}
         </AccordionSection>
@@ -81,7 +81,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
           value="update"
           label={t('usermanagement.checkResult.usersToUpdate', { count: updateCount })}
           count={updateCount}
-          headerClassName="bg-yellow-600/20 text-yellow-300"
+          headerClassName="bg-yellow-600/20 text-yellow-700 dark:text-yellow-300"
         >
           {hasUpdate ? <UpdateTable entries={updateEntries} /> : null}
         </AccordionSection>
@@ -90,7 +90,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
           value="kill"
           label={t('usermanagement.checkResult.usersToDelete', { count: killCount })}
           count={killCount}
-          headerClassName="bg-red-600/20 text-red-300"
+          headerClassName="bg-red-600/20 text-red-700 dark:text-red-300"
         >
           {hasKill ? <KillTable logins={killList} /> : null}
         </AccordionSection>

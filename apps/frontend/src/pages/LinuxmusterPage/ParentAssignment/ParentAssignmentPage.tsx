@@ -31,8 +31,8 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import TableFilterDropdown from '@/components/ui/Table/TableFilterDropdown';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import SchoolSelectorDropdown from '@/pages/ClassManagement/components/SchoolSelectorDropdown';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
+import useSchoolStore from '@/store/useSchoolStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useParentAssignmentStore from './useParentAssignmentStore';
 import getParentAssignmentColumns from './getParentAssignmentColumns';
@@ -51,7 +51,7 @@ const ParentAssignmentPage: React.FC = () => {
     setSelectedRows,
   } = useParentAssignmentStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
-  const classManagementSchool = useClassManagementStore((s) => s.selectedSchool);
+  const classManagementSchool = useSchoolStore((s) => s.selectedSchool);
   const eduApiToken = useUserStore((s) => s.eduApiToken);
 
   const userSchool = useMemo(() => {
