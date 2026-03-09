@@ -9,6 +9,13 @@
         "command": "npx playwright test",
         "cwd": "apps/e2e"
       }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright test",
+        "cwd": "apps/e2e"
+      }
     }
   }
 }

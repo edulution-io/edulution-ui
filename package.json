@@ -4,7 +4,7 @@
   "version": "2.0.29",
   "scripts": {
     "test": "nx run-many --target=test --projects=api,frontend",
-    "test:all": "nx run-many --target=test --projects=api,frontend && nx run e2e:e2e",
+    "test:all": "nx run-many --target=test --projects=api,frontend,e2e",
     "test:api": "nx run api:test --detectOpenHandles",
     "test:frontend": "nx run frontend:test",
     "test:e2e": "nx run e2e:e2e",
