@@ -213,6 +213,7 @@ describe(PublicSurveysController.name, () => {
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
+        false
       );
       expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
     });
@@ -240,6 +241,7 @@ describe(PublicSurveysController.name, () => {
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
+        false
       );
       expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
     });
