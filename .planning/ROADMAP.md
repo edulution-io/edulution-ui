@@ -14,7 +14,7 @@ This roadmap delivers a reusable AI coding context framework as a standalone Git
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Layered AGENTS.md content system, framework repo, and submodule infrastructure
-- [ ] **Phase 2: CI Sync Pipeline** - Automated artifact sync from edulution-ui to framework repo
+- [x] **Phase 2: CI Sync Pipeline** - Automated artifact sync from edulution-ui to framework repo
 - [ ] **Phase 3: CLI Scaffolding** - Interactive CLI that generates ready-to-run edulution-compatible projects
 - [ ] **Phase 4: Workflow Documentation** - AI-guided workflow docs for creating apps and adding features
 - [ ] **Phase 5: Dog-Fooding** - edulution-ui consumes the framework, removing its inline AGENTS.md
@@ -56,7 +56,7 @@ Plans:
 
 Plans:
 
-- [ ] 02-01-PLAN.md -- Create sync-framework.yml workflow with swagger and styling sync jobs (SYNC-04 deferred)
+- [x] 02-01-PLAN.md -- Create sync-framework.yml workflow with swagger and styling sync jobs (SYNC-04 deferred)
 
 ### Phase 3: CLI Scaffolding
 
@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase                     | Plans Complete | Status      | Completed  |
 | ------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation             | 3/3            | Complete    | 2026-03-09 |
-| 2. CI Sync Pipeline       | 0/1            | Planned     | -          |
+| 2. CI Sync Pipeline       | 1/1            | Complete    | 2026-03-09 |
 | 3. CLI Scaffolding        | 0/?            | Not started | -          |
 | 4. Workflow Documentation | 0/?            | Not started | -          |
 | 5. Dog-Fooding            | 0/?            | Not started | -          |

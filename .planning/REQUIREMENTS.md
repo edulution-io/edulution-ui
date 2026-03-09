@@ -25,9 +25,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### CI Sync
 
-- [ ] **SYNC-01**: GitHub Action in edulution-ui syncs swagger-spec.json to framework repo on merge to dev/main
-- [ ] **SYNC-02**: GitHub Action in edulution-ui syncs tailwind config + CSS artifacts to framework repo on merge
-- [ ] **SYNC-03**: Path filtering ensures sync only runs when source files actually change
+- [x] **SYNC-01**: GitHub Action in edulution-ui syncs swagger-spec.json to framework repo on merge to dev/main
+- [x] **SYNC-02**: GitHub Action in edulution-ui syncs tailwind config + CSS artifacts to framework repo on merge
+- [x] **SYNC-03**: Path filtering ensures sync only runs when source files actually change
 - [ ] **SYNC-04**: Scheduled drift detection job opens issue when framework artifacts diverge from edulution-ui
 
 ### CLI Scaffolding
@@ -106,9 +106,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REPO-02     | Phase 1 | Complete |
 | REPO-03     | Phase 1 | Complete |
 | REPO-04     | Phase 1 | Complete |
-| SYNC-01     | Phase 2 | Pending  |
-| SYNC-02     | Phase 2 | Pending  |
-| SYNC-03     | Phase 2 | Pending  |
+| SYNC-01     | Phase 2 | Complete |
+| SYNC-02     | Phase 2 | Complete |
+| SYNC-03     | Phase 2 | Complete |
 | SYNC-04     | Phase 2 | Pending  |
 | CLI-01      | Phase 3 | Pending  |
 | CLI-02      | Phase 3 | Pending  |
