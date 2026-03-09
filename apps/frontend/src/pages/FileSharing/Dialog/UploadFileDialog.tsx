@@ -25,7 +25,6 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/useUserStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 
 const UploadFileDialog = () => {
@@ -46,7 +45,7 @@ const UploadFileDialog = () => {
 
   const handleSubmit = async () => {
     closeUploadDialog();
-    await uploadFiles(currentPath, () => useUserStore.getState().eduApiToken, webdavShare);
+    await uploadFiles(currentPath, webdavShare);
     setRemountKey((k) => k + 1);
   };
 

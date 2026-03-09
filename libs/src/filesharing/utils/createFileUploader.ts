@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { AxiosInstance, AxiosProgressEvent, isAxiosError } from 'axios';
+import { AxiosInstance, AxiosProgressEvent } from 'axios';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import buildOctetStreamUrl from '@libs/filesharing/utils/buildOctetStreamUrl';
@@ -25,6 +25,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import createProgressHandler from '@libs/filesharing/utils/createProgressHandler';
 import uploadOctetStream from '@libs/filesharing/utils/uploadOctetStream';
 import FileProgress from '@libs/filesharing/types/fileProgress';
+import isAuthOrStorageError from '@libs/common/utils/isAuthOrStorageError';
 
 export interface CreateFileUploaderDependencies {
   httpClient: AxiosInstance;
@@ -71,10 +72,7 @@ const createFileUploader = (createFileUploaderDependencies: CreateFileUploaderDe
       return { name: fileName, success: true };
     } catch (error) {
       progress.markError();
-      if (
-        isAxiosError(error) &&
-        (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
-      ) {
+      if (isAuthOrStorageError(error)) {
         throw error;
       }
       return {

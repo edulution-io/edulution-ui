@@ -18,7 +18,6 @@
  */
 
 import { create } from 'zustand';
-import { isAxiosError } from 'axios';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
@@ -35,6 +34,8 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import getRandomUUID from '@/utils/getRandomUUID';
+import useUserStore from '@/store/UserStore/useUserStore';
+import isAuthOrStorageError from '@libs/common/utils/isAuthOrStorageError';
 
 interface HandleUploadFileStore {
   isUploadDialogOpen: boolean;
@@ -50,11 +51,7 @@ interface HandleUploadFileStore {
   updateFilesToUpload: (updater: (files: UploadItem[]) => UploadItem[]) => void;
   markUploading: (fileId: string, uploading: boolean) => void;
   setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => void;
-  uploadFiles: (
-    currentPath: string,
-    getAccessToken: () => string | undefined,
-    share: string | undefined,
-  ) => Promise<UploadResult[]>;
+  uploadFiles: (currentPath: string, share: string | undefined) => Promise<UploadResult[]>;
   clearProgress: () => void;
   reset: () => void;
 }
@@ -125,9 +122,12 @@ const createDirectoryStructure = async (
       createdCount += 1;
     } catch {
       failedDirectories.add(directoryPath);
-      toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
     }
   }, Promise.resolve());
+
+  if (failedDirectories.size > 0) {
+    toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
+  }
 
   setDirectoryProgress(directories.length, directories.length, webdavShare);
   return failedDirectories;
@@ -158,10 +158,7 @@ const uploadFolderFiles = async (
     try {
       await uploadFile(file, uploadPath);
     } catch (error) {
-      if (
-        isAxiosError(error) &&
-        (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
-      ) {
+      if (isAuthOrStorageError(error)) {
         throw error;
       }
       toast.error(t('filesharing.filesharingUpload.errors.fileUploadFailed'));
@@ -214,10 +211,7 @@ const processSingleUploadItem = async (
     }
     return await singleFileUploader(fileItem);
   } catch (error) {
-    if (
-      isAxiosError(error) &&
-      (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
-    ) {
+    if (isAuthOrStorageError(error)) {
       throw error;
     }
     return {
@@ -312,11 +306,7 @@ const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
     }
   },
 
-  uploadFiles: async (
-    currentPath: string,
-    getAccessToken: () => string | undefined,
-    webdavShare: string | undefined,
-  ): Promise<UploadResult[]> => {
+  uploadFiles: async (currentPath: string, webdavShare: string | undefined): Promise<UploadResult[]> => {
     const files = get().filesToUpload;
 
     if (!files || files.length === 0) {
@@ -332,6 +322,7 @@ const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
       progressById: {},
     });
 
+    const getAccessToken = () => useUserStore.getState().eduApiToken;
     const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, getAccessToken);
 
     const setProgressForFile = (fileId: string, fileName: string, share: string | undefined, progress: FileProgress) =>
@@ -366,17 +357,16 @@ const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
         outcomes.push(result);
       }, Promise.resolve());
     } catch (error) {
-      if (
-        isAxiosError(error) &&
-        (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 507)
-      ) {
-        const status = error.response?.status;
+      if (isAuthOrStorageError(error)) {
+        const status = (error as { response?: { status?: number } }).response?.status;
         if (status === 507) {
           toast.error(t('filesharing.filesharingUpload.errors.insufficientStorage'));
         } else {
           toast.error(t('filesharing.filesharingUpload.errors.unauthorized'));
         }
       }
+    } finally {
+      set({ isUploading: false, uploadingById: new Map() });
     }
 
     return outcomes;

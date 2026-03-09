@@ -24,7 +24,6 @@ import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
-import useUserStore from '@/store/UserStore/useUserStore';
 import useReplaceFilesDialogStore from '@/pages/FileSharing/Dialog/useReplaceFilesDialogStore';
 import getRandomUUID from '@/utils/getRandomUUID';
 import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
@@ -53,7 +52,7 @@ const useFileUploadWithReplace = () => {
           }),
         );
 
-        const results = await uploadFiles(currentPath, () => useUserStore.getState().eduApiToken, webdavShare);
+        const results = await uploadFiles(currentPath, webdavShare);
 
         if (results && results.length > 0) {
           await fetchFiles(webdavShare, currentPath);

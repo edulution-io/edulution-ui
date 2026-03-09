@@ -27,6 +27,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useClassListsStore from '@/pages/ClassManagement/ClassListsPage/useClassListsStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useCollaboraStore from '@/pages/FileSharing/FilePreview/Collabora/useCollaboraStore';
@@ -105,6 +106,7 @@ const cleanAllStores = async () => {
   useFileSharingStore.getState().reset();
   useFileTableStore.getState().reset();
   useFrameStore.getState().reset();
+  useHandleUploadFileStore.getState().reset();
   useGlobalSettingsApiStore.getState().reset();
   useLauncherStore.getState().reset();
   useLessonStore.getState().reset();
