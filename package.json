@@ -8,6 +8,7 @@
     "test:api": "nx run api:test --detectOpenHandles",
     "test:frontend": "nx run frontend:test",
     "test:e2e": "nx run e2e:e2e",
+    "prepare:e2e": "npx playwright install --with-deps",
     "test:ui": "nx run frontend:test -- --ui",
     "coverage": "nx run frontend:test -- --coverage && nx run api:test -- --coverage",
     "dev": "nx run frontend:serve:development --host",

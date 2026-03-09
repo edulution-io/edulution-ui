@@ -16,6 +16,7 @@
 - Both apps: `npm run serveFrontendAndApi`
 - Build frontend/API/all: `npm run build`, `npm run build:api`, `npm run build:all`
 - Tests: `npm run test` (API), `npm run test:frontend`, coverage with `npm run coverage`
+- E2E tests: `npm run prepare:e2e` (install Playwright browsers), then `npm run test:e2e`
 - Lint/format: `npm run lint`, `npm run lint:fix`, staged formatting via pre-commit
 - Local infra (Mongo/Redis): `docker compose up -d` (see `docker-compose.yml`)
 

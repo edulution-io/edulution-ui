@@ -192,7 +192,14 @@ describe(MailsService.name, () => {
   });
 
   describe('getSyncJobs', () => {
-    it('should return empty array when Mailcow config is missing', async () => {
+    it('should return empty array when no sync jobs exist', async () => {
+      Object.defineProperty(service, 'mailcowApi', {
+        value: {
+          get: jest.fn().mockResolvedValue({ data: [] }),
+        },
+        writable: true,
+      });
+
       const result = await service.getSyncJobs('user@test.com');
       expect(result).toEqual([]);
     });
