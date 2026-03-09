@@ -20,12 +20,14 @@
 import React from 'react';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
+import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
+import SurveyQuestionPanelTypes from '@libs/survey/constants/surveyQuestionPanelTypes';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import DefaultQuestionOptions from '@/pages/Surveys/Editor/dialog/DefaultQuestionOptions';
 import ImageQuestionOptions from '@/pages/Surveys/Editor/dialog/ImageQuestionOptions';
 import RowAndColumnOptions from '@/pages/Surveys/Editor/dialog/matrix-options/RowAndColumnOptions';
-import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
+import DynamicPanelOptions from '@/pages/Surveys/Editor/dialog/DynamicPanelOptions';
 
 const QuestionsContextMenuBody = () => {
   const { selectedQuestion } = useQuestionsContextMenuStore();
@@ -36,6 +38,9 @@ const QuestionsContextMenuBody = () => {
   const questionType = selectedQuestion.getType();
 
   options.push(<DefaultQuestionOptions key="all-questions" />);
+  if (questionType === `${SurveyQuestionPanelTypes.DYNAMIC_PANEL}`) {
+    options.push(<DynamicPanelOptions key="dynamic-panel-choices-by-url" />);
+  }
   if (isQuestionTypeImageType(questionType)) {
     options.push(<ImageQuestionOptions key="image-questions" />);
   }

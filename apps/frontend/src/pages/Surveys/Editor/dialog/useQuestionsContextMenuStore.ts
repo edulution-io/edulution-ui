@@ -65,6 +65,11 @@ interface QuestionsContextMenuStore {
 
   setImageWidth: (newWidth: number | undefined) => void;
   imageWidth: number | undefined;
+
+  setMaxPanelCount: (newMaxPanelCount: number | undefined) => void;
+  maxPanelCount: number | undefined;
+  setMinPanelCount: (newMinPanelCount: number | undefined) => void;
+  minPanelCount: number | undefined;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -80,6 +85,8 @@ const QuestionsContextMenuStoreInitialState = {
   formerChoices: [],
   currentChoices: [],
   imageWidth: 0,
+  maxPanelCount: undefined,
+  minPanelCount: undefined,
 };
 
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
@@ -265,6 +272,22 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
     set({ imageWidth: newWidth || 0 });
     selectedQuestion.imageWidth = newWidth ? Math.max(100, newWidth) : 0;
+  },
+
+  setMaxPanelCount: (newMaxPanelCount: number | undefined) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+    const maxPanelCount = newMaxPanelCount ? Math.max(1, newMaxPanelCount) : undefined;
+    set({ maxPanelCount });
+    selectedQuestion.maxPanelCount = maxPanelCount;
+  },
+
+  setMinPanelCount: (newMinPanelCount: number | undefined) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+    const minPanelCount = newMinPanelCount ? Math.max(1, newMinPanelCount) : undefined;
+    set({ minPanelCount });
+    selectedQuestion.minPanelCount = minPanelCount;
   },
 }));
 
