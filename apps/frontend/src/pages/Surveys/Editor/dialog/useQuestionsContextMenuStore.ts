@@ -114,6 +114,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
       imageWidth: Number.isNaN(width) ? 0 : width,
+      maxPanelCount: question?.maxPanelCount as number | undefined,
+      minPanelCount: question?.minPanelCount as number | undefined,
     });
   },
 
@@ -274,20 +276,20 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     selectedQuestion.imageWidth = newWidth ? Math.max(100, newWidth) : 0;
   },
 
-  setMaxPanelCount: (newMaxPanelCount: number | undefined) => {
-    const { selectedQuestion } = get();
-    if (!selectedQuestion) return;
-    const maxPanelCount = newMaxPanelCount ? Math.max(1, newMaxPanelCount) : undefined;
-    set({ maxPanelCount });
-    selectedQuestion.maxPanelCount = maxPanelCount;
-  },
-
   setMinPanelCount: (newMinPanelCount: number | undefined) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
     const minPanelCount = newMinPanelCount ? Math.max(1, newMinPanelCount) : undefined;
     set({ minPanelCount });
     selectedQuestion.minPanelCount = minPanelCount;
+  },
+
+  setMaxPanelCount: (newMaxPanelCount: number | undefined) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+    const maxPanelCount = newMaxPanelCount ? Math.max(1, newMaxPanelCount) : undefined;
+    set({ maxPanelCount });
+    selectedQuestion.maxPanelCount = maxPanelCount;
   },
 }));
 

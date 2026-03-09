@@ -1064,7 +1064,11 @@
         "addChoice": "Add",
         "filterPlaceHolderText": "Search for option",
         "imageWidth": "Width of one image in pixel [px]",
-        "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
+        "imageWidthPlaceholder": "0 means that the width is only limited by the available space.",
+        "panelCount": "Panel Limit",
+        "panelCountLimits": "Limit how often the panel must be expanded at a minimum or can be expanded at a maximum.",
+        "minPanelCount": "Minimum",
+        "maxPanelCount": "Maximum"
       },
       "surveyLogo": {
         "title": "Survey Logo",

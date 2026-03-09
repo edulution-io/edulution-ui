@@ -1066,7 +1066,11 @@
         "addChoice": "Hinzufügen",
         "filterPlaceHolderText": "Option suchen",
         "imageWidth": "Breite eines Bildes in Pixel [px]",
-        "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
+        "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird.",
+        "panelCount": "Panel Begrenzung",
+        "panelCountLimits": "Begrenze, wie oft das Panel mindestens erweitert werden muss oder maximal erweitert werden darf.",
+        "minPanelCount": "Minimum",
+        "maxPanelCount": "Maximum"
       },
       "surveyLogo": {
         "title": "Logo der Umfrage",

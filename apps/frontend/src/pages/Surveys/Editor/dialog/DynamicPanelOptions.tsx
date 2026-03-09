@@ -31,29 +31,29 @@ const DynamicPanelOptions = () => {
 
   return (
     <div className="my-2 flex flex-col gap-2">
-      <Label>{t('survey.editor.questionSettings.maxPanelCount')}</Label>
-      <Input
-        type="number"
-        placeholder={t('survey.editor.questionSettings.maxPanelCountPlaceholder')}
-        variant="dialog"
-        value={maxPanelCount === 0 ? '' : maxPanelCount}
-        onChange={(e) => {
-          const inputWidth = e.target.value.replace(/\D/g, '');
-          setMaxPanelCount(Number(inputWidth));
-        }}
-        className={cn({ 'text-muted-foreground': !maxPanelCount }, { 'text-background': maxPanelCount })}
-      />
+      <p className="text-m font-bold">{t('survey.editor.questionSettings.panelCount')}</p>
+      <p className="b-0 text-sm font-bold text-muted-foreground">
+        {t('survey.editor.questionSettings.panelCountLimits')}
+      </p>
       <Label>{t('survey.editor.questionSettings.minPanelCount')}</Label>
       <Input
         type="number"
-        placeholder={t('survey.editor.questionSettings.minPanelCountPlaceholder')}
         variant="dialog"
-        value={minPanelCount === 0 ? '' : minPanelCount}
-        onChange={(e) => {
-          const inputWidth = e.target.value.replace(/\D/g, '');
-          setMinPanelCount(Number(inputWidth));
-        }}
+        value={minPanelCount}
+        onChange={(e) => setMinPanelCount(Number(e.target.value))}
+        min={1}
+        max={100}
         className={cn({ 'text-muted-foreground': !minPanelCount }, { 'text-background': minPanelCount })}
+      />
+      <Label>{t('survey.editor.questionSettings.maxPanelCount')}</Label>
+      <Input
+        type="number"
+        variant="dialog"
+        value={maxPanelCount}
+        onChange={(e) => setMaxPanelCount(Number(e.target.value))}
+        min={1}
+        max={100}
+        className={cn({ 'text-muted-foreground': !maxPanelCount }, { 'text-background': maxPanelCount })}
       />
     </div>
   );
