@@ -10,9 +10,9 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Context System
 
 - [x] **CTX-01**: Base AGENTS.md contains shared conventions (design tokens, API patterns, component usage)
-- [ ] **CTX-02**: Project-type layer for edulution-ui (core) with NestJS, Nx, full-stack conventions
-- [ ] **CTX-03**: Project-type layer for custom React apps with Vite+TS, ui-kit, API client conventions
-- [ ] **CTX-04**: Project-type layer for styled HTML/CSS/JS pages with Tailwind-only conventions
+- [x] **CTX-02**: Project-type layer for edulution-ui (core) with NestJS, Nx, full-stack conventions
+- [x] **CTX-03**: Project-type layer for custom React apps with Vite+TS, ui-kit, API client conventions
+- [x] **CTX-04**: Project-type layer for styled HTML/CSS/JS pages with Tailwind-only conventions
 - [x] **CTX-05**: Layers compose via AGENTS.md spec filesystem inheritance (directory-based auto-discovery)
 - [x] **CTX-06**: Each .md file stays under 150 lines to prevent AI context degradation
 
@@ -20,8 +20,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **REPO-01**: Framework repo created on GitHub (edulution-io org, private)
 - [x] **REPO-02**: Repo has documented directory structure with clear component boundaries
-- [ ] **REPO-03**: Integration guide for adding framework as git submodule at root level
-- [ ] **REPO-04**: Reusable composite GitHub Action for private submodule auth in consumer CI
+- [x] **REPO-03**: Integration guide for adding framework as git submodule at root level
+- [x] **REPO-04**: Reusable composite GitHub Action for private submodule auth in consumer CI
 
 ### CI Sync
 
@@ -97,15 +97,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase   | Status   |
 | ----------- | ------- | -------- |
 | CTX-01      | Phase 1 | Complete |
-| CTX-02      | Phase 1 | Pending  |
-| CTX-03      | Phase 1 | Pending  |
-| CTX-04      | Phase 1 | Pending  |
+| CTX-02      | Phase 1 | Complete |
+| CTX-03      | Phase 1 | Complete |
+| CTX-04      | Phase 1 | Complete |
 | CTX-05      | Phase 1 | Complete |
 | CTX-06      | Phase 1 | Complete |
 | REPO-01     | Phase 1 | Complete |
 | REPO-02     | Phase 1 | Complete |
-| REPO-03     | Phase 1 | Pending  |
-| REPO-04     | Phase 1 | Pending  |
+| REPO-03     | Phase 1 | Complete |
+| REPO-04     | Phase 1 | Complete |
 | SYNC-01     | Phase 2 | Pending  |
 | SYNC-02     | Phase 2 | Pending  |
 | SYNC-03     | Phase 2 | Pending  |
