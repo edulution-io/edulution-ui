@@ -17,12 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
-
-type PrintPasswordsFormatType = `${PrintPasswordsFormat}`;
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 
 interface PrintPasswordsRequest {
-  format: PrintPasswordsFormatType;
+  format: FileExportFormat;
   one_per_page: boolean;
   pdflatex: boolean;
   school: string;

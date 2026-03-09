@@ -18,36 +18,36 @@
  */
 
 import OnlyOfficeConfig from '@libs/filesharing/types/OnlyOfficeConfig';
-import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
+import OFFICE_DOCUMENT_TYPES from '@libs/filesharing/constants/officeDocumentTypes';
 
 const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
   switch (fileType) {
-    case OnlyOfficeDocumentTypes.DOC:
-    case OnlyOfficeDocumentTypes.DOCX:
-    case OnlyOfficeDocumentTypes.ODT:
-    case OnlyOfficeDocumentTypes.DOT:
-    case OnlyOfficeDocumentTypes.DOTX:
-    case OnlyOfficeDocumentTypes.OTT:
-    case OnlyOfficeDocumentTypes.RTF:
-      return { id: 'docxEditor', key: `${OnlyOfficeDocumentTypes.DOCX}${Math.random() * 100}`, documentType: 'word' };
+    case OFFICE_DOCUMENT_TYPES.DOC:
+    case OFFICE_DOCUMENT_TYPES.DOCX:
+    case OFFICE_DOCUMENT_TYPES.ODT:
+    case OFFICE_DOCUMENT_TYPES.DOT:
+    case OFFICE_DOCUMENT_TYPES.DOTX:
+    case OFFICE_DOCUMENT_TYPES.OTT:
+    case OFFICE_DOCUMENT_TYPES.RTF:
+      return { id: 'docxEditor', key: `${OFFICE_DOCUMENT_TYPES.DOCX}${Math.random() * 100}`, documentType: 'word' };
 
-    case OnlyOfficeDocumentTypes.XLSX:
-    case OnlyOfficeDocumentTypes.XLS:
-    case OnlyOfficeDocumentTypes.XLT:
-    case OnlyOfficeDocumentTypes.XLTX:
-    case OnlyOfficeDocumentTypes.ODS:
-    case OnlyOfficeDocumentTypes.OTS:
-      return { id: 'xlsxEditor', key: `${OnlyOfficeDocumentTypes.XLSX}${Math.random() * 100}`, documentType: 'cell' };
+    case OFFICE_DOCUMENT_TYPES.XLSX:
+    case OFFICE_DOCUMENT_TYPES.XLS:
+    case OFFICE_DOCUMENT_TYPES.XLT:
+    case OFFICE_DOCUMENT_TYPES.XLTX:
+    case OFFICE_DOCUMENT_TYPES.ODS:
+    case OFFICE_DOCUMENT_TYPES.OTS:
+      return { id: 'xlsxEditor', key: `${OFFICE_DOCUMENT_TYPES.XLSX}${Math.random() * 100}`, documentType: 'cell' };
 
-    case OnlyOfficeDocumentTypes.PPTX:
-    case OnlyOfficeDocumentTypes.PPSX:
-    case OnlyOfficeDocumentTypes.POTX:
-    case OnlyOfficeDocumentTypes.PPT:
-    case OnlyOfficeDocumentTypes.PPS:
-    case OnlyOfficeDocumentTypes.POT:
-    case OnlyOfficeDocumentTypes.OTP:
-    case OnlyOfficeDocumentTypes.ODP:
-      return { id: 'pptxEditor', key: `${OnlyOfficeDocumentTypes.PPTX}${Math.random() * 100}`, documentType: 'slide' };
+    case OFFICE_DOCUMENT_TYPES.PPTX:
+    case OFFICE_DOCUMENT_TYPES.PPSX:
+    case OFFICE_DOCUMENT_TYPES.POTX:
+    case OFFICE_DOCUMENT_TYPES.PPT:
+    case OFFICE_DOCUMENT_TYPES.PPS:
+    case OFFICE_DOCUMENT_TYPES.POT:
+    case OFFICE_DOCUMENT_TYPES.OTP:
+    case OFFICE_DOCUMENT_TYPES.ODP:
+      return { id: 'pptxEditor', key: `${OFFICE_DOCUMENT_TYPES.PPTX}${Math.random() * 100}`, documentType: 'slide' };
 
     default:
       return { id: 'docxEditor', key: `unknown${Math.random() * 100}`, documentType: 'word' };

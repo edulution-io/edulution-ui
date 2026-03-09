@@ -20,6 +20,7 @@
 const FILE_PREVIEW_TYPE = {
   PDF: 'pdf',
   ONLY_OFFICE: 'onlyoffice',
+  COLLABORA: 'collabora',
   DRAWIO: 'drawio',
   IMAGE: 'image',
   MEDIA: 'media',

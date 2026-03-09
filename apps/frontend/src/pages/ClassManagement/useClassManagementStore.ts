@@ -40,7 +40,6 @@ import minimizeFormValues from '@libs/groups/utils/minimizeFormValues';
 import type LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import type LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
-import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
 import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
 
 const { PROJECT, SCHOOL_CLASSES, PRINTERS, ROOM, SEARCH_USERS_OR_GROUPS, USER_SESSIONS } = LMN_API_EDU_API_ENDPOINTS;
@@ -63,8 +62,6 @@ const initialState = {
   printers: [],
   searchGroupsError: null,
   isSearchGroupsLoading: false,
-  schools: [],
-  selectedSchool: '',
 
   error: null,
 };
@@ -78,8 +75,6 @@ const useClassManagementStore = create<ClassManagementStore>(
   (persist as PersistentClassManagementStore)(
     (set, get) => ({
       ...initialState,
-
-      setSelectedSchool: (school) => set({ selectedSchool: school }),
 
       fetchProject: async (projectName: string) => {
         if (get().isProjectLoading) return null;
@@ -423,19 +418,6 @@ const useClassManagementStore = create<ClassManagementStore>(
           return [];
         } finally {
           set({ isSearchGroupsLoading: false });
-        }
-      },
-
-      getSchools: async () => {
-        try {
-          const { lmnApiToken } = useLmnApiStore.getState();
-          const { data } = await eduApi.get<LmnApiSchools[]>(LMN_API_EDU_API_ENDPOINTS.SCHOOLS, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          });
-
-          set({ schools: data });
-        } catch (error) {
-          handleApiError(error, set);
         }
       },
 

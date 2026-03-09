@@ -42,12 +42,13 @@ import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import { Agent as HttpsAgent } from 'https';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
-import { HTTP_HEADERS, HttpMethods } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, HttpMethods, ResponseType } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
@@ -98,7 +99,7 @@ class LmnApiService {
   public async printPasswords(lmnApiToken: string, options: PrintPasswordsRequest): Promise<LmnApiJobResult<Buffer>> {
     try {
       return await this.request<Buffer>(HttpMethods.POST, PRINT_PASSWORDS_LMN_API_ENDPOINT, options, {
-        responseType: 'arraybuffer',
+        responseType: ResponseType.ARRAYBUFFER,
         headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
       });
     } catch (error) {
@@ -106,6 +107,27 @@ class LmnApiService {
         LmnApiErrorMessage.PrintPasswordsFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getStudentsList(
+    lmnApiToken: string,
+    schoolclass: string,
+    format: FileExportFormat,
+  ): Promise<LmnApiJobResult<Buffer>> {
+    try {
+      const endpoint = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolclass}/${format}_students_list`;
+      return await this.request<Buffer>(HttpMethods.GET, endpoint, undefined, {
+        responseType: ResponseType.ARRAYBUFFER,
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetStudentsListFailed,
+        HttpStatus.BAD_GATEWAY,
+        `${schoolclass}: ${format}`,
         LmnApiService.name,
       );
     }

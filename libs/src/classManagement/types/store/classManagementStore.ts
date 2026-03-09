@@ -30,7 +30,6 @@ import type LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolCl
 import type LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
 import type LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import type LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
-import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
 
 interface ClassManagementState {
   userSessions: LmnApiSession[];
@@ -51,13 +50,10 @@ interface ClassManagementState {
   error: Error | null;
   userRoom: LmnApiRoom | null;
   printers: LmnApiPrinter[];
-  schools: LmnApiSchools[];
-  selectedSchool: string;
 }
 
 interface ClassManagementActions {
   reset: () => void;
-  setSelectedSchool: (school: string) => void;
   searchGroupsOrUsers: (
     searchQuery: string,
     t: TFunction<'translation', undefined>,
@@ -78,7 +74,6 @@ interface ClassManagementActions {
   fetchRoom: () => Promise<void>;
   fetchPrinters: () => Promise<void>;
   fetchPrinter: (name: string) => Promise<LmnApiPrinterWithMembers | null>;
-  getSchools: () => Promise<void>;
 }
 
 type ClassManagementStore = ClassManagementState & ClassManagementActions;
