@@ -19,6 +19,7 @@
 
 enum SurveyQuestionOtherTypes {
   TEXT = 'text',
+  MULTIPLETEXT = 'multipletext',
   BOOLEAN = 'boolean',
   DATE = 'date',
   DATETIME = 'datetime',
