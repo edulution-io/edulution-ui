@@ -48,7 +48,7 @@ class AppConfigDto {
   extendedOptions?: ExtendedOptionKeysDto;
 
   @IsBoolean()
-  usesPushNotifications?: boolean;
+  usesPushNotifications: boolean;
 
   @IsNumber()
   position: number;
