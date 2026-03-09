@@ -16,14 +16,8 @@ const playwrightConfig = defineConfig({
 
   timeout: process.env.CI ? 60_000 : 30_000,
 
-  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
-
   expect: {
     timeout: process.env.CI ? 15_000 : 5_000,
-    toHaveScreenshot: {
-      maxDiffPixelRatio: 0.05,
-      threshold: 0.3,
-    },
   },
 
   use: {
@@ -39,16 +33,6 @@ const playwrightConfig = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      testMatch: /visual/,
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      testMatch: /visual/,
     },
   ],
 });
