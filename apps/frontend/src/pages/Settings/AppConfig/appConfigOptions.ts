@@ -38,9 +38,10 @@ import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
 import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/onlyOffice';
+import COLLABORA_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/collaboraExtendedOptions';
 import MAIL_IMAP_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/imapMailFeed';
 import BULLETIN_BOARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/bulletinBoardExtendedOptions';
-import FILE_SHARING_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/fileSharing';
+import FILE_SHARING_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/filesharingExtendedOptions';
 import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/dockerContainerExtendedOptions';
 import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classManagementExtendedOptions';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
@@ -124,6 +125,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.fileSharing]: FILE_SHARING_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.onlyOffice]: ONLY_OFFICE_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.collabora]: COLLABORA_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.drawio]: DRAWIO_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.webdavShare]: WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS,

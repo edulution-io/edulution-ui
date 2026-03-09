@@ -31,6 +31,7 @@ enum FileSharingApiEndpoints {
   PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
   UPLOAD = 'upload',
   THUMBNAIL = 'thumbnail',
+  COLLABORA_TOKEN = 'collabora-token',
 }
 
 export default FileSharingApiEndpoints;

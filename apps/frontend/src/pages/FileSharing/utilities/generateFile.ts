@@ -24,7 +24,7 @@ import ExcelJS from 'exceljs';
 import { create } from 'xmlbuilder2';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
-import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
+import OFFICE_DOCUMENT_TYPES from '@libs/filesharing/constants/officeDocumentTypes';
 import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
@@ -46,7 +46,7 @@ const generateFile = async (
 
   switch (fileType) {
     case AVAILABLE_FILE_TYPES.documentFile: {
-      extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.DOCX : OnlyOfficeDocumentTypes.ODT;
+      extension = format === DocumentVendors.MSO ? OFFICE_DOCUMENT_TYPES.DOCX : OFFICE_DOCUMENT_TYPES.ODT;
       if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const doc = new Document({ title: basename, description: '', sections: [] });
@@ -63,7 +63,7 @@ const generateFile = async (
     }
 
     case AVAILABLE_FILE_TYPES.spreadsheetFile: {
-      extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.XLSX : OnlyOfficeDocumentTypes.ODS;
+      extension = format === DocumentVendors.MSO ? OFFICE_DOCUMENT_TYPES.XLSX : OFFICE_DOCUMENT_TYPES.ODS;
       if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const workbook = new ExcelJS.Workbook();
@@ -85,7 +85,7 @@ const generateFile = async (
     }
 
     case AVAILABLE_FILE_TYPES.presentationFile: {
-      extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.PPTX : OnlyOfficeDocumentTypes.ODP;
+      extension = format === DocumentVendors.MSO ? OFFICE_DOCUMENT_TYPES.PPTX : OFFICE_DOCUMENT_TYPES.ODP;
       if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const pptx = new PptxGenJS();

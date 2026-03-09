@@ -29,7 +29,7 @@ import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import i18n from '@/i18n';
@@ -55,7 +55,7 @@ const TYPE_COLUMN_WIDTH = 'w-1/12 lg:w-1/12 md:w-1/12';
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
-  isDocumentServerConfigured?: boolean,
+  isDocumentEditorConfigured?: boolean,
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -112,16 +112,16 @@ const getFileSharingTableColumns = (
             row.toggleSelected();
             return;
           }
-          const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
-          if (isOnlyOfficeDoc && !isDocumentServerConfigured && !isPdf) {
+          const isEditableDoc = isOfficeDocument(row.original.filename);
+          if (isEditableDoc && !isDocumentEditorConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }
-          if (isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf) {
+          if (isMobileView && isEditableDoc && isDocumentEditorConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }
-          if (isOnlyOfficeDoc || isPdf) {
+          if (isEditableDoc || isPdf) {
             void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
           }
 
