@@ -295,7 +295,7 @@ class SurveyAnswersService implements OnModuleInit {
           .filter((object, index) => creations[index].modifiedCount > 0 && object.choiceLimit !== 1)
           .map(({ questionName }) => questionName),
       );
-      questionNamesWeNotifyOtherUsersFor.concat([...questionNamesForNewSelectableChoices]);
+      questionNamesWeNotifyOtherUsersFor.push(...questionNamesForNewSelectableChoices);
     }
 
     questionNamesWeNotifyOtherUsersFor.forEach((questionName) => {
