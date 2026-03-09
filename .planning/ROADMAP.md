@@ -33,12 +33,13 @@ Decimal phases appear between their surrounding integers in numeric order.
 3. Each project-type layer (edulution-ui, custom-app, styled-page) has its own AGENTS.md with stack-specific rules, and layers compose via filesystem inheritance
 4. No single .md file exceeds 150 lines
 5. A consumer project can add the framework as a git submodule and its CI can check it out using the provided composite GitHub Action
-   **Plans**: TBD
+   **Plans**: 3 plans
 
 Plans:
 
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- Create framework repo, base AGENTS.md, TypeScript layer, and README
+- [ ] 01-02-PLAN.md -- Create edulution-ui, custom-app, and styled-page project-type layers
+- [ ] 01-03-PLAN.md -- Create integration guide and composite GitHub Action for CI auth
 
 ### Phase 2: CI Sync Pipeline
 
@@ -117,7 +118,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase                     | Plans Complete | Status      | Completed |
 | ------------------------- | -------------- | ----------- | --------- |
-| 1. Foundation             | 0/?            | Not started | -         |
+| 1. Foundation             | 0/3            | Planning    | -         |
 | 2. CI Sync Pipeline       | 0/?            | Not started | -         |
 | 3. CLI Scaffolding        | 0/?            | Not started | -         |
 | 4. Workflow Documentation | 0/?            | Not started | -         |
