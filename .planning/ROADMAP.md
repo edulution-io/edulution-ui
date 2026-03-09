@@ -52,11 +52,11 @@ Plans:
 2. Merging a Tailwind config or CSS change to dev/main triggers a sync that updates the framework repo's artifacts directory
 3. Syncs only run when the relevant source files actually change (path filtering)
 4. A scheduled drift detection job opens a GitHub issue when framework artifacts diverge from edulution-ui source
-   **Plans**: TBD
+   **Plans**: 1 plan
 
 Plans:
 
-- [ ] 02-01: TBD
+- [ ] 02-01-PLAN.md -- Create sync-framework.yml workflow with swagger and styling sync jobs (SYNC-04 deferred)
 
 ### Phase 3: CLI Scaffolding
 
@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase                     | Plans Complete | Status      | Completed  |
 | ------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation             | 3/3            | Complete    | 2026-03-09 |
-| 2. CI Sync Pipeline       | 0/?            | Not started | -          |
+| 2. CI Sync Pipeline       | 0/1            | Planned     | -          |
 | 3. CLI Scaffolding        | 0/?            | Not started | -          |
 | 4. Workflow Documentation | 0/?            | Not started | -          |
 | 5. Dog-Fooding            | 0/?            | Not started | -          |
