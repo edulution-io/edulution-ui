@@ -79,6 +79,7 @@ const AppStorePage: React.FC = () => {
         extendedOptions: newExtendedOptions,
         position: 0,
         displayLocations: defaultDisplayLocations,
+        usesPushNotifications: false,
       };
 
       void createAppConfig(newConfig);
