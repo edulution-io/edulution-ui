@@ -94,45 +94,45 @@ Deferred to future release. Tracked but not in current roadmap.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status  |
-| ----------- | ----- | ------- |
-| CTX-01      | —     | Pending |
-| CTX-02      | —     | Pending |
-| CTX-03      | —     | Pending |
-| CTX-04      | —     | Pending |
-| CTX-05      | —     | Pending |
-| CTX-06      | —     | Pending |
-| REPO-01     | —     | Pending |
-| REPO-02     | —     | Pending |
-| REPO-03     | —     | Pending |
-| REPO-04     | —     | Pending |
-| SYNC-01     | —     | Pending |
-| SYNC-02     | —     | Pending |
-| SYNC-03     | —     | Pending |
-| SYNC-04     | —     | Pending |
-| CLI-01      | —     | Pending |
-| CLI-02      | —     | Pending |
-| CLI-03      | —     | Pending |
-| CLI-04      | —     | Pending |
-| CLI-05      | —     | Pending |
-| CLI-06      | —     | Pending |
-| CLI-07      | —     | Pending |
-| CLI-08      | —     | Pending |
-| WKFL-01     | —     | Pending |
-| WKFL-02     | —     | Pending |
-| WKFL-03     | —     | Pending |
-| WKFL-04     | —     | Pending |
-| DOG-01      | —     | Pending |
-| DOG-02      | —     | Pending |
-| DOG-03      | —     | Pending |
+| Requirement | Phase   | Status  |
+| ----------- | ------- | ------- |
+| CTX-01      | Phase 1 | Pending |
+| CTX-02      | Phase 1 | Pending |
+| CTX-03      | Phase 1 | Pending |
+| CTX-04      | Phase 1 | Pending |
+| CTX-05      | Phase 1 | Pending |
+| CTX-06      | Phase 1 | Pending |
+| REPO-01     | Phase 1 | Pending |
+| REPO-02     | Phase 1 | Pending |
+| REPO-03     | Phase 1 | Pending |
+| REPO-04     | Phase 1 | Pending |
+| SYNC-01     | Phase 2 | Pending |
+| SYNC-02     | Phase 2 | Pending |
+| SYNC-03     | Phase 2 | Pending |
+| SYNC-04     | Phase 2 | Pending |
+| CLI-01      | Phase 3 | Pending |
+| CLI-02      | Phase 3 | Pending |
+| CLI-03      | Phase 3 | Pending |
+| CLI-04      | Phase 3 | Pending |
+| CLI-05      | Phase 3 | Pending |
+| CLI-06      | Phase 3 | Pending |
+| CLI-07      | Phase 3 | Pending |
+| CLI-08      | Phase 3 | Pending |
+| WKFL-01     | Phase 4 | Pending |
+| WKFL-02     | Phase 4 | Pending |
+| WKFL-03     | Phase 4 | Pending |
+| WKFL-04     | Phase 4 | Pending |
+| DOG-01      | Phase 5 | Pending |
+| DOG-02      | Phase 5 | Pending |
+| DOG-03      | Phase 5 | Pending |
 
 **Coverage:**
 
 - v1 requirements: 29 total
-- Mapped to phases: 0
-- Unmapped: 29 ⚠️
+- Mapped to phases: 29
+- Unmapped: 0
 
 ---
 
 _Requirements defined: 2026-03-09_
-_Last updated: 2026-03-09 after initial definition_
+_Last updated: 2026-03-09 after roadmap creation_
