@@ -28,6 +28,7 @@ interface ThemeStore {
   getResolvedTheme: () => ResolvedThemeType;
   applyTheme: () => void;
   initTheme: () => void;
+  reset: () => void;
 }
 
 type PersistedThemeStore = (
@@ -84,6 +85,8 @@ const useThemeStore = create<ThemeStore>(
           }
         });
       },
+
+      reset: () => set({ theme: THEME.system }),
     }),
     {
       name: 'theme',

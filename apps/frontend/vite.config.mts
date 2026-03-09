@@ -20,16 +20,18 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       globals: true,
-      cache: {
-        dir: '../../node_modules/.vitest',
-      },
+      watch: false,
       environment: 'jsdom',
-      include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+      include: [
+        'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+        '../../libs/src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      ],
       setupFiles: ['./test/vitest.setup.ts'],
       reporters: ['default'],
       coverage: {
         reportsDirectory: '../../coverage/apps/frontend',
         provider: 'v8',
+        reporter: ['text', 'json-summary', 'lcov'],
       },
     },
     root: __dirname,
