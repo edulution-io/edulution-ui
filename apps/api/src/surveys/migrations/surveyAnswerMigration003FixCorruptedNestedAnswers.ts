@@ -60,7 +60,7 @@ const buildQuestionsMap = (formula: SurveyFormula): Map<string, SurveyElementWit
 const isCharObject = (value: unknown): boolean => {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
   const keys = Object.keys(value as Record<string, unknown>);
-  if (keys.length === 0) return false;
+  if (keys.length === 0) return true;
   return (
     keys.every((k) => /^\d+$/.test(k)) &&
     Object.values(value as Record<string, unknown>).every((v) => typeof v === 'string' && v.length === 1)
