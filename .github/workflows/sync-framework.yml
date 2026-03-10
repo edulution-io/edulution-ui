@@ -49,11 +49,10 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: edulution-ai-framework
 
-      - name: Checkout edulution-ui
-        uses: actions/checkout@v5
+      - name: Checkout edulution-ui with framework submodule
+        uses: edulution-io/edulution-ai-framework/.github/actions/checkout-submodule@main
         with:
-          path: source
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Checkout framework repo
         uses: actions/checkout@v5
@@ -68,13 +67,13 @@ jobs:
         run: |
           mkdir -p target/artifacts
 
-          if [ ! -s source/swagger-spec.json ]; then
+          if [ ! -s swagger-spec.json ]; then
             echo "swagger-spec.json is empty or missing, skipping sync"
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          cp source/swagger-spec.json target/artifacts/swagger-spec.json
+          cp swagger-spec.json target/artifacts/swagger-spec.json
 
           cd target
           if git diff --quiet -- artifacts/swagger-spec.json; then
@@ -136,11 +135,10 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: edulution-ai-framework
 
-      - name: Checkout edulution-ui
-        uses: actions/checkout@v5
+      - name: Checkout edulution-ui with framework submodule
+        uses: edulution-io/edulution-ai-framework/.github/actions/checkout-submodule@main
         with:
-          path: source
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Checkout framework repo
         uses: actions/checkout@v5
@@ -155,9 +153,9 @@ jobs:
         run: |
           mkdir -p target/artifacts
 
-          cp source/apps/frontend/tailwind.config.ts target/artifacts/tailwind.config.ts
-          cp source/libs/ui-kit/tailwind.config.ts target/artifacts/tailwind.base.config.ts
-          cp source/apps/frontend/src/index.scss target/artifacts/index.scss
+          cp apps/frontend/tailwind.config.ts target/artifacts/tailwind.config.ts
+          cp libs/ui-kit/tailwind.config.ts target/artifacts/tailwind.base.config.ts
+          cp apps/frontend/src/index.scss target/artifacts/index.scss
 
           cd target
           if git diff --quiet -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/index.scss; then
