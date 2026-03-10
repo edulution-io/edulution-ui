@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ChatView from '@/pages/Chat/components/ChatView';
 import useGroupChat from '@/pages/Chat/hooks/useGroupChat';
@@ -32,12 +32,14 @@ interface ChatContentProps {
 const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
   const { t } = useTranslation();
   const adapter = useGroupChat(groupName, groupType);
-  const groupTypeLabelMap: Record<string, string> = {
-    [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: t('chat.schoolClass'),
-    [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: t('chat.project'),
-    [CHAT_GROUP_TYPE_LOCATIONS.GROUPS]: t('chat.group'),
-  };
-  const groupTypeLabel = groupTypeLabelMap[groupType] ?? t('chat.group');
+  const groupTypeLabel = useMemo(() => {
+    const groupTypeLabelMap: Record<string, string> = {
+      [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: t('chat.schoolClass'),
+      [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: t('chat.project'),
+      [CHAT_GROUP_TYPE_LOCATIONS.GROUPS]: t('chat.group'),
+    };
+    return groupTypeLabelMap[groupType] ?? t('chat.group');
+  }, [groupType, t]);
 
   return (
     <ChatView

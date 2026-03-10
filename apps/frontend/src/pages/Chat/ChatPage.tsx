@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,16 +26,47 @@ import { faComments, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@edulution-io/ui-kit';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import useChatStore from '@/store/useChatStore';
+import useChatStore from '@/pages/Chat/useChatStore';
 import isValidGroupTypeLocation from '@libs/chat/utils/isValidGroupTypeLocation';
+import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
+import LAST_CHAT_GROUP_STORAGE_KEY from '@libs/chat/constants/lastChatGroupStorageKey';
 import ChatContent from './components/ChatContent';
 import useRegisterChatSections from './useRegisterChatSections';
 
+interface LastChatGroup {
+  groupType: string;
+  groupName: string;
+}
+
 const ChatPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
   const { isLoadingGroups, fetchUserGroups } = useChatStore();
   useRegisterChatSections();
+
+  useEffect(() => {
+    if (groupName && isValidGroupTypeLocation(groupType)) {
+      const lastGroup: LastChatGroup = { groupType, groupName };
+      localStorage.setItem(LAST_CHAT_GROUP_STORAGE_KEY, JSON.stringify(lastGroup));
+    }
+  }, [groupType, groupName]);
+
+  useEffect(() => {
+    if (groupName || groupType) return;
+
+    try {
+      const stored = localStorage.getItem(LAST_CHAT_GROUP_STORAGE_KEY);
+      if (!stored) return;
+
+      const lastGroup = JSON.parse(stored) as LastChatGroup;
+      if (lastGroup.groupType && lastGroup.groupName && isValidGroupTypeLocation(lastGroup.groupType)) {
+        navigate(`/${CHAT_PATH}/${lastGroup.groupType}/${encodeURIComponent(lastGroup.groupName)}`, { replace: true });
+      }
+    } catch {
+      localStorage.removeItem(LAST_CHAT_GROUP_STORAGE_KEY);
+    }
+  }, [groupName, groupType, navigate]);
 
   const handleRefreshGroups = useCallback(async () => {
     const count = await fetchUserGroups();

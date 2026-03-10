@@ -24,7 +24,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import useMedia from '@/hooks/useMedia';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -32,9 +32,10 @@ import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownl
 
 interface UseFileOpenOptions {
   isDocumentServerConfigured: boolean;
+  isCollaboraConfigured: boolean;
 }
 
-const useFileOpen = ({ isDocumentServerConfigured }: UseFileOpenOptions) => {
+const useFileOpen = ({ isDocumentServerConfigured, isCollaboraConfigured }: UseFileOpenOptions) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { isMobileView } = useMedia();
   const { isFilePreviewDocked, setIsFilePreviewVisible, resetCurrentlyEditingFile } = useFileEditorStore();
@@ -74,15 +75,16 @@ const useFileOpen = ({ isDocumentServerConfigured }: UseFileOpenOptions) => {
       }
 
       const isPdf = item.filename.toLowerCase().endsWith('.pdf');
-      const isOnlyOfficeDoc = isOnlyOfficeDocument(item.filename);
+      const isEditableDoc = isOfficeDocument(item.filename);
+      const hasDocumentEditor = isDocumentServerConfigured || isCollaboraConfigured;
 
-      if (isOnlyOfficeDoc && !isDocumentServerConfigured && !isPdf) {
+      if (isEditableDoc && !hasDocumentEditor && !isPdf) {
         return;
       }
-      if (isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf) {
+      if (isMobileView && isEditableDoc && isDocumentServerConfigured && !isPdf) {
         return;
       }
-      if (isOnlyOfficeDoc || isPdf) {
+      if (isEditableDoc || isPdf) {
         void setFileIsCurrentlyDisabled(item.filename, true, 5000);
       }
 
@@ -97,6 +99,7 @@ const useFileOpen = ({ isDocumentServerConfigured }: UseFileOpenOptions) => {
       searchParams,
       setSearchParams,
       isDocumentServerConfigured,
+      isCollaboraConfigured,
       isMobileView,
       setFileIsCurrentlyDisabled,
       resetCurrentlyEditingFile,

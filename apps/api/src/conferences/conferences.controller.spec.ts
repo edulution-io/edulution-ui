@@ -44,6 +44,8 @@ const mockConferencesService = {
   update: jest.fn(),
   toggleConferenceIsRunning: jest.fn(),
   remove: jest.fn(),
+  findPublicConference: jest.fn(),
+  joinPublicConference: jest.fn(),
 };
 
 const jwtUser: JWTUser = {
@@ -171,6 +173,21 @@ describe(ConferencesController.name, () => {
       await controller.remove(meetingIDs, jwtUser);
       expect(service.remove).toHaveBeenCalledWith(meetingIDs, username);
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
+    });
+  });
+
+  describe('getPublicConference', () => {
+    it('should delegate to conferencesService.findPublicConference', async () => {
+      await controller.getPublicConference('public-meeting-id');
+      expect(service.findPublicConference).toHaveBeenCalledWith('public-meeting-id');
+    });
+  });
+
+  describe('joinPublicConference', () => {
+    it('should delegate to conferencesService.joinPublicConference', async () => {
+      const joinDetails = { meetingId: 'meeting-1', password: 'pass', name: 'Guest', userId: 'guest1' };
+      await controller.joinPublicConference(joinDetails);
+      expect(service.joinPublicConference).toHaveBeenCalledWith(joinDetails);
     });
   });
 });

@@ -24,8 +24,8 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import PrintPasswordsStore from '@libs/classManagement/types/store/printPasswordsStore';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
-import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
-import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
+import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
+import downloadFileFromBuffer from '@libs/classManagement/utils/downloadFileFromBuffer';
 
 const initialState = {
   isLoading: false,
@@ -48,25 +48,8 @@ const usePrintPasswordsStore = create<PrintPasswordsStore>((set) => ({
         },
       );
 
-      const mimeType =
-        options.format === PrintPasswordsFormat.CSV
-          ? `${RequestResponseContentType.TEXT_CSV};charset=utf-8;`
-          : RequestResponseContentType.APPLICATION_PDF;
-
-      const blob = new Blob([response.data], { type: mimeType });
-      const url = window.URL.createObjectURL(blob);
-
       const filename = `${options.schoolclasses.join('-')}-${options.school}-passwords.${options.format}`;
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filename);
-
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode?.removeChild(link);
-
-      window.URL.revokeObjectURL(url);
+      downloadFileFromBuffer(response.data, filename, options.format);
     } catch (error) {
       handleApiError(error, set);
     } finally {

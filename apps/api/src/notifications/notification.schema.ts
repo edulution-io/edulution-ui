@@ -66,6 +66,9 @@ export class Notification {
   @Prop({ type: String, required: true })
   createdBy: string;
 
+  @Prop({ type: String, required: false })
+  updatedBy?: string;
+
   @Prop({ type: Date, default: null })
   lastPushSentAt: Date | null;
 

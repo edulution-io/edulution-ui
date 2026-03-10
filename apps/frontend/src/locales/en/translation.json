@@ -26,6 +26,8 @@
     "noMessages": "No messages yet",
     "startConversation": "Write the first message",
     "inputPlaceholder": "Type a message...",
+    "messageTooLong": "Message is too long",
+    "messageRequired": "Message must not be empty",
     "error": "Error",
     "errors": {
       "conversationNotFound": "Conversation not found",
@@ -263,6 +265,7 @@
       "UpdateUserSessionsFailed": "Update user session failed",
       "StartExamModeFailed": "Start exam mode failed",
       "PrintPasswordsFailed": "Print passwords failed",
+      "GetStudentsListFailed": "Download students list failed",
       "StopExamModeFailed": "Stop exam mode failed",
       "RemoveManagementGroupFailed": "Remove management group failed",
       "AddManagementGroupFailed": "Add management group failed",
@@ -444,6 +447,7 @@
     "fileEditor": "File editor",
     "selectFile": "Select file",
     "filePreview": "File preview",
+    "collaboraEditor": "Collabora Online Editor",
     "saveFile": "Save file",
     "print": "Print",
     "loadingDocument": "Loading document...",
@@ -482,7 +486,8 @@
       "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
       "CopyFailed": "Copy failed",
-      "FileFormatNotSupported": "File format is not supported"
+      "FileFormatNotSupported": "File format is not supported",
+      "WopiTokenInvalid": "WOPI token invalid or expired"
     },
     "singleDownload": {
       "promptInfo": "Your file download has started.",
@@ -686,6 +691,10 @@
     "lesson": "Lesson",
     "enrol": "Enrol",
     "printPasswords": "Print passwords",
+    "classLists": "Class lists",
+    "classListsPageDescription": "Download student lists for individual classes or select multiple classes to download them at once.",
+    "pdfStudentsListDescription": "Download a PDF student list for these school classes",
+    "csvStudentsListDescription": "Download a CSV student list for these school classes",
     "Printers": "Printers",
     "projects": "Projects",
     "editmyProjects": "Edit project",
@@ -1445,6 +1454,10 @@
         },
         "onlyOffice": {
           "title": "Only Office Integration",
+          "description": ""
+        },
+        "collabora": {
+          "title": "Collabora Online Integration",
           "description": ""
         },
         "imapMailFeed": {
@@ -2417,6 +2430,14 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "collaboraUrlTitle": "Collabora URL",
+    "collaboraUrl": "Enter the Collabora Online URL",
+    "collaboraWopiSecretTitle": "Collabora WOPI Secret",
+    "collaboraWopiSecretDescription": "Enter the shared WOPI secret for Collabora Online",
+    "activeDocumentEditorTitle": "Active Document Editor",
+    "activeDocumentEditorDescription": "Choose which document editor to use for office documents",
+    "activeDocumentEditor.onlyoffice": "OnlyOffice",
+    "activeDocumentEditor.collabora": "Collabora Online",
     "drawioUrlTitle": "Draw.io URL",
     "drawioUrlDescription": "Enter the URL of your self-hosted Draw.io instance",
     "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",

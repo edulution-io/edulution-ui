@@ -23,7 +23,7 @@ interface MenuItem {
   id: string;
   label: string;
   icon: string | IconDefinition;
-  action?: () => void;
+  action: () => void;
   path?: string;
   disableTranslation?: boolean;
   children?: MenuItem[];

@@ -76,5 +76,27 @@ describe('SseController', () => {
 
       expect(sseService.subscribe).toHaveBeenCalledWith(meetingID, response);
     });
+
+    it('should throw NOT_FOUND when conference does not exist', async () => {
+      conferencesModelMock.exists.mockResolvedValue(null);
+      const response = {} as Response;
+
+      await expect(sseController.publicConferenceSse('nonexistent', response)).rejects.toMatchObject({
+        status: 404,
+      });
+
+      conferencesModelMock.exists.mockImplementation(({ meetingID }) => ({ _id: meetingID as string }));
+    });
+  });
+
+  describe('publicLoginSse', () => {
+    it('should call sseService.subscribe with the sessionId and response', () => {
+      const sessionId = 'session-123';
+      const response = {} as Response;
+
+      sseController.publicLoginSse(sessionId, response);
+
+      expect(sseService.subscribe).toHaveBeenCalledWith(sessionId, response);
+    });
   });
 });

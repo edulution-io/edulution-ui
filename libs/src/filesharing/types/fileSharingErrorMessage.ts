@@ -44,6 +44,7 @@ enum FileSharingErrorMessage {
   PublicFileIsRestricted = 'filesharing.publicFileSharing.errors.PublicFileIsRestricted',
   PublicIsRestrictedByInvalidToken = 'filesharing.publicFileSharing.errors.PublicIsRestrictedByInvalidToken',
   PublicFileWrongPassword = 'filesharing.publicFileSharing.errors.PublicFileWrongPassword',
+  WopiTokenInvalid = 'filesharing.errors.WopiTokenInvalid',
 }
 
 export default FileSharingErrorMessage;

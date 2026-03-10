@@ -20,6 +20,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import ChatType from '@libs/chat/types/chatType';
+import AllowedConversationType from '@libs/chat/types/allowedConversationType';
+import ALLOWED_CONVERSATION_TYPES from '@libs/chat/constants/allowedConversationTypes';
 
 export type ConversationDocument = Conversation & Document;
 
@@ -31,8 +33,8 @@ export class Conversation {
   @Prop({ type: String, required: true })
   groupName: string;
 
-  @Prop({ type: String, required: true })
-  sophomorixType: string;
+  @Prop({ type: String, enum: ALLOWED_CONVERSATION_TYPES, required: true })
+  conversationType: AllowedConversationType;
 
   @Prop({ type: Date, index: true })
   lastMessageAt: Date;
@@ -43,7 +45,7 @@ export class Conversation {
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation);
 
-ConversationSchema.index({ groupName: 1, sophomorixType: 1 }, { unique: true });
+ConversationSchema.index({ groupName: 1, conversationType: 1 }, { unique: true });
 
 ConversationSchema.set('toJSON', {
   virtuals: true,

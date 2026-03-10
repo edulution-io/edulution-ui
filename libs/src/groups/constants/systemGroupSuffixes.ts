@@ -20,6 +20,9 @@
 const SYSTEM_GROUP_SUFFIXES = [
   '-teachers',
   '-students',
+  '-parents',
+  '-staff',
+  '-admins',
   '-internet',
   '-intranet',
   '-printing',

@@ -16,6 +16,7 @@
 - Both apps: `npm run serveFrontendAndApi`
 - Build frontend/API/all: `npm run build`, `npm run build:api`, `npm run build:all`
 - Tests: `npm run test` (API), `npm run test:frontend`, coverage with `npm run coverage`
+- E2E tests: `npm run prepare:e2e` (install Playwright browsers), then `npm run test:e2e`
 - Lint/format: `npm run lint`, `npm run lint:fix`, staged formatting via pre-commit
 - Local infra (Mongo/Redis): `docker compose up -d` (see `docker-compose.yml`)
 
@@ -46,6 +47,8 @@
 - Only use @fortawesome/free-solid-svg-icons for icons
 - Many UI components are wrappers for shadcn/@radix-ui components (component/filename postfix with "SH"). We use our custom wrappers instead.
 - Instead of using manual URLSearchParams, build it with axios's built-in params option
+- Use generic types over unsafe type casting
+- Every input field must be wrapped in `react-hook-form`. Always use `useForm<T>()` to create the form instance and `Form` (FormProvider) as wrapper. For simple text inputs, use the generic `FormField` component from `@/components/shared/FormField`. For other field types or custom layouts, use the low-level components from `@/components/ui/Form`: `FormFieldSH` (Controller), `FormControl`, `FormMessage`, `FormLabel`, `FormItem`, and pass validation via `rules` prop on `FormFieldSH`. Never use raw `<input>`, `<textarea>`, or `<select>` without these wrappers.
 
 ## Testing Guidelines
 
@@ -53,6 +56,7 @@
 - API: Jest; config under `apps/api/jest.config.ts`.
 - Conventions: Co-locate tests with source using `*.spec.ts(x)` or project `test/` folders.
 - Run: `npm run test:frontend` for UI, `npm run test:api` for API; add assertions and keep tests fast and deterministic.
+- New features must include tests. Every new component, hook, store, or utility should have a corresponding `*.spec.ts(x)` file with meaningful coverage before merging.
 
 ## Commit & Pull Request Guidelines
 

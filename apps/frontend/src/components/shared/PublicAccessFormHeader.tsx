@@ -35,27 +35,29 @@ const PublicAccessFormHeader = () => {
   }
 
   return (
-    <div>
-      <Button
-        className="mx-auto mt-5 w-[200px] justify-center text-white shadow-xl"
-        type="submit"
-        variant="btn-security"
-        size="lg"
-        data-testid="test-id-login-page-submit-button"
-        onClick={() =>
-          navigate(LOGIN_ROUTE, {
-            state: { from: `${location.pathname}${location.search}` },
-          })
-        }
-      >
-        {t('common.toLogin')}
-      </Button>
-      <div className="mb-6 mt-6 flex items-center">
+    <>
+      <div className="flex items-center justify-center">
+        <Button
+          className="mx-auto mt-5 w-[200px] justify-center text-white shadow-xl"
+          type="submit"
+          variant="btn-security"
+          size="lg"
+          data-testid="test-id-login-page-submit-button"
+          onClick={() =>
+            navigate(LOGIN_ROUTE, {
+              state: { from: location.pathname },
+            })
+          }
+        >
+          {t('common.toLogin')}
+        </Button>
+      </div>
+      <div className="mb-4 mt-6 flex items-center">
         <hr className="flex-grow border-t border-gray-300" />
         <span className="mx-4">{t('common.orContinueWithoutAccount')}</span>
         <hr className="flex-grow border-t border-gray-300" />
       </div>
-    </div>
+    </>
   );
 };
 

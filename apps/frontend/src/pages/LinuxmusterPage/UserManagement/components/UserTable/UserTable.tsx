@@ -24,7 +24,7 @@ import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import UseLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import type UserType from '@libs/userManagement/types/userType';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
 import USER_TYPE_TO_ROLE from '@libs/userManagement/constants/userTypeToRole';
@@ -43,7 +43,7 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
   const { usersByType, isLoadingUsers, isBackgroundFetchingUsers, fetchUsersByRole, setSelectedUserDetails } =
     useUserManagementStore();
   const users = usersByType[userType] ?? [];
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { currentUser, setCurrentUser } = UseLmnApiPasswordStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { isBusiness } = useOrganizationType();
