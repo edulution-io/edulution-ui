@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 4 context gathered
-last_updated: '2026-03-10T10:27:03.727Z'
-last_activity: 2026-03-10 -- Completed Plan 03-03 (Styled page templates)
+stopped_at: Completed 04-01-PLAN.md
+last_updated: '2026-03-10T11:03:56.595Z'
+last_activity: 2026-03-10 -- Completed Plan 04-01 (Workflow guides)
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_plans: 10
+  completed_plans: 9
+  percent: 90
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-10)
 
 ## Current Position
 
-Phase: 3 of 5 (CLI Scaffolding)
-Plan: 4 of 4 in current phase
+Phase: 4 of 5 (Workflow Documentation)
+Plan: 1 of 2 in current phase
 Status: In Progress
-Last activity: 2026-03-10 -- Completed Plan 03-03 (Styled page templates)
+Last activity: 2026-03-10 -- Completed Plan 04-01 (Workflow guides)
 
-Progress: [████████████████████] 8/8 plans (100%)
+Progress: [█████████░] 9/10 plans (90%)
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ _Updated after each plan completion_
 | Phase 03 P01 | 6min | 3 tasks | 10 files |
 | Phase 03 P03 | 3min | 2 tasks | 13 files |
 | Phase 03 P02 | 4min | 3 tasks | 27 files |
+| Phase 04 P01 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,10 @@ Recent decisions affecting current work:
 - [Phase 03-02]: Used var(--token) directly in Tailwind config (not hsl wrapper) to match edulution-ui hex-based CSS custom properties
 - [Phase 03-02]: Each feature overlay has isolated package.json fragment with only its own dependencies for clean deep-merging
 - [Phase 03-02]: Auth overlay excludes axios dependency since api-client overlay is auto-selected when auth is chosen
+- [Phase 04-01]: Step format uses Read/Ask/Do not/Check blocks per CONTEXT.md approved pattern
+- [Phase 04-01]: No code snippets in guides -- describe-and-generate pattern prevents convention drift
+- [Phase 04-01]: Feature auto-detection from file existence rather than asking users what was scaffolded
+- [Phase 04-01]: ui-kit TODO markers use both HTML comment and JS comment formats for discoverability
 
 ### Pending Todos
 
@@ -103,6 +108,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T10:27:03.723Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-workflow-documentation/04-CONTEXT.md
+Last session: 2026-03-10T11:03:56.592Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: None
