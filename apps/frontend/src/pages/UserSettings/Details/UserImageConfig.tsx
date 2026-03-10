@@ -48,13 +48,21 @@ const UserImageConfig: React.FC = () => {
 
   const handleSubmitImage = async () => {
     await patchUserDetails({ thumbnailPhoto: base64Image });
-    void eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: base64Image });
+    try {
+      await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: base64Image });
+    } catch {
+      toast.error(t('usersettings.errors.profilePictureCacheUpdateFailed'));
+    }
   };
 
   const handleImageDelete = async () => {
     setBase64Image('');
     await patchUserDetails({ thumbnailPhoto: '' });
-    void eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: '' });
+    try {
+      await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: '' });
+    } catch {
+      toast.error(t('usersettings.errors.profilePictureCacheUpdateFailed'));
+    }
   };
 
   return (

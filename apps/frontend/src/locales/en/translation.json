@@ -1790,7 +1790,8 @@
       "passwordsDoNotMatch": "Passwords do not match",
       "passwordLength": "Password must be at least 8 characters long",
       "notSupportedFileFormat": "Not supported file format",
-      "notAbleToCompressImage": "Not able to compress the image"
+      "notAbleToCompressImage": "Not able to compress the image",
+      "profilePictureCacheUpdateFailed": "Failed to update profile picture in chat cache"
     }
   },
   "generalsettings": {

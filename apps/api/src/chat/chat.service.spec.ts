@@ -22,6 +22,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX from '@libs/chat/constants/chatProfilePictureCacheKeyPrefix';
 import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import { GROUP_WITH_MEMBERS_CACHE_KEY, USER_GROUPS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import SseService from '../sse/sse.service';
 import NotificationsService from '../notifications/notifications.service';
@@ -75,42 +76,61 @@ describe(ChatService.name, () => {
   });
 
   describe('getProfilePictures', () => {
-    it('returns cached profile pictures for requested usernames', async () => {
-      cacheManagerMock.get.mockImplementation((key: string) => {
-        if (key === `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}alice`) return 'base64-alice';
-        if (key === `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}bob`) return 'base64-bob';
+    const setupGroupMembership = (requestingUser: string, members: string[]) => {
+      const groupPath = '/test-class';
+      const mockGet = cacheManagerMock.get;
+      mockGet.mockImplementation((key: string) => {
+        if (key === `${USER_GROUPS_CACHE_KEY}${requestingUser}`) {
+          return [{ path: groupPath, name: 'test-class' }];
+        }
+        if (key === `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`) {
+          return { members: members.map((username) => ({ username })) };
+        }
+        if (key.startsWith(CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX)) {
+          const username = key.replace(CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX, '');
+          if (username === 'alice') return 'base64-alice';
+          if (username === 'bob') return 'base64-bob';
+        }
         return null;
       });
+    };
 
-      const result = await service.getProfilePictures(['alice', 'bob']);
+    it('returns cached profile pictures for allowed usernames', async () => {
+      setupGroupMembership('requester', ['requester', 'alice', 'bob']);
+
+      const result = await service.getProfilePictures(['alice', 'bob'], 'requester');
 
       expect(result).toEqual({ alice: 'base64-alice', bob: 'base64-bob' });
     });
 
-    it('omits usernames without cached picture', async () => {
-      cacheManagerMock.get.mockImplementation((key: string) => {
-        if (key === `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}alice`) return 'base64-alice';
-        return null;
-      });
+    it('filters out usernames not in shared groups', async () => {
+      setupGroupMembership('requester', ['requester', 'alice']);
 
-      const result = await service.getProfilePictures(['alice', 'unknown']);
+      const result = await service.getProfilePictures(['alice', 'bob'], 'requester');
 
       expect(result).toEqual({ alice: 'base64-alice' });
     });
 
-    it('returns empty object when no pictures are cached', async () => {
+    it('omits usernames without cached picture', async () => {
+      setupGroupMembership('requester', ['requester', 'alice', 'unknown']);
+
+      const result = await service.getProfilePictures(['alice', 'unknown'], 'requester');
+
+      expect(result).toEqual({ alice: 'base64-alice' });
+    });
+
+    it('returns empty object when requesting user has no groups', async () => {
       cacheManagerMock.get.mockResolvedValue(null);
 
-      const result = await service.getProfilePictures(['alice', 'bob']);
+      const result = await service.getProfilePictures(['alice', 'bob'], 'requester');
 
       expect(result).toEqual({});
     });
 
     it('returns empty object for empty usernames array', async () => {
-      const result = await service.getProfilePictures([]);
+      const result = await service.getProfilePictures([], 'requester');
 
       expect(result).toEqual({});
-      expect(cacheManagerMock.get).not.toHaveBeenCalled();
     });
   });
 });

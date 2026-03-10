@@ -19,10 +19,13 @@
 
 import { create } from 'zustand';
 import { CHAT_PROFILE_PICTURES_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
+import type ProfilePicturesResponse from '@libs/chat/types/profilePicturesResponse';
 import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
 
 interface ChatProfilePictureStore {
   cache: Record<string, string>;
+  error: string | null;
 
   fetchProfilePictures: (usernames: string[]) => Promise<void>;
   reset: () => void;
@@ -30,12 +33,13 @@ interface ChatProfilePictureStore {
 
 const useChatProfilePictureStore = create<ChatProfilePictureStore>((set) => ({
   cache: {},
+  error: null,
 
   fetchProfilePictures: async (usernames) => {
     if (usernames.length === 0) return;
 
     try {
-      const response = await eduApi.post<Record<string, string>>(CHAT_PROFILE_PICTURES_ENDPOINT, {
+      const response = await eduApi.post<ProfilePicturesResponse>(CHAT_PROFILE_PICTURES_ENDPOINT, {
         usernames,
       });
 
@@ -62,11 +66,11 @@ const useChatProfilePictureStore = create<ChatProfilePictureStore>((set) => ({
         return { cache: updatedCache };
       });
     } catch (error) {
-      console.error('Failed to fetch profile pictures', error);
+      handleApiError(error, set);
     }
   },
 
-  reset: () => set({ cache: {} }),
+  reset: () => set({ cache: {}, error: null }),
 }));
 
 export default useChatProfilePictureStore;

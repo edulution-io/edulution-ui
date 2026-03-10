@@ -28,7 +28,9 @@ import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
 import type AllowedConversationType from '@libs/chat/types/allowedConversationType';
-import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import type ProfilePicturesResponse from '@libs/chat/types/profilePicturesResponse';
+import { GROUP_WITH_MEMBERS_CACHE_KEY, USER_GROUPS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { Group } from '@libs/groups/types/group';
 import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
@@ -189,20 +191,42 @@ class ChatService {
     await this.cacheManager.set(key, profilePicture, USERS_CACHE_TTL_MS);
   }
 
-  async getProfilePictures(usernames: string[]): Promise<Record<string, string>> {
-    const result: Record<string, string> = {};
+  async getProfilePictures(usernames: string[], requestingUsername: string): Promise<ProfilePicturesResponse> {
+    const allowedUsernames = await this.getAllowedUsernames(requestingUsername);
+    const filteredUsernames = usernames.filter((username) => allowedUsernames.has(username));
 
-    await Promise.all(
-      usernames.map(async (username) => {
+    const entries = await Promise.all(
+      filteredUsernames.map(async (username) => {
         const key = `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}${username}`;
         const cached = await this.cacheManager.get<string>(key);
-        if (cached) {
-          result[username] = cached;
-        }
+        return [username, cached] as const;
       }),
     );
 
+    const result: ProfilePicturesResponse = {};
+    entries.forEach(([username, cached]) => {
+      if (cached) {
+        result[username] = cached;
+      }
+    });
+
     return result;
+  }
+
+  private async getAllowedUsernames(username: string): Promise<Set<string>> {
+    const userGroups = await this.cacheManager.get<Group[]>(`${USER_GROUPS_CACHE_KEY}${username}`);
+    if (!userGroups) return new Set();
+
+    const memberSets = await Promise.all(
+      userGroups.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+        return groupWithMembers?.members?.map((member) => member.username) ?? [];
+      }),
+    );
+
+    return new Set(memberSets.flat());
   }
 
   private static readonly CACHE_PATH_PREFIX: Record<AllowedConversationType, string> = {

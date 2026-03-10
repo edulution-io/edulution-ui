@@ -1583,7 +1583,8 @@
       "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
       "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
       "notSupportedFileFormat": "Format de fichier non supporté.",
-      "notAbleToCompressImage": "L'image n'a pas pu être compressée."
+      "notAbleToCompressImage": "L'image n'a pas pu être compressée.",
+      "profilePictureCacheUpdateFailed": "Impossible de mettre à jour la photo de profil dans le cache du chat"
     }
   },
   "generalsettings": {

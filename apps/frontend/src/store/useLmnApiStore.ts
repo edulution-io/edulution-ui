@@ -99,7 +99,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
           });
           set({ user: response.data, schoolPrefix: getSchoolPrefix(response.data) });
           if (response.data.thumbnailPhoto) {
-            void eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: response.data.thumbnailPhoto });
+            await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: response.data.thumbnailPhoto });
           }
         } catch (error) {
           handleApiError(error, set);
