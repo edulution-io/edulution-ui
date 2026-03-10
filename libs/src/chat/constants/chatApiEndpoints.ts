@@ -18,6 +18,7 @@
  */
 
 import APPS from '@libs/appconfig/constants/apps';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
 
@@ -25,9 +26,10 @@ export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
 
 export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
 
-export const CHAT_PROFILE_PICTURES_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/profile-pictures`;
-
 export const CHAT_PROFILE_PICTURE_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/profile-picture`;
+
+export const getChatProfilePictureUrl = (username: string): string =>
+  `/${EDU_API_ROOT}/${CHAT_PROFILE_PICTURE_ENDPOINT}/${encodeURIComponent(username)}`;
 
 export const getChatMessagesEndpoint = (conversationType: string, groupName: string): string =>
   `${CHAT_CONVERSATIONS_ENDPOINT}/${conversationType}/${encodeURIComponent(groupName)}/messages`;

@@ -18,11 +18,11 @@
  */
 
 import { IsString, MaxLength } from 'class-validator';
-import PROFILE_PICTURE_MAX_LENGTH from '@libs/chat/constants/profilePictureMaxLength';
+import PROFILE_PICTURE_CONFIG from '@libs/chat/constants/profilePictureConfig';
 
 class UpdateProfilePictureDto {
   @IsString()
-  @MaxLength(PROFILE_PICTURE_MAX_LENGTH)
+  @MaxLength(PROFILE_PICTURE_CONFIG.MAX_BASE64_LENGTH)
   profilePicture: string;
 }
 

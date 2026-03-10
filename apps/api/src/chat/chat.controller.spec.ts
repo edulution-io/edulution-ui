@@ -18,16 +18,17 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import ChatController from './chat.controller';
 import ChatService from './chat.service';
+import ProfilePictureService from './profilePicture.service';
 import GroupsService from '../groups/groups.service';
+import SseService from '../sse/sse.service';
 
 const mockCurrentUser = { preferred_username: 'testuser', given_name: 'Test', family_name: 'User' } as JwtUser;
 
 const mockChatService = {
-  getProfilePictures: jest.fn(),
-  cacheProfilePicture: jest.fn(),
   getAuthorizedConversation: jest.fn(),
   getOrCreateAuthorizedConversation: jest.fn(),
   getMessages: jest.fn(),
@@ -36,6 +37,26 @@ const mockChatService = {
 
 const mockGroupsService = {
   getUserGroupsAndProjects: jest.fn(),
+};
+
+const mockProfilePictureService = {
+  isAllowedToView: jest.fn(),
+  getProfilePicture: jest.fn(),
+  saveProfilePicture: jest.fn(),
+  getGroupMembers: jest.fn().mockResolvedValue([]),
+};
+
+const mockSseService = {
+  sendEventToUsers: jest.fn(),
+};
+
+const createMockResponse = () => {
+  const res = {
+    status: jest.fn().mockReturnThis(),
+    send: jest.fn().mockReturnThis(),
+    setHeader: jest.fn().mockReturnThis(),
+  };
+  return res as any;
 };
 
 describe(ChatController.name, () => {
@@ -49,6 +70,8 @@ describe(ChatController.name, () => {
       providers: [
         { provide: ChatService, useValue: mockChatService },
         { provide: GroupsService, useValue: mockGroupsService },
+        { provide: ProfilePictureService, useValue: mockProfilePictureService },
+        { provide: SseService, useValue: mockSseService },
       ],
     }).compile();
 
@@ -59,42 +82,68 @@ describe(ChatController.name, () => {
     expect(controller).toBeDefined();
   });
 
-  describe('getProfilePictures', () => {
-    it('calls chatService.getProfilePictures with dto usernames and current user', async () => {
-      const dto = { usernames: ['alice', 'bob'] };
-      const expected = { alice: 'base64-alice', bob: 'base64-bob' };
-      mockChatService.getProfilePictures.mockResolvedValue(expected);
+  describe('getProfilePicture', () => {
+    it('returns 403 when user is not allowed to view', async () => {
+      mockProfilePictureService.isAllowedToView.mockResolvedValue(false);
+      const res = createMockResponse();
 
-      const result = await controller.getProfilePictures(mockCurrentUser, dto as any);
+      await controller.getProfilePicture('alice', mockCurrentUser, undefined, res);
 
-      expect(mockChatService.getProfilePictures).toHaveBeenCalledWith(['alice', 'bob'], 'testuser');
-      expect(result).toEqual(expected);
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.FORBIDDEN);
+      expect(res.send).toHaveBeenCalled();
     });
 
-    it('returns empty object when no pictures found', async () => {
-      mockChatService.getProfilePictures.mockResolvedValue({});
+    it('returns 404 when profile picture does not exist', async () => {
+      mockProfilePictureService.isAllowedToView.mockResolvedValue(true);
+      mockProfilePictureService.getProfilePicture.mockResolvedValue(null);
+      const res = createMockResponse();
 
-      const result = await controller.getProfilePictures(mockCurrentUser, { usernames: ['unknown'] } as any);
+      await controller.getProfilePicture('alice', mockCurrentUser, undefined, res);
 
-      expect(result).toEqual({});
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+    });
+
+    it('returns 304 when ETag matches', async () => {
+      const etag = '"abc123"';
+      mockProfilePictureService.isAllowedToView.mockResolvedValue(true);
+      mockProfilePictureService.getProfilePicture.mockResolvedValue({ buffer: Buffer.from('img'), etag });
+      const res = createMockResponse();
+
+      await controller.getProfilePicture('alice', mockCurrentUser, etag, res);
+
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_MODIFIED);
+    });
+
+    it('returns image with correct headers', async () => {
+      const buffer = Buffer.from('img-data');
+      const etag = '"abc123"';
+      mockProfilePictureService.isAllowedToView.mockResolvedValue(true);
+      mockProfilePictureService.getProfilePicture.mockResolvedValue({ buffer, etag });
+      const res = createMockResponse();
+
+      await controller.getProfilePicture('alice', mockCurrentUser, undefined, res);
+
+      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'image/webp');
+      expect(res.setHeader).toHaveBeenCalledWith('ETag', etag);
+      expect(res.send).toHaveBeenCalledWith(buffer);
     });
   });
 
   describe('updateProfilePicture', () => {
-    it('calls chatService.cacheProfilePicture with current user and picture data', async () => {
+    it('calls profilePictureService.saveProfilePicture with current user and picture data', async () => {
       const dto = { profilePicture: 'base64-data' };
 
       await controller.updateProfilePicture(mockCurrentUser, dto as any);
 
-      expect(mockChatService.cacheProfilePicture).toHaveBeenCalledWith('testuser', 'base64-data');
+      expect(mockProfilePictureService.saveProfilePicture).toHaveBeenCalledWith('testuser', 'base64-data');
     });
 
-    it('calls chatService.cacheProfilePicture with empty string to clear picture', async () => {
+    it('calls profilePictureService.saveProfilePicture with empty string to delete picture', async () => {
       const dto = { profilePicture: '' };
 
       await controller.updateProfilePicture(mockCurrentUser, dto as any);
 
-      expect(mockChatService.cacheProfilePicture).toHaveBeenCalledWith('testuser', '');
+      expect(mockProfilePictureService.saveProfilePicture).toHaveBeenCalledWith('testuser', '');
     });
   });
 });

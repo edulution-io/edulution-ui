@@ -21,7 +21,6 @@ const mockFetchMessages = vi.fn();
 const mockSetCurrentConversation = vi.fn();
 const mockSendMessage = vi.fn();
 const mockAddMessage = vi.fn();
-const mockFetchProfilePictures = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -47,14 +46,6 @@ vi.mock('@/pages/Chat/useChatStore', () => ({
     addMessage: mockAddMessage,
   }),
 }));
-
-vi.mock('@/store/useChatProfilePictureStore', () => {
-  const store = vi.fn(() => ({}));
-  store.getState = () => ({ cache: {}, fetchProfilePictures: mockFetchProfilePictures });
-  store.setState = vi.fn();
-  store.subscribe = vi.fn();
-  return { default: store };
-});
 
 import { renderHook, act } from '@testing-library/react';
 import type GroupTypeLocation from '@libs/chat/types/groupTypeLocation';

@@ -21,6 +21,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import ChatController from './chat.controller';
 import ChatService from './chat.service';
+import ProfilePictureService from './profilePicture.service';
 import { Conversation, ConversationSchema } from './schemas/conversation.schema';
 import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
 
@@ -32,6 +33,6 @@ import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
     ]),
   ],
   controllers: [ChatController],
-  providers: [ChatService],
+  providers: [ChatService, ProfilePictureService],
 })
 export default class ChatModule {}

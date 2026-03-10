@@ -18,6 +18,7 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
+
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,7 +29,6 @@ import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import LOCATION_TO_GROUP_TYPE from '@libs/chat/constants/locationToGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
 import useChatStore from '@/pages/Chat/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -49,8 +49,6 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
   const groupNameRef = useRef(groupName);
   const conversationTypeRef = useRef(conversationType);
-  const fetchedProfilePictureUsernamesRef = useRef<Set<string>>(new Set());
-
   useEffect(() => {
     groupNameRef.current = groupName;
     conversationTypeRef.current = conversationType;
@@ -59,22 +57,7 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   useEffect(() => {
     setCurrentConversation(conversationType, groupName);
     void fetchMessages(conversationType, groupName);
-    fetchedProfilePictureUsernamesRef.current = new Set();
   }, [conversationType, groupName, setCurrentConversation, fetchMessages]);
-
-  useEffect(() => {
-    if (messages.length === 0) return;
-
-    const { cache, fetchProfilePictures } = useChatProfilePictureStore.getState();
-    const usernames = [...new Set(messages.map((msg) => msg.createdBy).filter(Boolean) as string[])].filter(
-      (username) =>
-        username !== currentUsername && !cache[username] && !fetchedProfilePictureUsernamesRef.current.has(username),
-    );
-    if (usernames.length === 0) return;
-
-    usernames.forEach((username) => fetchedProfilePictureUsernamesRef.current.add(username));
-    void fetchProfilePictures(usernames);
-  }, [messages, currentUsername]);
 
   const handleNewMessage = useCallback(
     (e: MessageEvent<string>) => {

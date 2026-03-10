@@ -17,15 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ArrayMaxSize, ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import PROFILE_PICTURE_CONFIG from './profilePictureConfig';
 
-class ProfilePicturesRequestDto {
-  @IsArray()
-  @ArrayNotEmpty()
-  @ArrayMaxSize(100)
-  @IsString({ each: true })
-  @IsNotEmpty({ each: true })
-  usernames: string[];
-}
+const PROFILE_PICTURE_CACHE_PATH = join(tmpdir(), PROFILE_PICTURE_CONFIG.CACHE_DIR_NAME);
 
-export default ProfilePicturesRequestDto;
+export default PROFILE_PICTURE_CACHE_PATH;

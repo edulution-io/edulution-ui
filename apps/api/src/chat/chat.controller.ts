@@ -22,27 +22,33 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  Headers,
+  HttpStatus,
   Param,
   ParseEnumPipe,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
-import ProfilePicturesRequestDto from '@libs/chat/types/profilePicturesRequestDto';
-import type ProfilePicturesResponse from '@libs/chat/types/profilePicturesResponse';
 import UpdateProfilePictureDto from '@libs/chat/types/updateProfilePictureDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
+import SseService from '../sse/sse.service';
 import ChatService from './chat.service';
+import ProfilePictureService from './profilePicture.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import validateConversationType from './validateConversationType';
@@ -54,6 +60,8 @@ class ChatController {
   constructor(
     private readonly chatService: ChatService,
     private readonly groupsService: GroupsService,
+    private readonly profilePictureService: ProfilePictureService,
+    private readonly sseService: SseService,
   ) {}
 
   @Get('groups')
@@ -61,13 +69,34 @@ class ChatController {
     return this.groupsService.getUserGroupsAndProjects(currentUser.preferred_username);
   }
 
-  @Post('profile-pictures')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  async getProfilePictures(
+  @Get('profile-picture/:username')
+  async getProfilePicture(
+    @Param('username') username: string,
     @GetCurrentUser() currentUser: JwtUser,
-    @Body() dto: ProfilePicturesRequestDto,
-  ): Promise<ProfilePicturesResponse> {
-    return this.chatService.getProfilePictures(dto.usernames, currentUser.preferred_username);
+    @Headers('if-none-match') ifNoneMatch: string | undefined,
+    @Res() res: Response,
+  ): Promise<void> {
+    const allowed = await this.profilePictureService.isAllowedToView(currentUser.preferred_username, username);
+    if (!allowed) {
+      res.status(HttpStatus.FORBIDDEN).send();
+      return;
+    }
+
+    const result = await this.profilePictureService.getProfilePicture(username);
+    if (!result) {
+      res.status(HttpStatus.NOT_FOUND).send();
+      return;
+    }
+
+    if (ifNoneMatch === result.etag) {
+      res.status(HttpStatus.NOT_MODIFIED).send();
+      return;
+    }
+
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.IMAGE_WEBP);
+    res.setHeader(HTTP_HEADERS.CacheControl, 'private, no-cache');
+    res.setHeader(HTTP_HEADERS.ETag, result.etag);
+    res.send(result.buffer);
   }
 
   @Put('profile-picture')
@@ -76,7 +105,17 @@ class ChatController {
     @GetCurrentUser() currentUser: JwtUser,
     @Body() dto: UpdateProfilePictureDto,
   ): Promise<void> {
-    await this.chatService.cacheProfilePicture(currentUser.preferred_username, dto.profilePicture);
+    const username = currentUser.preferred_username;
+    await this.profilePictureService.saveProfilePicture(username, dto.profilePicture);
+    const groupMembers = await this.profilePictureService.getGroupMembers(username);
+    const recipients = groupMembers.filter((member) => member !== username);
+    if (recipients.length > 0) {
+      this.sseService.sendEventToUsers(
+        recipients,
+        JSON.stringify({ username }),
+        SSE_MESSAGE_TYPE.CHAT_PROFILE_PICTURE_UPDATED,
+      );
+    }
   }
 
   @Get('conversations/:conversationType/:groupName/messages')

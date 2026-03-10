@@ -22,15 +22,16 @@ import type ChatMessage from '@libs/chat/types/chatMessage';
 import { cn } from '@edulution-io/ui-kit';
 import getChatUserColor from '@libs/chat/utils/getChatUserColor';
 import formatIsoDateToTimeString from '@libs/common/utils/Date/formatIsoDateToTimeString';
+import { getChatProfilePictureUrl } from '@libs/chat/constants/chatApiEndpoints';
 import Avatar from '@/components/shared/Avatar';
 
 interface ChatBubbleProps {
   message: ChatMessage;
   isOwnMessage: boolean;
-  profilePicture?: string;
+  pictureVersion?: number;
 }
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage, profilePicture }) => {
+const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage, pictureVersion = 0 }) => {
   const nameParts = [message.createdByUserFirstName, message.createdByUserLastName].filter(Boolean);
   const displayName = nameParts.length > 0 ? nameParts.join(' ') : message.createdBy;
 
@@ -44,7 +45,11 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage, profileP
               firstName: message.createdByUserFirstName,
               lastName: message.createdByUserLastName,
             }}
-            imageSrc={profilePicture}
+            imageSrc={
+              message.createdBy
+                ? `${getChatProfilePictureUrl(message.createdBy)}${pictureVersion > 0 ? `?v=${pictureVersion}` : ''}`
+                : undefined
+            }
             className="h-8 w-8"
           />
         </div>

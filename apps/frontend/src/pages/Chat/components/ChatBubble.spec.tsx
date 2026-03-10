@@ -131,23 +131,22 @@ describe('ChatBubble', () => {
     expect(screen.queryByTestId('avatar-root')).not.toBeInTheDocument();
   });
 
-  it('passes profile picture to avatar', () => {
+  it('passes profile picture URL to avatar based on username', () => {
     render(
       <ChatBubble
-        message={createMessage()}
+        message={createMessage({ createdBy: 'alice' })}
         isOwnMessage={false}
-        profilePicture="base64-alice"
       />,
     );
 
     const image = screen.getByTestId('avatar-image');
-    expect(image).toHaveAttribute('src', 'base64-alice');
+    expect(image).toHaveAttribute('src', '/edu-api/chat/profile-picture/alice');
   });
 
-  it('renders fallback avatar when no profile picture', () => {
+  it('renders fallback avatar when no createdBy', () => {
     render(
       <ChatBubble
-        message={createMessage()}
+        message={createMessage({ createdBy: undefined })}
         isOwnMessage={false}
       />,
     );

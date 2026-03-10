@@ -98,9 +98,13 @@ const useLmnApiStore = create<UseLmnApiStore>(
             headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
           });
           set({ user: response.data, schoolPrefix: getSchoolPrefix(response.data) });
-          await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, {
-            profilePicture: response.data.thumbnailPhoto ?? '',
-          });
+          if (response.data.thumbnailPhoto) {
+            try {
+              await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: response.data.thumbnailPhoto });
+            } catch (error) {
+              console.error('Failed to update profile picture cache', error);
+            }
+          }
         } catch (error) {
           handleApiError(error, set);
         } finally {

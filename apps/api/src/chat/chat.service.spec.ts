@@ -20,9 +20,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX from '@libs/chat/constants/chatProfilePictureCacheKeyPrefix';
-import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import { GROUP_WITH_MEMBERS_CACHE_KEY, USER_GROUPS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import SseService from '../sse/sse.service';
 import NotificationsService from '../notifications/notifications.service';
@@ -33,6 +32,17 @@ import { ChatMessage } from './schemas/chatMessage.schema';
 const mockSseService = { sendEventToUsers: jest.fn() };
 const mockNotificationsService = { upsertNotificationForSource: jest.fn() };
 
+const mockConversationModel = {
+  findOne: jest.fn(),
+  findOneAndUpdate: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
+};
+
+const mockChatMessageModel = {
+  find: jest.fn(),
+  create: jest.fn(),
+};
+
 describe(ChatService.name, () => {
   let service: ChatService;
 
@@ -42,8 +52,8 @@ describe(ChatService.name, () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChatService,
-        { provide: getModelToken(Conversation.name), useValue: {} },
-        { provide: getModelToken(ChatMessage.name), useValue: {} },
+        { provide: getModelToken(Conversation.name), useValue: mockConversationModel },
+        { provide: getModelToken(ChatMessage.name), useValue: mockChatMessageModel },
         { provide: CACHE_MANAGER, useValue: cacheManagerMock },
         { provide: SseService, useValue: mockSseService },
         { provide: NotificationsService, useValue: mockNotificationsService },
@@ -53,84 +63,60 @@ describe(ChatService.name, () => {
     service = module.get<ChatService>(ChatService);
   });
 
-  describe('cacheProfilePicture', () => {
-    it('stores profile picture in cache with correct key and TTL', async () => {
-      await service.cacheProfilePicture('alice', 'base64-data');
-
-      expect(cacheManagerMock.set).toHaveBeenCalledWith(
-        `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}alice`,
-        'base64-data',
-        USERS_CACHE_TTL_MS,
-      );
-    });
-
-    it('stores empty string to clear profile picture', async () => {
-      await service.cacheProfilePicture('alice', '');
-
-      expect(cacheManagerMock.set).toHaveBeenCalledWith(
-        `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}alice`,
-        '',
-        USERS_CACHE_TTL_MS,
-      );
-    });
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
 
-  describe('getProfilePictures', () => {
-    const setupGroupMembership = (requestingUser: string, members: string[]) => {
-      const groupPath = '/test-class';
-      const mockGet = cacheManagerMock.get;
-      mockGet.mockImplementation((key: string) => {
-        if (key === `${USER_GROUPS_CACHE_KEY}${requestingUser}`) {
-          return [{ path: groupPath, name: 'test-class' }];
-        }
-        if (key === `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`) {
-          return { members: members.map((username) => ({ username })) };
-        }
-        if (key.startsWith(CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX)) {
-          const username = key.replace(CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX, '');
-          if (username === 'alice') return 'base64-alice';
-          if (username === 'bob') return 'base64-bob';
+  describe('getAuthorizedConversation', () => {
+    it('returns null when group is not cached', async () => {
+      cacheManagerMock.get.mockResolvedValue(null);
+
+      const result = await service.getAuthorizedConversation('test-group', SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS, 'alice');
+
+      expect(result).toBeNull();
+    });
+
+    it('returns conversation when user is a member', async () => {
+      const mockConversation = { id: 'conv-1', groupName: 'test-group' };
+      cacheManagerMock.get.mockImplementation((key: string) => {
+        if (key === `${GROUP_WITH_MEMBERS_CACHE_KEY}-/test-group`) {
+          return { members: [{ username: 'alice' }, { username: 'bob' }] };
         }
         return null;
       });
-    };
+      mockConversationModel.findOne.mockResolvedValue(mockConversation);
 
-    it('returns cached profile pictures for allowed usernames', async () => {
-      setupGroupMembership('requester', ['requester', 'alice', 'bob']);
+      const result = await service.getAuthorizedConversation('test-group', SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS, 'alice');
 
-      const result = await service.getProfilePictures(['alice', 'bob'], 'requester');
-
-      expect(result).toEqual({ alice: 'base64-alice', bob: 'base64-bob' });
+      expect(result).toEqual(mockConversation);
     });
 
-    it('filters out usernames not in shared groups', async () => {
-      setupGroupMembership('requester', ['requester', 'alice']);
+    it('throws when user is not a member of the group', async () => {
+      cacheManagerMock.get.mockImplementation((key: string) => {
+        if (key === `${GROUP_WITH_MEMBERS_CACHE_KEY}-/test-group`) {
+          return { members: [{ username: 'bob' }] };
+        }
+        return null;
+      });
 
-      const result = await service.getProfilePictures(['alice', 'bob'], 'requester');
-
-      expect(result).toEqual({ alice: 'base64-alice' });
+      await expect(
+        service.getAuthorizedConversation('test-group', SOPHOMORIX_GROUP_TYPES.ADMIN_CLASS, 'alice'),
+      ).rejects.toThrow();
     });
+  });
 
-    it('omits usernames without cached picture', async () => {
-      setupGroupMembership('requester', ['requester', 'alice', 'unknown']);
+  describe('getMessages', () => {
+    it('queries messages with default parameters', async () => {
+      const mockExec = jest.fn().mockResolvedValue([]);
+      const mockLimit = jest.fn().mockReturnValue({ exec: mockExec });
+      const mockSkip = jest.fn().mockReturnValue({ limit: mockLimit });
+      const mockSort = jest.fn().mockReturnValue({ skip: mockSkip });
+      mockChatMessageModel.find.mockReturnValue({ sort: mockSort });
 
-      const result = await service.getProfilePictures(['alice', 'unknown'], 'requester');
+      const result = await service.getMessages('conv-1');
 
-      expect(result).toEqual({ alice: 'base64-alice' });
-    });
-
-    it('returns empty object when requesting user has no groups', async () => {
-      cacheManagerMock.get.mockResolvedValue(null);
-
-      const result = await service.getProfilePictures(['alice', 'bob'], 'requester');
-
-      expect(result).toEqual({});
-    });
-
-    it('returns empty object for empty usernames array', async () => {
-      const result = await service.getProfilePictures([], 'requester');
-
-      expect(result).toEqual({});
+      expect(mockChatMessageModel.find).toHaveBeenCalledWith({ conversationId: 'conv-1' });
+      expect(result).toEqual([]);
     });
   });
 });

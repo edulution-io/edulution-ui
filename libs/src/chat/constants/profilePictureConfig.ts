@@ -17,6 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX = 'chat-profile-picture:';
+import ImageExtensions from '@libs/filesharing/types/imageExtensions';
 
-export default CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX;
+const PROFILE_PICTURE_CONFIG = {
+  SIZE: 100,
+  FORMAT: ImageExtensions.WEBP,
+  QUALITY: 60,
+  MAX_BASE64_LENGTH: 131072,
+  CACHE_DIR_NAME: 'edulution-profile-pictures',
+};
+
+export default PROFILE_PICTURE_CONFIG;
