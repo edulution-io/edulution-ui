@@ -5,6 +5,13 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/api/jest.config.ts",
+        "watch": false
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "cache": true,
