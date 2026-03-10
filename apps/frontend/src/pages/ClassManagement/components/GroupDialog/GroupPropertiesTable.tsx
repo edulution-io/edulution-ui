@@ -26,7 +26,7 @@ import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/shared/Input';
 import { FormMessage } from '@/components/ui/Form';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useClassManagementStore from '../../useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 
 type GroupProperty = {
   labelTranslationId: string;
@@ -44,7 +44,7 @@ interface GroupPropertiesTableProps {
 const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
   const { watch, setValue, register, formState } = form;
   const { t } = useTranslation();
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
