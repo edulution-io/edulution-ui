@@ -3,8 +3,7 @@
 
 @layer base {
   html {
-    @apply text-background;
-    font-family: 'Lato', sans-serif;
+    @apply font-sans text-background;
   }
 
   html,

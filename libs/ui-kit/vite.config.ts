@@ -31,10 +31,13 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        'styles/fonts': resolve(__dirname, 'src/styles/fonts.ts'),
+      },
       name: 'EduUiKit',
       formats: ['es'],
-      fileName: () => 'index.js',
+      fileName: (_, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
       external: (id) => {
