@@ -1,0 +1,3 @@
+[submodule "edulution-ai-framework"]
+	path = edulution-ai-framework
+	url = git@github.com:edulution-io/edulution-ai-framework.git

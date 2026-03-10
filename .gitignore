@@ -367,6 +367,9 @@ $RECYCLE.BIN/
 
 .playwright-mcp
 
+# AI planning docs (GSD framework)
+.planning/
+
 # Certificates
 *.crt
 *.key
