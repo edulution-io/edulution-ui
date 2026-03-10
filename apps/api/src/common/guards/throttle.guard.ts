@@ -65,8 +65,9 @@ class ThrottleGuard implements CanActivate {
       return true;
     }
 
-    const request: Request = context.switchToHttp().getRequest();
-    const response: Response = context.switchToHttp().getResponse();
+    const http = context.switchToHttp();
+    const request: Request = http.getRequest();
+    const response: Response = http.getResponse();
     const username = request.user?.preferred_username;
 
     if (!username) {
@@ -80,14 +81,13 @@ class ThrottleGuard implements CanActivate {
     const cached = throttleCache.get(cacheKey);
 
     if (cached && cached.expiresAt > now) {
-      const remaining = Math.max(0, config.limit - cached.count);
-      const retryAfterSeconds = Math.ceil((cached.expiresAt - now) / 1000);
-
-      response.setHeader(HTTP_HEADERS.XRateLimitLimit, config.limit);
-      response.setHeader(HTTP_HEADERS.XRateLimitRemaining, remaining);
-      response.setHeader(HTTP_HEADERS.RetryAfter, retryAfterSeconds);
-
       if (cached.count >= config.limit) {
+        const retryAfterSeconds = Math.ceil((cached.expiresAt - now) / 1000);
+
+        response.setHeader(HTTP_HEADERS.XRateLimitLimit, config.limit);
+        response.setHeader(HTTP_HEADERS.XRateLimitRemaining, 0);
+        response.setHeader(HTTP_HEADERS.RetryAfter, retryAfterSeconds);
+
         throw new CustomHttpException(
           THROTTLE_ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
           HttpStatus.TOO_MANY_REQUESTS,
@@ -97,6 +97,10 @@ class ThrottleGuard implements CanActivate {
       }
 
       cached.count += 1;
+
+      response.setHeader(HTTP_HEADERS.XRateLimitLimit, config.limit);
+      response.setHeader(HTTP_HEADERS.XRateLimitRemaining, config.limit - cached.count);
+
       return true;
     }
 

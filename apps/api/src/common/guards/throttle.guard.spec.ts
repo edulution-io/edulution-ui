@@ -130,10 +130,10 @@ describe(ThrottleGuard.name, () => {
 
       guard.canActivate(context2);
 
-      expect(mockResponse2.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.XRateLimitRemaining, DEFAULT_CONFIG.limit - 1);
+      expect(mockResponse2.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.XRateLimitRemaining, DEFAULT_CONFIG.limit - 2);
     });
 
-    it('should increment count on subsequent requests within ttl', () => {
+    it('should decrement remaining correctly on subsequent requests within ttl', () => {
       jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(DEFAULT_CONFIG);
 
       const makeRequest = () => {
@@ -151,8 +151,8 @@ describe(ThrottleGuard.name, () => {
       const secondResponse = makeRequest();
       const thirdResponse = makeRequest();
 
-      expect(secondResponse.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.XRateLimitRemaining, 2);
-      expect(thirdResponse.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.XRateLimitRemaining, 1);
+      expect(secondResponse.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.XRateLimitRemaining, 1);
+      expect(thirdResponse.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.XRateLimitRemaining, 0);
     });
 
     it('should throw TOO_MANY_REQUESTS when limit is exceeded', () => {
@@ -181,26 +181,29 @@ describe(ThrottleGuard.name, () => {
       }
     });
 
-    it('should set Retry-After header on cached requests', () => {
-      jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(DEFAULT_CONFIG);
+    it('should set Retry-After header only when rate limited', () => {
+      const config: ThrottleConfig = { limit: 1, ttl: 10_000 };
+      jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(config);
 
-      const { context } = createMockContext({
+      const { context, mockResponse } = createMockContext({
         username: 'user-retry',
         method: 'POST',
         routePath: '/api/retry',
       });
       guard.canActivate(context);
 
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith(HTTP_HEADERS.RetryAfter, expect.anything());
+
       jest.spyOn(Date, 'now').mockReturnValue(1_003_000);
+      jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(config);
 
       const { context: context2, mockResponse: mockResponse2 } = createMockContext({
         username: 'user-retry',
         method: 'POST',
         routePath: '/api/retry',
       });
-      jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(DEFAULT_CONFIG);
-      guard.canActivate(context2);
 
+      expect(() => guard.canActivate(context2)).toThrow(CustomHttpException);
       expect(mockResponse2.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.RetryAfter, 7);
     });
 
