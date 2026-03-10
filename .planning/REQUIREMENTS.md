@@ -32,14 +32,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### CLI Scaffolding
 
-- [ ] **CLI-01**: Node.js CLI with interactive prompts for project type and configuration choices
-- [ ] **CLI-02**: React custom app scaffold generates working Vite+React+TS project with edulution Tailwind theme
-- [ ] **CLI-03**: Styled HTML page scaffold generates project with Tailwind config and edulution design tokens
-- [ ] **CLI-04**: CLI prompts user to select pre-configurations (Tailwind, API client, auth, test framework)
-- [ ] **CLI-05**: Auth integration scaffolding pre-wires SSO flow for same-origin edulution API
-- [ ] **CLI-06**: API client scaffolding configures axios to talk to edulution backend
-- [ ] **CLI-07**: Optional Vitest test framework setup when user selects it
-- [ ] **CLI-08**: ui-kit dependency supported as both npm package and local checkout
+- [x] **CLI-01**: Node.js CLI with interactive prompts for project type and configuration choices
+- [x] **CLI-02**: React custom app scaffold generates working Vite+React+TS project with edulution Tailwind theme
+- [x] **CLI-03**: Styled HTML page scaffold generates project with Tailwind config and edulution design tokens
+- [x] **CLI-04**: CLI prompts user to select pre-configurations (Tailwind, API client, auth, test framework)
+- [x] **CLI-05**: Auth integration scaffolding pre-wires SSO flow for same-origin edulution API
+- [x] **CLI-06**: API client scaffolding configures axios to talk to edulution backend
+- [x] **CLI-07**: Optional Vitest test framework setup when user selects it
+- [x] **CLI-08**: ui-kit dependency supported as both npm package and local checkout
 
 ### Workflow Documentation
 
@@ -110,14 +110,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SYNC-02     | Phase 2 | Complete |
 | SYNC-03     | Phase 2 | Complete |
 | SYNC-04     | Phase 2 | Pending  |
-| CLI-01      | Phase 3 | Pending  |
-| CLI-02      | Phase 3 | Pending  |
-| CLI-03      | Phase 3 | Pending  |
-| CLI-04      | Phase 3 | Pending  |
-| CLI-05      | Phase 3 | Pending  |
-| CLI-06      | Phase 3 | Pending  |
-| CLI-07      | Phase 3 | Pending  |
-| CLI-08      | Phase 3 | Pending  |
+| CLI-01      | Phase 3 | Complete |
+| CLI-02      | Phase 3 | Complete |
+| CLI-03      | Phase 3 | Complete |
+| CLI-04      | Phase 3 | Complete |
+| CLI-05      | Phase 3 | Complete |
+| CLI-06      | Phase 3 | Complete |
+| CLI-07      | Phase 3 | Complete |
+| CLI-08      | Phase 3 | Complete |
 | WKFL-01     | Phase 4 | Pending  |
 | WKFL-02     | Phase 4 | Pending  |
 | WKFL-03     | Phase 4 | Pending  |
