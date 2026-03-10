@@ -17,15 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ArrayMaxSize, ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsString, MaxLength } from 'class-validator';
+import PROFILE_PICTURE_MAX_LENGTH from '@libs/chat/constants/profilePictureMaxLength';
 
-class ProfilePicturesRequestDto {
-  @IsArray()
-  @ArrayNotEmpty()
-  @ArrayMaxSize(100)
-  @IsString({ each: true })
-  @IsNotEmpty({ each: true })
-  usernames: string[];
+class UpdateProfilePictureDto {
+  @IsString()
+  @MaxLength(PROFILE_PICTURE_MAX_LENGTH)
+  profilePicture: string;
 }
 
-export default ProfilePicturesRequestDto;
+export default UpdateProfilePictureDto;

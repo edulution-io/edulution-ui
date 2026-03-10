@@ -49,6 +49,7 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
   const groupNameRef = useRef(groupName);
   const conversationTypeRef = useRef(conversationType);
+  const fetchedProfilePictureUsernamesRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     groupNameRef.current = groupName;
@@ -58,6 +59,7 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   useEffect(() => {
     setCurrentConversation(conversationType, groupName);
     void fetchMessages(conversationType, groupName);
+    fetchedProfilePictureUsernamesRef.current = new Set();
   }, [conversationType, groupName, setCurrentConversation, fetchMessages]);
 
   useEffect(() => {
@@ -65,10 +67,12 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
     const { cache, fetchProfilePictures } = useChatProfilePictureStore.getState();
     const usernames = [...new Set(messages.map((msg) => msg.createdBy).filter(Boolean) as string[])].filter(
-      (username) => username !== currentUsername && !cache[username],
+      (username) =>
+        username !== currentUsername && !cache[username] && !fetchedProfilePictureUsernamesRef.current.has(username),
     );
     if (usernames.length === 0) return;
 
+    usernames.forEach((username) => fetchedProfilePictureUsernamesRef.current.add(username));
     void fetchProfilePictures(usernames);
   }, [messages, currentUsername]);
 
