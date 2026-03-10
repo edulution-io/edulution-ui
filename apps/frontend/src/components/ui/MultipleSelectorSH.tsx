@@ -28,13 +28,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
-import { cn } from '@edulution-io/ui-kit';
+import { cn, VARIANT_COLORS } from '@edulution-io/ui-kit';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useDebounceValue } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
-import { VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
 
 const MULTIPLE_SELECTOR_BASE_CLASSES =
   'w-full rounded-lg px-3 text-p transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 flex flex-wrap items-center gap-1';

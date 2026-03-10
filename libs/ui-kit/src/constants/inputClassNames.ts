@@ -17,13 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { Button, buttonVariants } from './components/Button';
-export type { ButtonProps, ButtonVariant } from './components/Button';
+export const INPUT_BASE_CLASSES =
+  'h-10 w-full rounded-lg px-3 text-p transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
 
-export { Input, inputVariants } from './components/Input';
-export { INPUT_BASE_CLASSES, VARIANT_COLORS } from './constants/inputClassNames';
-export type { InputProps, InputVariant } from './components/Input';
-
-export { inputOTPSlotVariants, inputOTPCaretVariants } from './constants/inputOtpVariants';
-
-export { default as cn } from './utils/cn';
+export const VARIANT_COLORS = {
+  default: 'dark:bg-accent border border-accent-light bg-white text-background',
+  dialog: 'dark:bg-accent border border-accent-light bg-white text-background',
+  login: 'border-[1px] border-gray-300 bg-white text-black shadow-md',
+  lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
+} as const;

@@ -18,36 +18,13 @@
  */
 
 import { cva } from 'class-variance-authority';
-
-export const INPUT_BASE_CLASSES =
-  'h-10 w-full rounded-lg px-3 text-p transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
-
-export const VARIANT_COLORS = {
-  default: 'dark:bg-accent border border-accent-light bg-white text-background',
-  dialog: 'dark:bg-accent border border-accent-light bg-white text-background',
-  login: 'border-[1px] border-gray-300 bg-white text-black shadow-md',
-  lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
-} as const;
+import { VARIANT_COLORS } from './inputClassNames';
 
 const VARIANT_CARET = {
   default: 'bg-secondary',
   dialog: 'bg-background',
   login: 'bg-black',
 } as const;
-
-export const inputVariants = cva(INPUT_BASE_CLASSES, {
-  variants: {
-    variant: {
-      default: `${VARIANT_COLORS.default} placeholder:text-p`,
-      dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
-      login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
-      lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
 
 export const inputOTPSlotVariants = cva(
   'relative mx-1 flex h-11 w-11 items-center justify-center rounded-lg shadow-sm transition-all first:ml-0',
