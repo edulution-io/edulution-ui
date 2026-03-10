@@ -8,6 +8,15 @@
     "composite": true,
     "declaration": true
   },
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "../../libs/ui-kit/**/*"],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "../../libs/src/**/*.spec.ts",
+    "../../libs/src/**/*.spec.tsx",
+    "../../libs/src/**/*.test.ts",
+    "../../libs/src/**/*.test.tsx",
+    "../../libs/src/test-utils/**/*",
+    "../../libs/ui-kit/**/*"
+  ],
   "include": ["./**/*", "../../libs/src/**/*", "../../package.json"]
 }
