@@ -70,13 +70,13 @@ Plans:
 3. Scaffolded styled HTML page includes Tailwind config with edulution design tokens and builds CSS correctly
 4. When API client is selected, scaffolded project has axios/eduApi pre-configured to talk to edulution backend
 5. When auth is selected, scaffolded project has SSO flow pre-wired for same-origin edulution API access
-   **Plans**: TBD
+   **Plans**: 3 plans
 
 Plans:
 
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md -- CLI package setup, interactive prompts, scaffold engine, and post-scaffold automation
+- [ ] 03-02-PLAN.md -- Custom React App templates (base + Tailwind, API client, Auth, Tests feature overlays)
+- [ ] 03-03-PLAN.md -- Styled HTML Page templates (base + Tailwind theme, API client, Auth feature overlays)
 
 ### Phase 4: Workflow Documentation
 
@@ -120,6 +120,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | ------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation             | 3/3            | Complete    | 2026-03-09 |
 | 2. CI Sync Pipeline       | 1/1            | Complete    | 2026-03-09 |
-| 3. CLI Scaffolding        | 0/?            | Not started | -          |
+| 3. CLI Scaffolding        | 0/3            | Not started | -          |
 | 4. Workflow Documentation | 0/?            | Not started | -          |
 | 5. Dog-Fooding            | 0/?            | Not started | -          |
