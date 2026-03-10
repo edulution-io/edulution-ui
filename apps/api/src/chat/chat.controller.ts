@@ -27,6 +27,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -36,12 +37,15 @@ import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
+import { CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS } from '@libs/chat/constants/chatThrottleConfig';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import validateConversationType from './validateConversationType';
+import Throttle from '../common/decorators/throttle.decorator';
+import ThrottleGuard from '../common/guards/throttle.guard';
 
 @ApiTags(APPS.CHAT)
 @ApiBearerAuth()
@@ -81,6 +85,8 @@ class ChatController {
     return this.chatService.getMessages(String(conversation.id), limit, offset, sort);
   }
 
+  @Throttle(CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS)
+  @UseGuards(ThrottleGuard)
   @Post('conversations/:conversationType/:groupName/messages')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async sendMessage(

@@ -1874,6 +1874,7 @@
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "invalidRequestData": "Ungültige Anfragedaten",
       "wrongServerConfig": "Fehlerhafte Serverkonfiguration",
+      "rateLimitExceeded": "Zu viele Anfragen. Bitte versuche es später erneut",
       "path": {
         "noString": "Pfad muss vom Typ String sein",
         "isEmpty": "Pfad darf nicht leer sein",
