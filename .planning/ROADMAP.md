@@ -107,11 +107,11 @@ Plans:
 1. edulution-ui has the framework repo as a git submodule at root level (`edulution-ai-framework/`)
 2. edulution-ui's inline AGENTS.md is removed and replaced by the framework's layered files (edulution-ui project-type layer)
 3. CLAUDE.md in edulution-ui references the framework's AGENTS.md via the submodule path and AI tools can discover conventions correctly
-   **Plans**: TBD
+   **Plans**: 1 plan
 
 Plans:
 
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md -- Register submodule, replace AGENTS.md with framework reference, update sync-framework.yml to dog-food composite action
 
 ## Progress
 
@@ -124,4 +124,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. CI Sync Pipeline       | 1/1            | Complete    | 2026-03-09 |
 | 3. CLI Scaffolding        | 0/4            | Not started | -          |
 | 4. Workflow Documentation | 0/2            | Not started | -          |
-| 5. Dog-Fooding            | 0/?            | Not started | -          |
+| 5. Dog-Fooding            | 0/1            | Not started | -          |
