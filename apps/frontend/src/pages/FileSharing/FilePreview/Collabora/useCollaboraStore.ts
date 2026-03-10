@@ -22,6 +22,7 @@ import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import WopiAccessToken from '@libs/filesharing/types/wopiAccessToken';
 import handleApiError from '@/utils/handleApiError';
+import { ResponseType } from '@libs/common/types/http-methods';
 
 const COLLABORA_DISCOVERY_PATH = '/hosting/discovery';
 const COLLABORA_FALLBACK_EDITOR_PATH = '/browser/dist/cool.html';
@@ -65,9 +66,11 @@ const useCollaboraStore = create<CollaboraStoreState>((set, get) => ({
     if (get().editorPath !== COLLABORA_FALLBACK_EDITOR_PATH) return;
 
     try {
-      const response = await fetch(`${collaboraUrl}${COLLABORA_DISCOVERY_PATH}`);
-      const xml = await response.text();
-      const editorPath = parseEditorPathFromDiscovery(xml, collaboraUrl);
+      const { data } = await eduApi.get<string>(`${collaboraUrl}${COLLABORA_DISCOVERY_PATH}`, {
+        responseType: ResponseType.TEXT,
+        transformResponse: [(res: string) => res],
+      });
+      const editorPath = parseEditorPathFromDiscovery(data, collaboraUrl);
       set({ editorPath });
     } catch {
       set({ editorPath: COLLABORA_FALLBACK_EDITOR_PATH });
@@ -79,7 +82,7 @@ const useCollaboraStore = create<CollaboraStoreState>((set, get) => ({
       set({ isLoading: true, error: null });
       const { data } = await eduApi.post<WopiAccessToken>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COLLABORA_TOKEN}`,
-        { filePath, share, origin: window.location.origin },
+        { filePath, share },
       );
       set({ accessToken: data.accessToken, accessTokenTTL: data.accessTokenTTL });
     } catch (error) {

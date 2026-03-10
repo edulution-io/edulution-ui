@@ -63,13 +63,16 @@ class CollaboraService {
     return secret;
   }
 
-  async generateWopiToken(username: string, filePath: string, share: string, origin: string): Promise<WopiAccessToken> {
+  async generateWopiToken(username: string, filePath: string, share: string): Promise<WopiAccessToken> {
     Logger.log(`Generating WOPI token for ${username}`, CollaboraService.name);
     const secret = await this.getWopiSecret();
 
     if (filePath.includes('..')) {
       throw new BadRequestException(PathValidationErrorMessages.PathTraversal);
     }
+
+    const baseDomain = process.env.EDULUTION_BASE_DOMAIN || 'localhost';
+    const origin = baseDomain === 'localhost' ? 'http://localhost' : `https://${baseDomain}`;
 
     const payload: WopiTokenPayload = {
       username,

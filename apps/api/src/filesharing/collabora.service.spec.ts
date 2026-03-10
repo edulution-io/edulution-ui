@@ -95,7 +95,7 @@ describe(CollaboraService.name, () => {
   describe('generateWopiToken', () => {
     it('should return an access token and TTL', async () => {
       const before = Date.now();
-      const result = await service.generateWopiToken('teacher', '/docs/test.docx', 'default', 'https://example.com');
+      const result = await service.generateWopiToken('teacher', '/docs/test.docx', 'default');
 
       expect(result.accessToken).toBe('signed-token');
       expect(result.accessTokenTTL).toBeGreaterThanOrEqual(before + WOPI_TOKEN_TTL_MS);
@@ -105,7 +105,7 @@ describe(CollaboraService.name, () => {
           username: 'teacher',
           filePath: '/docs/test.docx',
           share: 'default',
-          origin: 'https://example.com',
+          origin: expect.any(String),
           jti: expect.any(String),
         }),
         expect.objectContaining({ secret: MOCK_SECRET, expiresIn: WOPI_TOKEN_EXPIRY }),
@@ -113,9 +113,7 @@ describe(CollaboraService.name, () => {
     });
 
     it('should throw BadRequestException for path traversal', async () => {
-      await expect(
-        service.generateWopiToken('teacher', '/docs/../etc/passwd', 'default', 'https://example.com'),
-      ).rejects.toMatchObject({
+      await expect(service.generateWopiToken('teacher', '/docs/../etc/passwd', 'default')).rejects.toMatchObject({
         message: PathValidationErrorMessages.PathTraversal,
       });
     });
@@ -123,9 +121,7 @@ describe(CollaboraService.name, () => {
     it('should throw when WOPI secret is not configured', async () => {
       appConfigService.getAppConfigByName.mockResolvedValue(createMockAppConfig());
 
-      await expect(
-        service.generateWopiToken('teacher', '/docs/test.docx', 'default', 'https://example.com'),
-      ).rejects.toMatchObject({
+      await expect(service.generateWopiToken('teacher', '/docs/test.docx', 'default')).rejects.toMatchObject({
         message: FileSharingErrorMessage.AppNotProperlyConfigured,
         status: HttpStatus.INTERNAL_SERVER_ERROR,
       });
@@ -134,9 +130,7 @@ describe(CollaboraService.name, () => {
     it('should throw when appConfig is null', async () => {
       appConfigService.getAppConfigByName.mockResolvedValue(null);
 
-      await expect(
-        service.generateWopiToken('teacher', '/docs/test.docx', 'default', 'https://example.com'),
-      ).rejects.toMatchObject({
+      await expect(service.generateWopiToken('teacher', '/docs/test.docx', 'default')).rejects.toMatchObject({
         message: FileSharingErrorMessage.AppNotProperlyConfigured,
         status: HttpStatus.INTERNAL_SERVER_ERROR,
       });

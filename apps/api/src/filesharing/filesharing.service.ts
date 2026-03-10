@@ -241,8 +241,8 @@ class FilesharingService {
     return this.onlyofficeService.generateOnlyOfficeToken(payload);
   }
 
-  async getCollaboraToken(username: string, filePath: string, share: string, origin: string) {
-    return this.collaboraService.generateWopiToken(username, filePath, share, origin);
+  async getCollaboraToken(username: string, filePath: string, share: string) {
+    return this.collaboraService.generateWopiToken(username, filePath, share);
   }
 
   async handleCallback(req: Request, res: Response, path: string, filename: string, username: string, share: string) {
