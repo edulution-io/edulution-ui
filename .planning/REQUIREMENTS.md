@@ -46,7 +46,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **WKFL-01**: "New app" guide walks AI through creating a complete custom app from scratch
 - [x] **WKFL-02**: "Add feature" guide walks AI through adding a page/feature to existing app
 - [x] **WKFL-03**: Guides instruct AI to prompt user for clarification at decision points
-- [ ] **WKFL-04**: Guides reference setup script as prerequisite and explain when to use which .md file
+- [x] **WKFL-04**: Guides reference setup script as prerequisite and explain when to use which .md file
 
 ### Dog-Fooding
 
@@ -121,7 +121,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WKFL-01     | Phase 4 | Complete |
 | WKFL-02     | Phase 4 | Complete |
 | WKFL-03     | Phase 4 | Complete |
-| WKFL-04     | Phase 4 | Pending  |
+| WKFL-04     | Phase 4 | Complete |
 | DOG-01      | Phase 5 | Pending  |
 | DOG-02      | Phase 5 | Pending  |
 | DOG-03      | Phase 5 | Pending  |
