@@ -19,6 +19,7 @@
 
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import type { IRoute } from 'express';
 import { Request, Response } from 'express';
 import THROTTLE_METADATA_KEY from '@libs/common/constants/throttleMetadataKey';
 import { THROTTLE_ERROR_MESSAGES } from '@libs/common/constants/throttleErrorMessages';
@@ -26,7 +27,12 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import CustomHttpException from '../CustomHttpException';
 import type { ThrottleConfig } from '../decorators/throttle.decorator';
 
-const throttleCache = new Map<string, { count: number; expiresAt: number }>();
+type ThrottleCacheEntry = {
+  count: number;
+  expiresAt: number;
+};
+
+const throttleCache = new Map<string, ThrottleCacheEntry>();
 const MAX_CACHE_SIZE = 10_000;
 const TARGET_SIZE_AFTER_CLEANUP = MAX_CACHE_SIZE * 0.9;
 
@@ -74,7 +80,7 @@ class ThrottleGuard implements CanActivate {
       return true;
     }
 
-    const routePath = `${request.method}:${(request.route as { path?: string })?.path ?? request.path}`;
+    const routePath = `${request.method}:${(request.route as IRoute | undefined)?.path ?? request.path}`;
     const cacheKey = `${username}:${routePath}`;
     const now = Date.now();
 
