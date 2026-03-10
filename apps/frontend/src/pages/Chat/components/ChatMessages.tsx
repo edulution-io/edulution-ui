@@ -24,6 +24,7 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { Button, cn } from '@edulution-io/ui-kit';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
 import useChatStore from '@/pages/Chat/useChatStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ChatBubble from './ChatBubble';
@@ -45,6 +46,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
   const [hasNewMessages, setHasNewMessages] = useState(false);
   const prevMessagesLengthRef = useRef(messages.length);
   const { user } = useUserStore();
+  const profilePictureCache = useChatProfilePictureStore((state) => state.cache);
   const { isLoading, error, hasMoreMessages, isLoadingOlderMessages, fetchOlderMessages } = useChatStore();
 
   useEffect(() => {
@@ -159,6 +161,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
             key={message.id}
             message={message}
             isOwnMessage={message.createdBy === user?.username}
+            profilePicture={message.createdBy ? profilePictureCache[message.createdBy] : undefined}
           />
         ))}
         {isLoading && (

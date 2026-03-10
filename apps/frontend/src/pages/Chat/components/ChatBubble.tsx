@@ -23,16 +23,14 @@ import { cn } from '@edulution-io/ui-kit';
 import getChatUserColor from '@libs/chat/utils/getChatUserColor';
 import formatIsoDateToTimeString from '@libs/common/utils/Date/formatIsoDateToTimeString';
 import Avatar from '@/components/shared/Avatar';
-import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
 
 interface ChatBubbleProps {
   message: ChatMessage;
   isOwnMessage: boolean;
+  profilePicture?: string;
 }
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => {
-  const cachedProfilePicture = useChatProfilePictureStore((state) => state.cache[message.createdBy ?? '']);
-
+const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage, profilePicture }) => {
   const nameParts = [message.createdByUserFirstName, message.createdByUserLastName].filter(Boolean);
   const displayName = nameParts.length > 0 ? nameParts.join(' ') : message.createdBy;
 
@@ -46,7 +44,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => {
               firstName: message.createdByUserFirstName,
               lastName: message.createdByUserLastName,
             }}
-            imageSrc={cachedProfilePicture}
+            imageSrc={profilePicture}
             className="h-8 w-8"
           />
         </div>

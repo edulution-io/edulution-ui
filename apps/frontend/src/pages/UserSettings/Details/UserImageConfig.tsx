@@ -56,8 +56,8 @@ const UserImageConfig: React.FC = () => {
   };
 
   const handleImageDelete = async () => {
-    setBase64Image('');
     await patchUserDetails({ thumbnailPhoto: '' });
+    setBase64Image('');
     try {
       await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: '' });
     } catch {

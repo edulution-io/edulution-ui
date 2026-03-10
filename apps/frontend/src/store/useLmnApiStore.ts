@@ -98,9 +98,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
             headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
           });
           set({ user: response.data, schoolPrefix: getSchoolPrefix(response.data) });
-          if (response.data.thumbnailPhoto) {
-            await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: response.data.thumbnailPhoto });
-          }
+          await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, {
+            profilePicture: response.data.thumbnailPhoto ?? '',
+          });
         } catch (error) {
           handleApiError(error, set);
         } finally {
