@@ -22,6 +22,10 @@
     "../../libs/src/**/*.spec.tsx",
     "../../libs/src/**/*.test.ts",
     "../../libs/src/**/*.test.tsx",
-    "../../libs/src/test-utils/**/*"
+    "../../libs/src/test-utils/**/*",
+    "../../libs/ui-kit/src/**/*.spec.ts",
+    "../../libs/ui-kit/src/**/*.spec.tsx",
+    "../../libs/ui-kit/src/**/*.test.ts",
+    "../../libs/ui-kit/src/**/*.test.tsx"
   ]
 }

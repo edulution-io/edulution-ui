@@ -71,14 +71,8 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
     hexagonIconAltText?: string;
   };
 
-const defaultProps: Partial<ButtonProps> = {
-  asChild: false,
-};
-
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, hexagonIconAltText, asChild = false, children, ...props }, ref) => {
-    Button.displayName = 'Button';
-
     const Comp = asChild ? Slot : 'button';
     const hasOwnSize = variant === 'btn-ghost';
     const effectiveSize = size ?? (hasOwnSize ? 'none' : undefined);
@@ -105,6 +99,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   },
 );
 
-Button.defaultProps = defaultProps;
+Button.displayName = 'Button';
 
 export { Button, buttonVariants };
