@@ -185,6 +185,9 @@ describe('AppConfigService', () => {
           accessGroups: [],
           extendedOptions: safeExtendedOptions,
           position: mockAppConfig.position,
+          usesPushNotifications: mockAppConfig.usesPushNotifications,
+          translations: mockAppConfig.translations,
+          displayLocations: mockAppConfig.displayLocations,
         },
       ];
 
