@@ -70,6 +70,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.BULLETIN_BOARD,
     icon: InfoBoardIcon,
     isNativeApp: true,
+    usesPushNotifications: true,
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
     },
@@ -104,12 +105,14 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: ConferencesIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.APIKEY, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
+    usesPushNotifications: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     isNativeApp: true,
+    usesPushNotifications: true,
     extendedOptions: {
       [AppConfigSectionsKeys.appLogo]: APP_LOGO_EXTENDED_OPTIONS,
     },
@@ -167,6 +170,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.CHAT,
     icon: ChatIcon,
     isNativeApp: true,
+    usesPushNotifications: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
