@@ -81,6 +81,42 @@ describe('Input', () => {
     expect(lastCall.target.value).not.toMatch(/^\s/);
   });
 
+  it('preserves spaces when shouldTrim is false', async () => {
+    const user = userEvent.setup();
+    const handleChange = vi.fn();
+    render(<Input onChange={handleChange} />);
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, ' ');
+
+    const lastCall = handleChange.mock.calls[handleChange.mock.calls.length - 1][0];
+    expect(lastCall.target.value).toBe(' ');
+  });
+
+  it('calls onChange for email type', async () => {
+    const user = userEvent.setup();
+    const handleChange = vi.fn();
+    render(
+      <Input
+        type="email"
+        onChange={handleChange}
+      />,
+    );
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'a');
+
+    expect(handleChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not throw when onChange is not provided', async () => {
+    const user = userEvent.setup();
+    render(<Input placeholder="no handler" />);
+
+    const input = screen.getByPlaceholderText('no handler');
+    await expect(user.type(input, 'test')).resolves.not.toThrow();
+  });
+
   it('toggles password visibility', async () => {
     const user = userEvent.setup();
     render(
@@ -136,6 +172,24 @@ describe('Input', () => {
       />,
     );
     expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
+  });
+
+  it('renders without wrapper div for plain text input', () => {
+    const { container } = render(<Input placeholder="plain" />);
+    expect(container.querySelector('div.relative')).not.toBeInTheDocument();
+    expect(container.firstChild).toBe(screen.getByPlaceholderText('plain'));
+  });
+
+  it('renders both toggle button and icon for password with icon', () => {
+    render(
+      <Input
+        type="password"
+        icon={<span data-testid="extra-icon">ic</span>}
+        placeholder="pwd-icon"
+      />,
+    );
+    expect(screen.getByRole('button')).toBeInTheDocument();
+    expect(screen.getByTestId('extra-icon')).toBeInTheDocument();
   });
 
   it('merges custom className with variant classes', () => {

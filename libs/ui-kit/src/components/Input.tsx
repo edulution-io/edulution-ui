@@ -63,29 +63,35 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const needsWrapper = isPassword || icon;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!onChange) {
+        return;
+      }
+
       const { value } = event.target;
 
-      if (onChange) {
-        if (type === 'text' || isPassword) {
-          const newValue = shouldTrim ? value.trim() : value;
-          onChange({
-            ...event,
-            target: {
-              ...event.target,
-              value: newValue,
-            },
-          });
-        } else if (type === 'number') {
-          const newValue = Number(value);
-          onChange({
-            ...event,
-            target: {
-              ...event.target,
-              value: newValue as unknown as string,
-            },
-          });
-        }
+      if (type === 'number') {
+        onChange({
+          ...event,
+          target: {
+            ...event.target,
+            value: Number(value) as unknown as string,
+          },
+        });
+        return;
       }
+
+      if (shouldTrim && (type === 'text' || isPassword)) {
+        onChange({
+          ...event,
+          target: {
+            ...event.target,
+            value: value.trim(),
+          },
+        });
+        return;
+      }
+
+      onChange(event);
     };
 
     const inputElement = (
