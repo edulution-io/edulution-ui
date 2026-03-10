@@ -21,6 +21,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import type { Response } from 'express';
 import type { BatchPeersRequest, BatchPeersResult } from '@libs/wireguard/types/wireguard';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMessages';
 import WireguardController from './wireguard.controller';
 import WireguardService from './wireguard.service';
@@ -88,7 +89,7 @@ describe(WireguardController.name, () => {
       await controller.getUserPeerQR('testuser', mockResponse);
 
       expect(service.getPeerQR).toHaveBeenCalledWith('testuser');
-      expect(mockResponse.set).toHaveBeenCalledWith('Content-Type', 'image/png');
+      expect(mockResponse.set).toHaveBeenCalledWith(HTTP_HEADERS.ContentType, 'image/png');
       expect(mockResponse.send).toHaveBeenCalledWith(mockBuffer);
     });
   });
@@ -117,7 +118,7 @@ describe(WireguardController.name, () => {
       await controller.getPeerQR('anyuser', mockResponse);
 
       expect(service.getPeerQR).toHaveBeenCalledWith('anyuser');
-      expect(mockResponse.set).toHaveBeenCalledWith('Content-Type', 'image/png');
+      expect(mockResponse.set).toHaveBeenCalledWith(HTTP_HEADERS.ContentType, 'image/png');
       expect(mockResponse.send).toHaveBeenCalledWith(mockBuffer);
     });
   });

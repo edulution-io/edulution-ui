@@ -31,6 +31,7 @@ const originalCreateObjectURL = URL.createObjectURL;
 URL.createObjectURL = vi.fn(() => mockObjectUrl);
 
 import { http, HttpResponse } from 'msw';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import server from '@libs/test-utils/msw/server';
 import eduApi from '@/api/eduApi';
 import useFilesystemStore from './useFilesystemStore';
@@ -56,7 +57,7 @@ describe('useFilesystemStore', () => {
           'http://localhost/test-image.png',
           () =>
             new HttpResponse(imageBlob, {
-              headers: { 'x-asset-source': 'custom', 'Content-Type': 'image/png' },
+              headers: { 'x-asset-source': 'custom', [HTTP_HEADERS.ContentType]: 'image/png' },
             }),
         ),
       );
@@ -74,7 +75,7 @@ describe('useFilesystemStore', () => {
         http.get('http://localhost/test-image.png', () => {
           variantDuringRequest = useFilesystemStore.getState().fetchingImageVariant;
           return new HttpResponse(imageBlob, {
-            headers: { 'x-asset-source': 'fallback', 'Content-Type': 'image/png' },
+            headers: { 'x-asset-source': 'fallback', [HTTP_HEADERS.ContentType]: 'image/png' },
           });
         }),
       );
@@ -104,7 +105,7 @@ describe('useFilesystemStore', () => {
           'http://localhost/no-header.png',
           () =>
             new HttpResponse(imageBlob, {
-              headers: { 'Content-Type': 'image/png' },
+              headers: { [HTTP_HEADERS.ContentType]: 'image/png' },
             }),
         ),
       );

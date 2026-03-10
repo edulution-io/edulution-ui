@@ -20,6 +20,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Response } from 'express';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
@@ -67,7 +68,7 @@ describe('LmnApiController', () => {
       await controller.printPasswords('mockToken', { options: {} as PrintPasswordsRequest }, res);
 
       expect(service.printPasswords).toHaveBeenCalledWith('mockToken', {});
-      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/pdf');
+      expect(res.setHeader).toHaveBeenCalledWith(HTTP_HEADERS.ContentType, 'application/pdf');
       expect(res.send).toHaveBeenCalledWith(mockBuffer);
     });
   });

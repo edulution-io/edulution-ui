@@ -58,7 +58,7 @@ export enum RequestResponseContentType {
 
 export const HTTP_HEADERS = {
   ContentDisposition: 'Content-Disposition',
-  ContentType: 'Content-Type',
+  ContentType: 'content-type',
   ContentLength: 'Content-Length',
   Authorization: 'Authorization',
   XApiKey: 'x-api-key',

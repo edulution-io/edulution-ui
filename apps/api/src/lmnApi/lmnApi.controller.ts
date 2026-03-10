@@ -63,8 +63,9 @@ export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
   private static sendFileResponse(res: Response, apiResponse: LmnApiJobResult<Buffer>): void {
-    const contentType = (apiResponse.headers['content-type'] ?? RequestResponseContentType.APPLICATION_PDF) as string;
-    const contentDisposition = apiResponse.headers['content-disposition'] as string;
+    const contentType = (apiResponse.headers[HTTP_HEADERS.ContentType] ??
+      RequestResponseContentType.APPLICATION_PDF) as string;
+    const contentDisposition = apiResponse.headers[HTTP_HEADERS.ContentDisposition] as string;
     res.setHeader(HTTP_HEADERS.ContentType, contentType);
     res.setHeader(HTTP_HEADERS.ContentDisposition, contentDisposition);
     res.send(Buffer.from(apiResponse.data));
