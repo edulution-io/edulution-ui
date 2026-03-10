@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
       include: [
         'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
         '../../libs/src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+        '../../libs/ui-kit/src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
       setupFiles: ['./test/vitest.setup.ts'],
       reporters: ['default'],
