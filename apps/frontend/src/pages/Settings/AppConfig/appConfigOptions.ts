@@ -170,6 +170,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.CHAT,
     icon: ChatIcon,
     isNativeApp: true,
+    usesPushNotifications: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
