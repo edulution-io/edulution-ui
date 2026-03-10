@@ -14,6 +14,7 @@
       "@edulution-io/ui-kit": ["./libs/ui-kit/src/index.ts"]
     },
     "module": "ESNext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "sourceMap": true,
     "declaration": false,

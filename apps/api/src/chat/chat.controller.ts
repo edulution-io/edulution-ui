@@ -30,6 +30,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
   Res,
   UsePipes,
   ValidationPipe,
@@ -44,6 +45,7 @@ import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaul
 import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS } from '@libs/chat/constants/chatThrottleConfig';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupsService from '../groups/groups.service';
 import SseService from '../sse/sse.service';
@@ -52,6 +54,8 @@ import ProfilePictureService from './profilePicture.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import validateConversationType from './validateConversationType';
+import Throttle from '../common/decorators/throttle.decorator';
+import ThrottleGuard from '../common/guards/throttle.guard';
 
 @ApiTags(APPS.CHAT)
 @ApiBearerAuth()
@@ -142,6 +146,8 @@ class ChatController {
     return this.chatService.getMessages(String(conversation.id), limit, offset, sort);
   }
 
+  @Throttle(CHAT_THROTTLE_LIMIT, CHAT_THROTTLE_TTL_MS)
+  @UseGuards(ThrottleGuard)
   @Post('conversations/:conversationType/:groupName/messages')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async sendMessage(

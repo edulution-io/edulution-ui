@@ -6,5 +6,13 @@
   "rules": {
     "react/react-in-jsx-scope": "off"
   },
+  "overrides": [
+    {
+      "files": ["*.spec.ts", "*.spec.tsx", "*.test.ts", "*.test.tsx"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ],
   "ignorePatterns": ["vite.config.ts", "tailwind.config.js", "tailwind.config.cjs"]
 }
