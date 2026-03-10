@@ -50,9 +50,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Dog-Fooding
 
-- [ ] **DOG-01**: edulution-ui adds framework as git submodule at root level
-- [ ] **DOG-02**: edulution-ui's inline AGENTS.md removed, replaced by framework's layered files
-- [ ] **DOG-03**: CLAUDE.md updated to reference framework's AGENTS.md via submodule path
+- [x] **DOG-01**: edulution-ui adds framework as git submodule at root level
+- [x] **DOG-02**: edulution-ui's inline AGENTS.md removed, replaced by framework's layered files
+- [x] **DOG-03**: CLAUDE.md updated to reference framework's AGENTS.md via submodule path
 
 ## v2 Requirements
 
@@ -122,9 +122,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WKFL-02     | Phase 4 | Complete |
 | WKFL-03     | Phase 4 | Complete |
 | WKFL-04     | Phase 4 | Complete |
-| DOG-01      | Phase 5 | Pending  |
-| DOG-02      | Phase 5 | Pending  |
-| DOG-03      | Phase 5 | Pending  |
+| DOG-01      | Phase 5 | Complete |
+| DOG-02      | Phase 5 | Complete |
+| DOG-03      | Phase 5 | Complete |
 
 **Coverage:**
 

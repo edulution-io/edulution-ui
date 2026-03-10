@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: CI Sync Pipeline** - Automated artifact sync from edulution-ui to framework repo
 - [ ] **Phase 3: CLI Scaffolding** - Interactive CLI that generates ready-to-run edulution-compatible projects
 - [ ] **Phase 4: Workflow Documentation** - AI-guided workflow docs for creating apps and adding features
-- [ ] **Phase 5: Dog-Fooding** - edulution-ui consumes the framework, removing its inline AGENTS.md
+- [x] **Phase 5: Dog-Fooding** - edulution-ui consumes the framework, removing its inline AGENTS.md (completed 2026-03-10)
 
 ## Phase Details
 
@@ -124,4 +124,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. CI Sync Pipeline       | 1/1            | Complete    | 2026-03-09 |
 | 3. CLI Scaffolding        | 0/4            | Not started | -          |
 | 4. Workflow Documentation | 0/2            | Not started | -          |
-| 5. Dog-Fooding            | 0/1            | Not started | -          |
+| 5. Dog-Fooding            | 1/1            | Complete    | 2026-03-10 |
