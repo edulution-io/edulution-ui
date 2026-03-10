@@ -33,6 +33,7 @@ interface DropdownSelectPanelProps {
   variant: DropdownVariant;
   style: React.CSSProperties;
   listboxId: string;
+  enablePortalUsage?: boolean;
 }
 
 const DropdownSelectPanel = ({
@@ -44,6 +45,7 @@ const DropdownSelectPanel = ({
   variant,
   style,
   listboxId,
+  enablePortalUsage = true,
 }: DropdownSelectPanelProps) => {
   const { t } = useTranslation();
 
@@ -85,7 +87,13 @@ const DropdownSelectPanel = ({
     <div
       ref={menuRef}
       className={cn(
-        'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
+        {
+          'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin':
+            enablePortalUsage,
+        },
+        {
+          'absolute z-10 mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin': !enablePortalUsage,
+        },
         VARIANT_COLORS[variant],
       )}
       style={style}

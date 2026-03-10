@@ -46,7 +46,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
 
   const { language } = useLanguage();
 
-  const [survey, setSurvey] = useState<SurveyModel | null>(null);
+  const [survey] = useState(() => new SurveyModel(formula));
   const [visuPanel, setVisuPanel] = useState<VisualizationPanel | null>(null);
   const rootsRef = useRef<Map<HTMLSelectElement, Root>>(new Map());
 
@@ -90,11 +90,6 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
     container.querySelectorAll<HTMLSelectElement>('select').forEach(mountDropdownOnSelect);
   };
 
-  if (survey == null) {
-    const surveyModel = new SurveyModel(formula);
-    setSurvey(surveyModel);
-  }
-
   if (visuPanel == null && survey != null) {
     const questions = survey.getAllQuestions() || [];
     const answers = result || [];
@@ -112,7 +107,11 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
 
     setTimeout(() => replaceAllSelects(container), 0);
 
-    const observer = new MutationObserver(() => replaceAllSelects(container));
+    const observer = new MutationObserver(() => {
+      observer.disconnect();
+      replaceAllSelects(container);
+      observer.observe(container, { childList: true, subtree: true });
+    });
     observer.observe(container, { childList: true, subtree: true });
 
     return () => {

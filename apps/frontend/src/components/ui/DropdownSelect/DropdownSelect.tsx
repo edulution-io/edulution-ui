@@ -72,6 +72,12 @@ const DropdownSelect = ({
     if (!dropdownRef.current) return;
 
     const rect = dropdownRef.current.getBoundingClientRect();
+
+    if (!enablePortalUsage) {
+      setMenuPosition({ top: 0, left: 0, width: rect.width });
+      return;
+    }
+
     const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
     const spaceBelow = viewportHeight - rect.bottom;
     const spaceAbove = rect.top;
@@ -149,12 +155,12 @@ const DropdownSelect = ({
       handleChange(id);
       closeMenu();
     },
-    [handleChange],
+    [handleChange, closeMenu],
   );
 
   const panelStyle: React.CSSProperties = enablePortalUsage
     ? { maxHeight: MENU_MAX_HEIGHT, top: menuPosition.top, left: menuPosition.left, width: menuPosition.width }
-    : { maxHeight: MENU_MAX_HEIGHT, width: Math.max(menuPosition.width, 130) };
+    : { maxHeight: MENU_MAX_HEIGHT, width: Math.max(menuPosition.width, 150) };
 
   const panel = (
     <DropdownSelectPanel
@@ -166,6 +172,7 @@ const DropdownSelect = ({
       variant={variant}
       style={panelStyle}
       listboxId={listboxId}
+      enablePortalUsage={enablePortalUsage}
     />
   );
 

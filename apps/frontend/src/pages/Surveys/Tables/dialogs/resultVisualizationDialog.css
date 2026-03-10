@@ -31,18 +31,6 @@
     }
   }
 
-  .sa-question__title.sa-question__title--draggable {
-    &:after {
-      background-image: url("data:image/svg+xml,%3Csvg version=%271.1%27 xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Cg%3E%3Cpolygon style=%27fill: %23d1d5db%27 points=%2713,5 12,6 13,7 9,7 9,3 10,4 11,3 8,0 5,3 6,4 7,3 7,7 3,7 4,6 3,5 0,8 3,11 4,10 3,9 7,9 7,13 6,12 5,13 8,16 11,13 10,12 9,13 9,9 13,9 12,10 13,11 16,8 %27/%3E%3C/g%3E%3C/svg%3E");
-    }
-    &:hover,
-    &:focus {
-      &:after {
-        background-image: url("data:image/svg+xml,%3Csvg version=%271.1%27 xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Cg%3E%3Cpolygon style=%27fill: %230281c7%27 points=%2713,5 12,6 13,7 9,7 9,3 10,4 11,3 8,0 5,3 6,4 7,3 7,7 3,7 4,6 3,5 0,8 3,11 4,10 3,9 7,9 7,13 6,12 5,13 8,16 11,13 10,12 9,13 9,9 13,9 12,10 13,11 16,8 %27/%3E%3C/g%3E%3C/svg%3E");
-      }
-    }
-  }
-
   /* Fix tables background color: Remove the white backgrounds */
   .sa-text-table {
     color: var(--input) !important;
@@ -110,6 +98,14 @@
       fill: var(--background) !important;
     }
   }
+  .legend {
+    color: var(--foreground) !important;
+
+    text {
+      color: var(--foreground) !important;
+      fill: var(--foreground) !important;
+    }
+  }
   .sa-visualizer__content {
     color: var(--muted-foreground);
   }
@@ -164,5 +160,26 @@
   .modebar-btn[data-val="lasso"],
   .modebar-btn[data-val="select"] {
     display: none;
+  }
+
+  .sa-question__title.sa-question__title--draggable {
+    &:after {
+      background-image: url("data:image/svg+xml,%3Csvg version=%271.1%27 xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Cg%3E%3Cpolygon style=%27fill: %23735b49%27 points=%2713,5 12,6 13,7 9,7 9,3 10,4 11,3 8,0 5,3 6,4 7,3 7,7 3,7 4,6 3,5 0,8 3,11 4,10 3,9 7,9 7,13 6,12 5,13 8,16 11,13 10,12 9,13 9,9 13,9 12,10 13,11 16,8 %27/%3E%3C/g%3E%3C/svg%3E");
+    }
+    &:hover,
+    &:focus {
+      &:after {
+        background-image: url("data:image/svg+xml,%3Csvg version=%271.1%27 xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Cg%3E%3Cpolygon style=%27fill: %230081c6%27 points=%2713,5 12,6 13,7 9,7 9,3 10,4 11,3 8,0 5,3 6,4 7,3 7,7 3,7 4,6 3,5 0,8 3,11 4,10 3,9 7,9 7,13 6,12 5,13 8,16 11,13 10,12 9,13 9,9 13,9 12,10 13,11 16,8 %27/%3E%3C/g%3E%3C/svg%3E");
+      }
+    }
+  }
+}
+.dark {
+  .result-visualization {
+    .sa-question__title.sa-question__title--draggable {
+      &:after {
+        background-image: url("data:image/svg+xml,%3Csvg version=%271.1%27 xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Cg%3E%3Cpolygon style=%27fill: %238ca4b6%27 points=%2713,5 12,6 13,7 9,7 9,3 10,4 11,3 8,0 5,3 6,4 7,3 7,7 3,7 4,6 3,5 0,8 3,11 4,10 3,9 7,9 7,13 6,12 5,13 8,16 11,13 10,12 9,13 9,9 13,9 12,10 13,11 16,8 %27/%3E%3C/g%3E%3C/svg%3E");
+      }
+    }
   }
 }

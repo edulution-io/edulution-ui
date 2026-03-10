@@ -34,7 +34,7 @@ import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/
 import { EDULUTION_MANAGER_APPLICATION_NAME } from '@libs/docker/constants/edulution-manager';
 import useDockerApplicationStore from '@/pages/Settings/AppConfig/DockerIntegration/useDockerApplicationStore';
 import DropdownOption from '@libs/ui/types/dropdownOption';
-import DropdownSelect from '../../../../../components/ui/DropdownSelect/DropdownSelect';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 
 const SelectCreateDockerContainerDialog: React.FC = () => {
   const { t } = useTranslation();
