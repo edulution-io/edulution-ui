@@ -27,13 +27,13 @@ Any developer (or AI) can scaffold a new edulution-compatible project and immedi
 - ✓ API client pre-configuration: axios (React) / fetch (styled page) configured for edulution backend — Phase 3
 - ✓ Support ui-kit as both npm package dependency and local checkout — Phase 3
 - ✓ Linux setup script support — Phase 3
+- ✓ AI workflow documentation: "new app" guide (creating a complete custom app from scratch) — Phase 4
+- ✓ AI workflow documentation: "add feature" guide (adding a page or feature to an existing custom app) — Phase 4
+- ✓ Workflow docs instruct AI to prompt user for clarification at decision points — Phase 4
 
 ### Active
 
 - [ ] edulution-ui itself consumes the framework as a submodule (dog-fooding), removing its inline AGENTS.md entirely
-- [ ] AI workflow documentation: "new app" guide (creating a complete custom app from scratch)
-- [ ] AI workflow documentation: "add feature" guide (adding a page or feature to an existing custom app)
-- [ ] Workflow docs instruct AI to prompt user for clarification at decision points
 - [ ] Framework has independent semver versioning, documents which edulution versions it supports
 - [ ] Privacy: framework repo is private; submodule reference in public repos reveals nothing without access
 
@@ -100,4 +100,4 @@ Any developer (or AI) can scaffold a new edulution-compatible project and immedi
 
 ---
 
-_Last updated: 2026-03-10 after Phase 3_
+_Last updated: 2026-03-10 after Phase 4_
