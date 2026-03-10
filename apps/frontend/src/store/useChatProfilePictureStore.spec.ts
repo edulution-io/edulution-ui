@@ -18,9 +18,12 @@
  */
 
 import { http, HttpResponse } from 'msw';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { CHAT_PROFILE_PICTURES_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
 import server from '@libs/test-utils/msw/server';
 import useChatProfilePictureStore from './useChatProfilePictureStore';
+
+const PROFILE_PICTURES_URL = `/${EDU_API_ROOT}/${CHAT_PROFILE_PICTURES_ENDPOINT}`;
 
 const initialStoreState = useChatProfilePictureStore.getState();
 
@@ -33,9 +36,7 @@ describe('useChatProfilePictureStore', () => {
   describe('fetchProfilePictures', () => {
     it('fetches and caches profile pictures', async () => {
       server.use(
-        http.post(CHAT_PROFILE_PICTURES_ENDPOINT, () =>
-          HttpResponse.json({ alice: 'base64-alice', bob: 'base64-bob' }),
-        ),
+        http.post(PROFILE_PICTURES_URL, () => HttpResponse.json({ alice: 'base64-alice', bob: 'base64-bob' })),
       );
 
       await useChatProfilePictureStore.getState().fetchProfilePictures(['alice', 'bob']);
@@ -48,7 +49,7 @@ describe('useChatProfilePictureStore', () => {
     it('does not update cache when there are no changes', async () => {
       useChatProfilePictureStore.setState({ cache: { alice: 'base64-alice' } });
 
-      server.use(http.post(CHAT_PROFILE_PICTURES_ENDPOINT, () => HttpResponse.json({ alice: 'base64-alice' })));
+      server.use(http.post(PROFILE_PICTURES_URL, () => HttpResponse.json({ alice: 'base64-alice' })));
 
       await useChatProfilePictureStore.getState().fetchProfilePictures(['alice']);
 
@@ -58,7 +59,7 @@ describe('useChatProfilePictureStore', () => {
     it('removes cached entry when server returns no picture', async () => {
       useChatProfilePictureStore.setState({ cache: { alice: 'old-picture' } });
 
-      server.use(http.post(CHAT_PROFILE_PICTURES_ENDPOINT, () => HttpResponse.json({})));
+      server.use(http.post(PROFILE_PICTURES_URL, () => HttpResponse.json({})));
 
       await useChatProfilePictureStore.getState().fetchProfilePictures(['alice']);
 
@@ -68,7 +69,7 @@ describe('useChatProfilePictureStore', () => {
     it('skips fetch for empty usernames array', async () => {
       const spy = vi.fn();
       server.use(
-        http.post(CHAT_PROFILE_PICTURES_ENDPOINT, () => {
+        http.post(PROFILE_PICTURES_URL, () => {
           spy();
           return HttpResponse.json({});
         }),
@@ -80,7 +81,7 @@ describe('useChatProfilePictureStore', () => {
     });
 
     it('handles API errors gracefully', async () => {
-      server.use(http.post(CHAT_PROFILE_PICTURES_ENDPOINT, () => HttpResponse.json(null, { status: 500 })));
+      server.use(http.post(PROFILE_PICTURES_URL, () => HttpResponse.json(null, { status: 500 })));
 
       await useChatProfilePictureStore.getState().fetchProfilePictures(['alice']);
 

@@ -23,6 +23,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX from '@libs/chat/constants/chatProfilePictureCacheKeyPrefix';
 import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import SseService from '../sse/sse.service';
+import NotificationsService from '../notifications/notifications.service';
 import ChatService from './chat.service';
 import { Conversation } from './schemas/conversation.schema';
 import { ChatMessage } from './schemas/chatMessage.schema';
@@ -42,8 +44,8 @@ describe(ChatService.name, () => {
         { provide: getModelToken(Conversation.name), useValue: {} },
         { provide: getModelToken(ChatMessage.name), useValue: {} },
         { provide: CACHE_MANAGER, useValue: cacheManagerMock },
-        { provide: 'SseService', useValue: mockSseService },
-        { provide: 'NotificationsService', useValue: mockNotificationsService },
+        { provide: SseService, useValue: mockSseService },
+        { provide: NotificationsService, useValue: mockNotificationsService },
       ],
     }).compile();
 
