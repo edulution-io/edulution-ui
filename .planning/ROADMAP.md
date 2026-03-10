@@ -90,11 +90,12 @@ Plans:
 2. An "add feature" workflow guide exists that an AI tool can follow to add a page or feature to an existing app
 3. Both guides instruct the AI to prompt the user for clarification at decision points rather than making assumptions
 4. Guides reference the setup script as a prerequisite and explain which .md files apply in which context
-   **Plans**: TBD
+   **Plans**: 2 plans
 
 Plans:
 
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md -- Write new-app.md and add-feature.md workflow guides
+- [ ] 04-02-PLAN.md -- Wire workflow discovery in scaffold engine, integration guide, and README
 
 ### Phase 5: Dog-Fooding
 
@@ -122,5 +123,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Foundation             | 3/3            | Complete    | 2026-03-09 |
 | 2. CI Sync Pipeline       | 1/1            | Complete    | 2026-03-09 |
 | 3. CLI Scaffolding        | 0/4            | Not started | -          |
-| 4. Workflow Documentation | 0/?            | Not started | -          |
+| 4. Workflow Documentation | 0/2            | Not started | -          |
 | 5. Dog-Fooding            | 0/?            | Not started | -          |
