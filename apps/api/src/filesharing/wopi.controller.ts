@@ -23,6 +23,7 @@ import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import normalizeFilePath from '@libs/filesharing/utils/normalizeFilePath';
 import { WOPI_BASE_PATH } from '@libs/filesharing/constants/wopi';
 import Public from '../common/decorators/public.decorator';
 import CollaboraService from './collabora.service';
@@ -72,8 +73,7 @@ class WopiController {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
     const client = await this.webdavService.getClient(tokenData.username, tokenData.share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(tokenData.share);
-    const normalizedFilePath = tokenData.filePath.startsWith('/') ? tokenData.filePath : `/${tokenData.filePath}`;
-    const pathWithoutWebdav = getPathWithoutWebdav(normalizedFilePath, webdavShare.pathname);
+    const pathWithoutWebdav = getPathWithoutWebdav(normalizeFilePath(tokenData.filePath), webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
     const stream = await FilesystemService.fetchFileStream(url, client);
@@ -96,8 +96,7 @@ class WopiController {
     const tokenData = await this.collaboraService.validateWopiToken(accessToken);
 
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(tokenData.share);
-    const normalizedFilePath = tokenData.filePath.startsWith('/') ? tokenData.filePath : `/${tokenData.filePath}`;
-    const pathWithoutWebdav = getPathWithoutWebdav(normalizedFilePath, webdavShare.pathname);
+    const pathWithoutWebdav = getPathWithoutWebdav(normalizeFilePath(tokenData.filePath), webdavShare.pathname);
 
     const contentType =
       (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
