@@ -61,7 +61,7 @@ describe('useCollaboraStore', () => {
       expect(state.error).toBeNull();
     });
 
-    it('sends filePath, share, and origin in request body', async () => {
+    it('sends filePath and share in request body', async () => {
       let requestBody: Record<string, unknown> = {};
 
       server.use(
@@ -77,9 +77,9 @@ describe('useCollaboraStore', () => {
         expect.objectContaining({
           filePath: '/docs/test.docx',
           share: 'my-share',
-          origin: expect.any(String),
         }),
       );
+      expect(requestBody).not.toHaveProperty('origin');
     });
 
     it('sets isLoading to false on error', async () => {
@@ -108,7 +108,7 @@ describe('useCollaboraStore', () => {
           </net-zone>
         </wopi-discovery>`;
 
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(discoveryXml, { status: 200 }));
+      server.use(http.get('https://collabora.example.com/hosting/discovery', () => HttpResponse.text(discoveryXml)));
 
       await useCollaboraStore.getState().fetchEditorPath('https://collabora.example.com');
 
@@ -118,29 +118,35 @@ describe('useCollaboraStore', () => {
     it('uses fallback path when discovery XML has no edit action', async () => {
       const discoveryXml = `<?xml version="1.0"?><wopi-discovery></wopi-discovery>`;
 
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(discoveryXml, { status: 200 }));
+      server.use(http.get('https://collabora.example.com/hosting/discovery', () => HttpResponse.text(discoveryXml)));
 
       await useCollaboraStore.getState().fetchEditorPath('https://collabora.example.com');
 
       expect(useCollaboraStore.getState().editorPath).toBe(COLLABORA_FALLBACK_EDITOR_PATH);
     });
 
-    it('uses fallback path when fetch fails', async () => {
-      vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new Error('network error'));
+    it('uses fallback path when request fails', async () => {
+      server.use(http.get('https://collabora.example.com/hosting/discovery', () => HttpResponse.error()));
 
       await useCollaboraStore.getState().fetchEditorPath('https://collabora.example.com');
 
       expect(useCollaboraStore.getState().editorPath).toBe(COLLABORA_FALLBACK_EDITOR_PATH);
     });
 
-    it('skips fetch when editorPath is already set', async () => {
+    it('skips request when editorPath is already set', async () => {
       useCollaboraStore.setState({ editorPath: '/custom/path/cool.html' });
 
-      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      let requestMade = false;
+      server.use(
+        http.get('https://collabora.example.com/hosting/discovery', () => {
+          requestMade = true;
+          return HttpResponse.text('');
+        }),
+      );
 
       await useCollaboraStore.getState().fetchEditorPath('https://collabora.example.com');
 
-      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(requestMade).toBe(false);
     });
 
     it('uses fallback path when urlsrc is an invalid URL', async () => {
@@ -153,7 +159,7 @@ describe('useCollaboraStore', () => {
           </net-zone>
         </wopi-discovery>`;
 
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(discoveryXml, { status: 200 }));
+      server.use(http.get('https://collabora.example.com/hosting/discovery', () => HttpResponse.text(discoveryXml)));
 
       await useCollaboraStore.getState().fetchEditorPath('https://collabora.example.com');
 
@@ -170,7 +176,9 @@ describe('useCollaboraStore', () => {
           </net-zone>
         </wopi-discovery>`;
 
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(discoveryXml, { status: 200 }));
+      server.use(
+        http.get('https://collabora.example.com/collabora/hosting/discovery', () => HttpResponse.text(discoveryXml)),
+      );
 
       await useCollaboraStore.getState().fetchEditorPath('https://collabora.example.com/collabora');
 
