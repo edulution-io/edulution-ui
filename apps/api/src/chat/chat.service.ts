@@ -29,8 +29,10 @@ import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaul
 import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
 import type AllowedConversationType from '@libs/chat/types/allowedConversationType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
+import CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX from '@libs/chat/constants/chatProfilePictureCacheKeyPrefix';
 import GENERIC_CHAT_GROUP_TYPE from '@libs/chat/constants/genericChatGroupType';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import PUSH_NOTIFICATION_CHANNEL_ID from '@libs/notification/constants/pushNotificationChannelId';
@@ -132,6 +134,17 @@ class ChatService {
       );
     }
 
+    if (profilePicture) {
+      try {
+        await this.cacheProfilePicture(currentUser.preferred_username, profilePicture);
+      } catch (error) {
+        Logger.error(
+          `Failed to cache profile picture for ${currentUser.preferred_username}: ${error}`,
+          ChatService.name,
+        );
+      }
+    }
+
     try {
       await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
     } catch (error) {
@@ -139,7 +152,7 @@ class ChatService {
     }
 
     try {
-      await this.notifyGroupMembers(members, groupName, conversationType, message, profilePicture, profilePictureHash);
+      await this.notifyGroupMembers(members, groupName, conversationType, message, profilePictureHash);
     } catch (error) {
       Logger.error(`Failed to notify group members for conversation ${conversationId}: ${error}`, ChatService.name);
     }
@@ -152,7 +165,6 @@ class ChatService {
     groupName: string,
     conversationType: string,
     message: ChatMessageDocument,
-    profilePicture?: string,
     profilePictureHash?: string,
   ): Promise<void> {
     const recipients = members.filter((member) => member !== message.createdBy);
@@ -160,7 +172,7 @@ class ChatService {
       return;
     }
 
-    const payload = { ...message.toJSON(), groupName, conversationType, profilePicture, profilePictureHash };
+    const payload = { ...message.toJSON(), groupName, conversationType, profilePictureHash };
     this.sseService.sendEventToUsers(recipients, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
     const sourceId = `${conversationType}/${groupName}`;
@@ -184,6 +196,27 @@ class ChatService {
         createdBy: message.createdBy,
       },
     );
+  }
+
+  private async cacheProfilePicture(username: string, profilePicture: string): Promise<void> {
+    const key = `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}${username}`;
+    await this.cacheManager.set(key, profilePicture, USERS_CACHE_TTL_MS);
+  }
+
+  async getProfilePictures(usernames: string[]): Promise<Record<string, string>> {
+    const result: Record<string, string> = {};
+
+    await Promise.all(
+      usernames.map(async (username) => {
+        const key = `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}${username}`;
+        const cached = await this.cacheManager.get<string>(key);
+        if (cached) {
+          result[username] = cached;
+        }
+      }),
+    );
+
+    return result;
   }
 
   private static readonly CACHE_PATH_PREFIX: Record<AllowedConversationType, string> = {

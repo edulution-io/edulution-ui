@@ -17,26 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsNotEmpty, IsOptional, IsString, Matches, MaxLength } from 'class-validator';
-import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
-import PROFILE_PICTURE_MAX_LENGTH from '@libs/chat/constants/profilePictureMaxLength';
-import SHA256_HASH_PATTERN from '@libs/chat/constants/sha256HashPattern';
+const CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX = 'chat-profile-picture:';
 
-class CreateMessageDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(CHAT_MESSAGE_MAX_LENGTH)
-  content: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(PROFILE_PICTURE_MAX_LENGTH)
-  profilePicture?: string;
-
-  @IsOptional()
-  @IsString()
-  @Matches(SHA256_HASH_PATTERN)
-  profilePictureHash?: string;
-}
-
-export default CreateMessageDto;
+export default CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX;

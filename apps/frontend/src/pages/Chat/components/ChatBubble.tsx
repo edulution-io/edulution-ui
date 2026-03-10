@@ -31,8 +31,8 @@ interface ChatBubbleProps {
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => {
-  const cachedProfilePicture = useChatProfilePictureStore((state) =>
-    state.getCachedProfilePicture(message.createdBy ?? ''),
+  const cachedProfilePicture = useChatProfilePictureStore(
+    (state) => state.cache[message.createdBy ?? '']?.profilePicture,
   );
 
   const nameParts = [message.createdByUserFirstName, message.createdByUserLastName].filter(Boolean);

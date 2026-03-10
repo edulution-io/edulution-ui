@@ -33,6 +33,7 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
+import ProfilePicturesRequestDto from '@libs/chat/types/profilePicturesRequestDto';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
 import { SORT_DIRECTION, SortDirection } from '@libs/common/constants/sortDirection';
@@ -55,6 +56,12 @@ class ChatController {
   @Get('groups')
   async getUserGroups(@GetCurrentUser() currentUser: JwtUser): Promise<UserChatGroups> {
     return this.groupsService.getUserGroupsAndProjects(currentUser.preferred_username);
+  }
+
+  @Post('profile-pictures')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getProfilePictures(@Body() dto: ProfilePicturesRequestDto): Promise<Record<string, string>> {
+    return this.chatService.getProfilePictures(dto.usernames);
   }
 
   @Get('conversations/:conversationType/:groupName/messages')

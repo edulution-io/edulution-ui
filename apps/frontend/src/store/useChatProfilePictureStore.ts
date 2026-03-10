@@ -19,12 +19,16 @@
 
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import { CHAT_PROFILE_PICTURES_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
+import eduApi from '@/api/eduApi';
 
 const CHAT_PROFILE_PICTURE_STORAGE_KEY = 'chat-profile-picture-storage';
+const MAX_CACHE_ENTRIES = 200;
 
 interface CachedProfilePicture {
   profilePicture: string;
   profilePictureHash: string;
+  lastAccessedAt: number;
 }
 
 interface ChatProfilePictureStore {
@@ -33,6 +37,7 @@ interface ChatProfilePictureStore {
 
   getCachedProfilePicture: (username: string) => string | undefined;
   updateCache: (username: string, profilePicture?: string, profilePictureHash?: string) => void;
+  fetchProfilePictures: (usernames: string[]) => Promise<void>;
   shouldIncludeFullPicture: (currentHash: string) => boolean;
   setLastSentProfilePictureHash: (hash: string) => void;
   reset: () => void;
@@ -53,7 +58,18 @@ const useChatProfilePictureStore = create<ChatProfilePictureStore>(
     (set, get) => ({
       ...initialState,
 
-      getCachedProfilePicture: (username) => get().cache[username]?.profilePicture,
+      getCachedProfilePicture: (username) => {
+        const entry = get().cache[username];
+        if (!entry) return undefined;
+
+        set((state) => ({
+          cache: {
+            ...state.cache,
+            [username]: { ...state.cache[username], lastAccessedAt: Date.now() },
+          },
+        }));
+        return entry.profilePicture;
+      },
 
       updateCache: (username, profilePicture, profilePictureHash) => {
         if (!profilePictureHash) return;
@@ -63,20 +79,63 @@ const useChatProfilePictureStore = create<ChatProfilePictureStore>(
 
         if (existing?.profilePictureHash === profilePictureHash && !profilePicture) return;
 
+        const now = Date.now();
+        let updatedCache = { ...cache };
+
         if (profilePicture) {
-          set({
-            cache: {
-              ...cache,
-              [username]: { profilePicture, profilePictureHash },
-            },
-          });
+          updatedCache[username] = { profilePicture, profilePictureHash, lastAccessedAt: now };
         } else if (!existing || existing.profilePictureHash !== profilePictureHash) {
-          set({
-            cache: {
-              ...cache,
-              [username]: { profilePicture: existing?.profilePicture || '', profilePictureHash },
-            },
+          updatedCache[username] = {
+            profilePicture: existing?.profilePicture || '',
+            profilePictureHash,
+            lastAccessedAt: now,
+          };
+        } else {
+          return;
+        }
+
+        const entries = Object.entries(updatedCache);
+        if (entries.length > MAX_CACHE_ENTRIES) {
+          entries.sort(([, a], [, b]) => a.lastAccessedAt - b.lastAccessedAt);
+          updatedCache = Object.fromEntries(entries.slice(entries.length - MAX_CACHE_ENTRIES));
+        }
+
+        set({ cache: updatedCache });
+      },
+
+      fetchProfilePictures: async (usernames) => {
+        const { cache } = get();
+        const missing = usernames.filter((u) => !cache[u]?.profilePicture);
+        if (missing.length === 0) return;
+
+        try {
+          const response = await eduApi.post<Record<string, string>>(CHAT_PROFILE_PICTURES_ENDPOINT, {
+            usernames: missing,
           });
+
+          const now = Date.now();
+          const updates: Record<string, CachedProfilePicture> = {};
+          Object.entries(response.data).forEach(([username, profilePicture]) => {
+            updates[username] = {
+              profilePicture,
+              profilePictureHash: cache[username]?.profilePictureHash ?? '',
+              lastAccessedAt: now,
+            };
+          });
+
+          if (Object.keys(updates).length > 0) {
+            set((state) => {
+              let updatedCache = { ...state.cache, ...updates };
+              const entries = Object.entries(updatedCache);
+              if (entries.length > MAX_CACHE_ENTRIES) {
+                entries.sort(([, a], [, b]) => a.lastAccessedAt - b.lastAccessedAt);
+                updatedCache = Object.fromEntries(entries.slice(entries.length - MAX_CACHE_ENTRIES));
+              }
+              return { cache: updatedCache };
+            });
+          }
+        } catch (error) {
+          console.error('Failed to fetch profile pictures', error);
         }
       },
 
@@ -84,7 +143,7 @@ const useChatProfilePictureStore = create<ChatProfilePictureStore>(
 
       setLastSentProfilePictureHash: (hash) => set({ lastSentProfilePictureHash: hash }),
 
-      reset: () => set(initialState),
+      reset: () => set({ lastSentProfilePictureHash: null }),
     }),
     {
       name: CHAT_PROFILE_PICTURE_STORAGE_KEY,
