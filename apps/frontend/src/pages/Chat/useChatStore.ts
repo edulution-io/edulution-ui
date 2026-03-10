@@ -23,12 +23,9 @@ import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import { CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
 import CHAT_MESSAGES_DEFAULT_LIMIT from '@libs/chat/constants/chatMessagesDefaultLimit';
-import computeSha256Hash from '@libs/common/utils/computeSha256Hash';
 import { SORT_DIRECTION } from '@libs/common/constants/sortDirection';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import useChatProfilePictureStore from '@/store/useChatProfilePictureStore';
-import useLmnApiStore from '@/store/useLmnApiStore';
 
 interface ChatStore {
   messages: ChatMessage[];
@@ -145,33 +142,13 @@ const useChatStore = create<ChatStore>((set, get) => ({
 
     try {
       const endpoint = getChatMessagesEndpoint(conversationType, groupName);
-      const body: Record<string, string> = { content };
-
-      const thumbnailPhoto = useLmnApiStore.getState().user?.thumbnailPhoto;
-      let profilePictureHash: string | null = null;
-
-      if (thumbnailPhoto) {
-        profilePictureHash = await computeSha256Hash(thumbnailPhoto);
-        const { shouldIncludeFullPicture } = useChatProfilePictureStore.getState();
-
-        if (shouldIncludeFullPicture(profilePictureHash)) {
-          body.profilePicture = thumbnailPhoto;
-        }
-        body.profilePictureHash = profilePictureHash;
-      }
-
-      const response = await eduApi.post<ChatMessage>(endpoint, body);
-      const newMessage = response.data;
-
-      if (profilePictureHash) {
-        useChatProfilePictureStore.getState().setLastSentProfilePictureHash(profilePictureHash);
-      }
+      const response = await eduApi.post<ChatMessage>(endpoint, { content });
 
       const { currentConversationType, currentGroupName } = get();
       if (currentConversationType !== conversationType || currentGroupName !== groupName) return;
 
       set((state) => ({
-        messages: [...state.messages, newMessage],
+        messages: [...state.messages, response.data],
       }));
     } catch (error) {
       handleApiError(error, set);
@@ -199,7 +176,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     if (message.conversationType !== currentConversationType || message.groupName !== currentGroupName) return;
 
     set((state) => {
-      const exists = state.messages.some((m) => m.id === message.id);
+      const exists = state.messages.some((msg) => msg.id === message.id);
       if (exists) return state;
       return { messages: [...state.messages, message] };
     });

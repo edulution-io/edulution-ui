@@ -22,7 +22,6 @@ import ChatMessage from './chatMessage';
 interface ChatMessageSsePayload extends ChatMessage {
   groupName: string;
   conversationType: string;
-  profilePictureHash?: string;
 }
 
 export default ChatMessageSsePayload;

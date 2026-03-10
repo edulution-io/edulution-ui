@@ -26,6 +26,7 @@ import {
   ParseEnumPipe,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UsePipes,
   ValidationPipe,
@@ -62,6 +63,14 @@ class ChatController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getProfilePictures(@Body() dto: ProfilePicturesRequestDto): Promise<Record<string, string>> {
     return this.chatService.getProfilePictures(dto.usernames);
+  }
+
+  @Put('profile-picture')
+  async updateProfilePicture(
+    @GetCurrentUser() currentUser: JwtUser,
+    @Body() body: { profilePicture: string },
+  ): Promise<void> {
+    await this.chatService.cacheProfilePicture(currentUser.preferred_username, body.profilePicture);
   }
 
   @Get('conversations/:conversationType/:groupName/messages')
@@ -110,8 +119,6 @@ class ChatController {
       dto.content,
       currentUser,
       members,
-      dto.profilePicture,
-      dto.profilePictureHash,
     );
   }
 }

@@ -63,12 +63,13 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
   useEffect(() => {
     if (messages.length === 0) return;
 
-    const usernames = [...new Set(messages.map((m) => m.createdBy).filter(Boolean) as string[])].filter(
-      (u) => u !== currentUsername,
+    const { cache, fetchProfilePictures } = useChatProfilePictureStore.getState();
+    const usernames = [...new Set(messages.map((msg) => msg.createdBy).filter(Boolean) as string[])].filter(
+      (username) => username !== currentUsername && !cache[username],
     );
     if (usernames.length === 0) return;
 
-    void useChatProfilePictureStore.getState().fetchProfilePictures(usernames);
+    void fetchProfilePictures(usernames);
   }, [messages, currentUsername]);
 
   const handleNewMessage = useCallback(
@@ -82,18 +83,6 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
         if (payload.createdBy === currentUsername) {
           return;
-        }
-
-        const profilePictureStore = useChatProfilePictureStore.getState();
-
-        if (payload.createdBy && payload.profilePictureHash) {
-          const existingHash = profilePictureStore.cache[payload.createdBy]?.profilePictureHash as string | undefined;
-
-          if (existingHash !== payload.profilePictureHash) {
-            void profilePictureStore.fetchProfilePictures([payload.createdBy]);
-          }
-
-          profilePictureStore.updateCache(payload.createdBy, undefined, payload.profilePictureHash);
         }
 
         addMessage(payload);

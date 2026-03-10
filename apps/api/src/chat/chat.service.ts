@@ -112,8 +112,6 @@ class ChatService {
     content: string,
     currentUser: JwtUser,
     members: string[],
-    profilePicture?: string,
-    profilePictureHash?: string,
   ): Promise<ChatMessageDocument> {
     let message: ChatMessageDocument;
     try {
@@ -134,17 +132,6 @@ class ChatService {
       );
     }
 
-    if (profilePicture) {
-      try {
-        await this.cacheProfilePicture(currentUser.preferred_username, profilePicture);
-      } catch (error) {
-        Logger.error(
-          `Failed to cache profile picture for ${currentUser.preferred_username}: ${error}`,
-          ChatService.name,
-        );
-      }
-    }
-
     try {
       await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
     } catch (error) {
@@ -152,7 +139,7 @@ class ChatService {
     }
 
     try {
-      await this.notifyGroupMembers(members, groupName, conversationType, message, profilePictureHash);
+      await this.notifyGroupMembers(members, groupName, conversationType, message);
     } catch (error) {
       Logger.error(`Failed to notify group members for conversation ${conversationId}: ${error}`, ChatService.name);
     }
@@ -165,14 +152,13 @@ class ChatService {
     groupName: string,
     conversationType: string,
     message: ChatMessageDocument,
-    profilePictureHash?: string,
   ): Promise<void> {
     const recipients = members.filter((member) => member !== message.createdBy);
     if (recipients.length === 0) {
       return;
     }
 
-    const payload = { ...message.toJSON(), groupName, conversationType, profilePictureHash };
+    const payload = { ...message.toJSON(), groupName, conversationType };
     this.sseService.sendEventToUsers(recipients, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
 
     const sourceId = `${conversationType}/${groupName}`;
@@ -198,7 +184,7 @@ class ChatService {
     );
   }
 
-  private async cacheProfilePicture(username: string, profilePicture: string): Promise<void> {
+  async cacheProfilePicture(username: string, profilePicture: string): Promise<void> {
     const key = `${CHAT_PROFILE_PICTURE_CACHE_KEY_PREFIX}${username}`;
     await this.cacheManager.set(key, profilePicture, USERS_CACHE_TTL_MS);
   }
@@ -237,7 +223,7 @@ class ChatService {
       return [];
     }
 
-    if (!group.members?.some((m) => m.username === username)) {
+    if (!group.members?.some((member) => member.username === username)) {
       throw new CustomHttpException(
         CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
         HttpStatus.FORBIDDEN,
@@ -246,7 +232,7 @@ class ChatService {
       );
     }
 
-    return group.members.map((m) => m.username);
+    return group.members.map((member) => member.username);
   }
 }
 

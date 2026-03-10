@@ -25,6 +25,7 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
+import { CHAT_PROFILE_PICTURE_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import LinuxmusterVersionResponse from '@libs/lmnApi/types/linuxmusterVersionResponse';
@@ -97,6 +98,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
             headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
           });
           set({ user: response.data, schoolPrefix: getSchoolPrefix(response.data) });
+          if (response.data.thumbnailPhoto) {
+            void eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: response.data.thumbnailPhoto });
+          }
         } catch (error) {
           handleApiError(error, set);
         } finally {
