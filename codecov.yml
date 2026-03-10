@@ -1,0 +1,26 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        informational: true
+    patch:
+      default:
+        target: 60%
+        threshold: 5%
+
+flags:
+  api:
+    paths:
+      - apps/api/
+    carryforward: true
+  frontend:
+    paths:
+      - apps/frontend/
+      - libs/
+    carryforward: true
+
+comment:
+  layout: 'reach,diff,flags,files'
+  behavior: default
+  require_changes: true
