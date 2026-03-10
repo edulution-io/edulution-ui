@@ -17,6 +17,7 @@
       "default": "./index.js"
     },
     "./styles.css": "./styles.css",
+    "./styles/theme.css": "./styles/theme.css",
     "./tailwind.config": "./tailwind.config.js",
     "./package.json": "./package.json"
   },
@@ -26,6 +27,8 @@
     "*.map",
     "*.css",
     "components",
+    "constants",
+    "styles",
     "utils",
     "tailwind.config.js",
     "README.md"
