@@ -17,14 +17,40 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
-import { type VariantProps } from 'class-variance-authority';
-import { cn } from '@edulution-io/ui-kit';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import * as React from 'react';
+import { useState } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import cn from '../utils/cn';
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
+const INPUT_BASE_CLASSES =
+  'h-10 w-full rounded-lg px-3 text-p transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+
+const VARIANT_COLORS = {
+  default: 'dark:bg-accent border border-accent-light bg-white text-background',
+  dialog: 'dark:bg-accent border border-accent-light bg-white text-background',
+  login: 'border-[1px] border-gray-300 bg-white text-black shadow-md',
+  lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
+} as const;
+
+const inputVariants = cva(INPUT_BASE_CLASSES, {
+  variants: {
+    variant: {
+      default: `${VARIANT_COLORS.default} placeholder:text-p`,
+      dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
+      login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
+      lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});
+
+export type InputVariant = NonNullable<VariantProps<typeof inputVariants>['variant']>;
+
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof inputVariants> & {
     shouldTrim?: boolean;
     icon?: React.ReactNode;
@@ -101,4 +127,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 Input.displayName = 'Input';
 
-export default Input;
+export { Input, inputVariants };

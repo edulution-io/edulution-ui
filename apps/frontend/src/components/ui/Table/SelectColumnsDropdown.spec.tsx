@@ -27,6 +27,7 @@ vi.mock('@fortawesome/react-fontawesome', () => ({
 }));
 vi.mock('@edulution-io/ui-kit', () => ({
   cn: (...args: any[]) => args.filter(Boolean).join(' '),
+  inputVariants: ({ variant }: any) => `input-${variant}`,
   Button: ({ children, className, ...props }: any) => (
     <button
       type="button"
@@ -36,9 +37,6 @@ vi.mock('@edulution-io/ui-kit', () => ({
       {children}
     </button>
   ),
-}));
-vi.mock('@libs/ui/constants/commonClassNames', () => ({
-  inputVariants: ({ variant }: any) => `input-${variant}`,
 }));
 vi.mock('@/components/shared/DropdownMenu', () => ({
   default: ({ trigger, items }: any) => (

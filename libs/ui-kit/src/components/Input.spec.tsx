@@ -17,47 +17,45 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, @typescript-eslint/no-use-before-define, jsx-a11y/label-has-associated-control, jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus, jsx-a11y/role-has-required-aria-props, react/button-has-type, react/display-name, react/no-array-index-key, no-underscore-dangle, no-plusplus */
-
-vi.mock('@fortawesome/react-fontawesome', () => ({
-  FontAwesomeIcon: ({ 'data-testid': testId, ...props }: any) => (
-    <span
-      data-testid={testId || 'fa-icon'}
-      {...props}
-    />
-  ),
-}));
-
-vi.mock('@edulution-io/ui-kit', () => ({
-  cn: (...args: any[]) => args.filter(Boolean).join(' '),
-}));
-
-vi.mock('@libs/ui/constants/commonClassNames', () => ({
-  inputVariants: () => 'input-base',
-}));
-
-import React from 'react';
+import { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Input from './Input';
+import { Input } from './Input';
+import type { InputVariant } from './Input';
 
 describe('Input', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('renders text input with placeholder', () => {
+  it('renders text input by default', () => {
     render(<Input placeholder="Enter text" />);
-
     const input = screen.getByPlaceholderText('Enter text');
     expect(input).toBeInTheDocument();
     expect(input).toHaveAttribute('type', 'text');
   });
 
-  it('handles onChange', async () => {
+  it('forwards ref to the input element', () => {
+    const ref = createRef<HTMLInputElement>();
+    render(<Input ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLInputElement);
+  });
+
+  it('spreads additional HTML attributes', () => {
+    render(
+      <Input
+        data-testid="custom-input"
+        aria-label="custom"
+      />,
+    );
+    expect(screen.getByTestId('custom-input')).toBeInTheDocument();
+    expect(screen.getByLabelText('custom')).toBeInTheDocument();
+  });
+
+  it('applies disabled state', () => {
+    render(<Input disabled />);
+    expect(screen.getByRole('textbox')).toBeDisabled();
+  });
+
+  it('handles onChange for text input', async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
-
     render(<Input onChange={handleChange} />);
 
     const input = screen.getByRole('textbox');
@@ -69,7 +67,6 @@ describe('Input', () => {
   it('trims value when shouldTrim is true', async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
-
     render(
       <Input
         shouldTrim
@@ -84,9 +81,8 @@ describe('Input', () => {
     expect(lastCall.target.value).not.toMatch(/^\s/);
   });
 
-  it('password input toggles visibility', async () => {
+  it('toggles password visibility', async () => {
     const user = userEvent.setup();
-
     render(
       <Input
         type="password"
@@ -99,18 +95,15 @@ describe('Input', () => {
 
     const toggleButton = screen.getByRole('button');
     await user.click(toggleButton);
-
     expect(input).toHaveAttribute('type', 'text');
 
     await user.click(toggleButton);
-
     expect(input).toHaveAttribute('type', 'password');
   });
 
-  it('number input converts value to number', async () => {
+  it('converts number input value to number type', async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
-
     render(
       <Input
         type="number"
@@ -125,6 +118,16 @@ describe('Input', () => {
     expect(typeof lastCall.target.value).toBe('number');
   });
 
+  it('sets inputMode to numeric for number type', () => {
+    render(
+      <Input
+        type="number"
+        placeholder="Number"
+      />,
+    );
+    expect(screen.getByPlaceholderText('Number')).toHaveAttribute('inputMode', 'numeric');
+  });
+
   it('renders icon when provided', () => {
     render(
       <Input
@@ -132,7 +135,28 @@ describe('Input', () => {
         placeholder="With icon"
       />,
     );
-
     expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
+  });
+
+  it('merges custom className with variant classes', () => {
+    render(<Input className="my-custom-class" />);
+    expect(screen.getByRole('textbox').className).toContain('my-custom-class');
+  });
+
+  it.each<InputVariant>(['default', 'dialog', 'login', 'lightGrayDisabled'])(
+    'renders without errors for variant %s',
+    (variant) => {
+      render(
+        <Input
+          variant={variant}
+          placeholder="Test"
+        />,
+      );
+      expect(screen.getByPlaceholderText('Test')).toBeInTheDocument();
+    },
+  );
+
+  it('has displayName set to Input', () => {
+    expect(Input.displayName).toBe('Input');
   });
 });

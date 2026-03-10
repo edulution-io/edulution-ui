@@ -20,4 +20,7 @@
 export { Button, buttonVariants } from './components/Button';
 export type { ButtonProps, ButtonVariant } from './components/Button';
 
+export { Input, inputVariants } from './components/Input';
+export type { InputProps, InputVariant } from './components/Input';
+
 export { default as cn } from './utils/cn';

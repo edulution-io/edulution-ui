@@ -20,13 +20,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@edulution-io/ui-kit';
+import { Button, Input } from '@edulution-io/ui-kit';
 import { ContactIcon } from '@/assets/icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
-import Input from '@/components/shared/Input';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import copyToClipboard from '@/utils/copyToClipboard';
 import useLdapGroups from '@/hooks/useLdapGroups';

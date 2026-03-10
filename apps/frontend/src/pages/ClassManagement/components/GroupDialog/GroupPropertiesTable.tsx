@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import GroupForm from '@libs/groups/types/groupForm';
 import formatSophomorixDate from '@libs/userManagement/utils/formatSophomorixDate';
 import Checkbox from '@/components/ui/Checkbox';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import { FormMessage } from '@/components/ui/Form';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSchoolStore from '@/store/useSchoolStore';

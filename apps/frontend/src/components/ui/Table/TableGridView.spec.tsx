@@ -35,6 +35,12 @@ vi.mock('@edulution-io/ui-kit', () => ({
       })
       .filter(Boolean)
       .join(' '),
+  Input: (props: any) => (
+    <input
+      data-testid="search-input"
+      {...props}
+    />
+  ),
 }));
 vi.mock('@libs/common/constants/viewMode', () => ({
   default: { table: 'table', grid: 'grid' },
@@ -86,14 +92,6 @@ vi.mock('./TableFilterDropdown', () => ({
 }));
 vi.mock('@/components/ui/Loading/LoadingIndicatorDialog', () => ({
   default: ({ isOpen }: any) => (isOpen ? <div data-testid="loading-dialog" /> : null),
-}));
-vi.mock('@/components/shared/Input', () => ({
-  default: (props: any) => (
-    <input
-      data-testid="search-input"
-      {...props}
-    />
-  ),
 }));
 vi.mock('@/components/ui/Checkbox', () => ({
   default: ({ label }: any) => <label data-testid="select-all-checkbox">{label}</label>,
