@@ -10,7 +10,6 @@ on:
 
 jobs:
   sync-swagger:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'swagger-spec.json') || contains(github.event.head_commit.added, 'swagger-spec.json')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
