@@ -75,6 +75,7 @@ const initialState = {
       accessGroups: [],
       extendedOptions: {},
       position: 0,
+      usesPushNotifications: false,
     },
   ],
   publicAppConfigs: [],
