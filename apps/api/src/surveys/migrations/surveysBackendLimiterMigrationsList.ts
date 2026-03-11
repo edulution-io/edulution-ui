@@ -17,9 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface RestfulChoicesChangedSsePayload {
-  surveyId: string;
-  questionName: string;
-}
+import migration001 from './surveysBackendLimiterMigration001AddSelectionCount';
 
-export default RestfulChoicesChangedSsePayload;
+const surveysBackendLimiterMigrationsList = [migration001];
+
+export default surveysBackendLimiterMigrationsList;

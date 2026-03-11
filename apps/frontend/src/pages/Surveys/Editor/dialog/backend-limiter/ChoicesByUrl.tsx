@@ -57,19 +57,25 @@ const ChoicesByUrl = () => {
   const isPublic = useWatch({ control: form.control, name: 'isPublic' });
 
   useEffect(() => {
-    if (!selectedQuestion) return;
+    if (!selectedQuestion || !useBackendLimits) return;
     const questionName = selectedQuestion.name;
     const surveyId = form.getValues('id');
     const limiters = form.getValues('backendLimiters') || {};
-    if (useBackendLimits) {
-      if (currentChoices.length > 0) {
-        setInitialChoices(currentChoices);
-      } else if (surveyId) {
-        void getInitialChoices(surveyId, questionName);
-      } else {
-        setInitialChoices(limiters[questionName] || []);
-      }
-    } else if (limiters[questionName] && limiters[questionName].length > 0) {
+    if (currentChoices.length > 0) {
+      setInitialChoices(currentChoices);
+    } else if (surveyId) {
+      void getInitialChoices(surveyId, questionName);
+    } else {
+      setInitialChoices(limiters[questionName] || []);
+    }
+  }, [selectedQuestion, useBackendLimits, setInitialChoices, getInitialChoices]);
+
+  useEffect(() => {
+    if (!selectedQuestion || useBackendLimits) return;
+    const questionName = selectedQuestion.name;
+    const surveyId = form.getValues('id');
+    const limiters = form.getValues('backendLimiters') || {};
+    if (limiters[questionName] && limiters[questionName].length > 0) {
       const updatedLimiters = { ...limiters };
       delete updatedLimiters[questionName];
       form.setValue('backendLimiters', updatedLimiters);
@@ -77,7 +83,7 @@ const ChoicesByUrl = () => {
         void deleteBackendLimiters(surveyId, questionName);
       }
     }
-  }, [selectedQuestion, useBackendLimits, setInitialChoices, getInitialChoices, deleteBackendLimiters]);
+  }, [selectedQuestion, useBackendLimits, deleteBackendLimiters]);
 
   useEffect(() => {
     if (!selectedQuestion) return;

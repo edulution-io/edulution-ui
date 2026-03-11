@@ -21,6 +21,7 @@ interface ChoiceDto {
   name: string;
   title: string;
   limit?: number;
+  selectionCount?: number;
   isCustomUserEntry?: boolean;
 }
 

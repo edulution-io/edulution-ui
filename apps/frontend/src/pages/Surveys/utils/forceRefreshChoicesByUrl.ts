@@ -17,13 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus } from '@nestjs/common';
-import ErrorMessage from '@libs/error/errorMessage';
+import { ChoicesRestful } from 'survey-core';
 
-class DetailedHttpException extends HttpException {
-  constructor(errorMessage: ErrorMessage, httpStatusCode: HttpStatus, details: Record<string, string | string[]>) {
-    super({ errorMessage, details, HttpStatusCode: httpStatusCode }, httpStatusCode);
-  }
-}
+const forceRefreshChoicesByUrl = (choicesByUrl: ChoicesRestful): void => {
+  ChoicesRestful.clearCache();
+  const originalUrl = choicesByUrl.url;
+  // eslint-disable-next-line no-param-reassign
+  choicesByUrl.url = `${originalUrl}${originalUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`;
+  choicesByUrl.run();
+};
 
-export default DetailedHttpException;
+export default forceRefreshChoicesByUrl;

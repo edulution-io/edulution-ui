@@ -33,9 +33,11 @@ import {
 } from 'survey-core';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import RestfulChoicesChangedSsePayload from '@libs/survey/types/api/restfulChoicesChangedSsePayload';
+import BackendLimiterUpdatedSsePayload from '@libs/survey/types/api/backendLimiterUpdatedSsePayload';
 import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/surveyjs-comment-suffix';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import THEME from '@libs/common/constants/theme';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -43,14 +45,13 @@ import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticip
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
+import forceRefreshChoicesByUrl from '@/pages/Surveys/utils/forceRefreshChoicesByUrl';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
-import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import useThemeStore from '@/store/useThemeStore';
-import THEME from '@libs/common/constants/theme';
 
 interface SurveyFileValue {
   name: string;
@@ -283,6 +284,10 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   }, [selectedSurvey, language]);
 
   useEffect(() => {
+    isCompletingRef.current = false;
+  }, [surveyParticipationModel]);
+
+  useEffect(() => {
     if (!surveyParticipationModel || !selectedSurvey?.id) {
       return undefined;
     }
@@ -314,7 +319,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!surveyParticipationModel || !selectedSurvey?.id) {
         return;
       }
-      const { surveyId, questionName } = JSON.parse(e.data) as RestfulChoicesChangedSsePayload;
+      const { surveyId, questionName } = JSON.parse(e.data) as BackendLimiterUpdatedSsePayload;
       if (surveyId !== selectedSurvey.id) {
         return;
       }
@@ -323,17 +328,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!choicesByUrl || choicesByUrl.isEmpty) {
         return;
       }
-      ChoicesRestful.clearCache();
-      // HAS TO BE FIXED SHOULD WORK LIKE THAT (DOES NOT RETURN UPDATE THE PARTICIPAITON OF ANOTHER USER)
-      const restful = choicesByUrl as unknown as Record<string, unknown>;
-      if ('lastObjHash' in restful) {
-        (choicesByUrl as unknown as { lastObjHash: string }).lastObjHash = '';
-      } else {
-        console.warn('Cannot find lastObjHash in ChoicesRestful instance.');
-        console.warn('It seems that there are major changes in surveyjs library.');
-        console.warn('Please notify a developer.');
-      }
-      choicesByUrl.run();
+      forceRefreshChoicesByUrl(choicesByUrl);
     },
     {
       enabled: !!surveyParticipationModel && !!selectedSurvey?.id,

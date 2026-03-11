@@ -282,7 +282,7 @@ class SurveyAnswersService implements OnModuleInit {
     );
 
     if (limitExceededQuestionNames.length > 0) {
-      throw new DetailedHttpException(SurveyErrorMessages.ChoiceLimitReachedError, {
+      throw new DetailedHttpException(SurveyErrorMessages.ChoiceLimitReachedError, HttpStatus.CONFLICT, {
         questionNames: limitExceededQuestionNames,
       });
     }
