@@ -8,6 +8,7 @@ on:
       - 'swagger-spec.json'
       - 'apps/frontend/tailwind.config.ts'
       - 'libs/ui-kit/tailwind.config.ts'
+      - 'libs/ui-kit/src/styles/theme.css'
       - 'apps/frontend/src/index.scss'
   workflow_dispatch:
 
@@ -32,6 +33,7 @@ jobs:
             styling:
               - 'apps/frontend/tailwind.config.ts'
               - 'libs/ui-kit/tailwind.config.ts'
+              - 'libs/ui-kit/src/styles/theme.css'
               - 'apps/frontend/src/index.scss'
 
   sync-swagger:
@@ -155,10 +157,11 @@ jobs:
 
           cp apps/frontend/tailwind.config.ts target/artifacts/tailwind.config.ts
           cp libs/ui-kit/tailwind.config.ts target/artifacts/tailwind.base.config.ts
+          cp libs/ui-kit/src/styles/theme.css target/artifacts/theme.css
           cp apps/frontend/src/index.scss target/artifacts/index.scss
 
           cd target
-          if git diff --quiet -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/index.scss; then
+          if git diff --quiet -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss; then
             echo "No changes detected in styling artifacts"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -171,9 +174,9 @@ jobs:
         id: summary
         run: |
           cd target
-          STAT=$(git diff --stat -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/index.scss)
+          STAT=$(git diff --stat -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss)
 
-          CHANGED_FILES=$(git diff --name-only -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/index.scss)
+          CHANGED_FILES=$(git diff --name-only -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss)
 
           {
             echo "msg<<EOF"
@@ -194,7 +197,7 @@ jobs:
           cd target
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/index.scss
+          git add artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss
           git pull --rebase origin main
           git commit -m "${{ steps.summary.outputs.msg }}"
           git push origin main
