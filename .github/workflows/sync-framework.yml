@@ -47,7 +47,7 @@ jobs:
           cp swagger-spec.json target/artifacts/swagger-spec.json
 
           cd target
-          if git diff --quiet -- artifacts/swagger-spec.json; then
+          if [ -z "$(git status --porcelain -- artifacts/swagger-spec.json)" ]; then
             echo "No changes detected in swagger-spec.json"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else

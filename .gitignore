@@ -378,7 +378,6 @@ test-results/
 
 
 #swagger
-/swagger-spec.json
 
 # data folder
 /data/*
