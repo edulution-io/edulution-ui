@@ -41,6 +41,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': resolve(__dirname, './src'),
         '@libs': resolve(__dirname, '../../libs/src'),
+        '@edulution-io/ui-kit/styles': resolve(__dirname, '../../libs/ui-kit/src/styles'),
         '@edulution-io/ui-kit': resolve(__dirname, '../../libs/ui-kit/src/index.ts'),
       },
       dedupe: ['@tldraw/store', '@tldraw/validate', '@tldraw/tlschema'],

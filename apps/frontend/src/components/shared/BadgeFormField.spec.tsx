@@ -31,13 +31,7 @@ vi.mock('@fortawesome/react-fontawesome', () => ({
   FontAwesomeIcon: (props: any) => <span data-testid="fa-icon" />,
 }));
 
-vi.mock('@edulution-io/ui-kit', () => ({
-  cn: (...args: any[]) => args.filter(Boolean).join(' '),
-}));
-
-vi.mock('@libs/ui/constants/commonClassNames', () => ({
-  inputVariants: () => 'input-base',
-}));
+vi.mock('@edulution-io/ui-kit', async () => import('@libs/test-utils/mocks/uiKitMock').then((m) => m.uiKitInputMock));
 
 vi.mock('@/components/ui/BadgeSH', () => ({
   BadgeSH: ({ children, ...props }: any) => (

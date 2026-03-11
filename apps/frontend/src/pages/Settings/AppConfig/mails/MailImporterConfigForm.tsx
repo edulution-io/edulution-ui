@@ -20,7 +20,7 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import MailEncryption from '@libs/mail/constants/mailEncryption';

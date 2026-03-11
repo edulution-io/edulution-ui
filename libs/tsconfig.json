@@ -5,6 +5,7 @@
     "moduleResolution": "Bundler",
     "declaration": true,
     "composite": true,
+    "jsx": "react-jsx",
     "types": ["node", "vitest/globals"],
     "noPropertyAccessFromIndexSignature": true
   },

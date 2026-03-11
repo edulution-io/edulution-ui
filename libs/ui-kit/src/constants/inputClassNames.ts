@@ -17,8 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export * from './api-mocks';
-export * from './factories';
-export * from './msw';
-export * from './providers';
-export * from './mocks';
+export const INPUT_BASE_CLASSES =
+  'h-10 w-full rounded-lg px-3 text-p transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+
+export const VARIANT_COLORS = {
+  default: 'dark:bg-accent border border-accent-light bg-white text-background',
+  dialog: 'dark:bg-accent border border-accent-light bg-white text-background',
+  login: 'border-[1px] border-gray-300 bg-white text-black shadow-md',
+  lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
+} as const;

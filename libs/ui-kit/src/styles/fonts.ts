@@ -17,8 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export * from './api-mocks';
-export * from './factories';
-export * from './msw';
-export * from './providers';
-export * from './mocks';
+import '@fontsource/lato/300.css';
+import '@fontsource/lato/400.css';
+import '@fontsource/lato/700.css';
+import '@fontsource/lato/400-italic.css';

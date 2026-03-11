@@ -25,8 +25,7 @@ import { faMinus } from '@fortawesome/free-solid-svg-icons';
 import { OTPInput, OTPInputContext } from 'input-otp';
 import { type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@edulution-io/ui-kit';
-import { inputOTPSlotVariants, inputOTPCaretVariants } from '@libs/ui/constants/commonClassNames';
+import { cn, inputOTPSlotVariants, inputOTPCaretVariants } from '@edulution-io/ui-kit';
 
 const InputOTPSH = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
   ({ className, containerClassName, ...props }, ref) => (

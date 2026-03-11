@@ -15,23 +15,15 @@ const TAILWIND_CONFIG: Config = {
         h2: '1.625rem',
         h3: '1.25rem',
         h4: '1rem',
-        p: '0.938rem',
         span: '0.875rem',
       },
       colors: {
         ciLightBlue: 'var(--ci-dark-blue)',
-        ciLightGreen: 'var(--ci-light-green)',
-        ciRed: '#dc2626',
         ciLightRed: '#F87171',
         ciYellow: '#FFD700',
         ciLightYellow: '#ffd00c',
         ciGreen: '#37ee05',
         ciLightGrey: '#D1D5DB',
-        ciGrey: '#848493',
-        ciDarkGrey: '#2D2D30',
-        ciDarkGreyDisabled: '#1a1a1b',
-        'accent-light': 'var(--accent-light)',
-        'muted-light': 'var(--muted-light)',
         'muted-dialog': 'var(--muted-dialog)',
         muted: {
           background: 'var(--muted-background)',
@@ -41,9 +33,6 @@ const TAILWIND_CONFIG: Config = {
           foreground: 'var(--overlay-foreground)',
           transparent: 'var(--overlay-transparent)',
         },
-      },
-      backgroundImage: {
-        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-dark-blue))',
       },
       keyframes: {
         fadeInBottom: {
@@ -56,14 +45,9 @@ const TAILWIND_CONFIG: Config = {
             transform: 'translateY(0)',
           },
         },
-        'caret-blink': {
-          '0%,70%,100%': { opacity: '1' },
-          '20%,50%': { opacity: '0' },
-        },
       },
       animation: {
         fadeInBottom: 'fadeInBottom 0.5s ease-out forwards',
-        'caret-blink': 'caret-blink 1.25s ease-out infinite',
       },
       flex: {
         '2': '2 1 0%',
