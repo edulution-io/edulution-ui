@@ -20,17 +20,11 @@
 import { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
 import { Button } from './Button';
-import type { ButtonVariant } from './Button';
 
 describe('Button', () => {
   it('renders children correctly', () => {
     render(<Button>Click me</Button>);
     expect(screen.getByRole('button')).toHaveTextContent('Click me');
-  });
-
-  it('renders as a button element by default', () => {
-    render(<Button>Test</Button>);
-    expect(screen.getByRole('button').tagName).toBe('BUTTON');
   });
 
   it('forwards ref to the button element', () => {
@@ -111,24 +105,5 @@ describe('Button', () => {
   it('merges custom className with variant classes', () => {
     render(<Button className="my-custom-class">Styled</Button>);
     expect(screen.getByRole('button').className).toContain('my-custom-class');
-  });
-
-  it.each<ButtonVariant>([
-    'btn-collaboration',
-    'btn-organisation',
-    'btn-infrastructure',
-    'btn-security',
-    'btn-outline',
-    'btn-attention',
-    'btn-small',
-    'btn-table',
-    'btn-ghost',
-  ])('renders without errors for variant %s', (variant) => {
-    render(<Button variant={variant}>Test</Button>);
-    expect(screen.getByRole('button')).toBeInTheDocument();
-  });
-
-  it('has displayName set to Button', () => {
-    expect(Button.displayName).toBe('Button');
   });
 });

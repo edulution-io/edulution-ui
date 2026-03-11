@@ -20,7 +20,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import { FormLabel } from '@/components/ui/Form';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';

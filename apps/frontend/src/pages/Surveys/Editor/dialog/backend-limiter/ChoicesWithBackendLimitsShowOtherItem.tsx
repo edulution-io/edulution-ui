@@ -19,11 +19,10 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@edulution-io/ui-kit';
+import { cn, Input } from '@edulution-io/ui-kit';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Switch from '@/components/ui/Switch';
-import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 
 const ChoicesWithBackendLimitsShowOtherItem = () => {

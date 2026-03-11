@@ -60,10 +60,14 @@ vi.mock('input-otp', () => {
   return { OTPInput, OTPInputContext };
 });
 
-vi.mock('@libs/ui/constants/commonClassNames', () => ({
-  inputOTPSlotVariants: () => 'slot-base-class',
-  inputOTPCaretVariants: () => 'caret-base-class',
-}));
+vi.mock('@edulution-io/ui-kit', async () => {
+  const actual = await vi.importActual('@edulution-io/ui-kit');
+  return {
+    ...actual,
+    inputOTPSlotVariants: () => 'slot-base-class',
+    inputOTPCaretVariants: () => 'caret-base-class',
+  };
+});
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';

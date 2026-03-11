@@ -19,7 +19,7 @@
 
 import React from 'react';
 import Label from '@/components/ui/Label';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 
 type ThemeColorPickerProps = {
   label: string;

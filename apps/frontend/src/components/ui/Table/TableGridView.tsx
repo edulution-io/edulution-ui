@@ -25,7 +25,7 @@ import VIEW_MODE from '@libs/common/constants/viewMode';
 import pinRowToTop from '@libs/ui/utils/pinRowToTop';
 import type FilterOption from '@libs/ui/types/filterOption';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
 import Checkbox from '@/components/ui/Checkbox';

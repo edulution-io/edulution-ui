@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import { FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 
 type AppConfigFormFieldProps<T extends FieldValues> = {
   fieldPath: Path<T>;
