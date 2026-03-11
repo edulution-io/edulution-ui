@@ -11,9 +11,12 @@
     "paths": {
       "@/*": ["./apps/frontend/src/*"],
       "@libs/*": ["./libs/src/*"],
-      "@edulution-io/ui-kit": ["./libs/ui-kit/src/index.ts"]
+      "@edulution-io/ui-kit": ["./libs/ui-kit/src/index.ts"],
+      "@edulution-io/ui-kit/styles/fonts": ["./libs/ui-kit/src/styles/fonts.ts"],
+      "@edulution-io/ui-kit/styles/theme.css": ["./libs/ui-kit/src/styles/theme.css"]
     },
     "module": "ESNext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "sourceMap": true,
     "declaration": false,

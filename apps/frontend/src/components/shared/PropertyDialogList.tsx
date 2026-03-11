@@ -20,7 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogProperty from '@libs/common/types/dialog-property';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import Label from '@/components/ui/Label';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 

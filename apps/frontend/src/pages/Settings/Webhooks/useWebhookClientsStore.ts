@@ -38,6 +38,7 @@ type WebhookClientsStore = {
   fetchClients: () => Promise<void>;
   createClient: (userAgent: string) => Promise<void>;
   deleteClients: (ids: string[]) => Promise<void>;
+  reset: () => void;
 };
 
 const initialValues = {
@@ -94,6 +95,8 @@ const useWebhookClientsStore = create<WebhookClientsStore>()((set) => ({
       set({ isLoading: false });
     }
   },
+
+  reset: () => set(initialValues),
 }));
 
 export default useWebhookClientsStore;

@@ -25,10 +25,7 @@ import useSentryStore from './store/useSentryStore';
 import useThemeStore from './store/useThemeStore';
 import './index.scss';
 
-import '@fontsource/lato/300.css';
-import '@fontsource/lato/400.css';
-import '@fontsource/lato/700.css';
-import '@fontsource/lato/400-italic.css';
+import '@edulution-io/ui-kit/styles/fonts';
 
 const sentryConfig = localStorage.getItem('sentryConfig');
 if (sentryConfig) {

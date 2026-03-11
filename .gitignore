@@ -365,10 +365,11 @@ $RECYCLE.BIN/
 
 .nx/**
 
+.planning/
+
 .playwright-mcp
 
-# AI planning docs (GSD framework)
-.planning/
+test-results/
 
 # Certificates
 *.crt

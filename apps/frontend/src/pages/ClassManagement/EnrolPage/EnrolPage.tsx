@@ -27,7 +27,7 @@ import UserGroups from '@libs/groups/types/userGroups.enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint, faUsers, faUsersGear } from '@fortawesome/free-solid-svg-icons';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';

@@ -30,12 +30,17 @@ interface UserPreferencesStore {
   preferences: UserPreferencesDto | null;
   getUserPreferences: (fields: string[]) => Promise<UserPreferencesDto | null>;
   updateBulletinBoardGridRows: (gridRows: string) => Promise<void>;
+  reset: () => void;
 }
 
-const useUserPreferencesStore = create<UserPreferencesStore>((set) => ({
+const initialState = {
   isLoading: false,
-  error: null,
-  preferences: null,
+  error: null as Error | null,
+  preferences: null as UserPreferencesDto | null,
+};
+
+const useUserPreferencesStore = create<UserPreferencesStore>((set) => ({
+  ...initialState,
 
   getUserPreferences: async (fields) => {
     set({ isLoading: true, error: null });
@@ -60,6 +65,8 @@ const useUserPreferencesStore = create<UserPreferencesStore>((set) => ({
       handleApiError(error, set);
     }
   },
+
+  reset: () => set(initialState),
 }));
 
 export default useUserPreferencesStore;
