@@ -17,6 +17,8 @@
       "default": "./index.js"
     },
     "./styles.css": "./styles.css",
+    "./styles/theme.css": "./styles/theme.css",
+    "./styles/fonts": "./styles/fonts.js",
     "./tailwind.config": "./tailwind.config.js",
     "./package.json": "./package.json"
   },
@@ -26,6 +28,8 @@
     "*.map",
     "*.css",
     "components",
+    "constants",
+    "styles",
     "utils",
     "tailwind.config.js",
     "README.md"
@@ -56,7 +60,8 @@
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "@fontsource/lato": "^5.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
