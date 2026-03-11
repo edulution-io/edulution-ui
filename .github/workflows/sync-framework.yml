@@ -86,7 +86,7 @@ jobs:
           cd target
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add artifacts/swagger-spec.json
           git pull --rebase origin master
+          git add artifacts/swagger-spec.json
           git commit -m "${{ steps.summary.outputs.msg }}"
           git push origin master
