@@ -164,13 +164,6 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            surveyjs: [
-              'survey-analytics',
-              'survey-core',
-              'survey-creator-core',
-              'survey-creator-react',
-              'survey-react-ui',
-            ],
             sentry: ['@sentry/react'],
           },
         },

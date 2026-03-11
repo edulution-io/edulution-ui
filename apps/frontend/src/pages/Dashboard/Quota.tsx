@@ -21,15 +21,26 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
+import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 
-const Quota: React.FC = () => {
+interface QuotaProps {
+  user?: LmnUserInfo;
+  quotaData?: QuotaResponse;
+}
+
+const Quota: React.FC<QuotaProps> = ({ user, quotaData } = {}) => {
   const { t } = useTranslation();
   const { user: lmnUser } = useLmnApiStore();
-  const { quotaUsedInGb, quotaHardLimitInGb, mailQuota, percentageUsed, progressBarColor } = useQuotaInfo();
+  const { quotaUsedInGb, quotaHardLimitInGb, mailQuota, percentageUsed, progressBarColor } = useQuotaInfo(
+    user,
+    quotaData,
+  );
+  const displayUser = user ?? lmnUser;
 
   return (
     <>
-      <p className="text-background">{lmnUser?.school}</p>
+      <p className="text-background">{displayUser?.school}</p>
       <div className="relative my-1 h-1 w-full bg-gray-300">
         <div
           className={`absolute left-0 top-0 h-1 ${progressBarColor}`}

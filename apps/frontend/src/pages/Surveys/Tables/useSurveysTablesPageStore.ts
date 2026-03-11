@@ -31,10 +31,14 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import useUserStore from '@/store/UserStore/useUserStore';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
+
+  setIsCurrentUserTheSurveyOwner: (username: string) => void;
+  isCurrentUserTheSurveyOwner: boolean;
 
   fetchSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<SurveyDto | undefined>;
   isFetching: boolean;
@@ -68,6 +72,7 @@ interface SurveysTablesPageStore {
 const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
   selectedSurvey: undefined,
 
+  isCurrentUserTheSurveyOwner: false,
   canParticipate: false,
   hasAnswers: false,
 
@@ -88,6 +93,11 @@ const useSurveysTablesPageStore = create<SurveysTablesPageStore>((set, get) => (
   reset: () => set(SurveysTablesPageStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+
+  setIsCurrentUserTheSurveyOwner: (username: string) => {
+    const { user } = useUserStore.getState();
+    set({ isCurrentUserTheSurveyOwner: username === user?.username });
+  },
 
   fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<SurveyDto | undefined> => {
     set({ selectedSurvey: undefined });

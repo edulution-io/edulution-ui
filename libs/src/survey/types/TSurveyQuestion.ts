@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ChoicesRestful, Question } from 'survey-core';
+import type { ChoicesRestful, Question } from 'survey-core';
 
 interface TSurveyQuestion extends Question {
   choicesByUrl?: { url: string } | ChoicesRestful | null;

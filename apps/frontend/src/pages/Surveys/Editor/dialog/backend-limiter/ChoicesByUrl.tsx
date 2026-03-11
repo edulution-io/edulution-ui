@@ -20,6 +20,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
+import { ChoicesRestful } from 'survey-core';
 import { cn } from '@edulution-io/ui-kit';
 import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
@@ -45,6 +46,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   const { t } = useTranslation();
 
   const {
+    selectedQuestion,
     questionType,
     useBackendLimits,
     toggleUseBackendLimits,
@@ -67,6 +69,16 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     if (!form) return;
     form.setValue('backendLimiters', updatedBackendLimits);
   }, [currentChoices]);
+
+  const handleToggleBackendLimits = () => {
+    if (!selectedQuestion) {
+      return;
+    }
+    if (!useBackendLimits) {
+      selectedQuestion.choicesByUrl = new ChoicesRestful();
+    }
+    toggleUseBackendLimits(form.watch('isPublic') || false);
+  };
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [
@@ -94,7 +106,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       <div className="ml-2 inline-flex">
         <Switch
           checked={!!useBackendLimits}
-          onCheckedChange={() => toggleUseBackendLimits(form.watch('isPublic') || false)}
+          onCheckedChange={() => handleToggleBackendLimits()}
           className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-background': useBackendLimits })}
         />
         <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'enabled' : 'disabled'}`)}</p>

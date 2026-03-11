@@ -18,7 +18,7 @@
  */
 
 import { create } from 'zustand';
-import { Question, ChoicesRestful } from 'survey-core';
+import type { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
@@ -133,7 +133,6 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
     if (!useBackendLimits) {
       const backendLimitAdress = `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`;
-      selectedQuestion.choicesByUrl = new ChoicesRestful();
       (selectedQuestion.choicesByUrl as ChoicesRestful).url = backendLimitAdress;
       (selectedQuestion.choicesByUrl as ChoicesRestful).valueName = 'title';
       (selectedQuestion.choicesByUrl as ChoicesRestful).titleName = 'title';

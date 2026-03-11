@@ -34,15 +34,19 @@ import getInitialSurveyFormBySurveys from '@/pages/Surveys/utils/getInitialSurve
 import getInitialSurveyFormByTemplate from '@/pages/Surveys/utils/getInitialSurveyFormByTemplate';
 
 interface SurveyEditorPageStore {
+  clearInitialSurvey: () => void;
   loadNewSurvey: (creator: AttendeeDto) => void;
   loadSurveyTemplate: (creator: AttendeeDto, template: SurveyTemplateDto) => void;
-  fetchSelectedSurvey: (creator: AttendeeDto, surveyId: string, isPublic?: boolean) => Promise<void>;
+  fetchSelectedSurvey: (creator: AttendeeDto, surveyId?: string, isPublic?: boolean) => Promise<void>;
   initialSurvey: SurveyDto | undefined;
   isFetching: boolean;
 
   storedSurvey: SurveyDto | undefined;
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
+
+  lastEditedSurveyId: string | undefined;
+  setLastEditedSurveyId: (surveyId: string | undefined) => void;
 
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingFile: boolean;
@@ -73,6 +77,7 @@ const initialState = {
   initialSurvey: undefined,
 
   storedSurvey: undefined,
+  lastEditedSurveyId: undefined,
 
   isUploadingFile: false,
 
@@ -89,7 +94,10 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
   (persist as PersistedSurveyEditorPageStore)(
     (set) => ({
       ...initialState,
+
       reset: () => set(initialState),
+
+      clearInitialSurvey: () => set({ initialSurvey: undefined }),
 
       loadNewSurvey: (creator: AttendeeDto): void => {
         const newSurvey = getInitialSurveyFormBySurveys(creator, undefined, undefined);
@@ -117,7 +125,9 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       },
 
       updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
-      resetStoredSurvey: () => set({ storedSurvey: undefined }),
+      resetStoredSurvey: () => set({ storedSurvey: undefined, lastEditedSurveyId: undefined }),
+
+      setLastEditedSurveyId: (surveyId: string | undefined) => set({ lastEditedSurveyId: surveyId }),
 
       setIsOpenSurveysLogoDialog: (state: boolean) => set({ isOpenSurveysLogoDialog: state }),
 
@@ -172,7 +182,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
     {
       name: 'survey-editor-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ storedSurvey: state.storedSurvey }),
+      partialize: (state) => ({ storedSurvey: state.storedSurvey, lastEditedSurveyId: state.lastEditedSurveyId }),
     },
   ),
 );

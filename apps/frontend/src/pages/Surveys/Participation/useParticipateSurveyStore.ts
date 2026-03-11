@@ -21,7 +21,7 @@ import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 import { HttpStatusCode } from 'axios';
-import { Model, CompletingEvent } from 'survey-core';
+import type { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';

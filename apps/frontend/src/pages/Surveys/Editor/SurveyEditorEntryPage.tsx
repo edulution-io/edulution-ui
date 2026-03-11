@@ -26,13 +26,15 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorTemplateGrid from '@/pages/Surveys/Editor/SurveyEditorTemplateGrid';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
-import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
-const SurveyEditorEntryPage = () => {
+interface SurveyEditorEntryPageProps {
+  isCreatingNew?: boolean;
+}
+
+const SurveyEditorEntryPage = ({ isCreatingNew }: SurveyEditorEntryPageProps) => {
   const { user } = useUserStore();
   const surveyCreator: AttendeeDto = useMemo(() => getCreatorFromUserDto(user), [user]);
 
@@ -42,24 +44,37 @@ const SurveyEditorEntryPage = () => {
     initialSurvey,
     resetStoredSurvey,
     isFetching,
+    lastEditedSurveyId,
+    setLastEditedSurveyId,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore } = useSurveyTemplateStore();
-  const { reset: resetQuestionsContextMenu } = useQuestionsContextMenuStore();
 
   const { surveyId } = useParams();
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    resetEditorPage();
-    if (!surveyId) {
+    if (!isCreatingNew && !surveyId) {
       return;
     }
-    resetStoredSurvey();
-    resetTemplateStore();
-    resetQuestionsContextMenu();
-    void fetchSelectedSurvey(surveyCreator, surveyId, false);
-  }, [user, surveyId]);
+    const isAnotherSurvey = lastEditedSurveyId !== surveyId;
+    if (isAnotherSurvey) {
+      resetEditorPage();
+      resetStoredSurvey();
+      setLastEditedSurveyId(surveyId);
+    }
+    const hasToFetchAnotherSurvey = isAnotherSurvey || !initialSurvey;
+    if (hasToFetchAnotherSurvey && surveyCreator) {
+      void fetchSelectedSurvey(surveyCreator, surveyId, false);
+    }
+  }, [
+    surveyCreator,
+    surveyId,
+    lastEditedSurveyId,
+    resetEditorPage,
+    resetStoredSurvey,
+    setLastEditedSurveyId,
+    fetchSelectedSurvey,
+  ]);
 
   if (isFetching) {
     return (

@@ -19,43 +19,33 @@
 
 import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 import DialogSwitch from '@/components/shared/DialogSwitch';
-import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-import { Form } from '@/components/ui/Form';
+import { Form, FormControl, FormDescription, FormFieldSH, FormItem } from '@/components/ui/Form';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/useUserStore';
-import useGroupStore from '@/store/GroupStore';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import { DropdownSelect } from '@/components';
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
+import AccessGroupMultiSelect from '@/components/shared/AccessGroupMultiSelect';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface CreateAndUpdateBulletinCategoryBodyProps {
   handleFormSubmit: (e: React.FormEvent) => void;
   form: UseFormReturn<CreateBulletinCategoryDto>;
   isCurrentNameEqualToSelected: () => boolean;
+  accessGroups: MultipleSelectorGroup[];
 }
 
 const CreateAndUpdateBulletinCategoryBody = ({
   handleFormSubmit,
   form,
   isCurrentNameEqualToSelected,
+  accessGroups,
 }: CreateAndUpdateBulletinCategoryBodyProps) => {
   const { t } = useTranslation();
-  const { searchAttendees } = useUserStore();
-  const { searchGroups } = useGroupStore();
 
   const { setValue, watch } = form;
-
-  const handleVisibleAttendeesChange = (attendees: AttendeeDto[]) => {
-    setValue('visibleForUsers', attendees, { shouldValidate: true });
-  };
-
-  const handleEditableAttendeesChange = (attendees: AttendeeDto[]) => {
-    setValue('editableByUsers', attendees, { shouldValidate: true });
-  };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue('name', e.target.value, { shouldValidate: true });
@@ -93,39 +83,66 @@ const CreateAndUpdateBulletinCategoryBody = ({
           }}
         />
 
-        <div className="mb-1 font-bold">{t('bulletinboard.categories.visibilityState')}</div>
-        <DropdownSelect
-          options={bulletinVisibilityOptions}
-          selectedVal={watch('bulletinVisibility') || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE}
-          handleChange={handleVisibilityStateChange}
-          variant="dialog"
+        <FormFieldSH
+          control={form.control}
+          name="bulletinVisibility"
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold">{t('bulletinboard.categories.visibilityState')}</p>
+              <FormControl>
+                <DropdownSelect
+                  options={bulletinVisibilityOptions}
+                  selectedVal={field.value || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE}
+                  handleChange={handleVisibilityStateChange}
+                  variant="dialog"
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
 
-        <p className="pt-4 text-lg font-bold text-background">
-          {t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}
-        </p>
-        <p className="text-background">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
-        <SearchUsersOrGroups
-          users={watch('visibleForUsers')}
-          onSearch={searchAttendees}
-          onUserChange={handleVisibleAttendeesChange}
-          groups={watch('visibleForGroups')}
-          onGroupSearch={searchGroups}
-          onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-          variant="dialog"
+        <FormFieldSH
+          control={form.control}
+          name="visibleForGroups"
+          render={() => (
+            <FormItem>
+              <p className="font-bold">{t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}</p>
+              <FormDescription>{t('bulletinboard.categories.visibleByUsersAndGroups')}</FormDescription>
+              <FormControl>
+                <AccessGroupMultiSelect
+                  value={watch('visibleForGroups')}
+                  options={accessGroups}
+                  onChange={(groups: MultipleSelectorGroup[]) =>
+                    setValue('visibleForGroups', groups, { shouldValidate: true })
+                  }
+                  variant="dialog"
+                />
+              </FormControl>
+              <FormDescription>{t('bulletinboard.categories.accessGroupsOnlyHint')}</FormDescription>
+            </FormItem>
+          )}
         />
-        <p className="pt-4 text-lg font-bold text-background">
-          {t('bulletinboard.categories.editableByUsersAndGroupsTitle')}
-        </p>
-        <p className="text-background">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
-        <SearchUsersOrGroups
-          users={watch('editableByUsers')}
-          onSearch={searchAttendees}
-          onUserChange={handleEditableAttendeesChange}
-          groups={watch('editableByGroups')}
-          onGroupSearch={searchGroups}
-          onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-          variant="dialog"
+
+        <FormFieldSH
+          control={form.control}
+          name="editableByGroups"
+          render={() => (
+            <FormItem>
+              <p className="font-bold">{t('bulletinboard.categories.editableByUsersAndGroupsTitle')}</p>
+              <FormDescription>{t('bulletinboard.categories.editableByUsersAndGroups')}</FormDescription>
+              <FormControl>
+                <AccessGroupMultiSelect
+                  value={watch('editableByGroups')}
+                  options={accessGroups}
+                  onChange={(groups: MultipleSelectorGroup[]) =>
+                    setValue('editableByGroups', groups, { shouldValidate: true })
+                  }
+                  variant="dialog"
+                />
+              </FormControl>
+              <FormDescription>{t('bulletinboard.categories.accessGroupsOnlyHint')}</FormDescription>
+            </FormItem>
+          )}
         />
       </form>
     </Form>
