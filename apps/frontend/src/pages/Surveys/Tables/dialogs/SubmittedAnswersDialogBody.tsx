@@ -44,11 +44,11 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
   }, [formula, answer]);
 
   if (!formula || !answer || !surveyModel) {
-    return <div className="bg-accent p-4 text-center">{t('survey.noAnswer')}</div>;
+    return <div className="p-4 text-center">{t('survey.noAnswer')}</div>;
   }
 
   return (
-    <div className="participated-survey max-h-[74vh] overflow-y-auto rounded">
+    <div className="participated-survey max-h-[75vh] overflow-y-auto p-4">
       <Survey model={surveyModel} />
     </div>
   );

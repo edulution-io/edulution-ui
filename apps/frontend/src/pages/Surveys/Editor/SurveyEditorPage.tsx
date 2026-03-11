@@ -239,7 +239,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     if (!creator) return;
 
     if (creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) {
-      creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-${getResolvedTheme().toString()}.webp`;
+      creator.survey.logo = getAssetUrl(APPS.SURVEYS, ASSET_TYPES.logo, getResolvedTheme());
     }
 
     const formula = creator.JSON as SurveyFormula;

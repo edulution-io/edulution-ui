@@ -26,6 +26,7 @@ import {
   Post,
   Delete,
   Param,
+  Query,
   Req,
   Res,
   UploadedFile,
@@ -196,13 +197,13 @@ class PublicSurveysController {
 
   @Get(`${CHOICES}/:surveyId/:questionId`)
   @Public()
-  async getChoices(@Param() params: { surveyId: string; questionId: string }) {
+  async getChoices(@Param() params: { surveyId: string; questionId: string }, @Query('original') original?: string) {
     const { surveyId, questionId } = params;
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId, original === 'true');
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 }
