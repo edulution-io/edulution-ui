@@ -22,13 +22,12 @@ import { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
-import { Button, cn } from '@edulution-io/ui-kit';
+import { Button, cn, Input } from '@edulution-io/ui-kit';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import parseDDMMYYYY from '@libs/common/utils/Date/parseDDMMYYYY';
 import validateCell from '@libs/userManagement/utils/validateCell';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
-import Input from '@/components/shared/Input';
 import type ColumnConfig from '@libs/userManagement/types/columnConfig';
 import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
 import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
@@ -97,7 +96,7 @@ const getListManagementColumns = ({
           onChange={(e) => onCellChange(row.index, config.key, e.target.value)}
           onBlur={() => onCellBlur(row.index, config.key)}
           className={cn(
-            'h-8 border',
+            'h-8 border bg-transparent hover:bg-white focus:bg-white dark:bg-transparent dark:hover:bg-accent dark:focus:bg-accent',
             !isValid && 'border-red-400',
             isValid && isNew && 'border-green-300',
             isValid && !isNew && isChanged && 'border-blue-300',

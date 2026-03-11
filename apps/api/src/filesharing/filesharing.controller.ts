@@ -23,6 +23,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  Headers,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -31,7 +32,6 @@ import {
   Query,
   Req,
   Res,
-  StreamableFile,
 } from '@nestjs/common';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -39,6 +39,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
+import ONLY_OFFICE_CALLBACK_STATUS from '@libs/filesharing/constants/onlyOfficeCallbackStatus';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
@@ -48,7 +49,6 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import { pipeline } from 'stream/promises';
 import { randomUUID } from 'crypto';
 import APPS from '@libs/appconfig/constants/apps';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -76,12 +76,14 @@ class FilesharingController {
     @Query('type') type: string,
     @Query('path') path: string,
     @Query('share') share: string,
+    @Headers(HTTP_HEADERS.XForceCleanupCache) forceCleanupCacheHeader: string | undefined,
     @GetCurrentUsername() username: string,
   ) {
+    const forceCleanupCache = forceCleanupCacheHeader === 'true';
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.webdavService.getFilesAtPath(username, path, share);
+      return this.webdavService.getFilesAtPath(username, path, share, forceCleanupCache);
     }
-    return this.webdavService.getDirectoryAtPath(username, path, share);
+    return this.webdavService.getDirectoryAtPath(username, path, share, forceCleanupCache);
   }
 
   @Post()
@@ -139,23 +141,13 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     const stream = await this.filesharingService.getWebDavFileStream(username, filePath, share);
-
     const filename = filePath.split('/').pop() || randomUUID();
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
-    res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
-
-    try {
-      await pipeline(stream, res);
-    } catch (error) {
-      if (!res.headersSent) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          message: 'Error while streaming file',
-          details: (error as Error).message,
-        });
-      } else {
-        res.end();
-      }
-    }
+    await this.filesharingService.streamToResponse(
+      stream,
+      res,
+      filename,
+      RequestResponseContentType.APPLICATION_OCTET_STREAM,
+    );
   }
 
   @Get(FileSharingApiEndpoints.THUMBNAIL)
@@ -186,6 +178,11 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.ONLY_OFFICE_TOKEN)
   getOnlyofficeToken(@Body() payload: string) {
     return this.filesharingService.getOnlyOfficeToken(payload);
+  }
+
+  @Post(FileSharingApiEndpoints.COLLABORA_TOKEN)
+  getCollaboraToken(@Body() body: { filePath: string; share: string }, @GetCurrentUsername() username: string) {
+    return this.filesharingService.getCollaboraToken(username, body.filePath, body.share);
   }
 
   @Post(FileSharingApiEndpoints.DUPLICATE)
@@ -242,7 +239,7 @@ class FilesharingController {
   ) {
     try {
       const { status } = req.body as OnlyOfficeCallbackData;
-      if (status === 1) {
+      if (status === ONLY_OFFICE_CALLBACK_STATUS.EDITING) {
         return res.status(HttpStatus.OK).json({ error: 0 });
       }
 
@@ -277,7 +274,7 @@ class FilesharingController {
     @Param('publicShareId') publicShareId: string,
     @Query('share') share: string,
     @Body('password') password: string | undefined,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
     @GetCurrentUser({ required: false }) currentUser?: JWTUser,
   ) {
     const { stream, filename, fileType } = await this.filesharingService.getPublicShare(
@@ -287,15 +284,12 @@ class FilesharingController {
       password,
     );
 
-    res.set({
-      [HTTP_HEADERS.ContentDisposition]: `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
-      [HTTP_HEADERS.ContentType]:
-        fileType === ContentType.FILE
-          ? RequestResponseContentType.APPLICATION_OCTET_STREAM
-          : RequestResponseContentType.APPLICATION_ZIP,
-    });
+    const contentType =
+      fileType === ContentType.FILE
+        ? RequestResponseContentType.APPLICATION_OCTET_STREAM
+        : RequestResponseContentType.APPLICATION_ZIP;
 
-    return new StreamableFile(stream);
+    await this.filesharingService.streamToResponse(stream, res, filename, contentType);
   }
 }
 

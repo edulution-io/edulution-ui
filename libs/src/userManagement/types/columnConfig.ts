@@ -17,11 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import type BaseColumnConfig from '@libs/common/types/baseColumnConfig';
+
 type ColumnKey = 'class' | 'lastName' | 'firstName' | 'birthday' | 'login' | 'category';
 
-interface ColumnConfig {
+interface ColumnConfig extends BaseColumnConfig {
   key: ColumnKey;
-  apiKey: string;
   translationKey: string;
 }
 

@@ -27,6 +27,7 @@ import migration006 from './migration006';
 import migration007 from './migration007';
 import migration008 from './migration008';
 import migration009 from './migration009';
+import migration010 from './migration010';
 
 // Add new migrations here
 const appConfigMigrationsList = [
@@ -40,6 +41,7 @@ const appConfigMigrationsList = [
   migration007,
   migration008,
   migration009,
+  migration010,
 ];
 
 export default appConfigMigrationsList;

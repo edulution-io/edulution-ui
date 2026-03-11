@@ -27,8 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { QrCodeIcon } from '@/assets/icons';
 import { toast } from 'sonner';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
-import { Button } from '@edulution-io/ui-kit';
+import { Button, Input } from '@edulution-io/ui-kit';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
@@ -50,6 +49,7 @@ import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import useSessionFlagsStore from '@/store/useSessionFlagsStore';
 import getRandomUUID from '@/utils/getRandomUUID';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
@@ -150,6 +150,7 @@ const LoginPage: React.FC = () => {
 
     const registerUser = async () => {
       await handleRegisterUser();
+      useSessionFlagsStore.getState().setIsJustLoggedIn(true);
       setIsEnterTotpVisible(false);
     };
 

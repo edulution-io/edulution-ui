@@ -35,6 +35,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -44,7 +45,9 @@ import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
+import type ListManagementEntry from '@libs/userManagement/types/listManagementEntry';
 import type JwtUser from '@libs/user/types/jwt/jwtUser';
+import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -59,6 +62,14 @@ const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
+  private static sendFileResponse(res: Response, apiResponse: LmnApiJobResult<Buffer>): void {
+    const contentType = (apiResponse.headers['content-type'] ?? RequestResponseContentType.APPLICATION_PDF) as string;
+    const contentDisposition = apiResponse.headers['content-disposition'] as string;
+    res.setHeader(HTTP_HEADERS.ContentType, contentType);
+    res.setHeader(HTTP_HEADERS.ContentDisposition, contentDisposition);
+    res.send(Buffer.from(apiResponse.data));
+  }
+
   @Get('auth')
   async getLmnApiToken(@GetCurrentUsername() username: string) {
     return this.lmnApiService.getLmnApiToken(username);
@@ -71,9 +82,21 @@ export class LmnApiController {
     @Res() res: Response,
   ) {
     const apiResponse = await this.lmnApiService.printPasswords(lmnApiToken, body.options);
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_PDF as string);
-    res.setHeader(HTTP_HEADERS.ContentDisposition, apiResponse.headers['content-disposition'] as string);
-    res.send(Buffer.from(apiResponse.data));
+    LmnApiController.sendFileResponse(res, apiResponse);
+  }
+
+  @Get('students-list/:schoolclass/:format')
+  async getStudentsList(
+    @Param() params: { schoolclass: string; format: string },
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Res() res: Response,
+  ) {
+    const apiResponse = await this.lmnApiService.getStudentsList(
+      lmnApiToken,
+      params.schoolclass,
+      params.format as FileExportFormat,
+    );
+    LmnApiController.sendFileResponse(res, apiResponse);
   }
 
   @Put('exam-mode/:state')
@@ -116,6 +139,15 @@ export class LmnApiController {
   @Get('school-classes')
   async getUserSchoolClasses(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
     return this.lmnApiService.getUserSchoolClasses(lmnApiToken);
+  }
+
+  @Patch('school-classes')
+  async updateSchoolClass(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { formValues: GroupFormDto },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.lmnApiService.updateSchoolClass(lmnApiToken, body.formValues, username);
   }
 
   @Put('school-classes/:schoolClass/:action')
@@ -325,6 +357,38 @@ export class LmnApiController {
     return this.lmnApiService.getUsersByRole(lmnApiToken, role, school ?? user.school, managementList);
   }
 
+  @Get('listmanagement/sophomorix-check')
+  async runSophomorixCheck(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.runSophomorixCheck(lmnApiToken);
+  }
+
+  @Post('listmanagement/sophomorix-apply')
+  async runSophomorixApply(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { school: string; add: boolean; update: boolean; kill: boolean },
+  ) {
+    return this.lmnApiService.runSophomorixApply(lmnApiToken, body.school, body.add, body.update, body.kill);
+  }
+
+  @Get('devices/list/:school')
+  async getDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getDevices(lmnApiToken, school);
+  }
+
+  @Post('devices/list/:school')
+  async saveDevices(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param('school') school: string,
+    @Body() body: { data: ListManagementEntry[] },
+  ) {
+    return this.lmnApiService.saveDevices(lmnApiToken, school, body.data);
+  }
+
+  @Get('devices/list/:school/import-devices')
+  async getImportDevices(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param('school') school: string) {
+    return this.lmnApiService.getImportDevices(lmnApiToken, school);
+  }
+
   @Get('listmanagement/:school/:managementList')
   async getManagementList(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
@@ -337,7 +401,7 @@ export class LmnApiController {
   async saveManagementList(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Param() params: { school: string; managementList: string },
-    @Body() body: { data: unknown[] },
+    @Body() body: { data: ListManagementEntry[] },
   ) {
     return this.lmnApiService.saveManagementList(lmnApiToken, params.school, params.managementList, body.data);
   }

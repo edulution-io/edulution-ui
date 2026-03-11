@@ -23,6 +23,7 @@ import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import { NOTIFICATIONS_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
+import NotificationRecipientDto from '@libs/notification/types/notificationRecipient.dto';
 import InboxResponseDto from '@libs/notification/types/inboxResponse.dto';
 import notificationPaginationConfig from '@libs/notification/constants/notificationPaginationConfig';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
@@ -34,8 +35,15 @@ interface NotificationStore {
   total: number;
   unreadCount: number;
   hasMore: boolean;
+  sentNotifications: InboxNotificationDto[];
+  sentTotal: number;
+  sentHasMore: boolean;
+  recipients: NotificationRecipientDto[];
   isLoading: boolean;
   isLoadingMore: boolean;
+  isSentLoading: boolean;
+  isSentLoadingMore: boolean;
+  isLoadingRecipients: boolean;
   isUnreadCountLoading: boolean;
   isDeleting: boolean;
   isDeleteDialogOpen: boolean;
@@ -43,10 +51,13 @@ interface NotificationStore {
   error: string | null;
 
   fetchNotifications: (loadMore?: boolean) => Promise<void>;
+  fetchSentNotifications: (loadMore?: boolean) => Promise<void>;
+  fetchRecipients: (notificationId: string) => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
   markAsRead: (userNotificationId: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   deleteNotification: (notificationId: string) => Promise<void>;
+  deleteSentNotification: (notificationId: string) => Promise<void>;
   deleteAllByType: (type: NotificationFilterType) => Promise<void>;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
   setIsSheetOpen: (isOpen: boolean) => void;
@@ -58,7 +69,14 @@ const initialState = {
   total: 0,
   unreadCount: 0,
   hasMore: false,
+  sentNotifications: [] as InboxNotificationDto[],
+  sentTotal: 0,
+  sentHasMore: false,
+  recipients: [] as NotificationRecipientDto[],
   isLoading: false,
+  isSentLoading: false,
+  isSentLoadingMore: false,
+  isLoadingRecipients: false,
   isLoadingMore: false,
   isUnreadCountLoading: false,
   isDeleting: false,
@@ -91,6 +109,44 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
       handleApiError(error, set);
     } finally {
       set({ isLoading: false, isLoadingMore: false });
+    }
+  },
+
+  fetchSentNotifications: async (loadMore = false) => {
+    const { sentNotifications: existing } = get();
+    const offset = loadMore ? existing.length : 0;
+
+    set({ isSentLoading: !loadMore, isSentLoadingMore: loadMore, error: null });
+    try {
+      const { data } = await eduApi.get<InboxResponseDto>(`${NOTIFICATIONS_EDU_API_ENDPOINT}/sent`, {
+        params: { limit: notificationPaginationConfig.PAGE_SIZE, offset },
+      });
+
+      const newNotifications = loadMore ? [...existing, ...data.notifications] : data.notifications;
+
+      set({
+        sentNotifications: newNotifications,
+        sentTotal: data.total,
+        sentHasMore: newNotifications.length < data.total,
+      });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isSentLoading: false, isSentLoadingMore: false });
+    }
+  },
+
+  fetchRecipients: async (notificationId: string) => {
+    set({ isLoadingRecipients: true, recipients: [] });
+    try {
+      const { data } = await eduApi.get<NotificationRecipientDto[]>(
+        `${NOTIFICATIONS_EDU_API_ENDPOINT}/sent/${notificationId}/recipients`,
+      );
+      set({ recipients: data });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoadingRecipients: false });
     }
   },
 
@@ -166,6 +222,19 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
+  deleteSentNotification: async (notificationId: string) => {
+    try {
+      await eduApi.delete(`${NOTIFICATIONS_EDU_API_ENDPOINT}/sent/${notificationId}`);
+      const { sentNotifications, sentTotal } = get();
+      set({
+        sentNotifications: sentNotifications.filter((notification) => notification.id !== notificationId),
+        sentTotal: Math.max(0, sentTotal - 1),
+      });
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
+
   deleteAllByType: async (type: NotificationFilterType) => {
     set({ isDeleting: true, error: null });
     try {
@@ -180,6 +249,14 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
       if (type === NOTIFICATION_FILTER_TYPE.ALL) {
         newNotifications = [];
         newUnreadCount = 0;
+      } else if (type === NOTIFICATION_FILTER_TYPE.SENT) {
+        set({
+          sentNotifications: [],
+          sentTotal: 0,
+          isDeleteDialogOpen: false,
+        });
+        toast.success(i18n.t('notificationscenter.deletedNotifications', { count: data.deletedCount }));
+        return;
       } else if (isNotificationType(type)) {
         const deletedNotifications = notifications.filter((notification) => notification.type === type);
         newNotifications = notifications.filter((notification) => notification.type !== type);

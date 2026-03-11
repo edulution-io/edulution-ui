@@ -28,11 +28,11 @@ import UserGroups from '@libs/groups/types/userGroups.enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsersGear } from '@fortawesome/free-solid-svg-icons';
 import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 
 const ProjectsPage = () => {
   const { t } = useTranslation();

@@ -24,12 +24,13 @@ import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import UseLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import type UserType from '@libs/userManagement/types/userType';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
 import USER_TYPE_TO_ROLE from '@libs/userManagement/constants/userTypeToRole';
 import USER_MANAGEMENT_COLUMN_IDS from '@libs/userManagement/constants/userManagementColumnIds';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import useUserManagementStore from '../../useUserManagementStore';
 import getUserTableColumns from './getUserTableColumns';
 
@@ -42,9 +43,10 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
   const { usersByType, isLoadingUsers, isBackgroundFetchingUsers, fetchUsersByRole, setSelectedUserDetails } =
     useUserManagementStore();
   const users = usersByType[userType] ?? [];
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { currentUser, setCurrentUser } = UseLmnApiPasswordStore();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
+  const { isBusiness } = useOrganizationType();
 
   useEffect(() => {
     if (!isAuthReady) return;
@@ -59,15 +61,16 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
   const columns = useMemo(
     () =>
       getUserTableColumns({
+        isBusiness,
         userType,
         onShowDetails: (user) => setSelectedUserDetails(user),
         setCurrentUser,
       }),
-    [userType, setSelectedUserDetails, setCurrentUser],
+    [isBusiness, userType, setSelectedUserDetails, setCurrentUser],
   );
 
   return (
-    <>
+    <div className="h-full pb-10">
       {isLoadingUsers || isBackgroundFetchingUsers ? <HorizontalLoader /> : <div className="h-1" />}
       <ScrollableTable
         columns={columns}
@@ -79,7 +82,7 @@ const UserTable: React.FC<UserTableProps> = ({ userType }) => {
         initialSorting={[{ id: USER_MANAGEMENT_COLUMN_IDS.CN, desc: false }]}
       />
       {currentUser && <UserPasswordDialog />}
-    </>
+    </div>
   );
 };
 

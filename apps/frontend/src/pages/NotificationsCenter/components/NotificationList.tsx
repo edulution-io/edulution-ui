@@ -29,14 +29,31 @@ import useNotificationStore from '@/store/useNotificationStore';
 interface NotificationListProps {
   notifications: InboxNotificationDto[];
   className?: string;
+  isSentView?: boolean;
+  emptyMessage?: string;
+  onShowRecipients?: (notificationId: string, title: string) => void;
 }
 
-const NotificationList = ({ notifications, className }: NotificationListProps) => {
+const NotificationList = ({
+  notifications,
+  className,
+  isSentView = false,
+  emptyMessage,
+  onShowRecipients,
+}: NotificationListProps) => {
   const { t } = useTranslation();
-  const { hasMore, isLoadingMore, fetchNotifications } = useNotificationStore();
+  const { hasMore, sentHasMore, isLoadingMore, isSentLoadingMore, fetchNotifications, fetchSentNotifications } =
+    useNotificationStore();
+
+  const currentHasMore = isSentView ? sentHasMore : hasMore;
+  const currentIsLoadingMore = isSentView ? isSentLoadingMore : isLoadingMore;
 
   const handleLoadMore = () => {
-    void fetchNotifications(true);
+    if (isSentView) {
+      void fetchSentNotifications(true);
+    } else {
+      void fetchNotifications(true);
+    }
   };
 
   if (notifications.length === 0) {
@@ -47,7 +64,7 @@ const NotificationList = ({ notifications, className }: NotificationListProps) =
             icon={faInbox}
             className="h-12 w-12"
           />
-          <span className="text-lg">{t('notificationscenter.noNotifications')}</span>
+          <span className="text-lg">{emptyMessage ?? t('notificationscenter.noNotifications')}</span>
         </div>
       </div>
     );
@@ -59,15 +76,17 @@ const NotificationList = ({ notifications, className }: NotificationListProps) =
         <NotificationItem
           key={notification.id}
           notification={notification}
+          isSentView={isSentView}
+          onShowRecipients={onShowRecipients}
         />
       ))}
-      {hasMore && (
+      {currentHasMore && (
         <Button
           onClick={handleLoadMore}
-          disabled={isLoadingMore}
+          disabled={currentIsLoadingMore}
           className="mt-2 w-full"
         >
-          {isLoadingMore ? (
+          {currentIsLoadingMore ? (
             <>
               <FontAwesomeIcon
                 icon={faSpinner}

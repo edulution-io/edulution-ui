@@ -67,6 +67,7 @@ import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
 import AccessGuard from '../auth/access.guard';
 import AuthGuard from '../auth/auth.guard';
+import ParentChildPairingModule from '../parent-child-pairing/parent-child-pairing.module';
 import WireguardModule from '../wireguard/wireguard.module';
 import WebhookModule from '../webhook/webhook.module';
 import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
@@ -143,6 +144,7 @@ import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
     SseModule,
     TLDrawSyncModule,
     ScriptsModule,
+    ParentChildPairingModule,
     WireguardModule,
     WebhookModule,
     WebhookClientsModule,

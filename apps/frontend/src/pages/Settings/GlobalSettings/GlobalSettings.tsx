@@ -42,9 +42,10 @@ import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/comp
 import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 import applyBackgroundImage from '@/utils/applyBackgroundImage';
 import useThemeStore from '@/store/useThemeStore';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import WebhookClientsTable from '@/pages/Settings/Webhooks/WebhookClientsTable';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
+import OrganizationTypeDropdownSelectFormField from '../components/OrganizationTypeDropdownSelectFormField';
 
 type GlobalSettingsProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
@@ -56,7 +57,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
   const { searchGroups } = useGroupStore();
   const { appConfigs } = useAppConfigsStore();
   const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
-  const { isGeneric } = useDeploymentTarget();
+  const { isBusiness } = useOrganizationType();
 
   const {
     watch,
@@ -104,6 +105,11 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
               <div className="space-y-2">
                 <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
                 <DeploymentTargetDropdownSelectFormField form={form} />
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xl font-bold">{t('settings.globalSettings.organizationType')}</p>
+                <OrganizationTypeDropdownSelectFormField form={form} />
               </div>
 
               <div className="space-y-2">
@@ -162,7 +168,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                 <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
                 <p>
                   {t(
-                    isGeneric
+                    isBusiness
                       ? 'settings.globalSettings.logo.descriptionGeneric'
                       : 'settings.globalSettings.logo.descriptionSchool',
                   )}

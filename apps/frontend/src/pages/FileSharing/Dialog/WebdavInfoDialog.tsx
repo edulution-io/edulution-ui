@@ -20,8 +20,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import replaceIpWithOrigin from '@libs/filesharing/utils/replaceIpWithOrigin';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import useUserStore from '@/store/UserStore/useUserStore';
 import WebdavInfoDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/WebdavInfoDialogBody';
 
@@ -35,9 +37,13 @@ const WebdavInfoDialog: React.FC<WebdavInfoDialogProps> = ({ isOpen, handleClose
   const { webdavShare } = useParams();
   const { webdavShares } = useFileSharingStore();
   const { user } = useUserStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
-  const baseUrl = currentShare?.url || '';
+  const resolvedVariables = currentShare
+    ? createVariableSharePathname(currentShare.sharePath, currentShare.pathVariables)
+    : '';
+  const baseUrl = replaceIpWithOrigin(`${currentShare?.url || ''}${resolvedVariables}`);
 
   return (
     <AdaptiveDialog

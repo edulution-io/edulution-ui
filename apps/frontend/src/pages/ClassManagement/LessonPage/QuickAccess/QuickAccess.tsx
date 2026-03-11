@@ -19,6 +19,7 @@
 
 import React, { useEffect } from 'react';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import GroupsColumn from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupsColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import GroupColumn from '@libs/groups/types/groupColumn';
@@ -38,6 +39,7 @@ const QuickAccess = () => {
   const {
     createProject,
     updateProject,
+    updateSchoolClass,
     deleteProject,
     userRoom,
     fetchRoom,
@@ -49,8 +51,8 @@ const QuickAccess = () => {
     areProjectsLoading,
     areSchoolClassesLoading,
     isRoomLoading,
-    selectedSchool,
   } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
@@ -104,6 +106,7 @@ const QuickAccess = () => {
       name: UserGroups.Classes,
       translationId: 'myClasses',
       createFunction: undefined,
+      updateFunction: updateSchoolClass,
       icon: <FontAwesomeIcon icon={faUsers} />,
       isLoading: areSchoolClassesLoading,
       groups: getGroupsWhereUserIsMember(userSchoolClasses),

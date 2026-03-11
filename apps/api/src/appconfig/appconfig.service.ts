@@ -248,7 +248,7 @@ class AppConfigService implements OnModuleInit {
         const appConfigObjects = await this.appConfigModel
           .find(
             { 'accessGroups.path': { $in: ldapGroups } },
-            'name translations icon appType options extendedOptions position displayLocations',
+            'name translations icon appType options extendedOptions position displayLocations usesPushNotifications',
           )
           .sort({ position: 1 })
           .lean();
@@ -267,6 +267,7 @@ class AppConfigService implements OnModuleInit {
             extendedOptions,
             position: config.position,
             displayLocations: config.displayLocations,
+            usesPushNotifications: config.usesPushNotifications ?? false,
           };
         });
       }
@@ -379,7 +380,6 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getFileAsBase64(filePath: string): string {
     try {
       const fileBuffer = readFileSync(filePath);

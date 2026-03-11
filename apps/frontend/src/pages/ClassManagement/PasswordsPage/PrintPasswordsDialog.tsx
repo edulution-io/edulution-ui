@@ -21,7 +21,8 @@ import React, { useState } from 'react';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
+import type FileExportFormat from '@libs/classManagement/types/fileExportFormat';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 import Checkbox from '@/components/ui/Checkbox';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
@@ -29,7 +30,7 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface PrintPasswordsDialogProps {
-  title: PrintPasswordsFormat;
+  title: FileExportFormat;
   selectedClasses: LmnApiSchoolClass[];
   onClose: () => void;
 }
@@ -44,9 +45,9 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
     const school = selectedClasses.length > 0 ? selectedClasses[0].sophomorixSchoolname : DEFAULT_SCHOOL;
 
     switch (title) {
-      case PrintPasswordsFormat.PDF:
+      case FILE_EXPORT_FORMAT.PDF:
         await printPasswords({
-          format: PrintPasswordsFormat.PDF,
+          format: FILE_EXPORT_FORMAT.PDF,
           school,
           pdflatex: isPdfLatexSelected,
           one_per_page: isOneItemPerPageSelected,
@@ -54,10 +55,10 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
           schoolclasses: selectedClasses.map((m) => m.cn),
         });
         break;
-      case PrintPasswordsFormat.CSV:
+      case FILE_EXPORT_FORMAT.CSV:
       default:
         await printPasswords({
-          format: PrintPasswordsFormat.CSV,
+          format: FILE_EXPORT_FORMAT.CSV,
           school,
           pdflatex: false,
           one_per_page: false,
@@ -81,7 +82,7 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
       <div className="text-background">
         <p>{t(`classmanagement.${title}Description`)}:</p>
         <p className="ml-2 mt-2">{selectedClasses.map((m) => m.displayName || m.cn).join(', ')}</p>
-        {title === PrintPasswordsFormat.PDF ? (
+        {title === FILE_EXPORT_FORMAT.PDF ? (
           <>
             <p className="mb-1.5 mt-3 text-lg">{t('options')}</p>
             <div className="flew-row flex">

@@ -56,10 +56,18 @@ const FileSharingRedirect = () => {
     hasNavigatedRef.current = true;
 
     if (shares.length > 0) {
-      const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
+      const { lastVisitedShareDisplayName, pathToRestoreSession } = useFileSharingStore.getState();
+      const lastShare = shares.find((s) => s.displayName === lastVisitedShareDisplayName);
+      const targetShare = lastShare ?? shares[0];
+      const shareRootPath = createVariableSharePathname(targetShare.pathname, targetShare.pathVariables);
+      const navigationPath =
+        lastShare && pathToRestoreSession !== '/' && pathToRestoreSession.startsWith(shareRootPath)
+          ? pathToRestoreSession
+          : shareRootPath;
+
       navigate(
         {
-          pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
+          pathname: `/${APPS.FILE_SHARING}/${targetShare.displayName}`,
           search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(navigationPath)}`,
         },
         { replace: true },

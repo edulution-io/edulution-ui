@@ -34,7 +34,7 @@ import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import IconWrapper from '@/components/shared/IconWrapper';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
@@ -48,7 +48,7 @@ const AppStorePage: React.FC = () => {
   const { appConfigs, error, setIsAddAppConfigDialogOpen, createAppConfig } = useAppConfigsStore();
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   const filteredAppOptions = useMemo(() => {
     const existingOptions = appConfigs.map((item) => item.name);
@@ -79,6 +79,7 @@ const AppStorePage: React.FC = () => {
         extendedOptions: newExtendedOptions,
         position: 0,
         displayLocations: defaultDisplayLocations,
+        usesPushNotifications: false,
       };
 
       void createAppConfig(newConfig);
@@ -120,7 +121,13 @@ const AppStorePage: React.FC = () => {
                   height={48}
                   applyLegacyFilter={selectedApp.id !== item.id}
                 />
-                <p>{getDisplayName({ name: item.id, appType: APP_INTEGRATION_VARIANT.NATIVE }, language, isLmn)}</p>
+                <p>
+                  {getDisplayName(
+                    { name: item.id, appType: APP_INTEGRATION_VARIANT.NATIVE },
+                    language,
+                    isSchoolEnvironment,
+                  )}
+                </p>
               </div>
             </Card>
           </button>

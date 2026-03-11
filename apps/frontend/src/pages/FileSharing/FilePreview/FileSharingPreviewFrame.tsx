@@ -29,14 +29,12 @@ import OpenInNewTabButton from '@/components/structure/framing/ResizableWindow/B
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import ToggleEditModeButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleEditModeButton';
 import SaveButton from '@/components/structure/framing/ResizableWindow/Buttons/SaveButton';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import useActiveDocumentEditor from '@/pages/FileSharing/hooks/useActiveDocumentEditor';
 import ContentType from '@libs/filesharing/types/contentType';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import ToggleDockButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleDockButton';
@@ -63,7 +61,7 @@ const FileSharingPreviewFrame = () => {
     setIsFilePreviewDocked,
   } = useFileEditorStore();
   const { loadDownloadUrl } = useFileSharingDownloadStore();
-  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { setFileIsCurrentlyDisabled, fetchFiles, currentPath } = useFileSharingStore();
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const {
     hasUnsavedChanges,
@@ -73,6 +71,7 @@ const FileSharingPreviewFrame = () => {
     saveFile,
     reset: resetFileEditorContent,
   } = useFileEditorContentStore();
+  const { isOnlyOfficeActive, isCollaboraActive } = useActiveDocumentEditor();
   const windowSize = useWindowResize();
   const location = useLocation();
   const closingRef = useRef(false);
@@ -123,9 +122,27 @@ const FileSharingPreviewFrame = () => {
 
   const performOpenInNewTab = () => {
     if (!currentlyEditingFile) return;
+    const { filename } = currentlyEditingFile;
     addFileToOpenInNewTab(currentlyEditingFile);
     window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
     resetPreview();
+
+    let hasReturned = false;
+    const listeners: { focus?: () => void; visibility?: () => void } = {};
+    const onReturn = () => {
+      if (hasReturned) return;
+      hasReturned = true;
+      if (listeners.focus) window.removeEventListener('focus', listeners.focus);
+      if (listeners.visibility) document.removeEventListener('visibilitychange', listeners.visibility);
+      void fetchFiles(webdavShare, currentPath, true);
+      void setFileIsCurrentlyDisabled(filename, true, 5000);
+    };
+    listeners.focus = () => onReturn();
+    listeners.visibility = () => {
+      if (document.visibilityState === 'visible') onReturn();
+    };
+    window.addEventListener('focus', listeners.focus);
+    document.addEventListener('visibilitychange', listeners.visibility);
   };
 
   const openInNewTab = () => {
@@ -148,12 +165,15 @@ const FileSharingPreviewFrame = () => {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    if (currentlyEditingFile) {
+    const isCollaboraFile =
+      isCollaboraActive && !!currentlyEditingFile && isOfficeDocument(currentlyEditingFile.filePath);
+
+    if (currentlyEditingFile && !isCollaboraFile) {
       void loadDownloadUrl(currentlyEditingFile, webdavShare, controller.signal);
     }
 
     return () => controller.abort();
-  }, [currentlyEditingFile, isEditMode]);
+  }, [currentlyEditingFile, isEditMode, isCollaboraActive]);
 
   const performClose = async () => {
     if (!currentlyEditingFile) return;
@@ -161,6 +181,7 @@ const FileSharingPreviewFrame = () => {
     const { filename } = currentlyEditingFile;
     setIsEditMode(false);
     resetPreview();
+    await fetchFiles(webdavShare, currentPath, true);
     await setFileIsCurrentlyDisabled(filename, true, 5000);
     closingRef.current = false;
   };
@@ -200,8 +221,6 @@ const FileSharingPreviewFrame = () => {
     printContent(contentElement, title);
   };
 
-  const { appConfigs } = useAppConfigsStore();
-
   const { x, y, width, height } = filePreviewRect || { x: 0, y: 0, width: 0, height: 0 };
 
   const initialPositionMemo = useMemo(
@@ -213,21 +232,17 @@ const FileSharingPreviewFrame = () => {
     [isFilePreviewDocked, width, height],
   );
 
-  const isDocumentServerConfigured = !!getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
-  );
+  const isEditableDoc =
+    !!currentlyEditingFile && isOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
-  const isOnlyOfficeDoc =
-    !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
+  const isDocumentEditorConfigured = isOnlyOfficeActive || isCollaboraActive;
 
   const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
   const isPdf = currentlyEditingFile?.filename.endsWith('pdf');
-  const isOnlyOfficeDocOnMobile = isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf;
+  const isOnlyOfficeDocOnMobile = isMobileView && isEditableDoc && isOnlyOfficeActive && !isPdf;
 
   const isFileReady =
-    (isValidFile && (isOnlyOfficeDoc ? isDocumentServerConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
+    (isValidFile && (isEditableDoc ? isDocumentEditorConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
 
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
@@ -235,7 +250,7 @@ const FileSharingPreviewFrame = () => {
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const canToggleEditMode = isOnlyOfficeDocument(currentlyEditingFile?.filename || '') || isTextFile || isDrawioFile;
+  const canToggleEditMode = isEditableDoc || isTextFile || isDrawioFile;
   const isTextEditMode = isEditMode && isTextFile;
   const isDrawioEditMode = isEditMode && isDrawioFile;
   const showSaveButton = isTextEditMode || isDrawioEditMode;
@@ -294,7 +309,8 @@ const FileSharingPreviewFrame = () => {
         <FileRenderer
           editMode={isEditMode}
           closingRef={closingRef}
-          isOnlyOfficeConfigured={isDocumentServerConfigured}
+          isOnlyOfficeConfigured={isOnlyOfficeActive}
+          isCollaboraConfigured={isCollaboraActive}
           webdavShare={webdavShare}
         />
       </ResizableWindow>

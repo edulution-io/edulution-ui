@@ -16,6 +16,7 @@
 - Both apps: `npm run serveFrontendAndApi`
 - Build frontend/API/all: `npm run build`, `npm run build:api`, `npm run build:all`
 - Tests: `npm run test` (API), `npm run test:frontend`, coverage with `npm run coverage`
+- E2E tests: `npm run prepare:e2e` (install Playwright browsers), then `npm run test:e2e`
 - Lint/format: `npm run lint`, `npm run lint:fix`, staged formatting via pre-commit
 - Local infra (Mongo/Redis): `docker compose up -d` (see `docker-compose.yml`)
 
@@ -23,6 +24,9 @@
 
 - Stack: TypeScript, React 18, NestJS 11, Nx workspace.
 - Linting: ESLint (Airbnb + TypeScript, a11y, import rules). Run `npm run lint`.
+- When linting, prefer linting only the changed files instead of the full project:
+  - `npx eslint path/to/changed/file.ts --quiet`
+  - Only run `npm run lint` for final verification before commits
 - Formatting: Prettier (2 spaces, 120 cols, single quotes, trailing commas). Run `npm run format`.
 - React: Function components as arrow functions; allow prop spreading; avoid `console` except `info|warn|error`.
 - Shared code lives under `libs/`, move utility functions, types, and constants always there (in separate files). Do not move UI components there.
@@ -36,6 +40,7 @@
 - Do not use magic strings. Always use constants.
 - In NestJS services, use static Logger calls with the service name as context: `Logger.log('message', ServiceName.name)`, `Logger.error('message', ServiceName.name)`. Do not create instance logger with `private readonly logger = new Logger()`.
 - In React, use `eduApi` (axios) from `@/api/eduApi` for API calls instead of native `fetch`. API calls should be placed in Zustand stores, not in components. Use `ResponseType.BLOB` for blob responses and `handleApiError` for error handling.
+- All newly added zustand stores must be reset in apps/frontend/src/store/utils/cleanAllStores.ts
 - Always search the code for existing patterns, functions, classes, types, and constants before creating new ones.
 - Use generic types over unsafe type casting.
 - Migrations MUST always increase the schema version number so later migrations are triggered.
@@ -49,6 +54,7 @@
 - API: Jest; config under `apps/api/jest.config.ts`.
 - Conventions: Co-locate tests with source using `*.spec.ts(x)` or project `test/` folders.
 - Run: `npm run test:frontend` for UI, `npm run test:api` for API; add assertions and keep tests fast and deterministic.
+- New features must include tests. Every new component, hook, store, or utility should have a corresponding `*.spec.ts(x)` file with meaningful coverage before merging.
 
 ## Commit & Pull Request Guidelines
 

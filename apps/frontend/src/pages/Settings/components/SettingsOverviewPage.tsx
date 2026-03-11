@@ -39,7 +39,7 @@ import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
 import useGlobalSettingsApiStore from '../GlobalSettings/useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from '../GlobalSettings/GlobalSettingsFloatingButtons';
-import InfoPage from '../Info/InfoPage';
+import LicensePage from '../License/LicensePage';
 
 interface SettingsTabOption extends TabOption {
   component: (props: {
@@ -74,7 +74,7 @@ const TAB_OPTIONS: SettingsTabOption[] = [
       />
     ),
   },
-  { id: GLOBAL_SETTINGS_TABS.INFO, nameKey: 'settings.info.title', component: () => <InfoPage /> },
+  { id: GLOBAL_SETTINGS_TABS.INFO, nameKey: 'settings.info.title', component: () => <LicensePage /> },
 ];
 
 const showFloatingButtonsTabList: Set<string> = new Set([

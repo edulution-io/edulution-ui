@@ -29,13 +29,12 @@ import {
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
-import { cn } from '@edulution-io/ui-kit';
+import { cn, Input } from '@edulution-io/ui-kit';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import EMPTY_COLUMN_VISIBILITY from '@libs/common/constants/emptyColumnVisibility';
 import pinRowToTop from '@libs/ui/utils/pinRowToTop';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import Input from '@/components/shared/Input';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 import DraggableTableRow from '@/components/ui/DraggableTableRow';
@@ -65,7 +64,6 @@ interface DataTableProps<TData, TValue> {
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
   searchBarAdditionalComponent?: ReactNode;
-  activeFilterCount?: number;
   focusedRowId?: string | null;
   onSortedRowsChange?: (sortedData: TData[]) => void;
   onRowClick?: (item: TData) => void;
@@ -97,7 +95,6 @@ const ScrollableTable = <TData, TValue>({
   enableDragAndDrop = false,
   canDropOnRow,
   searchBarAdditionalComponent,
-  activeFilterCount,
   focusedRowId,
   onSortedRowsChange,
   onRowClick,
@@ -141,7 +138,7 @@ const ScrollableTable = <TData, TValue>({
   const filterValue = String(table.getColumn(filterKey)?.getFilterValue() || '');
 
   return (
-    <>
+    <div className="flex h-full w-full flex-1 flex-col">
       {isLoading && data?.length === 0 && <LoadingIndicatorDialog isOpen={isLoading} />}
 
       {showSelectedCount && (
@@ -152,28 +149,29 @@ const ScrollableTable = <TData, TValue>({
         />
       )}
 
-      <div className="h-full w-full flex-1 overflow-auto pr-1 scrollbar-thin">
-        {(!!data.length || !!activeFilterCount) && showSearchBarAndColumnSelect && (
-          <div className="flex items-center gap-2 pb-4 pt-2">
-            <div className="min-w-0 flex-1">
-              <Input
-                placeholder={t(filterPlaceHolderText)}
-                value={filterValue}
-                onChange={(e) => table.getColumn(filterKey)?.setFilterValue(e.target.value)}
-                variant={isDialog ? 'dialog' : 'default'}
-              />
-            </div>
-
-            {table.getAllColumns().length > 1 && (
-              <SelectColumnsDropdown
-                table={table}
-                isDialog={isDialog}
-              />
-            )}
-
-            {searchBarAdditionalComponent}
+      {showSearchBarAndColumnSelect && (
+        <div className="flex items-center gap-2 pb-4 pt-2">
+          <div className="min-w-0 flex-1">
+            <Input
+              placeholder={t(filterPlaceHolderText)}
+              value={filterValue}
+              onChange={(e) => table.getColumn(filterKey)?.setFilterValue(e.target.value)}
+              variant={isDialog ? 'dialog' : 'default'}
+            />
           </div>
-        )}
+
+          {table.getAllColumns().length > 1 && (
+            <SelectColumnsDropdown
+              table={table}
+              isDialog={isDialog}
+            />
+          )}
+
+          {searchBarAdditionalComponent}
+        </div>
+      )}
+
+      <div className="min-h-0 w-full flex-1 overflow-auto pr-1 scrollbar-thin">
         <Table>
           {showHeader && (
             <TableHeader>
@@ -243,7 +241,7 @@ const ScrollableTable = <TData, TValue>({
           />
         </Table>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -34,6 +34,11 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import convertImageFileToCompressedWebp from '@libs/common/utils/convertImageFileToCompressedWebp';
+import {
+  IMAGE_COMPRESSION_MAX_SIZE_KB_MAXIMUM,
+  IMAGE_MAX_DIMENSION_LARGE,
+} from '@libs/common/constants/imageUploadConstraints';
 
 interface BulletinBoardEditorialStore {
   selectedRows: RowSelectionState;
@@ -119,10 +124,14 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   createBulletin: async (bulletin) => {
     set({ isDialogLoading: true, error: null });
     try {
-      const { data } = await eduApi.post<BulletinResponseDto>(BULLETIN_BOARD_EDU_API_ENDPOINT, bulletin);
+      const { data } = await eduApi.post<BulletinResponseDto | null>(BULLETIN_BOARD_EDU_API_ENDPOINT, bulletin);
 
-      set({ bulletins: [...get().bulletins, data], selectedRows: {} });
-      toast.success(i18n.t('bulletinboard.bulletinCreatedSuccessfully'));
+      if (data) {
+        set({ bulletins: [...get().bulletins, data], selectedRows: {} });
+      }
+      toast.success(
+        i18n.t(data ? 'bulletinboard.bulletinCreatedSuccessfully' : 'bulletinboard.pushNotificationSentSuccessfully'),
+      );
       return true;
     } catch (error) {
       handleApiError(error, set);
@@ -151,7 +160,12 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   uploadAttachment: async (file): Promise<string> => {
     set({ isAttachmentUploadLoading: true, error: null });
     const formData = new FormData();
-    formData.append('file', file);
+    const uploadingFile = await convertImageFileToCompressedWebp(
+      file,
+      IMAGE_COMPRESSION_MAX_SIZE_KB_MAXIMUM,
+      IMAGE_MAX_DIMENSION_LARGE,
+    );
+    formData.append('file', uploadingFile);
 
     try {
       const response = await eduApi.post<string>(BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT, formData, {

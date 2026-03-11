@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+@layer base {
+  :root,
+  .dark {
+    --radius: 0.25rem;
+    --ci-light-green: #8fc046;
+    --ci-dark-blue: #0081c6;
+    --background: #ffffff;
+    --foreground: #000000;
+    --muted-foreground: #bbbbbb;
+    --muted-background: #1a1a1a;
+    --primary: #0081c6;
+    --primary-foreground: #ffffff;
+    --secondary: #d1d5db;
+    --secondary-foreground: #2d2d30;
+    --muted: #2d3748;
+    --muted-transparent: #2d374850;
+    --muted-light: #3a4557;
+    --accent: #2d2d30;
+    --accent-light: #3c3f45;
+    --input: #e2e8f0;
+    --card: #00000000;
+    --card-foreground: #ffffff;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --border: #cbd4e4;
+    --destructive: #ff0000;
+    --destructive-foreground: #ecf7ff;
+    --ring: #8ca4b6;
+    --ring-transparent: #8ca4b650;
+  }
+
+  .light {
+    --background: #000000;
+    --foreground: #ffffff;
+    --muted-foreground: #505050;
+    --muted-background: #bbbbbb;
+    --muted-light: #dcdcdc;
+    --primary: #0081c6;
+    --primary-foreground: #ffffff;
+    --secondary: #2e2a24;
+    --secondary-foreground: #c8c8c3;
+    --muted: #b1b1ac;
+    --muted-transparent: #b1b1ac50;
+    --accent: #c9ccd2;
+    --accent-light: #d1d5db;
+    --input: #1d170f;
+    --card: #00000000;
+    --card-foreground: #000000;
+    --popover: #000000;
+    --popover-foreground: #f0e8d5;
+    --border: #333333;
+    --destructive: #ff0000;
+    --destructive-foreground: #130800;
+    --ring: #735b49;
+    --ring-transparent: #735b4950;
+  }
+}

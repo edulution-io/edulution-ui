@@ -21,15 +21,16 @@ import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import type UserType from '@libs/userManagement/types/userType';
 import type ListManagementRow from '@libs/userManagement/types/listManagementRow';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
 import LIST_MANAGEMENT_COLUMNS from '@libs/userManagement/constants/listManagementColumns';
 import { entriesToRows, rowsToEntries } from '@libs/userManagement/utils/csvUtils';
+import EditableTable, { type CellCallbacks } from '@/pages/LinuxmusterPage/components/EditableTable';
 import useUserManagementStore from '../../useUserManagementStore';
-import ListManagementTable from './ListManagementTable';
+import getListManagementColumns from './getListManagementColumns';
 
 interface ListManagementTabProps {
   userType: UserType;
@@ -38,7 +39,7 @@ interface ListManagementTabProps {
 const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const effectiveSchool = isSuperAdmin ? selectedSchool : selectedSchool || user?.school || '';
   const {
@@ -127,8 +128,8 @@ const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
         const currentEntry = managementListEntries[index];
         if (currentEntry && savedEntry) {
           columns.forEach((col) => {
-            const currentValue = currentEntry[col.apiKey] ?? '';
-            const savedValue = savedEntry[col.apiKey] ?? '';
+            const currentValue = currentEntry[col.entryKey] ?? '';
+            const savedValue = savedEntry[col.entryKey] ?? '';
             if (currentValue !== savedValue) {
               changed.add(`${row.id}-${col.key}`);
             }
@@ -139,6 +140,15 @@ const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
 
     return { newRowIds: newIds, changedCells: changed };
   }, [rows, managementListEntries, savedListEntries, managementList, deletedIndexSet]);
+
+  const getColumns = useCallback(
+    (callbacks: CellCallbacks) =>
+      getListManagementColumns({
+        managementList: managementList!,
+        ...callbacks,
+      }),
+    [managementList],
+  );
 
   if (!managementList) {
     return (
@@ -151,14 +161,14 @@ const ListManagementTab: React.FC<ListManagementTabProps> = ({ userType }) => {
   return (
     <div className="flex h-full flex-col">
       {isLoadingList || isBackgroundFetchingList ? <HorizontalLoader /> : <div className="h-1" />}
-      <ListManagementTable
+      <EditableTable<ListManagementRow>
         rows={rows}
-        managementList={managementList}
         newRowIds={newRowIds}
         changedCells={changedCells}
         deletedRowIds={deletedRowIds}
         onRowsChange={handleRowsChange}
         onDeleteRow={handleDeleteRow}
+        getColumns={getColumns}
         initialSorting={[{ id: LIST_MANAGEMENT_COLUMNS[managementList][0].key, desc: false }]}
       />
     </div>

@@ -24,8 +24,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import {
   faChalkboardTeacher,
+  faCircleInfo,
+  faDesktop,
   faGlobe,
   faUserGraduate,
+  faUserGroup,
   faUserPlus,
   faUsers,
   faUserShield,
@@ -34,6 +37,8 @@ import {
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { Card } from '@/components/shared/Card';
 import {
+  LINUXMUSTER_INFO_PATH,
+  PARENT_ASSIGNMENT_PATH,
   USER_MANAGEMENT_EXTRASTUDENTS_PATH,
   USER_MANAGEMENT_GLOBALADMINS_PATH,
   USER_MANAGEMENT_PARENTS_PATH,
@@ -43,16 +48,16 @@ import {
   USER_MANAGEMENT_TEACHERS_PATH,
 } from '@libs/userManagement/constants/userManagementPaths';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
+import { DEVICE_MANAGEMENT_PATH } from '@libs/deviceManagement/constants/deviceManagementPaths';
 import { LinuxmusterIcon } from '@/assets/icons';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import useRegisterUserManagementSections from './UserManagement/useRegisterUserManagementSections';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 interface UserTypeCard {
   labelKey: string;
   icon: IconDefinition;
   path: string;
   defaultTab: string;
-  lmnOnly: boolean;
+  schoolOnly: boolean;
 }
 
 const USER_TYPE_CARDS: UserTypeCard[] = [
@@ -61,63 +66,60 @@ const USER_TYPE_CARDS: UserTypeCard[] = [
     icon: faUserGraduate,
     path: USER_MANAGEMENT_STUDENTS_PATH,
     defaultTab: USER_MANAGEMENT_TABS.TABLE,
-    lmnOnly: true,
+    schoolOnly: true,
   },
   {
     labelKey: 'usermanagement.teachers',
     icon: faChalkboardTeacher,
     path: USER_MANAGEMENT_TEACHERS_PATH,
     defaultTab: USER_MANAGEMENT_TABS.TABLE,
-    lmnOnly: true,
+    schoolOnly: true,
   },
   {
     labelKey: 'usermanagement.extrastudents',
     icon: faUserPlus,
     path: USER_MANAGEMENT_EXTRASTUDENTS_PATH,
     defaultTab: USER_MANAGEMENT_TABS.TABLE,
-    lmnOnly: true,
+    schoolOnly: true,
   },
   {
     labelKey: 'usermanagement.parents',
     icon: faUsers,
     path: USER_MANAGEMENT_PARENTS_PATH,
     defaultTab: USER_MANAGEMENT_TABS.TABLE,
-    lmnOnly: true,
+    schoolOnly: true,
   },
   {
     labelKey: 'usermanagement.staff',
     icon: faUserTie,
     path: USER_MANAGEMENT_STAFF_PATH,
     defaultTab: USER_MANAGEMENT_TABS.TABLE,
-    lmnOnly: false,
+    schoolOnly: false,
   },
   {
     labelKey: 'usermanagement.schooladmins',
     icon: faUserShield,
     path: USER_MANAGEMENT_SCHOOLADMINS_PATH,
     defaultTab: USER_MANAGEMENT_TABS.SCHOOLADMINS,
-    lmnOnly: true,
+    schoolOnly: true,
   },
   {
     labelKey: 'usermanagement.globaladmins',
     icon: faGlobe,
     path: USER_MANAGEMENT_GLOBALADMINS_PATH,
     defaultTab: USER_MANAGEMENT_TABS.GLOBALADMINS,
-    lmnOnly: false,
+    schoolOnly: false,
   },
 ];
 
 const LinuxmusterEntryPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isLmn } = useDeploymentTarget();
-
-  useRegisterUserManagementSections();
-
-  const visibleCards = isLmn ? USER_TYPE_CARDS : USER_TYPE_CARDS.filter((card) => !card.lmnOnly);
+  const { isSchoolEnvironment, isBusiness } = useOrganizationType();
+  const visibleCards = isSchoolEnvironment ? USER_TYPE_CARDS : USER_TYPE_CARDS.filter((card) => !card.schoolOnly);
 
   const nativeAppHeader = {
-    title: t(isLmn ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric'),
+    title: t(isSchoolEnvironment ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric'),
     description: t('linuxmuster.description'),
     iconSrc: LinuxmusterIcon,
   };
@@ -134,16 +136,71 @@ const LinuxmusterEntryPage: React.FC = () => {
               onClick={() => navigate(`/${card.path}/${card.defaultTab}`)}
             >
               <Card variant="tile">
-                <div className="m-4 flex flex-col items-center">
+                <div className="flex h-full flex-col items-center justify-center gap-2">
                   <FontAwesomeIcon
                     icon={card.icon}
-                    className="h-12 w-12 md:h-14 md:w-14"
+                    className="h-8 w-8 md:h-10 md:w-10"
                   />
                   <p>{t(card.labelKey)}</p>
                 </div>
               </Card>
             </button>
           ))}
+        </div>
+        <h2 className="mb-4 mt-8 text-xl font-semibold">{t('deviceManagement.menuTitle')}</h2>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/${DEVICE_MANAGEMENT_PATH}`)}
+          >
+            <Card variant="tile">
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <FontAwesomeIcon
+                  icon={faDesktop}
+                  className="h-8 w-8 md:h-10 md:w-10"
+                />
+                <p>{t('deviceManagement.title')}</p>
+              </div>
+            </Card>
+          </button>
+        </div>
+        {!isBusiness && (
+          <>
+            <h2 className="mb-4 mt-8 text-xl font-semibold">{t('parentChildPairing.assignment')}</h2>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => navigate(`/${PARENT_ASSIGNMENT_PATH}`)}
+              >
+                <Card variant="tile">
+                  <div className="flex h-full flex-col items-center justify-center gap-2">
+                    <FontAwesomeIcon
+                      icon={faUserGroup}
+                      className="h-8 w-8 md:h-10 md:w-10"
+                    />
+                    <p>{t('parentChildPairing.assignment')}</p>
+                  </div>
+                </Card>
+              </button>
+            </div>
+          </>
+        )}
+        <h2 className="mb-4 mt-8 text-xl font-semibold">{t('linuxmuster.system')}</h2>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/${LINUXMUSTER_INFO_PATH}`)}
+          >
+            <Card variant="tile">
+              <div className="flex h-full flex-col items-center justify-center gap-2">
+                <FontAwesomeIcon
+                  icon={faCircleInfo}
+                  className="h-8 w-8 md:h-10 md:w-10"
+                />
+                <p>{t('linuxmuster.versionInfo')}</p>
+              </div>
+            </Card>
+          </button>
         </div>
       </div>
     </PageLayout>

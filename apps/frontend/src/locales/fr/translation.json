@@ -69,6 +69,7 @@
     "categoryName": "Nom de la catégorie",
     "bulletinUpdatedSuccessfully": "Message enregistré avec succès",
     "bulletinCreatedSuccessfully": "Créé avec succès",
+    "pushNotificationSentSuccessfully": "Notification push envoyée avec succès",
     "bulletinsDeletedSuccessfully": "Messages supprimé avec succès",
     "categoryCreatedSuccessfully": "Catégorie créée avec succès",
     "categoryUpdatedSuccessfully": "Catégorie mise à jour avec succès",
@@ -95,8 +96,20 @@
       "unauthorizedDeleteCategory": "Aucune autorisation pour supprimer cette catégorie",
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
       "attachmentNotFound": "Pièce jointe introuvable",
-      "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
-    }
+      "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué",
+      "pushOnlyMissingFields": "Le titre et le message push sont requis pour le mode 'Push uniquement'"
+    },
+    "pushNotification": "Notification push",
+    "saveMode": "Type de publication",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin uniquement",
+      "pushOnly": "Push uniquement"
+    },
+    "customPushTitle": "Titre de la notification push",
+    "customPushTitlePlaceholder": "Bulletin prêt",
+    "customPushBody": "Message push",
+    "customPushBodyPlaceholder": "Nouveau bulletin dans {{category}}"
   },
   "notificationscenter": {
     "appTitle": "Notifications",
@@ -124,8 +137,17 @@
     "menu": {
       "all": "Tout",
       "messages": "Messages",
-      "system": "Système"
-    }
+      "system": "Système",
+      "sent": "Envoyés"
+    },
+    "sentSection": "Messages envoyés",
+    "noSentNotifications": "Tu n'as envoyé aucun message",
+    "deleteAllSent": "Supprimer tous les envoyés",
+    "confirmDeleteSent": "Es-tu sûr de vouloir supprimer les {{count}} messages envoyés ? Ils seront également supprimés chez tous les destinataires.",
+    "showRecipients": "Afficher les destinataires",
+    "noRecipients": "Aucun destinataire",
+    "recipientsStats": "{{read}} sur {{total}} ont lu",
+    "read": "Lu"
   },
   "appstore": {
     "title": "App Store",
@@ -200,11 +222,13 @@
       "UpdateUserSessionsFailed": "La mise à jour de la session utilisateur a échoué",
       "StartExamModeFailed": "Echec de démarrage du mode d'examen",
       "PrintPasswordsFailed": "Echec de l'impression des mots de passe",
+      "GetStudentsListFailed": "Echec du téléchargement de la liste des élèves",
       "StopExamModeFailed": "La fin du mode d'examen a échoué",
       "RemoveManagementGroupFailed": "Echec de la suppression du groupe de gestion",
       "AddManagementGroupFailed": "Echec de l'ajout du groupe de gestion",
       "GetUserSchoolClassesFailed": "Echec d'appel des classes de l'utilisateur",
       "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
+      "UpdateSchoolClassFailed": "Échec de la mise à jour de la classe",
       "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
       "GetUserFailed": "Échec de l'appel",
       "GetUsersFailed": "L'appel des utilisateurs a échoué",
@@ -219,7 +243,9 @@
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
       "GetSchoolsFailed": "L'appel des écoles a échoué",
-      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué.",
+      "AddParentToStudentFailed": "Échec de l'enregistrement du parent pour l'élève",
+      "DeleteParentFromStudentFailed": "Échec de la suppression du parent de l'élève"
     }
   },
   "ticketsystem": {
@@ -385,6 +411,7 @@
     "print": "Imprimer",
     "fileEditor": "Editeur de fichier",
     "filePreview": "Aperçu des fichiers",
+    "collaboraEditor": "Éditeur Collabora Online",
     "closeEditor": "Ferme l'éditeur",
     "loadingDocument": "Chargement du document ...",
     "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
@@ -421,7 +448,18 @@
       "MissingCallbackURL": "Callback-URL manquante",
       "SharingFailed": "La distribution des fichiers a échoué",
       "CopyFailed": "La copie a échoué",
-      "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
+      "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge.",
+      "WopiTokenInvalid": "Jeton WOPI invalide ou expiré"
+    },
+    "singleDownload": {
+      "promptInfo": "Le téléchargement de votre fichier a commencé.",
+      "downloadSucceeded": "Le fichier a-t-il été téléchargé avec succès ?",
+      "help": "Aide"
+    },
+    "multipleDownload": {
+      "promptInfo": "Votre navigateur peut demander l'autorisation de télécharger plusieurs fichiers.",
+      "downloadSucceeded": "Tous les fichiers ont-ils été téléchargés avec succès?",
+      "help": "Aide"
     },
     "publicFileSharing": {
       "sharedBy": "Partagé par",
@@ -511,6 +549,9 @@
       "updateSuccess": "Projet mis à jour avec succès",
       "deleteSuccess": "Projet supprimé avec succès"
     },
+    "schoolClass": {
+      "updateSuccess": "Classe mise à jour avec succès"
+    },
     "sessions": {
       "createSuccess": "Session créée avec succès",
       "updateSuccess": "Session mise à jour avec succès",
@@ -530,12 +571,17 @@
     "lesson": "Cours",
     "enrol": "Inscriptions",
     "printPasswords": "Impression des mots de passe",
+    "classLists": "Listes de classes",
+    "classListsPageDescription": "Téléchargez les listes d'élèves pour des classes individuelles ou sélectionnez plusieurs classes pour les télécharger en même temps.",
+    "pdfStudentsListDescription": "Télécharger une liste d'élèves au format PDF pour ces classes",
+    "csvStudentsListDescription": "Télécharger une liste d'élèves au format CSV pour ces classes",
     "Printers": "Imprimante",
     "projects": "Projets",
     "editmyProjects": "Editer un projet",
     "createmyProjects": "Créer un projet",
     "detailsmyProjects": "Détails du projet",
     "myClasses": "Mes classes",
+    "editmyClasses": "Modifier la classe",
     "detailsmyClasses": "Détails de la classe",
     "closeSession": "Fermer",
     "session": "Session",
@@ -650,6 +696,7 @@
     "titleLmn": "SERVEUR SCOLAIRE",
     "titleGeneric": "SERVEUR",
     "menuTitle": "Gestion des utilisateurs",
+    "parentAssignment": "Affectation parentale",
     "description": "Afficher et gérer les comptes utilisateurs, les listes et les rôles.",
     "students": "Élèves",
     "teachers": "Enseignants",
@@ -661,8 +708,8 @@
     "globaladmins": "Admins globaux",
     "globalbindusers": "Utilisateurs Bind globaux",
     "tabs": {
-      "table": "Tableau",
-      "list": "Gestion des listes"
+      "table": "Utilisateurs",
+      "list": "Import"
     },
     "filterUsers": "Filtrer les utilisateurs...",
     "loginClass": "Login / Classe",
@@ -679,9 +726,11 @@
     "loginname": "Nom de connexion",
     "mailAlias": "Alias de messagerie",
     "class": "Classe",
+    "classBusiness": "Groupe principal",
     "sophomorixStatus": "Statut Sophomorix",
     "role": "Rôle",
     "schoolname": "Nom de l'école",
+    "schoolnameBusiness": "Code d'organisation",
     "userId": "ID utilisateur (optionnel)",
     "birthdate": "Date de naissance",
     "deactivationDate": "Date de désactivation",
@@ -690,11 +739,13 @@
     "groupMembership": "Appartenance au groupe",
     "quota": "Quota",
     "noQuotaInfo": "Aucune information de quota disponible",
-    "noListAvailable": "Aucune gestion de liste disponible pour ce type d'utilisateur.",
-    "listDescription": "Gestion des listes pour {{school}}/{{list}}.csv",
+    "noListAvailable": "Aucun import disponible pour ce type d'utilisateur.",
+    "listDescription": "Import pour {{school}}/{{list}}.csv",
     "csvPlaceholder": "Le contenu CSV sera affiché ici...",
     "addUser": "Ajouter un utilisateur",
     "check": "Vérifier",
+    "saveConfirmTitle": "Sauvegarder la liste",
+    "saveConfirmMessage": "La liste doit être sauvegardée avant la vérification. Voulez-vous sauvegarder la liste maintenant et continuer ?",
     "apply": "Appliquer",
     "exportCsv": "Exporter CSV",
     "csv": {
@@ -723,10 +774,12 @@
       "noChanges": "Aucune modification détectée. Les données actuelles correspondent aux comptes utilisateurs existants.",
       "columns": {
         "class": "Classe",
+        "classBusiness": "Groupe principal",
         "login": "Login",
         "name": "Nom",
         "role": "Rôle",
         "school": "École",
+        "schoolBusiness": "Code d'organisation",
         "changes": "Modifications",
         "file": "Fichier",
         "reason": "Raison"
@@ -1158,10 +1211,11 @@
         "setAdminGroupSelectDescription": "Les groupes peuvent être sélectionnés via le champ de recherche.",
         "setAdminGroupWarning": "Au moins un groupe d’administrateurs doit être sélectionné."
       },
-      "deploymentTarget": "Plate-forme cible de déploiement"
+      "deploymentTarget": "Plate-forme cible de déploiement",
+      "organizationType": "Type d'organisation"
     },
     "info": {
-      "title": "Informations"
+      "title": "Licence"
     },
     "webhooks": {
       "title": "Webhooks",
@@ -1190,6 +1244,10 @@
         },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
+          "description": ""
+        },
+        "collabora": {
+          "title": "Intégration Collabora Online",
           "description": ""
         },
         "imapMailFeed": {
@@ -1470,6 +1528,39 @@
       "configDownloadDescription": "Téléchargez le fichier de configuration WireGuard pour l'importer dans l'application WireGuard sur votre ordinateur.",
       "downloadButton": "Télécharger la configuration",
       "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
+    },
+    "parentChildPairing": {
+      "myParents": "Mes Parents",
+      "myChildren": "Mes Enfants",
+      "descriptionStudent": "Ici, vous pouvez créer un lien avec vos parents.",
+      "descriptionParent": "Ici, vous pouvez créer un lien avec vos enfants.",
+      "myCode": "Mon Code d'Affectation",
+      "myCodeDescriptionStudent": "Partagez ce code avec votre parent. Le code est valide 5 minutes.",
+      "myCodeDescriptionParent": "Partagez ce code avec votre enfant. Le code est valide 5 minutes.",
+      "enterCode": "Saisir le Code",
+      "enterCodeDescriptionStudent": "Saisissez le code d'affectation que vous avez reçu de votre parent.",
+      "enterCodeDescriptionParent": "Saisissez le code d'affectation que vous avez reçu de votre enfant.",
+      "enterCodePlaceholder": "Saisir le code d'affectation",
+      "submitCode": "Affecter",
+      "relationships": "Affectations",
+      "noRelationships": "Pas encore d'affectations.",
+      "statusPending": "En attente",
+      "statusAccepted": "Accepté",
+      "statusRejected": "Rejeté",
+      "pairingSuccess": "Demande d'affectation envoyée avec succès!",
+      "regenerateCode": "Régénérer",
+      "codeRefreshed": "Nouveau code d'affectation généré.",
+      "codeExpired": "Le code a expiré. Veuillez demander un nouveau code.",
+      "parent": "Parent",
+      "student": "Élève",
+      "statusColumn": "Statut",
+      "createdAt": "Créé le",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "statusUpdated": "Statut mis à jour avec succès.",
+      "assignment": "Affectation parentale",
+      "assignmentDescription": "Gérer les affectations parent-élève.",
+      "filterPlaceholder": "Rechercher par parent ou élève..."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
@@ -1784,7 +1875,42 @@
     "item": "{{count}} utilisateur",
     "items": "{{count}} utilisateurs",
     "userManagement": "Gestion des utilisateurs",
-    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs."
+    "description": "Gérez les paramètres de votre serveur scolaire et les utilisateurs.",
+    "versionInfo": "Aperçu des versions",
+    "system": "Système",
+    "versionMismatch": "La version de l'API Linuxmuster est trop ancienne. La version {{version}} ou ultérieure est requise."
+  },
+  "parentAssignment": {
+    "item": "{{count}} affectation",
+    "items": "{{count}} affectations",
+    "rowSelected": "{{selected}} sur {{total}} affectation sélectionnée",
+    "rowsSelected": "{{selected}} sur {{total}} affectations sélectionnées"
+  },
+  "parentChildPairing": {
+    "assignment": "Affectation parentale",
+    "assignmentDescription": "Gérer les affectations parent-élève.",
+    "filterPlaceholder": "Rechercher par parent ou élève...",
+    "parent": "Parent",
+    "student": "Élève",
+    "school": "École",
+    "statusColumn": "Statut",
+    "createdAt": "Créé le",
+    "accept": "Accepter",
+    "reject": "Rejeter",
+    "statusAll": "Tous",
+    "statusPending": "En attente",
+    "statusAccepted": "Accepté",
+    "statusRejected": "Rejeté",
+    "statusUpdated": "Statut mis à jour avec succès.",
+    "errors": {
+      "codeNotFound": "Le code d’affectation n’a pas été trouvé.",
+      "codeExpired": "Le code d’affectation a expiré.",
+      "cannotPairWithSelf": "Vous ne pouvez pas vous affecter à vous-même.",
+      "pairingAlreadyExists": "Cette affectation existe déjà.",
+      "pairingNotFound": "L'affectation n'a pas été trouvée.",
+      "invalidRole": "Votre rôle ne permet pas l’affectation.",
+      "incompatibleRoles": "Vous ne pouvez pas être affecté à un autre élève."
+    }
   },
   "whiteboard": {
     "title": "TABLEAU BLANC",
@@ -2060,6 +2186,14 @@
     "onlyOfficeUrlTitle": "URL OnlyOffice",
     "onlyOfficeJwtSecretTitle": "JWT OnlyOffice",
     "onlyOfficeJwtSecretDescription": "Entrez ici la clé secrète JWT OnlyOffice",
+    "collaboraUrlTitle": "URL Collabora",
+    "collaboraUrl": "Entrez l'URL de Collabora Online",
+    "collaboraWopiSecretTitle": "Secret WOPI Collabora",
+    "collaboraWopiSecretDescription": "Entrez le secret WOPI partagé pour Collabora Online",
+    "activeDocumentEditorTitle": "Éditeur de documents actif",
+    "activeDocumentEditorDescription": "Choisissez l'éditeur de documents à utiliser pour les documents bureautiques",
+    "activeDocumentEditor.onlyoffice": "OnlyOffice",
+    "activeDocumentEditor.collabora": "Collabora Online",
     "drawioUrlTitle": "URL Draw.io",
     "drawioUrlDescription": "Entrez l'URL de votre instance Draw.io auto-hébergée",
     "overrideDocumentVendorMSWithOOTitle": "Utilisez l'OpenDocument comme format de document standard",
@@ -2122,6 +2256,22 @@
     "EDU_WG_DNS": {
       "title": "Serveur DNS",
       "description": "L'adresse du serveur DNS pour la connexion VPN."
+    },
+    "MOODLE_WWWROOT": {
+      "title": "Racine WWW",
+      "description": "L'URL complète où Moodle est accessible (par ex. https://moodle.example.com)."
+    },
+    "MOODLE_ADMIN_EMAIL": {
+      "title": "E-mail administrateur",
+      "description": "L'adresse e-mail de l'administrateur Moodle."
+    },
+    "MOODLE_ADMIN_PASSWORD": {
+      "title": "Mot de passe administrateur",
+      "description": "Le mot de passe de l'administrateur Moodle."
+    },
+    "MOODLE_SITE_NAME": {
+      "title": "Nom du site",
+      "description": "Le nom affiché de l'instance Moodle."
     }
   },
   "edulution-manager": {
@@ -2163,7 +2313,8 @@
       "containerCreationSuccessful": "Conteneur créé avec succès.",
       "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
       "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
-      "containerAlreadyUpToDate": "{{containerName}} est déjà à jour."
+      "containerAlreadyUpToDate": "{{containerName}} est déjà à jour.",
+      "containerDeleted": "{{containerName}} supprimé avec succès."
     },
     "status": {
       "running": "en cours d'exécution",
@@ -2199,6 +2350,13 @@
     "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
     "linuxmuster": "Linuxmuster",
     "generic": "Générique"
+  },
+  "organizationType": {
+    "title": "Sélection",
+    "description": "Ici, on peut choisir le type d'organisation.",
+    "school": "École",
+    "business": "Entreprise",
+    "public-administration": "Administration publique"
   },
 
   "webdavShare": {

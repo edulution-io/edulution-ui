@@ -17,15 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsArray, IsBoolean, IsDate, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsIn, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import BulletinSaveModeType from '@libs/bulletinBoard/types/bulletinSaveModeType';
+import BULLETIN_SAVE_MODE from '@libs/bulletinBoard/constants/bulletinSaveMode';
+import CUSTOM_PUSH_BODY_MAX_LENGTH from '@libs/bulletinBoard/constants/customPushBodyMaxLength';
 
 class CreateBulletinDto {
+  @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
+  @IsOptional()
   @IsString()
-  content: string;
+  content?: string;
 
   @IsArray()
   @IsString({ each: true })
@@ -42,6 +47,19 @@ class CreateBulletinDto {
 
   @IsDate()
   isVisibleEndDate: Date | null;
+
+  @IsOptional()
+  @IsString()
+  customPushTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(CUSTOM_PUSH_BODY_MAX_LENGTH)
+  customPushBody?: string;
+
+  @IsOptional()
+  @IsIn(Object.values(BULLETIN_SAVE_MODE))
+  saveMode?: BulletinSaveModeType;
 }
 
 export default CreateBulletinDto;

@@ -23,7 +23,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';

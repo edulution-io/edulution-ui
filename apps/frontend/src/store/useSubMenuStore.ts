@@ -22,22 +22,30 @@ import Section from '@libs/menubar/section';
 
 interface SubMenuStore {
   sections: Section[];
+  parentId: string | null;
   activeSection: string | null;
   sectionToOpen: string | null;
-  setSections: (sections: Section[]) => void;
+  setSections: (sections: Section[], parentId?: string) => void;
   setActiveSection: (id: string | null) => void;
   requestOpenSection: (id: string) => void;
   clearOpenRequest: () => void;
+  reset: () => void;
 }
 
+const initialState = {
+  sections: [] as Section[],
+  parentId: null as string | null,
+  activeSection: null as string | null,
+  sectionToOpen: null as string | null,
+};
+
 const useSubMenuStore = create<SubMenuStore>((set) => ({
-  sections: [],
-  activeSection: null,
-  sectionToOpen: null,
-  setSections: (sections) => set({ sections }),
+  ...initialState,
+  setSections: (sections, parentId) => set({ sections, parentId: parentId ?? null }),
   setActiveSection: (id) => set({ activeSection: id }),
   requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
   clearOpenRequest: () => set({ sectionToOpen: null }),
+  reset: () => set(initialState),
 }));
 
 export default useSubMenuStore;

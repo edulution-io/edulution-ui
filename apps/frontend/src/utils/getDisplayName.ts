@@ -29,11 +29,11 @@ type DisplayNameItem = {
   translations?: AppNameTranslations;
 };
 
-const getDisplayName = (item: DisplayNameItem, language: string, isLmn?: boolean) => {
+const getDisplayName = (item: DisplayNameItem, language: string, isSchoolEnvironment?: boolean) => {
   let displayName;
 
-  if (item.name === APPS.LINUXMUSTER && isLmn !== undefined) {
-    displayName = isLmn ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric';
+  if (item.name === APPS.LINUXMUSTER && isSchoolEnvironment !== undefined) {
+    displayName = isSchoolEnvironment ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric';
   } else if (item.appType === APP_INTEGRATION_VARIANT.NATIVE || !item.translations) {
     displayName = `${item.name}.sidebar`;
   } else {

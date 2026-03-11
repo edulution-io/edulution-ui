@@ -19,6 +19,7 @@
 
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import indexedDbStorage from '@/store/utils/indexedDbStorage';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
@@ -31,6 +32,7 @@ import type ListManagementEntry from '@libs/userManagement/types/listManagementE
 import type ListData from '@libs/userManagement/types/listData';
 import EMPTY_LIST_DATA from '@libs/userManagement/constants/emptyListData';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
 import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
 import { isCommentEntry } from '@libs/userManagement/utils/csvUtils';
 
@@ -46,6 +48,8 @@ type UserManagementStore = {
   isBackgroundFetchingList: boolean;
   isLoadingUserDetails: boolean;
   isSaving: boolean;
+  isCheckLoading: boolean;
+  isApplying: boolean;
   selectedUserDetails: LmnUserInfo | null;
   selectedUserQuota: QuotaResponse | null;
   error: string | null;
@@ -58,10 +62,18 @@ type UserManagementStore = {
     data: ListManagementEntry[],
     silent?: boolean,
   ) => Promise<void>;
+  runSophomorixCheck: () => Promise<SophomorixCheckResponse | null>;
+  runSophomorixApply: (
+    school: string,
+    add: boolean,
+    update: boolean,
+    kill: boolean,
+  ) => Promise<SophomorixCheckResponse | null>;
   fetchSelectedUserDetails: (username: string) => Promise<void>;
   setSelectedUserDetails: (user: LmnUserInfo | null) => void;
   getListData: (managementList: string) => ListData;
   setManagementListEntries: (managementList: string, entries: ListManagementEntry[]) => void;
+  setCommentEntries: (managementList: string, entries: ListManagementEntry[]) => void;
   addDeletedEntryIndex: (managementList: string, index: number) => void;
   reset: () => void;
 };
@@ -75,6 +87,8 @@ const initialState = {
   isBackgroundFetchingList: false,
   isLoadingUserDetails: false,
   isSaving: false,
+  isCheckLoading: false,
+  isApplying: false,
   selectedUserDetails: null as LmnUserInfo | null,
   selectedUserQuota: null as QuotaResponse | null,
   error: null as string | null,
@@ -143,13 +157,14 @@ const useUserManagementStore = create<UserManagementStore>()(
           const response = await eduApi.get<ListManagementEntry[]>(`${LIST_MANAGEMENT}/${school}/${managementList}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
+          const commentEntries = response.data.filter((entry) => isCommentEntry(entry));
           const entries = response.data.filter((entry) => !isCommentEntry(entry));
 
           if (isBackground && cached && hasUnsavedChanges(cached)) {
             set((s) => ({
               listDataByType: {
                 ...s.listDataByType,
-                [managementList]: { ...cached, savedListEntries: entries },
+                [managementList]: { ...cached, savedListEntries: entries, commentEntries },
               },
             }));
           } else {
@@ -160,6 +175,7 @@ const useUserManagementStore = create<UserManagementStore>()(
                   managementListEntries: entries,
                   savedListEntries: entries,
                   deletedEntryIndices: [],
+                  commentEntries,
                 },
               },
             }));
@@ -185,9 +201,11 @@ const useUserManagementStore = create<UserManagementStore>()(
         set({ isSaving: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
+          const existing = get().listDataByType[managementList] ?? EMPTY_LIST_DATA;
+          const allEntries = [...existing.commentEntries, ...data];
           await eduApi.post(
             `${LIST_MANAGEMENT}/${school}/${managementList}`,
-            { data },
+            { data: allEntries },
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
@@ -196,6 +214,7 @@ const useUserManagementStore = create<UserManagementStore>()(
             listDataByType: {
               ...s.listDataByType,
               [managementList]: {
+                ...existing,
                 managementListEntries: data,
                 savedListEntries: data,
                 deletedEntryIndices: [],
@@ -209,6 +228,48 @@ const useUserManagementStore = create<UserManagementStore>()(
           handleApiError(error, set);
         } finally {
           set({ isSaving: false });
+        }
+      },
+
+      runSophomorixCheck: async (): Promise<SophomorixCheckResponse | null> => {
+        set({ isCheckLoading: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.get<SophomorixCheckResponse>(`${LIST_MANAGEMENT}/sophomorix-check`, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return null;
+        } finally {
+          set({ isCheckLoading: false });
+        }
+      },
+
+      runSophomorixApply: async (
+        school: string,
+        add: boolean,
+        update: boolean,
+        kill: boolean,
+      ): Promise<SophomorixCheckResponse | null> => {
+        set({ isApplying: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const response = await eduApi.post<SophomorixCheckResponse>(
+            `${LIST_MANAGEMENT}/sophomorix-apply`,
+            { school, add, update, kill },
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            },
+          );
+          toast.success(i18n.t('usermanagement.applyCompleted'));
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return null;
+        } finally {
+          set({ isApplying: false });
         }
       },
 
@@ -248,6 +309,16 @@ const useUserManagementStore = create<UserManagementStore>()(
         }));
       },
 
+      setCommentEntries: (managementList: string, entries: ListManagementEntry[]) => {
+        const existing = get().listDataByType[managementList] ?? EMPTY_LIST_DATA;
+        set((s) => ({
+          listDataByType: {
+            ...s.listDataByType,
+            [managementList]: { ...existing, commentEntries: entries },
+          },
+        }));
+      },
+
       addDeletedEntryIndex: (managementList: string, index: number) => {
         const existing = get().listDataByType[managementList] ?? EMPTY_LIST_DATA;
         set((s) => ({
@@ -262,7 +333,7 @@ const useUserManagementStore = create<UserManagementStore>()(
     }),
     {
       name: 'user-management-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => indexedDbStorage),
       partialize: (state) => ({
         usersByType: state.usersByType,
         listDataByType: state.listDataByType,

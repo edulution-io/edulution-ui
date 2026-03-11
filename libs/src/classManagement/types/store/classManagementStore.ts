@@ -30,7 +30,6 @@ import type LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolCl
 import type LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
 import type LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import type LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
-import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
 
 interface ClassManagementState {
   userSessions: LmnApiSession[];
@@ -51,13 +50,10 @@ interface ClassManagementState {
   error: Error | null;
   userRoom: LmnApiRoom | null;
   printers: LmnApiPrinter[];
-  schools: LmnApiSchools[];
-  selectedSchool: string;
 }
 
 interface ClassManagementActions {
   reset: () => void;
-  setSelectedSchool: (school: string) => void;
   searchGroupsOrUsers: (
     searchQuery: string,
     t: TFunction<'translation', undefined>,
@@ -68,6 +64,7 @@ interface ClassManagementActions {
   createProject: (form: UseFormReturn<GroupForm>) => Promise<void>;
   updateProject: (form: UseFormReturn<GroupForm>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
+  updateSchoolClass: (form: UseFormReturn<GroupForm>) => Promise<void>;
   fetchSchoolClass: (name: string, allMembers?: boolean) => Promise<LmnApiSchoolClassWithMembers | null>;
   fetchUserSchoolClasses: () => Promise<void>;
   fetchProject: (name: string) => Promise<LmnApiProjectWithMembers | null>;
@@ -77,7 +74,6 @@ interface ClassManagementActions {
   fetchRoom: () => Promise<void>;
   fetchPrinters: () => Promise<void>;
   fetchPrinter: (name: string) => Promise<LmnApiPrinterWithMembers | null>;
-  getSchools: () => Promise<void>;
 }
 
 type ClassManagementStore = ClassManagementState & ClassManagementActions;

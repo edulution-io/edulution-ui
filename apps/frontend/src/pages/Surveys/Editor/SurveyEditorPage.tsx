@@ -50,6 +50,8 @@ import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreato
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import { Form } from '@/components/ui/Form';
 import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
@@ -242,19 +244,13 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-${getResolvedTheme().toString()}.webp`;
     }
 
-    const formula = creator.JSON as SurveyFormula;
-    const saveNo = creator.saveNo || 0;
+    const id = form.getValues('id');
+    const isSavingFromTemplate = !!id && !!selectedTemplate?.id && id === selectedTemplate.id;
 
-    const survey = form.getValues();
-    const { id, ...remainingSurvey } = survey;
-    const isSavingFromTemplate = selectedTemplate?.id && id === selectedTemplate.id;
-
-    const success = await updateOrCreateSurvey({
-      ...remainingSurvey,
-      formula,
-      saveNo,
-      id: isSavingFromTemplate ? undefined : id,
-    });
+    form.setValue('formula', creator.JSON as SurveyFormula);
+    form.setValue('saveNo', creator.saveNo || 0);
+    form.setValue('id', isSavingFromTemplate ? undefined : id);
+    const success = await updateOrCreateSurvey(form.getValues());
     if (success) {
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
@@ -292,40 +288,40 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   if (isLoading || isFetching) return <LoadingIndicatorDialog isOpen />;
 
   return (
-    <>
-      <div className="survey-editor h-full pt-1">
-        {creator && (
-          <SurveyCreatorComponent
-            creator={creator}
-            style={{
-              height: '100%',
-              width: '100%',
-              ...surveyTheme.cssVariables,
-            }}
-          />
-        )}
-      </div>
-      <FloatingButtonsBar config={config} />
-      <SaveSurveyDialog
-        form={form}
-        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-        submitSurvey={handleSaveSurvey}
-        handleSaveTemplate={handleSaveTemplate}
-        isSubmitting={isLoading}
-      />
-      <SurveysLogoSettingsDialog
-        surveyCreator={creator}
-        isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
-        setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
-      />
-      <QuestionsContextMenu
-        form={form}
-        isOpenQuestionContextMenu={isOpenQuestionContextMenu}
-        setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
-      />
-      <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
-    </>
+    <PageLayout>
+      <Form {...form}>
+        <div className="survey-editor h-full pt-1">
+          {creator && (
+            <SurveyCreatorComponent
+              creator={creator}
+              style={{
+                height: '100%',
+                width: '100%',
+                ...surveyTheme.cssVariables,
+              }}
+            />
+          )}
+        </div>
+        <FloatingButtonsBar config={config} />
+        <SaveSurveyDialog
+          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+          submitSurvey={handleSaveSurvey}
+          handleSaveTemplate={handleSaveTemplate}
+          isSubmitting={isLoading}
+        />
+        <SurveysLogoSettingsDialog
+          surveyCreator={creator}
+          isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
+          setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
+        />
+        <QuestionsContextMenu
+          isOpenQuestionContextMenu={isOpenQuestionContextMenu}
+          setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
+        />
+        <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
+      </Form>
+    </PageLayout>
   );
 };
 

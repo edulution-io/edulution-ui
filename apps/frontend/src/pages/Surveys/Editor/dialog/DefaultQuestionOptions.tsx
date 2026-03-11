@@ -19,10 +19,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@edulution-io/ui-kit';
+import { cn, Input } from '@edulution-io/ui-kit';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Label from '@/components/ui/Label';
-import Input from '@/components/shared/Input';
 
 const DefaultQuestionOptions = () => {
   const { t } = useTranslation();

@@ -18,7 +18,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
+import { FILE_EXPORT_FORMAT } from '@libs/classManagement/types/fileExportFormat';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import {
   PRINT_PASSWORDS_LMN_API_ENDPOINT,
@@ -168,13 +168,13 @@ describe('LmnApiService', () => {
       requestSpy.mockResolvedValue(response);
 
       const result = await service.printPasswords(mockToken, {
-        format: PrintPasswordsFormat.CSV,
+        format: FILE_EXPORT_FORMAT.CSV,
       } as PrintPasswordsRequest);
 
       expect(requestSpy).toHaveBeenCalledWith(
         HttpMethods.POST,
         PRINT_PASSWORDS_LMN_API_ENDPOINT,
-        { format: PrintPasswordsFormat.CSV },
+        { format: FILE_EXPORT_FORMAT.CSV },
         { responseType: 'arraybuffer', headers: { [HTTP_HEADERS.XApiKey]: mockToken } },
       );
       expect(result).toEqual(response);
@@ -644,7 +644,7 @@ describe('LmnApiService', () => {
   });
 
   describe('createProject', () => {
-    it('should call createProject with formatted data from getProjectFromForm', async () => {
+    it('should call createProject with formatted data from getGroupFormData', async () => {
       const mockResponse = queueResponse({ projectName: 'p_testproject' });
       requestSpy.mockResolvedValue(mockResponse);
 

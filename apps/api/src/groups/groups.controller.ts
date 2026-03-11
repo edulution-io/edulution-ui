@@ -41,7 +41,6 @@ export class GroupsController {
   }
 
   @Get('user')
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async fetchCurrentUser(@GetToken() token: string) {
     return GroupsService.fetchCurrentUser(token);
   }

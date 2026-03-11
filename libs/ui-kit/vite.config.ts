@@ -1,12 +1,21 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, mkdirSync, copyFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
 
 const externalDeps = [...Object.keys(pkg.peerDependencies || {}), ...Object.keys(pkg.dependencies || {})];
+
+const copyThemeCss = () => ({
+  name: 'copy-theme-css',
+  closeBundle() {
+    const distStyles = resolve(__dirname, 'dist/styles');
+    mkdirSync(distStyles, { recursive: true });
+    copyFileSync(resolve(__dirname, 'src/styles/theme.css'), resolve(distStyles, 'theme.css'));
+  },
+});
 
 export default defineConfig({
   plugins: [
@@ -18,13 +27,17 @@ export default defineConfig({
       tsconfigPath: './tsconfig.json',
       entryRoot: 'src',
     }),
+    copyThemeCss(),
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        'styles/fonts': resolve(__dirname, 'src/styles/fonts.ts'),
+      },
       name: 'EduUiKit',
       formats: ['es'],
-      fileName: () => 'index.js',
+      fileName: (_, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
       external: (id) => {

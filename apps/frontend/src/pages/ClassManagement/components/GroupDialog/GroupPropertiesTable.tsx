@@ -23,10 +23,10 @@ import { useTranslation } from 'react-i18next';
 import GroupForm from '@libs/groups/types/groupForm';
 import formatSophomorixDate from '@libs/userManagement/utils/formatSophomorixDate';
 import Checkbox from '@/components/ui/Checkbox';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import { FormMessage } from '@/components/ui/Form';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useClassManagementStore from '../../useClassManagementStore';
+import useSchoolStore from '@/store/useSchoolStore';
 
 type GroupProperty = {
   labelTranslationId: string;
@@ -44,7 +44,7 @@ interface GroupPropertiesTableProps {
 const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
   const { watch, setValue, register, formState } = form;
   const { t } = useTranslation();
-  const { selectedSchool } = useClassManagementStore();
+  const selectedSchool = useSchoolStore((s) => s.selectedSchool);
   const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
@@ -75,25 +75,25 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
     {
       labelTranslationId: 'classmanagement.hide',
       name: 'hide',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'classmanagement.isJoinable',
       name: 'join',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'common.mailList',
       name: 'maillist',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {
       labelTranslationId: 'classmanagement.sharedMailBox',
       name: 'mailalias',
-      disabled,
+      disabled: !isSuperAdmin && disabled,
       component: 'checkbox',
     },
     {

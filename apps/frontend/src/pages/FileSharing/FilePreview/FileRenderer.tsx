@@ -21,16 +21,17 @@ import React, { FC, MutableRefObject, ReactNode, useEffect } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
 import MediaComponent from '@/components/ui/MediaComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
+import Collabora from '@/pages/FileSharing/FilePreview/Collabora/Collabora';
 import DrawioViewer from '@/pages/FileSharing/FilePreview/DrawioViewer/DrawioViewer';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
+import isOfficeDocument from '@libs/filesharing/utils/isOfficeDocument';
 import TEXT_EXTENSIONS from '@libs/filesharing/types/textExtensions';
 import useMedia from '@/hooks/useMedia';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -51,6 +52,7 @@ interface FileRendererProps {
   isOpenedInNewTab?: boolean;
   closingRef?: MutableRefObject<boolean>;
   isOnlyOfficeConfigured?: boolean;
+  isCollaboraConfigured?: boolean;
   webdavShare?: string;
 }
 
@@ -59,6 +61,7 @@ const FileRenderer: FC<FileRendererProps> = ({
   isOpenedInNewTab,
   closingRef,
   isOnlyOfficeConfigured,
+  isCollaboraConfigured,
   webdavShare,
 }) => {
   const { isMobileView } = useMedia();
@@ -123,8 +126,9 @@ const FileRenderer: FC<FileRendererProps> = ({
   const getFileType = (): FilePreviewType => {
     if (isPdfExtension(fileExtension)) return FILE_PREVIEW_TYPE.PDF;
 
-    const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
-    if (isOnlyOfficeDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
+    const isEditableDoc = isOfficeDocument(currentlyEditingFile.filePath);
+    if (isEditableDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
+    if (isEditableDoc && isCollaboraConfigured) return FILE_PREVIEW_TYPE.COLLABORA;
 
     if (isDrawioExtension(fileExtension)) return FILE_PREVIEW_TYPE.DRAWIO;
     if (isImageExtension(fileExtension)) return FILE_PREVIEW_TYPE.IMAGE;
@@ -157,6 +161,17 @@ const FileRenderer: FC<FileRendererProps> = ({
             mode={editMode ? 'edit' : 'view'}
             type={isMobileView ? 'mobile' : 'desktop'}
             isOpenedInNewTab={isOpenedInNewTab}
+            webdavShare={webdavShare}
+          />
+        );
+
+      case FILE_PREVIEW_TYPE.COLLABORA:
+        return (
+          <Collabora
+            filePath={currentlyEditingFile.filePath}
+            editMode={editMode}
+            isOpenedInNewTab={isOpenedInNewTab}
+            webdavShare={webdavShare}
           />
         );
 

@@ -28,11 +28,12 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import USER_MANAGEMENT_TABS from '@libs/userManagement/constants/userManagementTabs';
 import { USER_MANAGEMENT_PATH } from '@libs/userManagement/constants/userManagementPaths';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
+import USER_TYPES from '@libs/userManagement/constants/userTypes';
 import USER_TYPE_ICONS from '@libs/userManagement/constants/userTypeIcons';
 import ADMIN_SUB_TABS from '@libs/userManagement/constants/adminSubTabs';
 import ALL_TAB_OPTIONS from '@libs/userManagement/constants/allTabOptions';
 import type UserType from '@libs/userManagement/types/userType';
-import SchoolSelectorDropdown from '@/pages/ClassManagement/components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import UserTable from './components/UserTable/UserTable';
 import ListManagementTab from './components/ListManagement/ListManagementTab';
@@ -55,6 +56,7 @@ const UserManagementPage: React.FC<UserManagementPageProps> = ({ userType }) => 
   useRegisterUserManagementSections();
 
   const adminSubTabs = ADMIN_SUB_TABS[userType];
+  const showSchoolSelector = isSuperAdmin && userType !== USER_TYPES.GLOBALADMINS;
 
   const managementList = USER_TYPE_TO_MANAGEMENT_LIST[userType];
   const hasList = managementList !== null;
@@ -118,7 +120,7 @@ const UserManagementPage: React.FC<UserManagementPageProps> = ({ userType }) => 
                     </TabsTrigger>
                   ))}
                 </TabsList>
-                {isSuperAdmin && <SchoolSelectorDropdown />}
+                <div className="ml-auto">{showSchoolSelector && <SchoolSelectorDropdown />}</div>
               </div>
               <Separator className="my-2 bg-muted" />
             </div>
@@ -142,7 +144,7 @@ const UserManagementPage: React.FC<UserManagementPageProps> = ({ userType }) => 
         <div className="flex h-full flex-col">
           <div className="sticky top-0 z-20">
             <div className="mb-2 flex flex-col gap-2">
-              {isSuperAdmin && <SchoolSelectorDropdown />}
+              {showSchoolSelector && <SchoolSelectorDropdown />}
               <DropdownSelect
                 options={tabOptions}
                 selectedVal={tabValue}

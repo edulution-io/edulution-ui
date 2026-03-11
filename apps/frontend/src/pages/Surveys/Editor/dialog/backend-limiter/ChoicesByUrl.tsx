@@ -19,7 +19,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { ChoicesRestful } from 'survey-core';
 import { cn } from '@edulution-io/ui-kit';
 import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
@@ -36,12 +36,8 @@ import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/b
 import Switch from '@/components/ui/Switch';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 
-interface ChoicesByUrlProps {
-  form: UseFormReturn<SurveyDto>;
-}
-
-const ChoicesByUrl = (props: ChoicesByUrlProps) => {
-  const { form } = props;
+const ChoicesByUrl = () => {
+  const form = useFormContext<SurveyDto>();
 
   const { t } = useTranslation();
 
@@ -92,7 +88,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
   const actions = useTableActions(actionsConfig, []);
 
-  if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
 
   return (

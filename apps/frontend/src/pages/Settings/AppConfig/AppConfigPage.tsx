@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -46,7 +46,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import EditAppConfigIconDialog from './EditAppConfigIconDialog';
@@ -67,7 +67,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   const { searchGroups } = useGroupStore();
   const { postExternalMailProviderConfig } = useMailsStore();
   const { language } = useLanguage();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
     mode: 'onSubmit',
@@ -322,7 +322,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       nativeAppHeader={
         matchingConfig
           ? {
-              title: getDisplayName(matchingConfig, language, isLmn),
+              title: getDisplayName(matchingConfig, language, isSchoolEnvironment),
               iconSrc: matchingConfig.icon,
               description: getHeaderDescription(matchingConfig),
             }
@@ -337,7 +337,9 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       />
       <DeleteAppConfigDialog
         appName={settingLocation}
-        appDisplayName={matchingConfig ? getDisplayName(matchingConfig, language, isLmn) : settingLocation}
+        appDisplayName={
+          matchingConfig ? getDisplayName(matchingConfig, language, isSchoolEnvironment) : settingLocation
+        }
         handleDeleteSettingsItem={handleDeleteSettingsItem}
       />
       {matchingConfig && (

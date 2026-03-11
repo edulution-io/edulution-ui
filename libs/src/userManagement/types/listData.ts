@@ -23,6 +23,7 @@ interface ListData {
   managementListEntries: ListManagementEntry[];
   savedListEntries: ListManagementEntry[];
   deletedEntryIndices: number[];
+  commentEntries: ListManagementEntry[];
 }
 
 export default ListData;

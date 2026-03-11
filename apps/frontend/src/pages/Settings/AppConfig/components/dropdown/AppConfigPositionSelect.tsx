@@ -28,7 +28,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useOrganizationType from '@/hooks/useOrganizationType';
 
 interface AppConfigFormProps {
   form: UseFormReturn<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>;
@@ -40,7 +40,7 @@ const AppConfigPositionSelect = ({ form, appConfig }: AppConfigFormProps) => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { appConfigs } = useAppConfigsStore();
-  const { isLmn } = useDeploymentTarget();
+  const { isSchoolEnvironment } = useOrganizationType();
 
   return (
     <FormFieldSH
@@ -52,7 +52,7 @@ const AppConfigPositionSelect = ({ form, appConfig }: AppConfigFormProps) => {
             <DropdownSelect
               options={Array.from({ length: appConfigs.length }).map((_, index) => ({
                 id: `${index + 1}`,
-                name: `${index + 1}. (${getDisplayName(appConfigs[index], language, isLmn)})`,
+                name: `${index + 1}. (${getDisplayName(appConfigs[index], language, isSchoolEnvironment)})`,
               }))}
               selectedVal={getValues(`${appConfig.name}.position`)?.toString()}
               handleChange={(value: string) => setValue(`${appConfig.name}.position`, Number(value))}

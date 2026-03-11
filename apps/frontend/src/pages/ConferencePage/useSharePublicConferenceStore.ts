@@ -22,6 +22,7 @@ import { create } from 'zustand';
 interface SharePublicConferenceStore {
   setSharePublicConferenceDialogId: (publicConferenceId: string) => void;
   publicConferenceId: string;
+  reset: () => void;
 }
 
 const initialValues = {
@@ -32,6 +33,7 @@ const useSharePublicConferenceStore = create<SharePublicConferenceStore>((set) =
   ...initialValues,
 
   setSharePublicConferenceDialogId: (publicConferenceId) => set({ publicConferenceId }),
+  reset: () => set(initialValues),
 }));
 
 export default useSharePublicConferenceStore;

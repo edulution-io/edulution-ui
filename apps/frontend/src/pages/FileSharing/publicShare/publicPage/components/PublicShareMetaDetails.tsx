@@ -44,7 +44,7 @@ const PublicShareMetaDetails: React.FC<PublicShareMetaDetailsProps> = ({ filenam
         <p className="truncate">{`${creator?.firstName} ${creator?.lastName}`}</p>
       </div>
 
-      <ul className="mt-6 space-y-1 text-sm text-white/80">
+      <ul className="text-background/80 mt-6 space-y-1 text-sm">
         <li className="flex items-center gap-2">
           <FontAwesomeIcon
             icon={faCalendar}

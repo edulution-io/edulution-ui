@@ -17,6 +17,15 @@
     "src/**/*.test.js",
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
-    "src/**/*.spec.jsx"
+    "src/**/*.spec.jsx",
+    "../../libs/src/**/*.spec.ts",
+    "../../libs/src/**/*.spec.tsx",
+    "../../libs/src/**/*.test.ts",
+    "../../libs/src/**/*.test.tsx",
+    "../../libs/src/test-utils/**/*",
+    "../../libs/ui-kit/src/**/*.spec.ts",
+    "../../libs/ui-kit/src/**/*.spec.tsx",
+    "../../libs/ui-kit/src/**/*.test.ts",
+    "../../libs/ui-kit/src/**/*.test.tsx"
   ]
 }

@@ -1,0 +1,46 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+const SCHOOL_ONLY_ROLE_IDS: ReadonlySet<string> = new Set([
+  'classroom-studentcomputer',
+  'classroom-teachercomputer',
+  'faculty-teachercomputer',
+]);
+
+const SOPHOMORIX_ROLES = [
+  { id: 'addc', name: 'deviceManagement.roles.addc' },
+  { id: 'byod', name: 'deviceManagement.roles.byod' },
+  { id: 'classroom-studentcomputer', name: 'deviceManagement.roles.classroom-studentcomputer' },
+  { id: 'classroom-teachercomputer', name: 'deviceManagement.roles.classroom-teachercomputer' },
+  { id: 'faculty-teachercomputer', name: 'deviceManagement.roles.faculty-teachercomputer' },
+  { id: 'iponly', name: 'deviceManagement.roles.iponly' },
+  { id: 'mobile', name: 'deviceManagement.roles.mobile' },
+  { id: 'printer', name: 'deviceManagement.roles.printer' },
+  { id: 'router', name: 'deviceManagement.roles.router' },
+  { id: 'server', name: 'deviceManagement.roles.server' },
+  { id: 'staffcomputer', name: 'deviceManagement.roles.staffcomputer' },
+  { id: 'switch', name: 'deviceManagement.roles.switch' },
+  { id: 'thinclient', name: 'deviceManagement.roles.thinclient' },
+  { id: 'voip', name: 'deviceManagement.roles.voip' },
+  { id: 'wlan', name: 'deviceManagement.roles.wlan' },
+] as const;
+
+export { SCHOOL_ONLY_ROLE_IDS };
+
+export default SOPHOMORIX_ROLES;

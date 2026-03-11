@@ -27,14 +27,14 @@ import UserGroups from '@libs/groups/types/userGroups.enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint, faUsers, faUsersGear } from '@fortawesome/free-solid-svg-icons';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
+import SchoolSelectorDropdown from '@/components/shared/SchoolSelectorDropdown';
 
 const EnrolPage: React.FC = () => {
   const { t } = useTranslation();
@@ -44,6 +44,7 @@ const EnrolPage: React.FC = () => {
     userSchoolClasses,
     fetchUserProjects,
     fetchUserSchoolClasses,
+    updateSchoolClass,
     isLoading,
     printers,
     fetchPrinters,
@@ -67,6 +68,7 @@ const EnrolPage: React.FC = () => {
     {
       name: UserGroups.Classes,
       translationId: 'myClasses',
+      updateFunction: updateSchoolClass,
       icon: (
         <FontAwesomeIcon
           icon={faUsers}

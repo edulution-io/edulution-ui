@@ -1,0 +1,5119 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/edu-api/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Health"]
+      }
+    },
+    "/edu-api/health/check": {
+      "get": {
+        "operationId": "HealthController_readiness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Health"]
+      }
+    },
+    "/edu-api/health/stats": {
+      "get": {
+        "operationId": "HealthController_getStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Health"]
+      }
+    },
+    "/edu-api/metrics": {
+      "get": {
+        "operationId": "MetricsController_getMetrics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Metrics"]
+      }
+    },
+    "/edu-api/docker/containers": {
+      "get": {
+        "operationId": "DockerController_getContainers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Docker"]
+      },
+      "post": {
+        "operationId": "DockerController_createContainer",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["Docker"]
+      }
+    },
+    "/edu-api/docker/containers/{id}/{operation}": {
+      "put": {
+        "operationId": "DockerController_executeContainerCommand",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Docker"]
+      }
+    },
+    "/edu-api/docker/containers/{id}": {
+      "delete": {
+        "operationId": "DockerController_deleteContainer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Docker"]
+      },
+      "patch": {
+        "operationId": "DockerController_updateContainer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Docker"]
+      }
+    },
+    "/edu-api/docker/edulution-manager-agent": {
+      "patch": {
+        "operationId": "DockerController_updateEduManagerAgentContainer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Docker"]
+      }
+    },
+    "/edu-api/auth/.well-known/openid-configuration": {
+      "get": {
+        "operationId": "AuthController_authconfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/edu-api/auth": {
+      "post": {
+        "operationId": "AuthController_authenticate",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/edu-api/auth/qrcode": {
+      "get": {
+        "operationId": "AuthController_getQrCode",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/edu-api/auth/totp": {
+      "post": {
+        "operationId": "AuthController_setupTotp",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      },
+      "put": {
+        "operationId": "AuthController_disableTotp",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/edu-api/auth/totp/{username}": {
+      "get": {
+        "operationId": "AuthController_getTotpInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      },
+      "put": {
+        "operationId": "AuthController_disableTotpForUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/edu-api/auth/edu-app": {
+      "post": {
+        "operationId": "AuthController_loginViaApp",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/edu-api/appconfig": {
+      "post": {
+        "operationId": "AppConfigController_createConfig",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      },
+      "get": {
+        "operationId": "AppConfigController_getAppConfigs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      }
+    },
+    "/edu-api/appconfig/{name}": {
+      "put": {
+        "operationId": "AppConfigController_updateConfig",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      },
+      "patch": {
+        "operationId": "AppConfigController_patchConfig",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      },
+      "delete": {
+        "operationId": "AppConfigController_deleteConfig",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      }
+    },
+    "/edu-api/appconfig/public": {
+      "get": {
+        "operationId": "AppConfigController_getPublicAppConfigs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      }
+    },
+    "/edu-api/appconfig/public/{name}": {
+      "get": {
+        "operationId": "AppConfigController_getPublicAppConfigByName",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      }
+    },
+    "/edu-api/appconfig/proxyconfig": {
+      "get": {
+        "operationId": "AppConfigController_getConfigFile",
+        "parameters": [
+          {
+            "name": "filePath",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["appconfig"]
+      }
+    },
+    "/edu-api/global-settings": {
+      "get": {
+        "operationId": "GlobalSettingsController_getGlobalSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["global-settings"]
+      },
+      "put": {
+        "operationId": "GlobalSettingsController_setGlobalSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["global-settings"]
+      }
+    },
+    "/edu-api/global-settings/admin": {
+      "get": {
+        "operationId": "GlobalSettingsController_getGlobalAdminSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["global-settings"]
+      }
+    },
+    "/edu-api/global-settings/public/theme": {
+      "get": {
+        "operationId": "GlobalSettingsController_getPublicTheme",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["global-settings"]
+      }
+    },
+    "/edu-api/global-settings/sentry": {
+      "get": {
+        "operationId": "GlobalSettingsController_getSentryConfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["global-settings"]
+      }
+    },
+    "/edu-api/users": {
+      "post": {
+        "operationId": "UsersController_createOrUpdate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      }
+    },
+    "/edu-api/users/{username}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      },
+      "patch": {
+        "operationId": "UsersController_update",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      },
+      "delete": {
+        "operationId": "UsersController_remove",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      }
+    },
+    "/edu-api/users/{username}/key": {
+      "get": {
+        "operationId": "UsersController_findOneKey",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      }
+    },
+    "/edu-api/users/search/{searchString}": {
+      "get": {
+        "operationId": "UsersController_search",
+        "parameters": [
+          {
+            "name": "searchString",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      }
+    },
+    "/edu-api/users/{username}/accounts": {
+      "post": {
+        "operationId": "UsersController_addUserAccount",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      },
+      "get": {
+        "operationId": "UsersController_getUserAccounts",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      }
+    },
+    "/edu-api/users/{username}/accounts/{accountId}": {
+      "patch": {
+        "operationId": "UsersController_updateUserAccount",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      },
+      "delete": {
+        "operationId": "UsersController_deleteUserAccount",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      }
+    },
+    "/edu-api/users/{username}/devices": {
+      "patch": {
+        "operationId": "UsersController_registerDevice",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      },
+      "delete": {
+        "operationId": "UsersController_unregisterDevice",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["users"]
+      }
+    },
+    "/edu-api/groups": {
+      "get": {
+        "operationId": "GroupsController_searchGroups",
+        "parameters": [
+          {
+            "name": "groupName",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["groups"]
+      }
+    },
+    "/edu-api/groups/user": {
+      "get": {
+        "operationId": "GroupsController_fetchCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["groups"]
+      }
+    },
+    "/edu-api/user-preferences": {
+      "get": {
+        "operationId": "UserPreferencesController_getPreferences",
+        "parameters": [
+          {
+            "name": "fields",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["UserPreferences"]
+      }
+    },
+    "/edu-api/user-preferences/bulletin-collapsed": {
+      "patch": {
+        "operationId": "UserPreferencesController_updateBulletinCollapsed",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["UserPreferences"]
+      }
+    },
+    "/edu-api/user-preferences/bulletin-board-grid-rows": {
+      "patch": {
+        "operationId": "UserPreferencesController_updateBulletinBoardGridRows",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["UserPreferences"]
+      }
+    },
+    "/edu-api/files/{name}": {
+      "post": {
+        "operationId": "FileSystemController_uploadFileToApp",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/files/info/{path}": {
+      "get": {
+        "operationId": "FileSystemController_getFiles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/files/file/{appName}/{filename}": {
+      "get": {
+        "operationId": "FileSystemController_serveFile",
+        "parameters": [
+          {
+            "name": "appName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/files/public/info/{appName}": {
+      "get": {
+        "operationId": "FileSystemController_getPublicFilesInfo",
+        "parameters": [
+          {
+            "name": "appName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/files/public/file/{appName}/{filename}": {
+      "get": {
+        "operationId": "FileSystemController_servePublicFile",
+        "parameters": [
+          {
+            "name": "appName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/files/public/assets/{appName}/{filename}": {
+      "get": {
+        "operationId": "FileSystemController_servePublicAssetWithFallback",
+        "parameters": [
+          {
+            "name": "appName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filename",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      },
+      "delete": {
+        "operationId": "FileSystemController_deletePublicFile",
+        "parameters": [
+          {
+            "name": "appName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/files/{appName}/{filename}": {
+      "delete": {
+        "operationId": "FileSystemController_deleteFile",
+        "parameters": [
+          {
+            "name": "appName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filename",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/files": {
+      "post": {
+        "operationId": "FileSystemController_upload",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["files"]
+      }
+    },
+    "/edu-api/webdav-shares": {
+      "get": {
+        "operationId": "WebdavSharesController_findAllShares",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["webdav-shares"]
+      },
+      "post": {
+        "operationId": "WebdavSharesController_createWebdavShare",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebdavShareDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["webdav-shares"]
+      }
+    },
+    "/edu-api/webdav-shares/{webdavShareId}": {
+      "put": {
+        "operationId": "WebdavSharesController_updateWebdavShare",
+        "parameters": [
+          {
+            "name": "webdavShareId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebdavShareDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["webdav-shares"]
+      },
+      "delete": {
+        "operationId": "WebdavSharesController_deleteWebdavShare",
+        "parameters": [
+          {
+            "name": "webdavShareId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["webdav-shares"]
+      }
+    },
+    "/edu-api/filesharing": {
+      "get": {
+        "operationId": "FilesharingController_getFilesAtPath",
+        "parameters": [
+          {
+            "name": "type",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      },
+      "post": {
+        "operationId": "FilesharingController_createFileOrFolder",
+        "parameters": [
+          {
+            "name": "path",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      },
+      "delete": {
+        "operationId": "FilesharingController_deleteFile",
+        "parameters": [
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      },
+      "patch": {
+        "operationId": "FilesharingController_moveOrRenameResource",
+        "parameters": [
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/upload": {
+      "post": {
+        "operationId": "FilesharingController_uploadFileViaWebDav",
+        "parameters": [
+          {
+            "name": "path",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contentLength",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/file-stream": {
+      "get": {
+        "operationId": "FilesharingController_webDavFileStream",
+        "parameters": [
+          {
+            "name": "filePath",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/thumbnail": {
+      "get": {
+        "operationId": "FilesharingController_getThumbnail",
+        "parameters": [
+          {
+            "name": "filePath",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "etag",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/file-location": {
+      "get": {
+        "operationId": "FilesharingController_getDownloadLink",
+        "parameters": [
+          {
+            "name": "filePath",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileName",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/only-office": {
+      "post": {
+        "operationId": "FilesharingController_getOnlyofficeToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/duplicate": {
+      "post": {
+        "operationId": "FilesharingController_duplicateFile",
+        "parameters": [
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DuplicateFileRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/copy": {
+      "post": {
+        "operationId": "FilesharingController_copyFile",
+        "parameters": [
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/collect": {
+      "post": {
+        "operationId": "FilesharingController_collectFiles",
+        "parameters": [
+          {
+            "name": "userRole",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/public-share": {
+      "post": {
+        "operationId": "FilesharingController_createPublicShare",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrEditPublicShareDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      },
+      "get": {
+        "operationId": "FilesharingController_listPublicShares",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      },
+      "delete": {
+        "operationId": "FilesharingController_deletePublicShares",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      },
+      "patch": {
+        "operationId": "FilesharingController_editPublicShare",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/callback": {
+      "post": {
+        "operationId": "FilesharingController_handleCallback",
+        "parameters": [
+          {
+            "name": "path",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filename",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/public-share/{publicShareId}": {
+      "get": {
+        "operationId": "FilesharingController_getPublicShareInfo",
+        "parameters": [
+          {
+            "name": "publicShareId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/public-share/download/{publicShareId}": {
+      "post": {
+        "operationId": "FilesharingController_downloadSharedContent",
+        "parameters": [
+          {
+            "name": "publicShareId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "share",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/lmn-api/auth": {
+      "get": {
+        "operationId": "LmnApiController_getLmnApiToken",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/passwords": {
+      "post": {
+        "operationId": "LmnApiController_printPasswords",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/exam-mode/{state}": {
+      "put": {
+        "operationId": "LmnApiController_startExamMode",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/management-groups": {
+      "post": {
+        "operationId": "LmnApiController_addManagementGroup",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "delete": {
+        "operationId": "LmnApiController_removeManagementGroup",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/school-classes/{schoolClassName}": {
+      "get": {
+        "operationId": "LmnApiController_getSchoolClass",
+        "parameters": [
+          {
+            "name": "allMembers",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/school-classes": {
+      "get": {
+        "operationId": "LmnApiController_getUserSchoolClasses",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/school-classes/{schoolClass}/{action}": {
+      "put": {
+        "operationId": "LmnApiController_toggleSchoolClassJoined",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/room": {
+      "get": {
+        "operationId": "LmnApiController_getCurrentUserRoom",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/sessions/{sessionId}": {
+      "get": {
+        "operationId": "LmnApiController_getUserSession",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "delete": {
+        "operationId": "LmnApiController_removeUserSession",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/sessions": {
+      "get": {
+        "operationId": "LmnApiController_getUserSessions",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "withMemberDetails",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "post": {
+        "operationId": "LmnApiController_addUserSession",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "patch": {
+        "operationId": "LmnApiController_updateUserSession",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/user": {
+      "get": {
+        "operationId": "LmnApiController_getCurrentUser",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "patch": {
+        "operationId": "LmnApiController_updateCurrentUserDetails",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/user/{username}": {
+      "get": {
+        "operationId": "LmnApiController_getUser",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkFirstPassword",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/users": {
+      "post": {
+        "operationId": "LmnApiController_getUsers",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/user/{username}/quotas": {
+      "get": {
+        "operationId": "LmnApiController_getUsersQuota",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/search": {
+      "get": {
+        "operationId": "LmnApiController_searchUsersOrGroups",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchQuery",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/projects": {
+      "post": {
+        "operationId": "LmnApiController_createProject",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "patch": {
+        "operationId": "LmnApiController_updateProject",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "get": {
+        "operationId": "LmnApiController_getUserProjects",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/projects/{projectName}": {
+      "delete": {
+        "operationId": "LmnApiController_deleteProject",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "get": {
+        "operationId": "LmnApiController_getProject",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/projects/{project}/{action}": {
+      "put": {
+        "operationId": "LmnApiController_toggleProjectJoined",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/printers/{project}/{action}": {
+      "put": {
+        "operationId": "LmnApiController_togglePrinterJoined",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/printers": {
+      "get": {
+        "operationId": "LmnApiController_getPrinters",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/password": {
+      "put": {
+        "operationId": "LmnApiController_changePassword",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      },
+      "post": {
+        "operationId": "LmnApiController_setPassword",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/first-password": {
+      "put": {
+        "operationId": "LmnApiController_setFirstPassword",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/schools": {
+      "get": {
+        "operationId": "LmnApiController_getSchools",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/server/lmnversion": {
+      "get": {
+        "operationId": "LmnApiController_getLmnVersion",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/conferences": {
+      "post": {
+        "operationId": "ConferencesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConferenceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      },
+      "get": {
+        "operationId": "ConferencesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      },
+      "patch": {
+        "operationId": "ConferencesController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Conference"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      },
+      "put": {
+        "operationId": "ConferencesController_toggleIsRunning",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      },
+      "delete": {
+        "operationId": "ConferencesController_remove",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      }
+    },
+    "/edu-api/conferences/join/{meetingID}": {
+      "get": {
+        "operationId": "ConferencesController_join",
+        "parameters": [
+          {
+            "name": "meetingID",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      }
+    },
+    "/edu-api/conferences/public/{meetingID}": {
+      "get": {
+        "operationId": "ConferencesController_getPublicConference",
+        "parameters": [
+          {
+            "name": "meetingID",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      }
+    },
+    "/edu-api/conferences/public": {
+      "post": {
+        "operationId": "ConferencesController_joinPublicConference",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["conferences"]
+      }
+    },
+    "/edu-api/mails": {
+      "get": {
+        "operationId": "MailsController_getMails",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      }
+    },
+    "/edu-api/mails/provider-config": {
+      "get": {
+        "operationId": "MailsController_getExternalMailProviderConfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      },
+      "post": {
+        "operationId": "MailsController_postExternalMailProviderConfig",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      }
+    },
+    "/edu-api/mails/provider-config/{mailProviderId}": {
+      "delete": {
+        "operationId": "MailsController_deleteExternalMailProviderConfig",
+        "parameters": [
+          {
+            "name": "mailProviderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      }
+    },
+    "/edu-api/mails/sync-job": {
+      "get": {
+        "operationId": "MailsController_getSyncJob",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      },
+      "post": {
+        "operationId": "MailsController_postSyncJob",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      },
+      "delete": {
+        "operationId": "MailsController_deleteSyncJobs",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      }
+    },
+    "/edu-api/mails/sogo-theme-version": {
+      "get": {
+        "operationId": "MailsController_checkSogoThemeVersion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      }
+    },
+    "/edu-api/mails/sogo-theme-version/update": {
+      "post": {
+        "operationId": "MailsController_updateSogoThemeManually",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      }
+    },
+    "/edu-api/mails/connection-stats": {
+      "get": {
+        "operationId": "MailsController_getConnectionStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["mails"]
+      }
+    },
+    "/edu-api/vdi": {
+      "get": {
+        "operationId": "VdiController_authVdi",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["vdi"]
+      },
+      "post": {
+        "operationId": "VdiController_requestVdi",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["vdi"]
+      }
+    },
+    "/edu-api/vdi/connections": {
+      "post": {
+        "operationId": "VdiController_getConnection",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["vdi"]
+      }
+    },
+    "/edu-api/vdi/sessions": {
+      "post": {
+        "operationId": "VdiController_createOrUpdateSession",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["vdi"]
+      }
+    },
+    "/edu-api/vdi/virtualmachines": {
+      "get": {
+        "operationId": "VdiController_getVirtualMachines",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["vdi"]
+      }
+    },
+    "/edu-api/veyon/{ip}": {
+      "post": {
+        "operationId": "VeyonController_authentication",
+        "parameters": [
+          {
+            "name": "ip",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["veyon"]
+      }
+    },
+    "/edu-api/veyon/framebuffer/{connectionUid}": {
+      "get": {
+        "operationId": "VeyonController_streamFrameBuffer",
+        "parameters": [
+          {
+            "name": "connectionUid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["veyon"]
+      }
+    },
+    "/edu-api/veyon/feature/{featureUid}": {
+      "put": {
+        "operationId": "VeyonController_setFeature",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["veyon"]
+      }
+    },
+    "/edu-api/veyon/feature/{connectionUid}": {
+      "get": {
+        "operationId": "VeyonController_getFeatures",
+        "parameters": [
+          {
+            "name": "connectionUid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["veyon"]
+      }
+    },
+    "/edu-api/license": {
+      "get": {
+        "operationId": "LicenseController_getLicense",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["license"]
+      },
+      "post": {
+        "operationId": "LicenseController_signLicense",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["license"]
+      }
+    },
+    "/edu-api/surveys/id/{surveyId}": {
+      "get": {
+        "operationId": "SurveysController_findOne",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/can-participate/{surveyId}": {
+      "get": {
+        "operationId": "SurveysController_canParticipate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/has-answers/{surveyId}": {
+      "get": {
+        "operationId": "SurveysController_hasAnswers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/results/{surveyId}": {
+      "get": {
+        "operationId": "SurveysController_getSurveyResult",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys": {
+      "get": {
+        "operationId": "SurveysController_findByStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      },
+      "post": {
+        "operationId": "SurveysController_updateOrCreateSurvey",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      },
+      "delete": {
+        "operationId": "SurveysController_deleteSurveys",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/files": {
+      "post": {
+        "operationId": "SurveysController_fileUpload",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/templates": {
+      "post": {
+        "operationId": "SurveysController_createTemplate",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      },
+      "get": {
+        "operationId": "SurveysController_getTemplates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/answers/{surveyId}": {
+      "get": {
+        "operationId": "SurveysController_getSubmittedSurveyAnswerCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/answers/{surveyId}/{username}": {
+      "get": {
+        "operationId": "SurveysController_getSubmittedSurveyAnswers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}/{filename}": {
+      "get": {
+        "operationId": "SurveysController_serveFileFromAnswer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/answers": {
+      "post": {
+        "operationId": "SurveysController_answerSurvey",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/files/{surveyId}/{questionId}/{filename}": {
+      "get": {
+        "operationId": "SurveysController_serveFile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/files/{filename}": {
+      "get": {
+        "operationId": "SurveysController_serveTempFile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}": {
+      "post": {
+        "operationId": "SurveysController_answeringFileUpload",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}/{fileName}": {
+      "delete": {
+        "operationId": "SurveysController_deleteTempQuestionAnswerFile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/choices/{surveyId}/{questionId}": {
+      "get": {
+        "operationId": "SurveysController_getChoices",
+        "parameters": [
+          {
+            "name": "original",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/templates/{id}": {
+      "delete": {
+        "operationId": "SurveysController_deleteTemplate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/surveys/templates/{id}/{isActive}": {
+      "patch": {
+        "operationId": "SurveysController_setIsTemplateActive",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["surveys"]
+      }
+    },
+    "/edu-api/public-surveys/{surveyId}": {
+      "get": {
+        "operationId": "PublicSurveysController_find",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      }
+    },
+    "/edu-api/public-surveys/answers": {
+      "post": {
+        "operationId": "PublicSurveysController_answerSurvey",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      }
+    },
+    "/edu-api/public-surveys/public-user/{surveyId}/{publicUserName}": {
+      "get": {
+        "operationId": "PublicSurveysController_hasPublicUserAnswered",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      }
+    },
+    "/edu-api/public-surveys/files/{surveyId}/{questionId}/{filename}": {
+      "get": {
+        "operationId": "PublicSurveysController_serveFile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      }
+    },
+    "/edu-api/public-surveys/answers/files/{userName}/{surveyId}/{questionId}": {
+      "post": {
+        "operationId": "PublicSurveysController_answeringFileUpload",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      }
+    },
+    "/edu-api/public-surveys/answers/files/{userName}/{surveyId}/{questionId}/{fileName}": {
+      "delete": {
+        "operationId": "PublicSurveysController_deleteTempAnswerFile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      },
+      "get": {
+        "operationId": "PublicSurveysController_serveFileFromAnswer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      }
+    },
+    "/edu-api/public-surveys/choices/{surveyId}/{questionId}": {
+      "get": {
+        "operationId": "PublicSurveysController_getChoices",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["public-surveys"]
+      }
+    },
+    "/edu-api/bulletin-category": {
+      "get": {
+        "operationId": "BulletinCategoryController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletin-category"]
+      },
+      "post": {
+        "operationId": "BulletinCategoryController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulletinCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletin-category"]
+      }
+    },
+    "/edu-api/bulletin-category/{name}": {
+      "get": {
+        "operationId": "BulletinCategoryController_checkName",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletin-category"]
+      }
+    },
+    "/edu-api/bulletin-category/{id}": {
+      "patch": {
+        "operationId": "BulletinCategoryController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulletinCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletin-category"]
+      },
+      "delete": {
+        "operationId": "BulletinCategoryController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletin-category"]
+      }
+    },
+    "/edu-api/bulletin-category/position": {
+      "post": {
+        "operationId": "BulletinCategoryController_setPosition",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletin-category"]
+      }
+    },
+    "/edu-api/bulletinboard": {
+      "get": {
+        "operationId": "BulletinBoardController_getBulletinsByCategory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      },
+      "post": {
+        "operationId": "BulletinBoardController_createBulletin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulletinDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      },
+      "delete": {
+        "operationId": "BulletinBoardController_removeBulletins",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      }
+    },
+    "/edu-api/bulletinboard/bulletins": {
+      "get": {
+        "operationId": "BulletinBoardController_findAllBulletins",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      }
+    },
+    "/edu-api/bulletinboard/{id}": {
+      "patch": {
+        "operationId": "BulletinBoardController_updateBulletin",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulletinDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      }
+    },
+    "/edu-api/bulletinboard/{categoryId}": {
+      "delete": {
+        "operationId": "BulletinBoardController_removeAllBulletinsByCategory",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      }
+    },
+    "/edu-api/bulletinboard/attachments/{filename}": {
+      "get": {
+        "operationId": "BulletinBoardController_serveBulletinAttachment",
+        "parameters": [
+          {
+            "name": "filename",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      }
+    },
+    "/edu-api/bulletinboard/files": {
+      "post": {
+        "operationId": "BulletinBoardController_uploadBulletinAttachment",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["bulletinboard"]
+      }
+    },
+    "/edu-api/notifications": {
+      "get": {
+        "operationId": "NotificationsController_getInbox",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["notifications"]
+      },
+      "patch": {
+        "operationId": "NotificationsController_markAllAsRead",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["notifications"]
+      },
+      "delete": {
+        "operationId": "NotificationsController_deleteAllNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/notifications/unread-count": {
+      "get": {
+        "operationId": "NotificationsController_getUnreadCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/notifications/{id}": {
+      "patch": {
+        "operationId": "NotificationsController_markAsRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["notifications"]
+      },
+      "delete": {
+        "operationId": "NotificationsController_deleteNotification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/mobile-app/user-data": {
+      "get": {
+        "operationId": "MobileAppController_getAppUserData",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["mobile-app"]
+      }
+    },
+    "/edu-api/mobile-app/totp-info": {
+      "get": {
+        "operationId": "MobileAppController_getTotpInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["mobile-app"]
+      }
+    },
+    "/edu-api/sse": {
+      "get": {
+        "operationId": "SseController_getSseConnection",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["sse"]
+      }
+    },
+    "/edu-api/sse/conferences/public": {
+      "get": {
+        "operationId": "SseController_publicConferenceSse",
+        "parameters": [
+          {
+            "name": "meetingID",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["sse"]
+      }
+    },
+    "/edu-api/sse/auth": {
+      "get": {
+        "operationId": "SseController_publicLoginSse",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["sse"]
+      }
+    },
+    "/edu-api/tldraw-sync/assets/{name}": {
+      "post": {
+        "operationId": "TLDrawSyncController_uploadFileToApp",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["tldraw-sync"]
+      }
+    },
+    "/edu-api/tldraw-sync/assets/{filename}": {
+      "get": {
+        "operationId": "TLDrawSyncController_serveFiles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["tldraw-sync"]
+      },
+      "delete": {
+        "operationId": "TLDrawSyncController_deleteFile",
+        "parameters": [
+          {
+            "name": "filename",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["tldraw-sync"]
+      }
+    },
+    "/edu-api/tldraw-sync/history/{roomId}": {
+      "get": {
+        "operationId": "TLDrawSyncController_getHistory",
+        "parameters": [
+          {
+            "name": "roomId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": ["tldraw-sync"]
+      }
+    },
+    "/edu-api/wireguard/user/peer": {
+      "get": {
+        "operationId": "WireguardController_getUserPeer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/user/peer/config": {
+      "get": {
+        "operationId": "WireguardController_getUserPeerConfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/user/peer/qr": {
+      "get": {
+        "operationId": "WireguardController_getUserPeerQR",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/user/peer/qr/b64": {
+      "get": {
+        "operationId": "WireguardController_getUserPeerQRBase64",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/user/peer/status": {
+      "get": {
+        "operationId": "WireguardController_getUserPeerStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers": {
+      "get": {
+        "operationId": "WireguardController_getPeers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      },
+      "post": {
+        "operationId": "WireguardController_createPeer",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers/batch": {
+      "post": {
+        "operationId": "WireguardController_createPeersBatch",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers/{peer}": {
+      "delete": {
+        "operationId": "WireguardController_deletePeer",
+        "parameters": [
+          {
+            "name": "peer",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers/{peer}/config": {
+      "get": {
+        "operationId": "WireguardController_getPeerConfig",
+        "parameters": [
+          {
+            "name": "peer",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers/{peer}/qr": {
+      "get": {
+        "operationId": "WireguardController_getPeerQR",
+        "parameters": [
+          {
+            "name": "peer",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers/{peer}/qr/b64": {
+      "get": {
+        "operationId": "WireguardController_getPeerQRBase64",
+        "parameters": [
+          {
+            "name": "peer",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers/{peer}/status": {
+      "get": {
+        "operationId": "WireguardController_getPeerStatus",
+        "parameters": [
+          {
+            "name": "peer",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/peers/status": {
+      "get": {
+        "operationId": "WireguardController_getAllPeersStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/restart": {
+      "get": {
+        "operationId": "WireguardController_restartWireGuard",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/sites": {
+      "get": {
+        "operationId": "WireguardController_getSites",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      },
+      "post": {
+        "operationId": "WireguardController_createSite",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/sites/{site}": {
+      "delete": {
+        "operationId": "WireguardController_deleteSite",
+        "parameters": [
+          {
+            "name": "site",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/wireguard/sites/{site}/config": {
+      "get": {
+        "operationId": "WireguardController_getSiteConfig",
+        "parameters": [
+          {
+            "name": "site",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Wireguard"]
+      }
+    }
+  },
+  "info": {
+    "title": "edulution-api",
+    "description": "Test API for edulution-io",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "UserDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UserAccountDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UserDeviceDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "WebdavShareDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "DuplicateFileRequestDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateOrEditPublicShareDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateConferenceDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "Conference": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateBulletinCategoryDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateBulletinDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "HistoryPageDto": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}
