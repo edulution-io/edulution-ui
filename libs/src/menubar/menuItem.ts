@@ -26,6 +26,7 @@ interface MenuItem {
   action: () => void;
   path?: string;
   disableTranslation?: boolean;
+  iconClassName?: string;
   children?: MenuItem[];
 }
 

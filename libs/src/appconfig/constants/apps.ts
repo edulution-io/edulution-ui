@@ -46,6 +46,7 @@ const APPS = {
   AICHAT: 'aichat',
   LINUXMUSTER: 'linuxmuster',
   WHITEBOARD: 'whiteboard',
+  WIKI: 'wiki',
   SETTINGS: 'settings',
   USER_SETTINGS: 'usersettings',
   NONE: 'none',

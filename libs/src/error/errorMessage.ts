@@ -39,6 +39,7 @@ import PathValidationErrorMessages from '@libs/common/constants/path-validation-
 import ParentChildPairingErrorMessagesType from '@libs/parent-child-pairing/types/parentChildPairingErrorMessagesType';
 import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
 import WebhookErrorMessages from '@libs/webhook/types/webhookErrorMessages';
+import WikiErrorMessagesType from '@libs/wiki/types/wikiErrorMessagesType';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -62,6 +63,7 @@ type ErrorMessage =
   | ParentChildPairingErrorMessagesType
   | PathValidationErrorMessages
   | WireguardErrorMessages
-  | WebhookErrorMessages;
+  | WebhookErrorMessages
+  | WikiErrorMessagesType;
 
 export default ErrorMessage;

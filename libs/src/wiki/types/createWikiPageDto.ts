@@ -17,8 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+interface CreateWikiPageDto {
+  title: string;
+  content: string;
+}
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
-
-export default Section;
+export default CreateWikiPageDto;

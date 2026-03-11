@@ -17,8 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+const WIKI_ERROR_MESSAGES = {
+  WIKI_NOT_FOUND: 'wiki.errors.wikiNotFound',
+  WIKI_ALREADY_EXISTS: 'wiki.errors.wikiAlreadyExists',
+  WIKI_CREATION_FAILED: 'wiki.errors.wikiCreationFailed',
+  WIKI_DELETION_FAILED: 'wiki.errors.wikiDeletionFailed',
+  PAGE_NOT_FOUND: 'wiki.errors.pageNotFound',
+  PAGE_CREATION_FAILED: 'wiki.errors.pageCreationFailed',
+  PAGE_UPDATE_FAILED: 'wiki.errors.pageUpdateFailed',
+  PAGE_DELETION_FAILED: 'wiki.errors.pageDeletionFailed',
+  CONTENT_READ_FAILED: 'wiki.errors.contentReadFailed',
+  ACCESS_DENIED: 'wiki.errors.accessDenied',
+} as const;
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
-
-export default Section;
+export default WIKI_ERROR_MESSAGES;

@@ -17,8 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+const WIKI_CONSTANTS = {
+  WIKI_FOLDER_NAME: '.wiki',
+  MARKDOWN_EXTENSION: '.md',
+  MARKDOWN_CONTENT_TYPE: 'text/markdown',
+  INDEX_PAGE_NAME: 'index.md',
+  NEW_PAGE_SECTION_ID: 'new-wiki-page',
+} as const;
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
-
-export default Section;
+export default WIKI_CONSTANTS;

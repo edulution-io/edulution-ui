@@ -21,6 +21,7 @@ import React, { useMemo } from 'react';
 import MDEditor, { PreviewType } from '@uiw/react-md-editor';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import { cn } from '@edulution-io/ui-kit';
 import useThemeStore from '@/store/useThemeStore';
 import markdownComponents from '@/components/ui/Renderer/markdownComponents';
 import '@/components/ui/Renderer/MarkdownRenderer.css';
@@ -31,6 +32,7 @@ interface MarkdownRendererProps {
   editable?: boolean;
   showToolbar?: boolean;
   showPreview?: boolean;
+  transparentBackground?: boolean;
   onChange?: (value: string) => void;
   contentId?: string;
 }
@@ -41,6 +43,7 @@ const MarkdownRenderer = ({
   editable = false,
   showToolbar = true,
   showPreview = true,
+  transparentBackground = false,
   onChange,
   contentId,
 }: MarkdownRendererProps) => {
@@ -61,11 +64,13 @@ const MarkdownRenderer = ({
 
   const previewMode: PreviewType = showPreview ? 'live' : 'edit';
 
+  const wrapperClassName = cn(className, transparentBackground && 'md-transparent-bg');
+
   if (!editable) {
     return (
       <div
         id={contentId}
-        className={className}
+        className={wrapperClassName}
         data-color-mode={theme}
       >
         <MDEditor.Markdown
@@ -80,7 +85,7 @@ const MarkdownRenderer = ({
 
   return (
     <div
-      className={className}
+      className={wrapperClassName}
       data-color-mode={theme}
     >
       <MDEditor

@@ -152,12 +152,18 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
                   child.action();
                 }}
                 className={cn(
-                  'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
+                  'flex w-full items-center justify-start gap-2 py-2 pl-4 pr-3 font-normal',
                   'transition-all duration-150',
                   'hover:pl-5',
                   isChildActive && 'bg-accent font-bold',
                 )}
               >
+                {typeof child.icon === 'object' && child.icon.iconName && (
+                  <FontAwesomeIcon
+                    icon={child.icon}
+                    className={cn('h-3.5 w-3.5 shrink-0', child.iconClassName)}
+                  />
+                )}
                 <span className="truncate">{child.label}</span>
               </Button>
             );

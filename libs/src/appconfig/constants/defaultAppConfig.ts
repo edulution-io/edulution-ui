@@ -31,7 +31,7 @@ import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariant';
 import { ALL_DISPLAY_LOCATIONS } from './appDisplayLocations';
 
-const { BULLETIN_BOARD, DASHBOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
+const { BULLETIN_BOARD, DASHBOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD, WIKI } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
 
 const defaultAppConfig: AppConfigDto[] = [
@@ -101,6 +101,17 @@ const defaultAppConfig: AppConfigDto[] = [
     extendedOptions: {},
     usesPushNotifications: false,
     position: 6,
+    displayLocations: [...ALL_DISPLAY_LOCATIONS],
+  },
+  {
+    name: WIKI,
+    icon: '',
+    appType: NATIVE,
+    options: {},
+    accessGroups: [],
+    extendedOptions: {},
+    usesPushNotifications: false,
+    position: 7,
     displayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
 ];
