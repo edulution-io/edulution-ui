@@ -1,0 +1,203 @@
+name: Sync Artifacts to Framework Repo
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'swagger-spec.json'
+      - 'apps/frontend/tailwind.config.ts'
+      - 'libs/ui-kit/tailwind.config.ts'
+      - 'libs/ui-kit/src/styles/theme.css'
+      - 'apps/frontend/src/index.scss'
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      swagger: ${{ steps.filter.outputs.swagger }}
+      styling: ${{ steps.filter.outputs.styling }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            swagger:
+              - 'swagger-spec.json'
+            styling:
+              - 'apps/frontend/tailwind.config.ts'
+              - 'libs/ui-kit/tailwind.config.ts'
+              - 'libs/ui-kit/src/styles/theme.css'
+              - 'apps/frontend/src/index.scss'
+
+  sync-swagger:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.swagger == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Create GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.VERSION_BUMPER_APPID }}
+          private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
+          owner: ${{ github.repository_owner }}
+          repositories: edulution-ai-framework
+
+      - name: Checkout edulution-ui with framework submodule
+        uses: edulution-io/edulution-ai-framework/.github/actions/checkout-submodule@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Checkout framework repo
+        uses: actions/checkout@v5
+        with:
+          repository: edulution-io/edulution-ai-framework
+          token: ${{ steps.app-token.outputs.token }}
+          path: target
+          ref: main
+
+      - name: Sync swagger-spec.json
+        id: sync
+        run: |
+          mkdir -p target/artifacts
+
+          if [ ! -s swagger-spec.json ]; then
+            echo "swagger-spec.json is empty or missing, skipping sync"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          cp swagger-spec.json target/artifacts/swagger-spec.json
+
+          cd target
+          if git diff --quiet -- artifacts/swagger-spec.json; then
+            echo "No changes detected in swagger-spec.json"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected in swagger-spec.json"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate diff summary
+        if: steps.sync.outputs.changed == 'true'
+        id: summary
+        run: |
+          cd target
+          STAT=$(git diff --stat -- artifacts/swagger-spec.json)
+
+          OLD_ENDPOINTS=$(git show HEAD:artifacts/swagger-spec.json 2>/dev/null | jq -r '.paths | keys[]' 2>/dev/null | sort || echo "")
+          NEW_ENDPOINTS=$(jq -r '.paths | keys[]' artifacts/swagger-spec.json 2>/dev/null | sort || echo "")
+
+          ADDED=$(diff <(echo "$OLD_ENDPOINTS") <(echo "$NEW_ENDPOINTS") | grep '^>' | wc -l)
+          REMOVED=$(diff <(echo "$OLD_ENDPOINTS") <(echo "$NEW_ENDPOINTS") | grep '^<' | wc -l)
+
+          {
+            echo "msg<<EOF"
+            echo "sync: update swagger-spec.json from edulution-ui"
+            echo ""
+            echo "Source: ${{ github.repository }}@${{ github.sha }}"
+            echo ""
+            echo "$STAT"
+            echo ""
+            echo "Endpoints: +${ADDED} -${REMOVED}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          cd target
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add artifacts/swagger-spec.json
+          git pull --rebase origin main
+          git commit -m "${{ steps.summary.outputs.msg }}"
+          git push origin main
+
+  sync-styling:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.styling == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Create GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.VERSION_BUMPER_APPID }}
+          private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
+          owner: ${{ github.repository_owner }}
+          repositories: edulution-ai-framework
+
+      - name: Checkout edulution-ui with framework submodule
+        uses: edulution-io/edulution-ai-framework/.github/actions/checkout-submodule@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Checkout framework repo
+        uses: actions/checkout@v5
+        with:
+          repository: edulution-io/edulution-ai-framework
+          token: ${{ steps.app-token.outputs.token }}
+          path: target
+          ref: main
+
+      - name: Sync styling artifacts
+        id: sync
+        run: |
+          mkdir -p target/artifacts
+
+          cp apps/frontend/tailwind.config.ts target/artifacts/tailwind.config.ts
+          cp libs/ui-kit/tailwind.config.ts target/artifacts/tailwind.base.config.ts
+          cp libs/ui-kit/src/styles/theme.css target/artifacts/theme.css
+          cp apps/frontend/src/index.scss target/artifacts/index.scss
+
+          cd target
+          if git diff --quiet -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss; then
+            echo "No changes detected in styling artifacts"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected in styling artifacts"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate diff summary
+        if: steps.sync.outputs.changed == 'true'
+        id: summary
+        run: |
+          cd target
+          STAT=$(git diff --stat -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss)
+
+          CHANGED_FILES=$(git diff --name-only -- artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss)
+
+          {
+            echo "msg<<EOF"
+            echo "sync: update styling artifacts from edulution-ui"
+            echo ""
+            echo "Source: ${{ github.repository }}@${{ github.sha }}"
+            echo ""
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            echo ""
+            echo "$STAT"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          cd target
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add artifacts/tailwind.config.ts artifacts/tailwind.base.config.ts artifacts/theme.css artifacts/index.scss
+          git pull --rebase origin main
+          git commit -m "${{ steps.summary.outputs.msg }}"
+          git push origin main
