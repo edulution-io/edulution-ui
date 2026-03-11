@@ -28,6 +28,7 @@ type AppConfigOption = {
   color?: string;
   options?: AppConfigOptionsType[];
   isNativeApp: boolean;
+  usesPushNotifications?: boolean;
   extendedOptions?: AppConfigExtendedOptionsBySections;
   defaultDisplayLocations?: AppDisplayLocationType[];
 };
