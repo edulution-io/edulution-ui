@@ -28,7 +28,7 @@
     "lint:staged": "lint-staged",
     "preview": "nx preview frontend",
     "prepare": "husky install",
-    "precommit": "npm run test:all && npm run build:all",
+    "precommit": "nx run-many --target=test,build --projects=api,frontend,e2e,ui-kit",
     "check-circular-deps": "./scripts/checkCircDeps.sh",
     "format": "pretty-quick --staged",
     "check-translations": "tsx ./scripts/checkTranslations.ts",
