@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import WIKI_ERROR_MESSAGES from '@libs/wiki/constants/wikiErrorMessages';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
+type WikiErrorMessagesType = (typeof WIKI_ERROR_MESSAGES)[keyof typeof WIKI_ERROR_MESSAGES];
 
-export default Section;
+export default WikiErrorMessagesType;

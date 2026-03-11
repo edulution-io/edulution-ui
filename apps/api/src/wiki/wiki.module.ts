@@ -17,8 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { WikiRegistration, WikiRegistrationSchema } from './wiki-registration.schema';
+import WikiController from './wiki.controller';
+import WikiService from './wiki.service';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
-
-export default Section;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: WikiRegistration.name, schema: WikiRegistrationSchema }])],
+  controllers: [WikiController],
+  providers: [WikiService],
+})
+export default class WikiModule {}

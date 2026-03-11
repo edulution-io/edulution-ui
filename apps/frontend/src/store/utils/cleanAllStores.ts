@@ -83,6 +83,7 @@ import useUserSettingsPageStore from '@/pages/UserSettings/Security/useUserSetti
 import useUserWireguardStore from '@/pages/UserSettings/WireguardAccess/useUserWireguardStore';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+import useWikiStore from '@/pages/Wiki/store/useWikiStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
@@ -178,6 +179,7 @@ const cleanAllStores = async () => {
   useWebdavShareConfigTableStore.getState().reset();
   useWebhookClientsStore.getState().reset();
   useWhiteboardEditorStore.getState().reset();
+  useWikiStore.getState().reset();
   useWireguardConfigTableStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   localStorage.removeItem('user-management-storage');

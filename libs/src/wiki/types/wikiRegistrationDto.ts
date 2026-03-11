@@ -17,8 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+interface WikiRegistrationDto {
+  id: string;
+  name: string;
+  webdavPath: string;
+  share: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
-
-export default Section;
+export default WikiRegistrationDto;

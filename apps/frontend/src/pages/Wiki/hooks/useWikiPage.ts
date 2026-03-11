@@ -17,8 +17,36 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import { useCallback } from 'react';
+import useWikiStore from '@/pages/Wiki/store/useWikiStore';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
+const useWikiPage = () => {
+  const {
+    selectedRegistrationId,
+    selectedPagePath,
+    editorContent,
+    editorTitle,
+    updatePage,
+    createPage,
+    isSaving,
+    hasUnsavedChanges,
+  } = useWikiStore();
 
-export default Section;
+  const handleSave = useCallback(async () => {
+    if (!selectedRegistrationId || !editorTitle.trim()) return;
+
+    if (selectedPagePath) {
+      await updatePage(selectedRegistrationId, selectedPagePath, editorContent, editorTitle);
+    } else {
+      await createPage(selectedRegistrationId, editorTitle, editorContent);
+    }
+  }, [selectedRegistrationId, selectedPagePath, editorTitle, editorContent, updatePage, createPage]);
+
+  return {
+    handleSave,
+    isSaving,
+    hasUnsavedChanges,
+  };
+};
+
+export default useWikiPage;

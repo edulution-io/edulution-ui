@@ -46,3 +46,11 @@ html.dark .w-md-editor-preview {
   height: 18px;
   width: 18px;
 }
+
+.md-transparent-bg .wmde-markdown,
+.md-transparent-bg .wmde-markdown img,
+.md-transparent-bg .w-md-editor-preview,
+.md-transparent-bg .w-md-editor,
+.md-transparent-bg .w-md-editor-content {
+  background-color: transparent !important;
+}

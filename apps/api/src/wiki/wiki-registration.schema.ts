@@ -17,8 +17,31 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
+export type WikiRegistrationDocument = WikiRegistration & Document;
 
-export default Section;
+@Schema({ timestamps: true, strict: true, collection: 'wiki_registrations' })
+export class WikiRegistration {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true, unique: true })
+  webdavPath: string;
+
+  @Prop({ required: true })
+  share: string;
+
+  @Prop({ required: true })
+  createdBy: string;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
+}
+
+export const WikiRegistrationSchema = SchemaFactory.createForClass(WikiRegistration);
+
+WikiRegistrationSchema.set('toJSON', {
+  virtuals: true,
+});

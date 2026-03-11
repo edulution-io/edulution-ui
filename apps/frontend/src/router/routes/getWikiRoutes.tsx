@@ -17,8 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import React from 'react';
+import { Route } from 'react-router-dom';
+import APPS from '@libs/appconfig/constants/apps';
+import WikiPage from '@/pages/Wiki/WikiPage';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action' | 'icon' | 'iconClassName'>;
+const WIKI_REGISTRATION_LOCATION = ':registrationId';
 
-export default Section;
+const getWikiRoutes = () => [
+  <Route
+    key={APPS.WIKI}
+    path={APPS.WIKI}
+  >
+    <Route
+      path=""
+      element={<WikiPage />}
+    />
+    <Route
+      path={WIKI_REGISTRATION_LOCATION}
+      element={<WikiPage />}
+    />
+  </Route>,
+];
+
+export default getWikiRoutes;
