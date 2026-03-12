@@ -896,7 +896,14 @@
         "addBackendLimiterForOtherItem": "Cela fixe à quelle fréquence les participants peuvent sélectionner ces options.",
         "upperLimit": "limite",
         "upperBackendLimiters": "Options de sélection avec limite supérieure",
-        "addChoice": "Ajouter"
+        "addChoice": "Ajouter",
+        "filterPlaceHolderText": "Rechercher une option",
+        "imageWidth": "Largeur d'une image en pixels [px]",
+        "imageWidthPlaceholder": "0 signifie que la largeur n'est limitée que par l'espace disponible.",
+        "panelCount": "Limite du panneau",
+        "panelCountLimits": "Limitez la fréquence à laquelle le panneau doit être développé au minimum ou peut être développé au maximum.",
+        "minPanelCount": "Minimum",
+        "maxPanelCount": "Maximum"
       },
       "surveyLogo": {
         "title": "Logo de l'enquête",

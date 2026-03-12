@@ -65,6 +65,11 @@ interface QuestionsContextMenuStore {
 
   setImageWidth: (newWidth: number | undefined) => void;
   imageWidth: number | undefined;
+
+  setMinPanelCount: (minPanelCount: number) => void;
+  minPanelCount: number;
+  setMaxPanelCount: (maxPanelCount: number) => void;
+  maxPanelCount: number;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -80,6 +85,8 @@ const QuestionsContextMenuStoreInitialState = {
   formerChoices: [],
   currentChoices: [],
   imageWidth: 0,
+  minPanelCount: 0,
+  maxPanelCount: 100,
 };
 
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
@@ -97,6 +104,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   setSelectedQuestion: (question: Question | undefined) => {
     const type = question?.getType();
     const width = Number(question?.imageWidth);
+    const newMinPanelCount = Number(question?.minPanelCount);
+    const newMaxPanelCount = Number(question?.maxPanelCount);
     const { url } = (question?.choicesByUrl as ChoicesRestful) || {};
     set({
       selectedQuestion: question,
@@ -107,6 +116,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
       imageWidth: Number.isNaN(width) ? 0 : width,
+      minPanelCount: Number.isNaN(newMinPanelCount) ? 0 : newMinPanelCount,
+      maxPanelCount: Number.isNaN(newMaxPanelCount) ? 100 : newMaxPanelCount,
     });
   },
 
@@ -265,6 +276,20 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
     set({ imageWidth: newWidth || 0 });
     selectedQuestion.imageWidth = newWidth ? Math.max(100, newWidth) : 0;
+  },
+
+  setMinPanelCount: (minPanelCount: number) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+    set({ minPanelCount });
+    selectedQuestion.minPanelCount = minPanelCount;
+  },
+
+  setMaxPanelCount: (maxPanelCount: number) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+    set({ maxPanelCount });
+    selectedQuestion.maxPanelCount = maxPanelCount;
   },
 }));
 
