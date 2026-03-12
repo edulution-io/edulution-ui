@@ -66,10 +66,10 @@ interface QuestionsContextMenuStore {
   setImageWidth: (newWidth: number | undefined) => void;
   imageWidth: number | undefined;
 
-  setMaxPanelCount: (newMaxPanelCount: number | undefined) => void;
-  maxPanelCount: number | undefined;
-  setMinPanelCount: (newMinPanelCount: number | undefined) => void;
-  minPanelCount: number | undefined;
+  setMinPanelCount: (newMinPanelCount: number) => void;
+  minPanelCount: number;
+  setMaxPanelCount: (newMaxPanelCount: number) => void;
+  maxPanelCount: number;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -85,8 +85,8 @@ const QuestionsContextMenuStoreInitialState = {
   formerChoices: [],
   currentChoices: [],
   imageWidth: 0,
-  maxPanelCount: undefined,
-  minPanelCount: undefined,
+  minPanelCount: 0,
+  maxPanelCount: 100,
 };
 
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
@@ -114,8 +114,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
       imageWidth: Number.isNaN(width) ? 0 : width,
-      maxPanelCount: question?.maxPanelCount as number | undefined,
-      minPanelCount: question?.minPanelCount as number | undefined,
+      minPanelCount: Number.isNaN(question?.minPanelCount) ? 0 : (question?.minPanelCount as number),
+      maxPanelCount: Number.isNaN(question?.maxPanelCount) ? 100 : (question?.maxPanelCount as number),
     });
   },
 

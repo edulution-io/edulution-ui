@@ -19,10 +19,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@edulution-io/ui-kit';
+import { Input } from '@edulution-io/ui-kit';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Label from '@/components/ui/Label';
-import Input from '@/components/shared/Input';
 
 const DynamicPanelOptions = () => {
   const { t } = useTranslation();
@@ -40,20 +39,23 @@ const DynamicPanelOptions = () => {
         type="number"
         variant="dialog"
         value={minPanelCount}
-        onChange={(e) => setMinPanelCount(Number(e.target.value))}
-        min={1}
+        onChange={(e) => {
+          setMinPanelCount(Math.min(Number(e.target.value)));
+          setMaxPanelCount(Math.max(Number(e.target.value), maxPanelCount));
+        }}
+        min={0}
         max={100}
-        className={cn({ 'text-muted-foreground': !minPanelCount }, { 'text-background': minPanelCount })}
+        className="text-background"
       />
       <Label>{t('survey.editor.questionSettings.maxPanelCount')}</Label>
       <Input
         type="number"
         variant="dialog"
         value={maxPanelCount}
-        onChange={(e) => setMaxPanelCount(Number(e.target.value))}
+        onChange={(e) => setMaxPanelCount(Math.max(Number(e.target.value), minPanelCount))}
         min={1}
         max={100}
-        className={cn({ 'text-muted-foreground': !maxPanelCount }, { 'text-background': maxPanelCount })}
+        className="text-background"
       />
     </div>
   );
