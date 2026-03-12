@@ -27,6 +27,9 @@ import { SurveyAnswerDocument } from '../survey-answers.schema';
 
 const name = '002-enforce-the-choice-title-usage-inside-of-survey-answers';
 
+type OldSurveyDto = Omit<SurveyDto, 'backendLimiters'> & {
+  backendLimiters?: { questionName: string; choices: ChoiceDto[] }[];
+};
 type AnswerValue = string | string[] | object | object[];
 type AnswerRecord = Record<string, AnswerValue>;
 
@@ -84,7 +87,7 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
       // eslint-disable-next-line no-continue
       if (!doc.surveyId) continue;
 
-      const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
+      const { backendLimiters } = doc.surveyId as unknown as OldSurveyDto;
       // eslint-disable-next-line no-continue
       if (!backendLimiters || backendLimiters.length === 0) continue;
 

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -27,11 +27,13 @@ import { faRotateLeft, faFilePdf, faFileLines, faFileCirclePlus } from '@fortawe
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import { ReactElementFactory } from 'survey-react-ui';
 import { SurveyCreatorModel } from 'survey-creator-core';
+import { Question, ChoicesRestful } from 'survey-core';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
@@ -77,6 +79,8 @@ const SurveyEditorPage = () => {
     updateStoredSurvey,
     resetStoredSurvey,
     uploadFile,
+    uploadBackendLimiters,
+    removeBackendLimiter,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
   const {
@@ -180,6 +184,22 @@ const SurveyEditorPage = () => {
       const promises = options.files.map((file: File) => uploadFile(file, options.callback));
       await Promise.all(promises);
     });
+
+    creator.onElementDeleting.add((_creatorModel, options) => {
+      if (options.elementType !== 'question') {
+        return;
+      }
+      const question = options.element as Question;
+      const choicesByUrl = question.choicesByUrl as ChoicesRestful | undefined;
+      if (!choicesByUrl?.url) {
+        return;
+      }
+      const currentSurveyId = form.getValues('id');
+      if (!currentSurveyId || currentSurveyId === TEMPORAL_SURVEY_ID_STRING) {
+        return;
+      }
+      void removeBackendLimiter(currentSurveyId, question.name);
+    });
   }, [creator, form, language]);
 
   const handleNavigateToCreatedSurveys = () => {
@@ -187,13 +207,18 @@ const SurveyEditorPage = () => {
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
-  const handleSaveSurvey = async () => {
+  const handleSaveSurvey = useCallback(async () => {
     if (!creator) return;
 
     form.setValue('formula', creator.JSON as SurveyFormula);
     form.setValue('saveNo', creator.saveNo || 0);
-    const success = await updateOrCreateSurvey(form.getValues());
-    if (success) {
+    const shouldUploadBackendLimiters = form.getValues('id') === undefined;
+    const resultingSurveyId = await updateOrCreateSurvey(form.getValues());
+    if (resultingSurveyId) {
+      if (shouldUploadBackendLimiters) {
+        await uploadBackendLimiters(resultingSurveyId, form.getValues('backendLimiters') || {});
+      }
+
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
 
@@ -202,7 +227,7 @@ const SurveyEditorPage = () => {
       toast.success(t('survey.editor.saveSurveySuccess'));
       handleNavigateToCreatedSurveys();
     }
-  };
+  }, [creator, form, language]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [

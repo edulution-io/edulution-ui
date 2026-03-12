@@ -53,12 +53,12 @@ describe('useSurveyEditorPageStore', () => {
   });
 
   describe('updateOrCreateSurvey', () => {
-    it('returns true and sets isLoading to false on success', async () => {
+    it('returns the surveyId and sets isLoading to false on success', async () => {
       const survey = createMockSurvey();
 
       const result = await useSurveyEditorPageStore.getState().updateOrCreateSurvey(survey);
 
-      expect(result).toBe(true);
+      expect(result).toBe('survey-abc-123');
       expect(useSurveyEditorPageStore.getState().isLoading).toBe(false);
     });
 
@@ -91,7 +91,7 @@ describe('useSurveyEditorPageStore', () => {
       const survey = createMockSurvey();
       const result = await useSurveyEditorPageStore.getState().updateOrCreateSurvey(survey);
 
-      expect(result).toBe(false);
+      expect(result).toBe('');
       expect(useSurveyEditorPageStore.getState().isLoading).toBe(false);
     });
   });

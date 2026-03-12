@@ -21,6 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn, Input } from '@edulution-io/ui-kit';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
+import CHOICES_DEFAULT_LIMIT from '@libs/survey/constants/choices-default-limit';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Switch from '@/components/ui/Switch';
 import Label from '@/components/ui/Label';
@@ -56,7 +57,7 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
               type="number"
               min="0"
               placeholder={t('common.limit')}
-              value={otherItemsChoiceWithBackendLimit?.limit || 1}
+              value={otherItemsChoiceWithBackendLimit?.limit ?? CHOICES_DEFAULT_LIMIT}
               onChange={(e) =>
                 otherItemsChoiceWithBackendLimit
                   ? setChoiceLimit(SHOW_OTHER_ITEM, Math.max(Number(e.target.value), 0))

@@ -93,17 +93,14 @@ export const surveyInvalidAnswerPublicSurvey02: SurveyDocument = {
 } as unknown as SurveyDocument;
 
 export const publicSurvey02QuestionNameWithLimiters = 'Frage2';
-export const publicSurvey02BackendLimiter = [
-  {
-    questionName: publicSurvey02QuestionNameWithLimiters,
-    choices: [
-      { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
-      { name: 'choice1', title: 'CanBeSelected1times', limit: 1 },
-      { name: 'choice2', title: 'CanBeSelected2times', limit: 2 },
-      { name: 'choice3', title: 'CanBeSelected3times', limit: 3 },
-    ],
-  },
-];
+export const publicSurvey02BackendLimiter = {
+  [publicSurvey02QuestionNameWithLimiters]: [
+    { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
+    { name: 'choice1', title: 'CanBeSelected1times', limit: 1 },
+    { name: 'choice2', title: 'CanBeSelected2times', limit: 2 },
+    { name: 'choice3', title: 'CanBeSelected3times', limit: 3 },
+  ],
+};
 export const filteredChoices = [
   { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
   { name: 'choice1', title: 'CanBeSelected1times', limit: 1 },

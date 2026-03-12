@@ -19,58 +19,33 @@
 
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Group } from '@libs/groups/types/group';
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import Attendee from '../conferences/attendee.schema';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
-export type SurveyDocument = Survey & Document;
+export type SurveysBackendLimiterDocument = SurveysBackendLimiter & Document;
 
 @Schema({ timestamps: true, strict: true })
-export class Survey {
+export class SurveysBackendLimiter {
   @Prop({ required: true })
-  formula: SurveyFormula;
-
-  @Prop({ required: true })
-  saveNo: number;
+  surveyId: Types.ObjectId;
 
   @Prop({ required: true })
-  creator: Attendee;
+  questionName: string;
 
   @Prop({ required: true })
-  invitedAttendees: Attendee[];
+  choices: ChoiceDto[];
 
-  @Prop({ required: true })
-  invitedGroups: Group[];
-
-  @Prop({ required: true })
-  participatedAttendees: Attendee[];
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'SurveyAnswer' }], required: true })
-  answers: Types.ObjectId[];
-
-  @Prop({ type: Date, required: false })
-  expires: Date | null;
-
-  @Prop({ required: false })
-  isAnonymous?: boolean;
-
-  @Prop({ required: false })
-  isPublic?: boolean;
-
-  @Prop({ required: false })
-  canUpdateFormerAnswer?: boolean;
-
-  @Prop({ required: false })
-  canSubmitMultipleAnswers?: boolean;
-
-  @Prop({ default: 2 })
+  @Prop({ default: 1 })
   schemaVersion: number;
 }
 
-const SurveySchema = SchemaFactory.createForClass(Survey);
+const SurveysBackendLimiterSchema = SchemaFactory.createForClass(SurveysBackendLimiter);
 
-SurveySchema.set('toJSON', {
+SurveysBackendLimiterSchema.index({ surveyId: 1, questionName: 1 }, { unique: true });
+
+SurveysBackendLimiterSchema.index({ surveyId: 1 });
+
+SurveysBackendLimiterSchema.set('toJSON', {
   virtuals: true,
 });
 
-export default SurveySchema;
+export default SurveysBackendLimiterSchema;

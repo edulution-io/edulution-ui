@@ -36,6 +36,8 @@ import SurveyAnswersService from '../../src/surveys/survey-answers.service';
 import SurveyAnswerAttachmentsService from '../../src/surveys/survey-answer-attachments.service';
 import FilesystemService from '../../src/filesystem/filesystem.service';
 import GlobalSettingsService from '../../src/global-settings/global-settings.service';
+import SurveysBackendLimiterService from '../../src/surveys/surveys-backend-limiter.service';
+import SurveysAttachmentService from '../../src/surveys/surveys-attachment.service';
 import { TEST_USER, MockAuthGuard, MockAccessGuard } from './createTestApp';
 
 const BASE = `/edu-api/${SURVEYS}`;
@@ -46,6 +48,9 @@ describe('Surveys Integration', () => {
   let surveysService: Record<string, jest.Mock>;
   let surveyAnswerService: Record<string, jest.Mock>;
   let surveysTemplateService: Record<string, jest.Mock>;
+  let surveysAttachmentService: Record<string, jest.Mock>;
+  let surveysBackendLimiterService: Record<string, jest.Mock>;
+  let surveysAnswerAttachmentService: Record<string, jest.Mock>;
 
   beforeAll(async () => {
     const mockSurvey = {
@@ -87,6 +92,22 @@ describe('Surveys Integration', () => {
       setIsTemplateActive: jest.fn().mockResolvedValue(undefined),
     };
 
+    surveysAttachmentService = {
+      deleteAttachments: jest.fn().mockResolvedValue(undefined),
+      onSurveyRemoval: jest.fn().mockResolvedValue(undefined),
+    };
+
+    surveysBackendLimiterService = {
+      updateOrCreateSurveysBackendLimiters: jest.fn().mockResolvedValue(undefined),
+      deleteBackendLimiter: jest.fn().mockResolvedValue(undefined),
+      onSurveyRemoval: jest.fn().mockResolvedValue(undefined),
+    };
+
+    surveysAnswerAttachmentService = {
+      serveFileFromAnswer: jest.fn().mockResolvedValue(undefined),
+      updateSurveyAnswerAttachments: jest.fn().mockResolvedValue(undefined),
+    };
+
     const mockGlobalSettingsService = {
       getAdminGroupsFromCache: jest.fn().mockResolvedValue(['/role-globaladministrator']),
     };
@@ -97,7 +118,9 @@ describe('Surveys Integration', () => {
         { provide: SurveysService, useValue: surveysService },
         { provide: SurveyAnswersService, useValue: surveyAnswerService },
         { provide: SurveysTemplateService, useValue: surveysTemplateService },
-        { provide: SurveyAnswerAttachmentsService, useValue: {} },
+        { provide: SurveysAttachmentService, useValue: surveysAttachmentService },
+        { provide: SurveysBackendLimiterService, useValue: surveysBackendLimiterService },
+        { provide: SurveyAnswerAttachmentsService, useValue: surveysAnswerAttachmentService },
         { provide: FilesystemService, useValue: { serveFile: jest.fn(), serveTempFile: jest.fn() } },
         { provide: GlobalSettingsService, useValue: mockGlobalSettingsService },
         { provide: APP_GUARD, useValue: new MockAuthGuard(TEST_USER) },

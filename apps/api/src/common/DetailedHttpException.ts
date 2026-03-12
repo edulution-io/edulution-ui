@@ -17,27 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import ErrorMessage from '@libs/error/errorMessage';
 
-interface SurveyDto {
-  id?: string;
-  formula: SurveyFormula;
-  backendLimiters?: Record<string, ChoiceDto[]>;
-  saveNo: number;
-  creator: AttendeeDto;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  participatedAttendees: AttendeeDto[];
-  answers: string[];
-  createdAt?: Date;
-  expires: Date | null;
-  isAnonymous?: boolean;
-  isPublic?: boolean;
-  canSubmitMultipleAnswers?: boolean;
-  canUpdateFormerAnswer?: boolean;
+class DetailedHttpException extends HttpException {
+  constructor(errorMessage: ErrorMessage, httpStatusCode: HttpStatus, details: Record<string, string | string[]>) {
+    super({ errorMessage, details, HttpStatusCode: httpStatusCode }, httpStatusCode);
+  }
 }
 
-export default SurveyDto;
+export default DetailedHttpException;

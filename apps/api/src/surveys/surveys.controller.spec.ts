@@ -30,12 +30,14 @@ import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answers.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
+import { SurveysBackendLimiter } from './surveys-backend-limiter.schema';
 import {
   answeredSurvey01,
   answeredSurvey02,
@@ -71,14 +73,17 @@ import SurveyAnswerAttachmentsService from './survey-answer-attachments.service'
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import ValidatePathPipe from '../common/pipes/validatePath.pipe';
+import SurveysBackendLimiterService from './surveys-backend-limiter.service';
 import { SurveysTemplate } from './surveys-template.schema';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
   let surveyService: SurveysService;
   let surveyAnswersService: SurveyAnswersService;
+  let surveysBackendLimiterService: SurveysBackendLimiterService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
+
   const pushMock = {
     notify: jest.fn(),
     upsertNotificationForSource: jest.fn().mockResolvedValue(undefined),
@@ -113,6 +118,19 @@ describe(SurveysController.name, () => {
           },
         },
         {
+          provide: SurveysBackendLimiterService,
+          useValue: {
+            onSurveyRemoval: jest.fn(),
+            updateOrCreateSurveysBackendLimiters: jest.fn().mockResolvedValue(undefined),
+            throwErrorIfUserIsNotAllowedToAppendBackendLimiters: jest.fn(),
+            deleteBackendLimiter: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: getModelToken(SurveysBackendLimiter.name),
+          useValue: jest.fn(),
+        },
+        {
           provide: getModelToken(SurveysTemplate.name),
           useValue: {
             find: jest.fn().mockReturnThis(),
@@ -137,6 +155,7 @@ describe(SurveysController.name, () => {
     controller = module.get<SurveysController>(SurveysController);
     surveyService = module.get<SurveysService>(SurveysService);
     surveyAnswersService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveysBackendLimiterService = module.get<SurveysBackendLimiterService>(SurveysBackendLimiterService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });
@@ -443,6 +462,46 @@ describe(SurveysController.name, () => {
       it('should return undefined for null input', () => {
         expect(pipe.transform(null as unknown as string)).toBeUndefined();
       });
+    });
+  });
+
+  describe('updateChoices', () => {
+    const surveyId = idOfPublicSurvey01.toString();
+    const questionId = 'Frage1';
+    const choices: ChoiceDto[] = [{ name: 'c1', title: 'Choice 1', limit: 5 }];
+    const mockRes = () => {
+      const json = jest.fn();
+      const status = jest.fn().mockReturnValue({ json });
+      return { status, json, res: { status } as unknown as import('express').Response };
+    };
+
+    it('should call updateOrCreateSurveysBackendLimiters when user is creator and append is not set', async () => {
+      const { res, status, json } = mockRes();
+      surveyService.throwErrorIfSurveyIsNotAccessible = jest.fn().mockResolvedValue(publicSurvey01);
+
+      await controller.updateChoices({ surveyId, questionId }, firstMockJWTUser, choices, res);
+
+      expect(surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters).toHaveBeenCalledWith(
+        surveyId,
+        questionId,
+        choices,
+      );
+      expect(status).toHaveBeenCalledWith(HttpStatus.OK);
+      expect(json).toHaveBeenCalledWith({ message: 'success' });
+    });
+  });
+
+  describe('deleteBackendLimiter', () => {
+    const surveyId = idOfPublicSurvey01.toString();
+    const questionId = 'Frage1';
+
+    it('should call throwErrorIfUserIsNotCreator and deleteBackendLimiter', async () => {
+      surveyService.throwErrorIfUserIsNotCreator = jest.fn().mockResolvedValue(undefined);
+
+      await controller.deleteBackendLimiter({ surveyId, questionId }, firstMockJWTUser);
+
+      expect(surveyService.throwErrorIfUserIsNotCreator).toHaveBeenCalledWith(surveyId, firstMockJWTUser);
+      expect(surveysBackendLimiterService.deleteBackendLimiter).toHaveBeenCalledWith(surveyId, questionId);
     });
   });
 });
