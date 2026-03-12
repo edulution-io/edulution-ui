@@ -24,14 +24,11 @@ interface MenuBarStore {
   toggleMobileMenuBar: () => void;
   closeMobileMenuBar: () => void;
 
-  isCollapsed: boolean;
-
   reset: () => void;
 }
 
 const initialValues = {
   isMobileMenuBarOpen: false,
-  isCollapsed: false,
 };
 
 const useMenuBarStore = create<MenuBarStore>((set) => ({
