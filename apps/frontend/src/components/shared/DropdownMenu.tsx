@@ -38,6 +38,8 @@ type DropdownMenuProps = {
   disabled?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  align?: 'start' | 'center' | 'end';
+  side?: 'top' | 'bottom' | 'left' | 'right';
 };
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
@@ -47,6 +49,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   disabled = false,
   open,
   onOpenChange,
+  align,
+  side,
 }) => {
   if (!items || !items.length) return null;
 
@@ -63,6 +67,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       </DropdownMenuTrigger>
       <DropdownMenuPortal>
         <DropdownMenuContent
+          align={align}
+          side={side}
           className={cn(
             'z-50 max-h-[calc(100vh-300px)] min-w-[8rem] overflow-y-auto rounded-lg border-none bg-accent-light p-1 shadow-md',
             menuContentClassName,

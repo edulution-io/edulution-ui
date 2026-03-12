@@ -33,6 +33,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   type = 'button',
   variant = 'button',
   dropdownItems = [],
+  dropdownAlign,
+  dropdownSide,
+  onDropdownClose,
 }) => {
   const { t } = useTranslation();
   const { animate, triggerAnimation } = useFontAwesomeHoverAnimation();
@@ -60,6 +63,11 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
             </Button>
           }
           items={dropdownItems}
+          align={dropdownAlign}
+          side={dropdownSide}
+          onOpenChange={(open) => {
+            if (!open) onDropdownClose?.();
+          }}
         />
       );
     }

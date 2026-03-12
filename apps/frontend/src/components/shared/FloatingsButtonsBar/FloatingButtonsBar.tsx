@@ -58,6 +58,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const { buttons, keyPrefix } = config;
 
   const visibleButtons = useMemo(() => buttons.filter((conf) => conf.isVisible !== false), [buttons]);
+  const visibleButtonCount = visibleButtons.length;
 
   const { hasOverflow, displayedButtons, overflowButtons } = useMemo(() => {
     if (isEdulutionApp) {
@@ -74,7 +75,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
     setIsDropupOpen(false);
     setShouldRenderDropup(false);
     setIsDropupAnimatingOut(false);
-  }, [visibleButtons]);
+  }, [visibleButtonCount]);
 
   useEffect(() => {
     if (isDropupOpen) {
@@ -92,7 +93,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   }, [isDropupOpen, shouldRenderDropup]);
 
   useOnClickOutside([dropupRef, moreButtonRef], () => {
-    if (isDropupOpen) {
+    if (!isEdulutionApp && isDropupOpen) {
       setIsDropupOpen(false);
     }
   });
@@ -146,7 +147,13 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
     };
   }, [visibleButtons, portalRoot, debouncedUpdate]);
 
-  const renderButton = (buttonConfig: FloatingButtonConfig, key: string) => (
+  const closeDropup = () => {
+    setIsDropupOpen(false);
+    setShouldRenderDropup(false);
+    setIsDropupAnimatingOut(false);
+  };
+
+  const renderButton = (buttonConfig: FloatingButtonConfig, key: string, isInDropup = false) => (
     <div
       key={key}
       className="flex-shrink-0 duration-200 animate-in fade-in slide-in-from-bottom-2"
@@ -155,8 +162,18 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
         variant={buttonConfig.variant ?? 'button'}
         icon={buttonConfig.icon}
         text={buttonConfig.text}
-        onClick={buttonConfig.onClick}
+        onClick={
+          isInDropup && buttonConfig.onClick
+            ? () => {
+                closeDropup();
+                buttonConfig.onClick?.();
+              }
+            : buttonConfig.onClick
+        }
         dropdownItems={buttonConfig.dropdownItems}
+        dropdownAlign={isEdulutionApp ? 'end' : buttonConfig.dropdownAlign}
+        dropdownSide={isEdulutionApp ? 'left' : buttonConfig.dropdownSide}
+        onDropdownClose={isInDropup ? closeDropup : undefined}
       />
     </div>
   );
@@ -208,7 +225,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
               )}
             >
               {overflowButtons.map((buttonConfig) =>
-                renderButton(buttonConfig, `${keyPrefix}overflow-${buttonConfig.text}`),
+                renderButton(buttonConfig, `${keyPrefix}overflow-${buttonConfig.text}`, true),
               )}
             </div>
           )}

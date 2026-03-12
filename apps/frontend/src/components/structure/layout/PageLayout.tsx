@@ -75,7 +75,6 @@ const PageLayout = ({
         style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
         className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-4 pr-6 md:pl-6', {
           'px-0 md:px-0': hasFullWidthMain,
-          'pb-20': isEdulutionApp,
         })}
       >
         {children}

@@ -28,6 +28,9 @@ interface FloatingButtonConfig {
   type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
   dropdownItems?: DropdownMenuItemType[];
+  dropdownAlign?: 'start' | 'center' | 'end';
+  dropdownSide?: 'top' | 'bottom' | 'left' | 'right';
+  onDropdownClose?: () => void;
 }
 
 export default FloatingButtonConfig;
