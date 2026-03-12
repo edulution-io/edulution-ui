@@ -51,6 +51,7 @@ import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareS
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useOpenFileChoiceDialogStore from '@/pages/FileSharing/Dialog/useOpenFileChoiceDialogStore';
 import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
 import useDeviceManagementStore from '@/pages/LinuxmusterPage/DeviceManagement/useDeviceManagementStore';
 import useParentAssignmentStore from '@/pages/LinuxmusterPage/ParentAssignment/useParentAssignmentStore';
@@ -142,6 +143,7 @@ const cleanAllStores = async () => {
   useMailsStore.getState().reset();
   useMenuBarStore.getState().reset();
   useNotificationStore.getState().reset();
+  useOpenFileChoiceDialogStore.getState().reset();
   useOpenFileDialogStore.getState().reset();
   useParentAssignmentStore.getState().reset();
   useParentChildPairingStore.getState().reset();

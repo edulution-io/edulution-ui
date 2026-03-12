@@ -44,7 +44,9 @@ import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWind
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import UnsavedChangesDialog from '@/pages/FileSharing/FilePreview/TextEditor/UnsavedChangesDialog';
+import OpenFileChoiceDialog from '@/pages/FileSharing/Dialog/OpenFileChoiceDialog';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import PrintButton from '@/components/structure/framing/ResizableWindow/Buttons/PrintButton';
 import printContent from '@/pages/FileSharing/utilities/printContent';
 import TEXT_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/textPreviewElementId';
@@ -108,6 +110,7 @@ const FileSharingPreviewFrame = () => {
   };
 
   const { isMobileView } = useMedia();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   useEffect(() => {
     resetPreview();
@@ -239,7 +242,7 @@ const FileSharingPreviewFrame = () => {
 
   const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
   const isPdf = currentlyEditingFile?.filename.endsWith('pdf');
-  const isOnlyOfficeDocOnMobile = isMobileView && isEditableDoc && isOnlyOfficeActive && !isPdf;
+  const isOnlyOfficeDocOnMobile = isMobileView && isEditableDoc && isOnlyOfficeActive && !isPdf && !isEdulutionApp;
 
   const isFileReady =
     (isValidFile && (isEditableDoc ? isDocumentEditorConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
@@ -315,6 +318,7 @@ const FileSharingPreviewFrame = () => {
         />
       </ResizableWindow>
       <UnsavedChangesDialog onSave={handleSaveFile} />
+      <OpenFileChoiceDialog />
     </>
   );
 };

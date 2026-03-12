@@ -46,6 +46,10 @@ import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
 import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
 import { cn } from '@edulution-io/ui-kit';
 import TEXT_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/textPreviewElementId';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import useOpenFileChoiceDialogStore, {
+  OPEN_FILE_CHOICE,
+} from '@/pages/FileSharing/Dialog/useOpenFileChoiceDialogStore';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -65,6 +69,7 @@ const FileRenderer: FC<FileRendererProps> = ({
   webdavShare,
 }) => {
   const { isMobileView } = useMedia();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const {
     temporaryDownloadUrl: fileUrl,
     publicDownloadLink,
@@ -78,6 +83,7 @@ const FileRenderer: FC<FileRendererProps> = ({
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const { fileContent, isLoadingContent, fetchFileContent, reset: resetContentPreview } = useFileContentPreviewStore();
   const { editedContent, setEditedContent, setOriginalContent } = useFileEditorContentStore();
+  const { choice: appEditorChoice, openDialog, reset: resetChoiceDialog } = useOpenFileChoiceDialogStore();
 
   const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
   const isMarkdown = fileExtension === TEXT_EXTENSIONS.MD || fileExtension === TEXT_EXTENSIONS.MARKDOWN;
@@ -85,6 +91,9 @@ const FileRenderer: FC<FileRendererProps> = ({
   const isDrawio = isDrawioExtension(fileExtension);
   const isTextBasedFile = isText || isDrawio;
   const isBaseLoading = isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || !!error;
+  const isEditableDoc = currentlyEditingFile ? isOfficeDocument(currentlyEditingFile.filePath) : false;
+
+  const shouldShowChoiceDialog = isEdulutionApp && isEditableDoc;
 
   useEffect(() => {
     if (currentlyEditingFile && !isEditorLoading && !isCreatingBlobUrl && !isFetchingPublicUrl) {
@@ -116,6 +125,16 @@ const FileRenderer: FC<FileRendererProps> = ({
   }, [fileUrl, isTextBasedFile]);
 
   useEffect(() => {
+    resetChoiceDialog();
+  }, [currentlyEditingFile?.filePath]);
+
+  useEffect(() => {
+    if (shouldShowChoiceDialog && appEditorChoice === null && currentlyEditingFile) {
+      openDialog(currentlyEditingFile.filename, fileUrl);
+    }
+  }, [shouldShowChoiceDialog, appEditorChoice, currentlyEditingFile?.filename, fileUrl]);
+
+  useEffect(() => {
     if (editMode && isTextBasedFile && fileContent !== null) {
       setOriginalContent(fileContent);
     }
@@ -126,7 +145,6 @@ const FileRenderer: FC<FileRendererProps> = ({
   const getFileType = (): FilePreviewType => {
     if (isPdfExtension(fileExtension)) return FILE_PREVIEW_TYPE.PDF;
 
-    const isEditableDoc = isOfficeDocument(currentlyEditingFile.filePath);
     if (isEditableDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
     if (isEditableDoc && isCollaboraConfigured) return FILE_PREVIEW_TYPE.COLLABORA;
 
@@ -152,20 +170,30 @@ const FileRenderer: FC<FileRendererProps> = ({
         );
 
       case FILE_PREVIEW_TYPE.ONLY_OFFICE:
-        if (isBaseLoading || !publicDownloadLink) return <CircleLoader className="mx-auto mt-5" />;
-        return (
-          <OnlyOffice
-            url={publicDownloadLink}
-            fileName={currentlyEditingFile.filename}
-            filePath={currentlyEditingFile.filePath}
-            mode={editMode ? 'edit' : 'view'}
-            type={isMobileView ? 'mobile' : 'desktop'}
-            isOpenedInNewTab={isOpenedInNewTab}
-            webdavShare={webdavShare}
-          />
-        );
+      case FILE_PREVIEW_TYPE.COLLABORA: {
+        if (shouldShowChoiceDialog) {
+          if (appEditorChoice === null) {
+            return <CircleLoader className="mx-auto mt-5" />;
+          }
+          if (appEditorChoice === OPEN_FILE_CHOICE.DOWNLOAD) {
+            return <p className="p-8 text-center text-muted-foreground">{t('filesharing.fileDownloaded')}</p>;
+          }
+        }
 
-      case FILE_PREVIEW_TYPE.COLLABORA:
+        if (fileType === FILE_PREVIEW_TYPE.ONLY_OFFICE) {
+          if (isBaseLoading || !publicDownloadLink) return <CircleLoader className="mx-auto mt-5" />;
+          return (
+            <OnlyOffice
+              url={publicDownloadLink}
+              fileName={currentlyEditingFile.filename}
+              filePath={currentlyEditingFile.filePath}
+              mode={editMode ? 'edit' : 'view'}
+              type={isMobileView ? 'mobile' : 'desktop'}
+              isOpenedInNewTab={isOpenedInNewTab}
+              webdavShare={webdavShare}
+            />
+          );
+        }
         return (
           <Collabora
             filePath={currentlyEditingFile.filePath}
@@ -174,6 +202,7 @@ const FileRenderer: FC<FileRendererProps> = ({
             webdavShare={webdavShare}
           />
         );
+      }
 
       case FILE_PREVIEW_TYPE.DRAWIO:
         if (isBaseLoading || isLoadingContent || fileContent === null) return <CircleLoader className="mx-auto mt-5" />;

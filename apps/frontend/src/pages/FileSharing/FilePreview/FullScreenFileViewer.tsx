@@ -36,6 +36,7 @@ import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SaveIcon } from '@libs/common/constants/standardActionIcons';
 import { Button } from '@edulution-io/ui-kit';
+import OpenFileChoiceDialog from '@/pages/FileSharing/Dialog/OpenFileChoiceDialog';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
@@ -111,6 +112,7 @@ const FullScreenFileViewer = () => {
           {isSaving ? t('filesharing.textEditor.saving') : t('common.save')}
         </Button>
       )}
+      <OpenFileChoiceDialog />
     </PageLayout>
   );
 };

@@ -42,6 +42,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import IconWithCount from '@/components/shared/IconWithCount';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -78,6 +79,8 @@ const getFileSharingTableColumns = (
         const { setPublicDownloadLink } = useFileSharingDownloadStore();
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.filename];
         const { isMobileView } = useMedia();
+        const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+        const startDownload = useStartWebdavFileDownload();
         const handleFilenameClick = () => {
           const isPdf = row.original.filename.toLowerCase().endsWith('.pdf');
 
@@ -117,8 +120,12 @@ const getFileSharingTableColumns = (
             row.toggleSelected();
             return;
           }
-          if (isMobileView && isEditableDoc && isDocumentEditorConfigured && !isPdf) {
+          if (isMobileView && isEditableDoc && isDocumentEditorConfigured && !isPdf && !isEdulutionApp) {
             row.toggleSelected();
+            return;
+          }
+          if (isEdulutionApp && isMobileView && isEditableDoc && !isPdf) {
+            void startDownload([row.original]);
             return;
           }
           if (isEditableDoc || isPdf) {

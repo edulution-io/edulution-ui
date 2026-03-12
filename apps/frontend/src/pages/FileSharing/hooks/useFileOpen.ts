@@ -29,6 +29,8 @@ import useMedia from '@/hooks/useMedia';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 
 interface UseFileOpenOptions {
   isDocumentServerConfigured: boolean;
@@ -41,6 +43,8 @@ const useFileOpen = ({ isDocumentServerConfigured, isCollaboraConfigured }: UseF
   const { isFilePreviewDocked, setIsFilePreviewVisible, resetCurrentlyEditingFile } = useFileEditorStore();
   const { currentlyDisabledFiles, setFileIsCurrentlyDisabled } = useFileSharingStore();
   const { setPublicDownloadLink } = useFileSharingDownloadStore();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+  const startDownload = useStartWebdavFileDownload();
 
   const handleFileOpen = useCallback(
     (item: DirectoryFileDTO) => {
@@ -81,7 +85,11 @@ const useFileOpen = ({ isDocumentServerConfigured, isCollaboraConfigured }: UseF
       if (isEditableDoc && !hasDocumentEditor && !isPdf) {
         return;
       }
-      if (isMobileView && isEditableDoc && isDocumentServerConfigured && !isPdf) {
+      if (isMobileView && isEditableDoc && isDocumentServerConfigured && !isPdf && !isEdulutionApp) {
+        return;
+      }
+      if (isEdulutionApp && isMobileView && isEditableDoc && !isPdf) {
+        void startDownload([item]);
         return;
       }
       if (isEditableDoc || isPdf) {
@@ -101,6 +109,8 @@ const useFileOpen = ({ isDocumentServerConfigured, isCollaboraConfigured }: UseF
       isDocumentServerConfigured,
       isCollaboraConfigured,
       isMobileView,
+      isEdulutionApp,
+      startDownload,
       setFileIsCurrentlyDisabled,
       resetCurrentlyEditingFile,
     ],

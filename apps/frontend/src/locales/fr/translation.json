@@ -451,6 +451,10 @@
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge.",
       "WopiTokenInvalid": "Jeton WOPI invalide ou expiré"
     },
+    "openFileChoice": "Comment souhaitez-vous ouvrir le fichier ?",
+    "openInEditor": "Ouvrir dans l'éditeur",
+    "openOnDevice": "Télécharger",
+    "fileDownloaded": "Le fichier est en cours de téléchargement.",
     "singleDownload": {
       "promptInfo": "Le téléchargement de votre fichier a commencé.",
       "downloadSucceeded": "Le fichier a-t-il été téléchargé avec succès ?",

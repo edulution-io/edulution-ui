@@ -464,6 +464,10 @@
       "FileFormatNotSupported": "File format is not supported",
       "WopiTokenInvalid": "WOPI token invalid or expired"
     },
+    "openFileChoice": "How would you like to open the file?",
+    "openInEditor": "Open in Editor",
+    "openOnDevice": "Download",
+    "fileDownloaded": "The file is being downloaded.",
     "singleDownload": {
       "promptInfo": "Your file download has started.",
       "downloadSucceeded": "Did the file download successfully?",
