@@ -17,22 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import ChatController from './chat.controller';
-import ChatService from './chat.service';
-import ProfilePictureService from './profilePicture.service';
-import { Conversation, ConversationSchema } from './schemas/conversation.schema';
-import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
+import CHAT_USER_COLORS from '@libs/chat/constants/chatUserColors';
 
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Conversation.name, schema: ConversationSchema },
-      { name: ChatMessage.name, schema: ChatMessageSchema },
-    ]),
-  ],
-  controllers: [ChatController],
-  providers: [ChatService, ProfilePictureService],
-})
-export default class ChatModule {}
+const getChatUserColor = (username: string): string => {
+  const hash = Array.from(username).reduce((acc, char) => char.charCodeAt(0) + (Math.imul(acc, 31) + 1), 0);
+  const index = Math.abs(hash) % CHAT_USER_COLORS.length;
+  return CHAT_USER_COLORS[index];
+};
+
+export default getChatUserColor;

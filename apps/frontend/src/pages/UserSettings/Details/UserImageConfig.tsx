@@ -19,10 +19,12 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CHAT_PROFILE_PICTURE_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { Button } from '@edulution-io/ui-kit';
 import getCompressedImage from '@/utils/getCompressedImage';
 import Avatar from '@/components/shared/Avatar';
+import eduApi from '@/api/eduApi';
 import { toast } from 'sonner';
 
 const UserImageConfig: React.FC = () => {
@@ -44,14 +46,23 @@ const UserImageConfig: React.FC = () => {
     }
   };
 
-  const handleSubmitImage = () => {
-    void patchUserDetails({ thumbnailPhoto: base64Image });
+  const handleSubmitImage = async () => {
+    await patchUserDetails({ thumbnailPhoto: base64Image });
+    try {
+      await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: base64Image });
+    } catch {
+      toast.error(t('usersettings.errors.profilePictureCacheUpdateFailed'));
+    }
   };
 
   const handleImageDelete = async () => {
-    setBase64Image('');
-
     await patchUserDetails({ thumbnailPhoto: '' });
+    setBase64Image('');
+    try {
+      await eduApi.put(CHAT_PROFILE_PICTURE_ENDPOINT, { profilePicture: '' });
+    } catch {
+      toast.error(t('usersettings.errors.profilePictureCacheUpdateFailed'));
+    }
   };
 
   return (

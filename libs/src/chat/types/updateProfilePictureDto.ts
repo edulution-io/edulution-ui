@@ -17,22 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import ChatController from './chat.controller';
-import ChatService from './chat.service';
-import ProfilePictureService from './profilePicture.service';
-import { Conversation, ConversationSchema } from './schemas/conversation.schema';
-import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
+import { IsString, MaxLength } from 'class-validator';
+import PROFILE_PICTURE_CONFIG from '@libs/chat/constants/profilePictureConfig';
 
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Conversation.name, schema: ConversationSchema },
-      { name: ChatMessage.name, schema: ChatMessageSchema },
-    ]),
-  ],
-  controllers: [ChatController],
-  providers: [ChatService, ProfilePictureService],
-})
-export default class ChatModule {}
+class UpdateProfilePictureDto {
+  @IsString()
+  @MaxLength(PROFILE_PICTURE_CONFIG.MAX_BASE64_LENGTH)
+  profilePicture: string;
+}
+
+export default UpdateProfilePictureDto;

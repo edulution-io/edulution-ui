@@ -17,22 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import ChatController from './chat.controller';
-import ChatService from './chat.service';
-import ProfilePictureService from './profilePicture.service';
-import { Conversation, ConversationSchema } from './schemas/conversation.schema';
-import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
+import ImageExtensions from '@libs/filesharing/types/imageExtensions';
 
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Conversation.name, schema: ConversationSchema },
-      { name: ChatMessage.name, schema: ChatMessageSchema },
-    ]),
-  ],
-  controllers: [ChatController],
-  providers: [ChatService, ProfilePictureService],
-})
-export default class ChatModule {}
+const PROFILE_PICTURE_CONFIG = {
+  SIZE: 100,
+  FORMAT: ImageExtensions.WEBP,
+  QUALITY: 60,
+  MAX_BASE64_LENGTH: 131072,
+  CACHE_DIR_NAME: 'edulution-profile-pictures',
+};
+
+export default PROFILE_PICTURE_CONFIG;

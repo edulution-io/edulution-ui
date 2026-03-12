@@ -144,13 +144,11 @@ const useChatStore = create<ChatStore>((set, get) => ({
       const endpoint = getChatMessagesEndpoint(conversationType, groupName);
       const response = await eduApi.post<ChatMessage>(endpoint, { content });
 
-      const newMessage = response.data;
-
       const { currentConversationType, currentGroupName } = get();
       if (currentConversationType !== conversationType || currentGroupName !== groupName) return;
 
       set((state) => ({
-        messages: [...state.messages, newMessage],
+        messages: [...state.messages, response.data],
       }));
     } catch (error) {
       handleApiError(error, set);
@@ -178,7 +176,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     if (message.conversationType !== currentConversationType || message.groupName !== currentGroupName) return;
 
     set((state) => {
-      const exists = state.messages.some((m) => m.id === message.id);
+      const exists = state.messages.some((msg) => msg.id === message.id);
       if (exists) return state;
       return { messages: [...state.messages, message] };
     });

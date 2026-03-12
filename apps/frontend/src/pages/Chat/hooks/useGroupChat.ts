@@ -18,6 +18,7 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
+
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -48,7 +49,6 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
   const groupNameRef = useRef(groupName);
   const conversationTypeRef = useRef(conversationType);
-
   useEffect(() => {
     groupNameRef.current = groupName;
     conversationTypeRef.current = conversationType;

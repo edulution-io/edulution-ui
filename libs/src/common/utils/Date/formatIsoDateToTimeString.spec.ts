@@ -17,22 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import ChatController from './chat.controller';
-import ChatService from './chat.service';
-import ProfilePictureService from './profilePicture.service';
-import { Conversation, ConversationSchema } from './schemas/conversation.schema';
-import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
+import formatIsoDateToTimeString from './formatIsoDateToTimeString';
 
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Conversation.name, schema: ConversationSchema },
-      { name: ChatMessage.name, schema: ChatMessageSchema },
-    ]),
-  ],
-  controllers: [ChatController],
-  providers: [ChatService, ProfilePictureService],
-})
-export default class ChatModule {}
+describe('formatIsoDateToTimeString', () => {
+  it('formats ISO date to HH:mm format', () => {
+    const result = formatIsoDateToTimeString('2026-03-10T14:30:00.000Z', 'en-GB');
+    expect(result).toBe('14:30');
+  });
+
+  it('uses de-DE as default locale', () => {
+    const result = formatIsoDateToTimeString('2026-03-10T08:05:00.000Z');
+    expect(result).toMatch(/\d{2}:\d{2}/);
+  });
+
+  it('returns Invalid Date for invalid input', () => {
+    const result = formatIsoDateToTimeString('not-a-date');
+    expect(result).toContain('Invalid');
+  });
+});

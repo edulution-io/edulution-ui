@@ -200,7 +200,7 @@ class ChatService {
       return [];
     }
 
-    if (!group.members?.some((m) => m.username === username)) {
+    if (!group.members?.some((member) => member.username === username)) {
       throw new CustomHttpException(
         CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
         HttpStatus.FORBIDDEN,
@@ -209,7 +209,7 @@ class ChatService {
       );
     }
 
-    return group.members.map((m) => m.username);
+    return group.members.map((member) => member.username);
   }
 }
 

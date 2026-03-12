@@ -23,8 +23,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { Button, cn } from '@edulution-io/ui-kit';
 import type ChatMessage from '@libs/chat/types/chatMessage';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useChatStore from '@/pages/Chat/useChatStore';
+import useSseEventListener from '@/hooks/useSseEventListener';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ChatBubble from './ChatBubble';
 import ChatEmptyState from './ChatEmptyState';
@@ -46,6 +48,18 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
   const prevMessagesLengthRef = useRef(messages.length);
   const { user } = useUserStore();
   const { isLoading, error, hasMoreMessages, isLoadingOlderMessages, fetchOlderMessages } = useChatStore();
+  const [pictureVersions, setPictureVersions] = useState<Record<string, number>>({});
+
+  const handleProfilePictureUpdated = useCallback((e: MessageEvent<string>) => {
+    try {
+      const { username } = JSON.parse(e.data) as { username: string };
+      setPictureVersions((prev) => ({ ...prev, [username]: (prev[username] ?? 0) + 1 }));
+    } catch (err) {
+      console.error('Failed to parse profile picture SSE event', err);
+    }
+  }, []);
+
+  useSseEventListener(SSE_MESSAGE_TYPE.CHAT_PROFILE_PICTURE_UPDATED, handleProfilePictureUpdated, { enabled: true });
 
   useEffect(() => {
     setIsMounted(true);
@@ -159,6 +173,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
             key={message.id}
             message={message}
             isOwnMessage={message.createdBy === user?.username}
+            pictureVersion={pictureVersions[message.createdBy ?? ''] ?? 0}
           />
         ))}
         {isLoading && (
