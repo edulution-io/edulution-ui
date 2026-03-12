@@ -196,7 +196,10 @@
   }
 }
 .dark {
-  background-image: url("data:image/svg+xml;charset=utf8,%3C?xml%20version=%271.0%27%20encoding=%27utf-8%27?%3E%3C%21--%20Generator:%20Adobe%20Illustrator%2024.0.1,%20SVG%20Export%20Plug-In%20.%20SVG%20Version:%206.00%20Build%200%29%20--%3E%3Csvg%20version=%271.1%27%20id=%27Layer_1%27%20xmlns=%27http://www.w3.org/2000/svg%27%20xmlns:xlink=%27http://www.w3.org/1999/xlink%27%20x=%270px%27%20y=%270px%27%20viewBox=%270%200%2016%2016%27%20style=%27enable-background:new%200%200%2016%2016;%27%20xml:space=%27preserve%27%3E%3Cstyle%20type=%27text/css%27%3E%20.st0{fill:%238ca4b6;}%20%3C/style%3E%3Cpath%20class=%27st0%27%20d=%27M13.56,11.44L11.3,9.18C11.74,8.38,12,7.47,12,6.5C12,3.47,9.53,1,6.5,1S1,3.47,1,6.5C1,9.53,3.47,12,6.5,12%20c0.97,0,1.88-0.26,2.68-0.7l2.26,2.26c0.29,0.29,0.66,0.43,1.04,0.44c0.39,0.01,0.78-0.14,1.08-0.44c0.3-0.3,0.44-0.69,0.44-1.08%20C13.99,12.1,13.85,11.72,13.56,11.44z%20M4,6.5C4,5.12,5.12,4,6.5,4S9,5.12,9,6.5S7.88,9,6.5,9S4,7.88,4,6.5z%27/%3E%3C/svg%3E");
+  .sa-table__filter.sa-table__filter,
+  .sa-table__global-filter.sa-table__global-filter {
+    background-image: url("data:image/svg+xml;charset=utf8,%3C?xml%20version=%271.0%27%20encoding=%27utf-8%27?%3E%3C%21--%20Generator:%20Adobe%20Illustrator%2024.0.1,%20SVG%20Export%20Plug-In%20.%20SVG%20Version:%206.00%20Build%200%29%20--%3E%3Csvg%20version=%271.1%27%20id=%27Layer_1%27%20xmlns=%27http://www.w3.org/2000/svg%27%20xmlns:xlink=%27http://www.w3.org/1999/xlink%27%20x=%270px%27%20y=%270px%27%20viewBox=%270%200%2016%2016%27%20style=%27enable-background:new%200%200%2016%2016;%27%20xml:space=%27preserve%27%3E%3Cstyle%20type=%27text/css%27%3E%20.st0{fill:%238ca4b6;}%20%3C/style%3E%3Cpath%20class=%27st0%27%20d=%27M13.56,11.44L11.3,9.18C11.74,8.38,12,7.47,12,6.5C12,3.47,9.53,1,6.5,1S1,3.47,1,6.5C1,9.53,3.47,12,6.5,12%20c0.97,0,1.88-0.26,2.68-0.7l2.26,2.26c0.29,0.29,0.66,0.43,1.04,0.44c0.39,0.01,0.78-0.14,1.08-0.44c0.3-0.3,0.44-0.69,0.44-1.08%20C13.99,12.1,13.85,11.72,13.56,11.44z%20M4,6.5C4,5.12,5.12,4,6.5,4S9,5.12,9,6.5S7.88,9,6.5,9S4,7.88,4,6.5z%27/%3E%3C/svg%3E");
+  }
 }
 
 .sa-table__show-column.sa-table__show-column {

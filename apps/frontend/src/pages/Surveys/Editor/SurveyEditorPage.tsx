@@ -36,7 +36,6 @@ import resetSurveyIdFromFormulasBackendLimiters from '@libs/survey/utils/resetSu
 import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import useThemeStore from '@/store/useThemeStore';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -107,16 +106,15 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const handleCancel = useCallback(() => {
     clearInitialSurvey();
-    resetTemplateStore();
-    resetQuestionsContextMenu();
-  }, [clearInitialSurvey, resetTemplateStore, resetQuestionsContextMenu]);
-
-  const handleReset = useCallback(() => {
-    resetStoredSurvey();
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
-  }, [resetStoredSurvey, resetEditorPage, resetTemplateStore, resetQuestionsContextMenu]);
+  }, [clearInitialSurvey, resetEditorPage, resetTemplateStore, resetQuestionsContextMenu]);
+
+  const handleReset = useCallback(() => {
+    resetStoredSurvey();
+    resetQuestionsContextMenu();
+  }, [resetStoredSurvey, resetQuestionsContextMenu]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
@@ -194,8 +192,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     handleReset();
     form.reset(initialFormValues);
     if (creator) {
-      creator.saveNo = 0;
-      creator.JSON = getSurveysDefaultValues(getResolvedTheme()).formula;
+      creator.saveNo = initialFormValues.saveNo || 0;
+      creator.JSON = initialFormValues.formula;
     }
   }, [form, initialFormValues, creator, handleReset, getResolvedTheme]);
 
@@ -220,6 +218,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       },
     });
     setIsOpenSaveSurveyDialog(false);
+    resetTemplateStore();
     resetSurveyEditor();
   }, [
     form,
