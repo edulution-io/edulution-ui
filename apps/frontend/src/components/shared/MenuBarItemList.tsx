@@ -28,7 +28,9 @@ interface MenuBarItemListProps {
   shouldCollapse: boolean;
   activeColorClass: string;
   activeSection: string | null;
+  selectedItemId: string | null;
   pathParts: string[];
+  onSelectItem: (itemId: string | null) => void;
   onToggleExpand: (itemId: string) => void;
   onCloseMobileMenu: () => void;
 }
@@ -40,7 +42,9 @@ const MenuBarItemList: React.FC<MenuBarItemListProps> = ({
   shouldCollapse,
   activeColorClass,
   activeSection,
+  selectedItemId,
   pathParts,
+  onSelectItem,
   onToggleExpand,
   onCloseMobileMenu,
 }) => (
@@ -54,8 +58,11 @@ const MenuBarItemList: React.FC<MenuBarItemListProps> = ({
         shouldCollapse={shouldCollapse}
         activeColorClass={activeColorClass}
         activeSection={activeSection}
+        selectedItemId={selectedItemId}
+        expandedItems={expandedItems}
         pathParts={pathParts}
-        onToggleExpand={() => onToggleExpand(item.id)}
+        onSelectItem={onSelectItem}
+        onToggleExpand={onToggleExpand}
         onCloseMobileMenu={onCloseMobileMenu}
       />
     ))}

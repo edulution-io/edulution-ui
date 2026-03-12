@@ -54,8 +54,16 @@ const MenuBar: React.FC = () => {
   const { isSchoolEnvironment } = useOrganizationType();
   const { isMobileView, isTabletView } = useMedia();
 
-  const { pathParts, isSelected, expandedItems, toggleExpanded, getActiveColorClass, activeItem } =
-    useMenuBarSelection(menuBarEntries);
+  const {
+    pathParts,
+    isSelected,
+    selectedItemId,
+    setSelectedItemId,
+    expandedItems,
+    toggleExpanded,
+    getActiveColorClass,
+    activeItem,
+  } = useMenuBarSelection(menuBarEntries);
 
   const rootPathName = getFromPathName(pathname, 1);
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
@@ -101,6 +109,8 @@ const MenuBar: React.FC = () => {
         shouldCollapse={shouldCollapse}
         activeColorClass={activeColorClass}
         activeSection={activeSection}
+        selectedItemId={selectedItemId}
+        onSelectItem={setSelectedItemId}
         pathParts={pathParts}
         onToggleExpand={toggleExpanded}
         onCloseMobileMenu={handleCloseMobileMenu}
