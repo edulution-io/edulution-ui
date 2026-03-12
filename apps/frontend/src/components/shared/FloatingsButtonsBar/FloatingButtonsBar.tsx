@@ -38,6 +38,7 @@ import { Button, cn } from '@edulution-io/ui-kit';
 import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import usePortalRoot from '@/hooks/usePortalRoot';
 import useFooterColors from '@/hooks/useFooterColors';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
@@ -47,6 +48,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const moreButtonRef = useRef<HTMLDivElement>(null);
   const dropupRef = useRef<HTMLDivElement>(null);
   const footerColors = useFooterColors();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const [containerWidth, setContainerWidth] = useState(0);
   const [buttonWidth, setButtonWidth] = useState(DEFAULT_BUTTON_WIDTH);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
@@ -57,10 +59,16 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
 
   const visibleButtons = useMemo(() => buttons.filter((conf) => conf.isVisible !== false), [buttons]);
 
-  const { hasOverflow, displayedButtons, overflowButtons } = useMemo(
-    () => calculateButtonLayout(containerWidth, buttonWidth, visibleButtons),
-    [containerWidth, buttonWidth, visibleButtons],
-  );
+  const { hasOverflow, displayedButtons, overflowButtons } = useMemo(() => {
+    if (isEdulutionApp) {
+      return {
+        hasOverflow: visibleButtons.length > 0,
+        displayedButtons: [],
+        overflowButtons: visibleButtons,
+      };
+    }
+    return calculateButtonLayout(containerWidth, buttonWidth, visibleButtons);
+  }, [containerWidth, buttonWidth, visibleButtons, isEdulutionApp]);
 
   useEffect(() => {
     setIsDropupOpen(false);
@@ -162,7 +170,8 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
     <div
       ref={containerRef}
       className={cn(
-        'pointer-events-auto flex min-w-0 flex-grow-0 justify-start transition-all duration-200 ease-in-out',
+        'pointer-events-auto flex min-w-0 flex-grow-0 transition-all duration-200 ease-in-out',
+        isEdulutionApp ? 'w-full justify-end' : 'justify-start',
         footerColors ? textColorClass : 'text-background',
       )}
     >
@@ -190,8 +199,9 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
             <div
               ref={dropupRef}
               className={cn(
-                'absolute bottom-full left-1/2 mb-2 flex -translate-x-1/2 transform flex-col gap-2 rounded-xl bg-accent bg-opacity-90 p-4 shadow-lg backdrop-blur',
-                'z-[9999]',
+                'absolute bottom-full mb-2 flex transform flex-col gap-2 rounded-xl bg-accent bg-opacity-90 p-4 shadow-lg backdrop-blur',
+                'z-[9999] max-h-[320px] overflow-y-auto scrollbar-thin',
+                isEdulutionApp ? 'right-0' : 'left-1/2 -translate-x-1/2',
                 isDropupAnimatingOut
                   ? 'duration-200 animate-out fade-out slide-out-to-bottom-0'
                   : 'duration-200 animate-in fade-in slide-in-from-bottom-0',
