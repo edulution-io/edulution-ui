@@ -23,9 +23,8 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
-import { Button, cn } from '@edulution-io/ui-kit';
+import { Button, cn, inputVariants } from '@edulution-io/ui-kit';
 import { Form, FormControl, FormFieldSH, FormMessage } from '@/components/ui/Form';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
 import ChatInputFormValues from '@libs/chat/types/chatInputFormValues';
 
