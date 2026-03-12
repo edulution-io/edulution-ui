@@ -37,13 +37,11 @@ import useMenuBarStore from './useMenuBarStore';
 import useMenuBarSelection from './useMenuBarSelection';
 import MenuBarHeader from './MenuBarHeader';
 import MenuBarItemList from './MenuBarItemList';
-import MenuBarCollapseButton from './MenuBarCollapseButton';
 import MenuBarFooter from './MenuBarFooter';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
-  const { isMobileMenuBarOpen, toggleMobileMenuBar, closeMobileMenuBar, isCollapsed, toggleCollapsed } =
-    useMenuBarStore();
+  const { isMobileMenuBarOpen, toggleMobileMenuBar, closeMobileMenuBar, isCollapsed } = useMenuBarStore();
   const { activeSection } = useSubMenuStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -133,10 +131,10 @@ const MenuBar: React.FC = () => {
           >
             {menuBarContent}
           </div>
-          <MenuBarCollapseButton
-            isCollapsed={isCollapsed}
-            onToggle={toggleCollapsed}
-          />
+          {/* <MenuBarCollapseButton */}
+          {/*  isCollapsed={isCollapsed} */}
+          {/*  onToggle={toggleCollapsed} */}
+          {/* /> */}
         </aside>
       ) : (
         <div
