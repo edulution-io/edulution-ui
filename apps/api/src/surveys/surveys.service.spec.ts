@@ -134,14 +134,14 @@ describe(SurveysService.name, () => {
   });
 
   describe('throwErrorIfSurveyIsNotAccessible', () => {
-    it('should not throw when survey is accessible', async () => {
+    it('should not throw when survey is accessible, it should return the survey instead', async () => {
       surveyModel.findOne = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(publicSurvey01),
       });
 
       await expect(
         service.throwErrorIfSurveyIsNotAccessible(idOfPublicSurvey01.toString(), firstMockJWTUser),
-      ).resolves.toBeUndefined();
+      ).resolves.toBe(publicSurvey01);
     });
 
     it('should throw NOT_FOUND when survey is not accessible', async () => {
@@ -158,12 +158,14 @@ describe(SurveysService.name, () => {
   });
 
   describe('throwErrorIfSurveyIsNotPublic', () => {
-    it('should not throw when survey is public', async () => {
+    it('should not throw when survey is public, it should return the survey instead', async () => {
       surveyModel.findOne = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(publicSurvey01),
       });
 
-      await expect(service.throwErrorIfSurveyIsNotPublic(idOfPublicSurvey01.toString())).resolves.toBeUndefined();
+      await expect(service.throwErrorIfPublicSurveyIsNotAccessible(idOfPublicSurvey01.toString())).resolves.toBe(
+        publicSurvey01,
+      );
     });
 
     it('should throw NOT_FOUND when survey is not public', async () => {
@@ -171,7 +173,9 @@ describe(SurveysService.name, () => {
         exec: jest.fn().mockResolvedValue(null),
       });
 
-      await expect(service.throwErrorIfSurveyIsNotPublic(new Types.ObjectId().toString())).rejects.toMatchObject({
+      await expect(
+        service.throwErrorIfPublicSurveyIsNotAccessible(new Types.ObjectId().toString()),
+      ).rejects.toMatchObject({
         status: HttpStatus.NOT_FOUND,
       });
     });
