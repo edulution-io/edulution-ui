@@ -32,7 +32,7 @@ import {
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 
 export interface CellCallbacks {
   isNewRow: (rowId: string) => boolean;

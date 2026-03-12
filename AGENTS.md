@@ -16,6 +16,7 @@
 - Both apps: `npm run serveFrontendAndApi`
 - Build frontend/API/all: `npm run build`, `npm run build:api`, `npm run build:all`
 - Tests: `npm run test` (API), `npm run test:frontend`, coverage with `npm run coverage`
+- E2E tests: `npm run prepare:e2e` (install Playwright browsers), then `npm run test:e2e`
 - Lint/format: `npm run lint`, `npm run lint:fix`, staged formatting via pre-commit
 - Local infra (Mongo/Redis): `docker compose up -d` (see `docker-compose.yml`)
 
@@ -53,6 +54,7 @@
 - API: Jest; config under `apps/api/jest.config.ts`.
 - Conventions: Co-locate tests with source using `*.spec.ts(x)` or project `test/` folders.
 - Run: `npm run test:frontend` for UI, `npm run test:api` for API; add assertions and keep tests fast and deterministic.
+- New features must include tests. Every new component, hook, store, or utility should have a corresponding `*.spec.ts(x)` file with meaningful coverage before merging.
 
 ## Commit & Pull Request Guidelines
 

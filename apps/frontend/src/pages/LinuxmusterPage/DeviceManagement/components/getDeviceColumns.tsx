@@ -22,7 +22,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
-import { Button, cn } from '@edulution-io/ui-kit';
+import { Button, cn, Input } from '@edulution-io/ui-kit';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { validateDeviceCell } from '@libs/deviceManagement/utils/deviceValidation';
 import DEVICE_COLUMNS from '@libs/deviceManagement/constants/deviceColumns';
@@ -31,7 +31,6 @@ import PXE_FLAGS from '@libs/deviceManagement/constants/pxeFlags';
 import type DeviceRow from '@libs/deviceManagement/types/deviceRow';
 import type DeviceColumnConfig from '@libs/deviceManagement/types/deviceColumnConfig';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import Input from '@/components/shared/Input';
 import { DropdownSelect } from '@/components';
 
 const STAFFCOMPUTER_BUSINESS_TRANSLATION_KEY = 'deviceManagement.roles.staffcomputerBusiness';

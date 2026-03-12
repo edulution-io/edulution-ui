@@ -110,6 +110,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       extendedOptions: getExtendedOptions(),
       position: 0,
       displayLocations: selectedApp.defaultDisplayLocations as AppDisplayLocationType[],
+      usesPushNotifications: false,
     };
 
     await createAppConfig(newConfig);

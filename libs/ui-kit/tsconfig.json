@@ -21,6 +21,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
+  "references": [
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"]
 }
