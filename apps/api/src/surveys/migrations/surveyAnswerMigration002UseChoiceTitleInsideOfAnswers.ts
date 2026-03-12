@@ -81,16 +81,31 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
     let ops: AnyBulkWriteOperation[] = [];
     // eslint-disable-next-line no-restricted-syntax
     for await (const doc of cursor) {
-      // eslint-disable-next-line no-continue
-      if (!doc.surveyId) continue;
+      if (!doc.surveyId) {
+        ops.push({
+          updateOne: {
+            // eslint-disable-next-line no-underscore-dangle
+            filter: { _id: doc._id },
+            update: { $set: { schemaVersion: newSchemaVersion } },
+          },
+        });
+        // eslint-disable-next-line no-continue
+        continue;
+      }
 
       const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
-      // eslint-disable-next-line no-continue
-      if (!backendLimiters || backendLimiters.length === 0) continue;
-
       const answer = doc.answer as AnswerRecord;
-      // eslint-disable-next-line no-continue
-      if (!answer || Object.keys(answer).length === 0) continue;
+      if (!answer || Object.keys(answer).length === 0 || !backendLimiters || backendLimiters.length === 0) {
+        ops.push({
+          updateOne: {
+            // eslint-disable-next-line no-underscore-dangle
+            filter: { _id: doc._id },
+            update: { $set: { schemaVersion: newSchemaVersion } },
+          },
+        });
+        // eslint-disable-next-line no-continue
+        continue;
+      }
 
       const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters);
 

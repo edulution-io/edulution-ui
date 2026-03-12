@@ -19,14 +19,13 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@edulution-io/ui-kit';
+import { cn, Input } from '@edulution-io/ui-kit';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
 import SurveyEditorTemplatePreview from '@/pages/Surveys/Editor/SurveyEditorTemplatePreview';
-import Input from '@/components/shared/Input';
 
 interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;

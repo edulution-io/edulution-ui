@@ -23,7 +23,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useGroupStore from '@/store/GroupStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import Label from '@/components/ui/Label';
 
 const TemplateSaveDialogFields = () => {
