@@ -18,6 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,7 +31,11 @@ import { SurveyCreatorModel } from 'survey-creator-core';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import { CREATED_SURVEYS_PAGE, SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
+import {
+  CREATED_SURVEYS_PAGE,
+  CREATOR_SURVEYS_PAGE,
+  SURVEY_DEFAULT_LOGO_PATH,
+} from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import resetSurveyIdFromFormulasBackendLimiters from '@libs/survey/utils/resetSurveyIdFromFormulasBackendLimiters';
 import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
@@ -49,7 +54,6 @@ import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreato
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
-import PageLayout from '@/components/structure/layout/PageLayout';
 import { Form } from '@/components/ui/Form';
 import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -78,7 +82,6 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     setIsOpenSurveysLogoDialog,
     updateOrCreateSurvey,
     isLoading,
-    reset: resetEditorPage,
     updateStoredSurvey,
     resetStoredSurvey,
     clearInitialSurvey,
@@ -103,13 +106,14 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const { language } = useLanguage();
   const { isSuperAdmin } = useLdapGroups();
   const { theme, getResolvedTheme } = useThemeStore();
+  const navigate = useNavigate();
 
   const handleCancel = useCallback(() => {
     clearInitialSurvey();
-    resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
-  }, [clearInitialSurvey, resetEditorPage, resetTemplateStore, resetQuestionsContextMenu]);
+    navigate(`/${CREATOR_SURVEYS_PAGE}`);
+  }, [clearInitialSurvey, resetTemplateStore, resetQuestionsContextMenu, navigate]);
 
   const handleReset = useCallback(() => {
     resetStoredSurvey();
@@ -287,40 +291,38 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   if (isLoading || isFetching) return <LoadingIndicatorDialog isOpen />;
 
   return (
-    <PageLayout>
-      <Form {...form}>
-        <div className="survey-editor h-full pt-1">
-          {creator && (
-            <SurveyCreatorComponent
-              creator={creator}
-              style={{
-                height: '100%',
-                width: '100%',
-                ...surveyTheme.cssVariables,
-              }}
-            />
-          )}
-        </div>
-        <FloatingButtonsBar config={config} />
-        <SaveSurveyDialog
-          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-          submitSurvey={handleSaveSurvey}
-          handleSaveTemplate={handleSaveTemplate}
-          isSubmitting={isLoading}
-        />
-        <SurveysLogoSettingsDialog
-          surveyCreator={creator}
-          isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
-          setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
-        />
-        <QuestionsContextMenu
-          isOpenQuestionContextMenu={isOpenQuestionContextMenu}
-          setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
-        />
-        <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
-      </Form>
-    </PageLayout>
+    <Form {...form}>
+      <div className="survey-editor h-full pt-1">
+        {creator && (
+          <SurveyCreatorComponent
+            creator={creator}
+            style={{
+              height: '100%',
+              width: '100%',
+              ...surveyTheme.cssVariables,
+            }}
+          />
+        )}
+      </div>
+      <FloatingButtonsBar config={config} />
+      <SaveSurveyDialog
+        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+        submitSurvey={handleSaveSurvey}
+        handleSaveTemplate={handleSaveTemplate}
+        isSubmitting={isLoading}
+      />
+      <SurveysLogoSettingsDialog
+        surveyCreator={creator}
+        isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
+        setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
+      />
+      <QuestionsContextMenu
+        isOpenQuestionContextMenu={isOpenQuestionContextMenu}
+        setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
+      />
+      <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
+    </Form>
   );
 };
 

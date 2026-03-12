@@ -99,6 +99,7 @@
         }
         table.sa-table__detail-table {
           background-color: transparent;
+          border-right: none;
 
           tr.sa-table__detail {
             border-top: 1px solid var(--ring-transparent);
