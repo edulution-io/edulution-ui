@@ -37,13 +37,11 @@ import useMenuBarStore from './useMenuBarStore';
 import useMenuBarSelection from './useMenuBarSelection';
 import MenuBarHeader from './MenuBarHeader';
 import MenuBarItemList from './MenuBarItemList';
-import MenuBarCollapseButton from './MenuBarCollapseButton';
 import MenuBarFooter from './MenuBarFooter';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
-  const { isMobileMenuBarOpen, toggleMobileMenuBar, closeMobileMenuBar, isCollapsed, toggleCollapsed } =
-    useMenuBarStore();
+  const { isMobileMenuBarOpen, toggleMobileMenuBar, closeMobileMenuBar } = useMenuBarStore();
   const { activeSection } = useSubMenuStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -60,7 +58,6 @@ const MenuBar: React.FC = () => {
   const rootPathName = getFromPathName(pathname, 1);
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
   const isDesktopView = !isMobileView && !isTabletView && !isEdulutionApp;
-  const shouldCollapse = isDesktopView && isCollapsed;
 
   const handleClickOutside = useCallback(() => {
     if ((isMobileView || isTabletView || isEdulutionApp) && isMobileMenuBarOpen) {
@@ -90,7 +87,6 @@ const MenuBar: React.FC = () => {
         icon={menuBarEntries.icon}
         title={menuBarEntries.title}
         pathParts={pathParts}
-        shouldCollapse={shouldCollapse}
         onHeaderClick={menuBarEntries.onHeaderClick}
       />
 
@@ -98,7 +94,6 @@ const MenuBar: React.FC = () => {
         menuItems={menuBarEntries.menuItems}
         isSelected={isSelected}
         expandedItems={expandedItems}
-        shouldCollapse={shouldCollapse}
         activeColorClass={activeColorClass}
         activeSection={activeSection}
         pathParts={pathParts}
@@ -106,10 +101,7 @@ const MenuBar: React.FC = () => {
         onCloseMobileMenu={handleCloseMobileMenu}
       />
 
-      <MenuBarFooter
-        appName={pathParts[0]}
-        isCollapsed={shouldCollapse}
-      />
+      <MenuBarFooter appName={pathParts[0]} />
     </div>
   );
 
@@ -125,18 +117,9 @@ const MenuBar: React.FC = () => {
 
       {isDesktopView ? (
         <aside className="relative flex h-dvh">
-          <div
-            className={cn(
-              'bg-glass h-full overflow-hidden rounded-r-xl shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300',
-              shouldCollapse ? 'w-16' : 'w-64',
-            )}
-          >
+          <div className="bg-glass h-full w-64 overflow-hidden rounded-r-xl shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300">
             {menuBarContent}
           </div>
-          <MenuBarCollapseButton
-            isCollapsed={isCollapsed}
-            onToggle={toggleCollapsed}
-          />
         </aside>
       ) : (
         <div

@@ -32,7 +32,7 @@ vi.mock('@edulution-io/ui-kit', () => ({
 vi.mock('@libs/menubar/menuBarIcon', () => ({}));
 
 vi.mock('./MenuBarRenderIcon', () => ({
-  default: ({ icon, alt, className }: any) => (
+  default: ({ alt, className }: any) => (
     <span
       data-testid="menu-bar-render-icon"
       data-alt={alt}
@@ -57,26 +57,11 @@ describe('MenuBarHeader', () => {
         icon="/icon.svg"
         title="My App"
         pathParts={['/app']}
-        shouldCollapse={false}
       />,
     );
 
     expect(screen.getByTestId('menu-bar-render-icon')).toBeInTheDocument();
     expect(screen.getByText('My App')).toBeInTheDocument();
-  });
-
-  it('hides the title when shouldCollapse is true', () => {
-    render(
-      <MenuBarHeader
-        icon="/icon.svg"
-        title="My App"
-        pathParts={['/app']}
-        shouldCollapse
-      />,
-    );
-
-    expect(screen.queryByText('My App')).not.toBeInTheDocument();
-    expect(screen.getByTestId('menu-bar-render-icon')).toBeInTheDocument();
   });
 
   it('navigates to pathParts[0] on click when no onHeaderClick', async () => {
@@ -87,7 +72,6 @@ describe('MenuBarHeader', () => {
         icon="/icon.svg"
         title="My App"
         pathParts={['/dashboard']}
-        shouldCollapse={false}
       />,
     );
 
@@ -105,7 +89,6 @@ describe('MenuBarHeader', () => {
         icon="/icon.svg"
         title="My App"
         pathParts={['/dashboard']}
-        shouldCollapse={false}
         onHeaderClick={handleHeaderClick}
       />,
     );
@@ -114,20 +97,5 @@ describe('MenuBarHeader', () => {
 
     expect(handleHeaderClick).toHaveBeenCalledTimes(1);
     expect(mockNavigate).not.toHaveBeenCalled();
-  });
-
-  it('applies smaller icon class when collapsed', () => {
-    render(
-      <MenuBarHeader
-        icon="/icon.svg"
-        title="My App"
-        pathParts={['/app']}
-        shouldCollapse
-      />,
-    );
-
-    const icon = screen.getByTestId('menu-bar-render-icon');
-    expect(icon.className).toContain('h-10');
-    expect(icon.className).toContain('w-10');
   });
 });

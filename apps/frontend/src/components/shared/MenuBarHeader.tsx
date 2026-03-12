@@ -19,7 +19,6 @@
 
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@edulution-io/ui-kit';
 import MenuBarIcon from '@libs/menubar/menuBarIcon';
 import MenuBarRenderIcon from './MenuBarRenderIcon';
 
@@ -27,11 +26,10 @@ interface MenuBarHeaderProps {
   icon: MenuBarIcon;
   title: string;
   pathParts: string[];
-  shouldCollapse: boolean;
   onHeaderClick?: () => void;
 }
 
-const MenuBarHeader: React.FC<MenuBarHeaderProps> = ({ icon, title, pathParts, shouldCollapse, onHeaderClick }) => {
+const MenuBarHeader: React.FC<MenuBarHeaderProps> = ({ icon, title, pathParts, onHeaderClick }) => {
   const navigate = useNavigate();
 
   const handleClick = useCallback(() => {
@@ -52,10 +50,10 @@ const MenuBarHeader: React.FC<MenuBarHeaderProps> = ({ icon, title, pathParts, s
         <MenuBarRenderIcon
           icon={icon}
           alt={title}
-          className={cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20')}
+          className="h-20 w-20 object-contain transition-all"
           applyIconClassName
         />
-        {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{title}</h2>}
+        <h2 className="mb-2 mt-2 text-center font-bold">{title}</h2>
       </button>
     </div>
   );

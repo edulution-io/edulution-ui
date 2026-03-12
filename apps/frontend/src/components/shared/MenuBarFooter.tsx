@@ -21,11 +21,7 @@ import React, { type ComponentType } from 'react';
 import APPS from '@libs/appconfig/constants/apps';
 import FileSharingMenuBarFooter from '@/pages/FileSharing/FileSharingMenuBarFooter';
 
-interface MenuBarFooterProps {
-  isCollapsed: boolean;
-}
-
-type FooterComponent = ComponentType<MenuBarFooterProps>;
+type FooterComponent = ComponentType;
 
 const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
   [APPS.FILE_SHARING]: FileSharingMenuBarFooter,
@@ -33,17 +29,16 @@ const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
 
 interface Props {
   appName: string;
-  isCollapsed: boolean;
 }
 
-const MenuBarFooter: React.FC<Props> = ({ appName, isCollapsed }) => {
+const MenuBarFooter: React.FC<Props> = ({ appName }) => {
   const FooterComponent = MENU_BAR_FOOTER_REGISTRY[appName];
 
   if (!FooterComponent) {
     return null;
   }
 
-  return <FooterComponent isCollapsed={isCollapsed} />;
+  return <FooterComponent />;
 };
 
 export default MenuBarFooter;

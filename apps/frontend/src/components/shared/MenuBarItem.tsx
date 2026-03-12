@@ -23,7 +23,6 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Button, cn } from '@edulution-io/ui-kit';
 import { useTranslation } from 'react-i18next';
 import MenuItem from '@libs/menubar/menuItem';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useSubMenuStore from '@/store/useSubMenuStore';
 import MenuBarRenderIcon from './MenuBarRenderIcon';
 
@@ -31,7 +30,6 @@ interface MenuBarItemProps {
   item: MenuItem;
   isActive: boolean;
   isExpanded: boolean;
-  shouldCollapse: boolean;
   activeColorClass: string;
   activeSection: string | null;
   pathParts: string[];
@@ -43,7 +41,6 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
   item,
   isActive,
   isExpanded,
-  shouldCollapse,
   activeColorClass,
   activeSection,
   pathParts,
@@ -94,7 +91,6 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
       className={cn(
         'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
         isActive ? activeColorClass : '',
-        shouldCollapse && 'justify-center',
       )}
     >
       <MenuBarRenderIcon
@@ -103,32 +99,25 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
         className="h-12 w-12 object-contain"
         applyIconClassName={!isActive}
       />
-      {!shouldCollapse && (
-        <>
-          <span className={cn('flex-1 text-left', isActive ? 'text-white' : '')}>{item.label}</span>
-          {hasChildren && (
-            <Button
-              type="button"
-              variant="btn-ghost"
-              onClick={handleExpandClick}
-              aria-label={isExpanded ? t('common.collapse') : t('common.expand')}
-              className="p-1"
-            >
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className={cn(
-                  'h-4 w-4 shrink-0 text-white transition-transform duration-200',
-                  isExpanded && 'rotate-180',
-                )}
-              />
-            </Button>
-          )}
-        </>
+      <span className={cn('flex-1 text-left', isActive ? 'text-white' : '')}>{item.label}</span>
+      {hasChildren && (
+        <Button
+          type="button"
+          variant="btn-ghost"
+          onClick={handleExpandClick}
+          aria-label={isExpanded ? t('common.collapse') : t('common.expand')}
+          className="p-1"
+        >
+          <FontAwesomeIcon
+            icon={faChevronDown}
+            className={cn('h-4 w-4 shrink-0 text-white transition-transform duration-200', isExpanded && 'rotate-180')}
+          />
+        </Button>
       )}
     </div>
   );
 
-  const childrenContent = hasChildren && !shouldCollapse && (
+  const childrenContent = hasChildren && (
     <div
       id={childrenId}
       role="region"
@@ -166,15 +155,6 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
       </div>
     </div>
   );
-
-  if (shouldCollapse) {
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>{mainButton}</TooltipTrigger>
-        <TooltipContent side="right">{item.label}</TooltipContent>
-      </Tooltip>
-    );
-  }
 
   return (
     <div>

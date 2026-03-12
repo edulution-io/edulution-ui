@@ -60,7 +60,6 @@ const defaultProps = () => ({
   item: createItem(),
   isActive: false,
   isExpanded: false,
-  shouldCollapse: false,
   activeColorClass: 'bg-ciBlue',
   activeSection: null,
   pathParts: [] as string[],
@@ -87,8 +86,8 @@ describe('MenuBarItem', () => {
 
     await user.click(screen.getByRole('button', { name: 'Test Item' }));
 
-    expect(props.item.action).toHaveBeenCalledOnce();
-    expect(props.onCloseMobileMenu).toHaveBeenCalledOnce();
+    expect(props.item.action).toHaveBeenCalledTimes(1);
+    expect(props.onCloseMobileMenu).toHaveBeenCalledTimes(1);
   });
 
   it('calls action on Enter key', async () => {
@@ -100,8 +99,8 @@ describe('MenuBarItem', () => {
     screen.getByRole('button', { name: 'Test Item' }).focus();
     await user.keyboard('{Enter}');
 
-    expect(props.item.action).toHaveBeenCalledOnce();
-    expect(props.onCloseMobileMenu).toHaveBeenCalledOnce();
+    expect(props.item.action).toHaveBeenCalledTimes(1);
+    expect(props.onCloseMobileMenu).toHaveBeenCalledTimes(1);
   });
 
   it('calls action on Space key', async () => {
@@ -113,7 +112,7 @@ describe('MenuBarItem', () => {
     screen.getByRole('button', { name: 'Test Item' }).focus();
     await user.keyboard('{ }');
 
-    expect(props.item.action).toHaveBeenCalledOnce();
+    expect(props.item.action).toHaveBeenCalledTimes(1);
   });
 
   it('applies active color class when isActive is true', () => {
@@ -130,24 +129,6 @@ describe('MenuBarItem', () => {
 
     const button = screen.getByRole('button', { name: 'Test Item' });
     expect(button.className).not.toContain('bg-ciBlue');
-  });
-
-  it('renders tooltip when shouldCollapse is true', () => {
-    const props = { ...defaultProps(), shouldCollapse: true };
-
-    render(<MenuBarItem {...props} />);
-
-    expect(screen.getByTestId('tooltip')).toBeInTheDocument();
-    expect(screen.getByTestId('tooltip-content')).toHaveTextContent('Test Item');
-  });
-
-  it('hides inline label when shouldCollapse is true', () => {
-    const props = { ...defaultProps(), shouldCollapse: true };
-
-    const { container } = render(<MenuBarItem {...props} />);
-
-    const inlineLabel = container.querySelector('.flex-1.text-left');
-    expect(inlineLabel).not.toBeInTheDocument();
   });
 
   it('shows expand button when item has children and not collapsed', () => {
@@ -174,7 +155,7 @@ describe('MenuBarItem', () => {
 
     await user.click(screen.getByLabelText('common.expand'));
 
-    expect(props.onToggleExpand).toHaveBeenCalledOnce();
+    expect(props.onToggleExpand).toHaveBeenCalledTimes(1);
   });
 
   it('renders children region when expanded and has children', () => {
@@ -209,8 +190,8 @@ describe('MenuBarItem', () => {
 
     await user.click(screen.getByText('Child 1'));
 
-    expect(childAction).toHaveBeenCalledOnce();
-    expect(props.onCloseMobileMenu).toHaveBeenCalledOnce();
+    expect(childAction).toHaveBeenCalledTimes(1);
+    expect(props.onCloseMobileMenu).toHaveBeenCalledTimes(1);
   });
 
   it('also expands when clicking main button if has children and not expanded', async () => {
@@ -226,7 +207,7 @@ describe('MenuBarItem', () => {
 
     await user.click(screen.getByRole('button', { name: 'Test Item' }));
 
-    expect(props.onToggleExpand).toHaveBeenCalledOnce();
+    expect(props.onToggleExpand).toHaveBeenCalledTimes(1);
   });
 
   it('does not call onToggleExpand when clicking main button if already expanded', async () => {

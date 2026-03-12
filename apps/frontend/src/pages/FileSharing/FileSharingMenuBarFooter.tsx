@@ -26,19 +26,11 @@ import useQuotaInfo from '@/hooks/useQuotaInfo';
 import { cn } from '@edulution-io/ui-kit';
 import WebdavInfoDialog from '@/pages/FileSharing/Dialog/WebdavInfoDialog';
 
-interface FileSharingMenuBarFooterProps {
-  isCollapsed: boolean;
-}
-
-const FileSharingMenuBarFooter: React.FC<FileSharingMenuBarFooterProps> = ({ isCollapsed }) => {
+const FileSharingMenuBarFooter: React.FC = () => {
   const { t } = useTranslation();
   const { user: lmnUser } = useLmnApiStore();
   const { quotaUsedInGb, quotaHardLimitInGb, percentageUsed, progressBarColor } = useQuotaInfo();
   const [isWebdavDialogOpen, setIsWebdavDialogOpen] = useState(false);
-
-  if (isCollapsed) {
-    return null;
-  }
 
   return (
     <>
