@@ -38,8 +38,7 @@ const QuestionsContextMenuBody = () => {
   const questionType = selectedQuestion.getType();
 
   options.push(<DefaultQuestionOptions key="all-questions" />);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-  if (questionType === SurveyQuestionPanelTypes.DYNAMIC_PANEL) {
+  if ((questionType as SurveyQuestionPanelTypes) === SurveyQuestionPanelTypes.DYNAMIC_PANEL) {
     options.push(<DynamicPanelOptions key="dynamic-panel-options" />);
   }
   if (isQuestionTypeImageType(questionType)) {

@@ -66,9 +66,9 @@ interface QuestionsContextMenuStore {
   setImageWidth: (newWidth: number | undefined) => void;
   imageWidth: number | undefined;
 
-  setMinPanelCount: (newMinPanelCount: number) => void;
+  setMinPanelCount: (minPanelCount: number) => void;
   minPanelCount: number;
-  setMaxPanelCount: (newMaxPanelCount: number) => void;
+  setMaxPanelCount: (maxPanelCount: number) => void;
   maxPanelCount: number;
 }
 
@@ -104,6 +104,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   setSelectedQuestion: (question: Question | undefined) => {
     const type = question?.getType();
     const width = Number(question?.imageWidth);
+    const newMinPanelCount = Number(question?.minPanelCount);
+    const newMaxPanelCount = Number(question?.maxPanelCount);
     const { url } = (question?.choicesByUrl as ChoicesRestful) || {};
     set({
       selectedQuestion: question,
@@ -114,8 +116,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
       imageWidth: Number.isNaN(width) ? 0 : width,
-      minPanelCount: Number.isNaN(question?.minPanelCount) ? 0 : (question?.minPanelCount as number),
-      maxPanelCount: Number.isNaN(question?.maxPanelCount) ? 100 : (question?.maxPanelCount as number),
+      minPanelCount: Number.isNaN(newMinPanelCount) ? 0 : newMinPanelCount,
+      maxPanelCount: Number.isNaN(newMaxPanelCount) ? 100 : newMaxPanelCount,
     });
   },
 
@@ -276,18 +278,16 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     selectedQuestion.imageWidth = newWidth ? Math.max(100, newWidth) : 0;
   },
 
-  setMinPanelCount: (newMinPanelCount: number | undefined) => {
+  setMinPanelCount: (minPanelCount: number) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
-    const minPanelCount = newMinPanelCount ? Math.max(1, newMinPanelCount) : undefined;
     set({ minPanelCount });
     selectedQuestion.minPanelCount = minPanelCount;
   },
 
-  setMaxPanelCount: (newMaxPanelCount: number | undefined) => {
+  setMaxPanelCount: (maxPanelCount: number) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
-    const maxPanelCount = newMaxPanelCount ? Math.max(1, newMaxPanelCount) : undefined;
     set({ maxPanelCount });
     selectedQuestion.maxPanelCount = maxPanelCount;
   },
