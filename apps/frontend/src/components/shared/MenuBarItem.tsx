@@ -154,7 +154,7 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
       id={childrenId}
       role="region"
       aria-label={`${item.label} sections`}
-      inert={!isExpanded ? true : undefined}
+      {...(!isExpanded && { inert: '' })}
       className={cn(
         'grid transition-all duration-200 ease-in-out',
         isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
