@@ -202,6 +202,87 @@ class SurveyAnswersService implements OnModuleInit {
     return count;
   }
 
+  private async findBackendLimiters(
+    objectId: Types.ObjectId,
+    questionNames: string[],
+  ): Promise<(SurveysBackendLimiterDocument | null)[]> {
+    return Promise.all(
+      questionNames.map((questionName) =>
+        this.surveysBackendLimiterModel.findOne({ surveyId: objectId, questionName }).exec(),
+      ),
+    );
+  }
+
+  private async checkLimitExceeded(
+    limiter: SurveysBackendLimiterDocument,
+    newChoices: ChoiceDto[],
+    surveyId: string,
+    questionName: string,
+  ): Promise<{ limitExceeded: boolean; limitReached: boolean }> {
+    const showOtherItemChoice = limiter.choices.find((choice) => choice.name === SHOW_OTHER_ITEM);
+    const otherItemLimit = showOtherItemChoice?.limit ?? CHOICES_DEFAULT_LIMIT;
+    const existingTitles = new Set(limiter.choices.map((choice) => choice.title));
+
+    let limitExceeded = false;
+    let limitReached = false;
+
+    await Promise.all(
+      newChoices
+        .filter((newChoice) => existingTitles.has(newChoice.title) && otherItemLimit !== 0)
+        .map(async (newChoice) => {
+          const commentCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
+            surveyId,
+            `${questionName}${SURVEYJS_COMMENT_SUFFIX}`,
+            newChoice.title,
+          );
+          const answerCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
+            surveyId,
+            questionName,
+            newChoice.title,
+          );
+          const totalCount = commentCount + answerCount;
+          if (totalCount >= otherItemLimit) {
+            limitExceeded = true;
+          } else if (totalCount + 1 === otherItemLimit) {
+            limitReached = true;
+          }
+        }),
+    );
+
+    return { limitExceeded, limitReached };
+  }
+
+  private createNewChoiceOperations(
+    objectId: Types.ObjectId,
+    limiter: SurveysBackendLimiterDocument,
+    newChoices: ChoiceDto[],
+    questionName: string,
+  ): Array<{ questionName: string; choiceLimit: number; fn: () => Promise<{ modifiedCount: number }> }> {
+    const showOtherItemChoice = limiter.choices.find((choice) => choice.name === SHOW_OTHER_ITEM);
+    const otherItemLimit = showOtherItemChoice?.limit ?? CHOICES_DEFAULT_LIMIT;
+    const existingTitles = new Set(limiter.choices.map((choice) => choice.title));
+
+    return newChoices
+      .filter((newChoice) => !existingTitles.has(newChoice.title))
+      .map((newChoice) => ({
+        questionName,
+        choiceLimit: otherItemLimit,
+        fn: () =>
+          this.surveysBackendLimiterModel
+            .updateOne(
+              { surveyId: objectId, questionName, 'choices.title': { $ne: newChoice.title } },
+              { $push: { choices: { ...newChoice, limit: otherItemLimit, isCustomUserEntry: true } } },
+            )
+            .exec(),
+      }));
+  }
+
+  private notifyUsers(surveyId: string, questionNames: string[]): void {
+    questionNames.forEach((questionName) => {
+      this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
+    });
+  }
+
   async validateAndAppendBulkChoices(surveyId: string, choicesMap: Record<string, ChoiceDto[]>): Promise<void> {
     const objectId = new Types.ObjectId(surveyId);
     const questionNames = Object.keys(choicesMap);
@@ -210,11 +291,7 @@ class SurveyAnswersService implements OnModuleInit {
       return;
     }
 
-    const backendLimiters = await Promise.all(
-      questionNames.map((questionName) =>
-        this.surveysBackendLimiterModel.findOne({ surveyId: objectId, questionName }).exec(),
-      ),
-    );
+    const backendLimiters = await this.findBackendLimiters(objectId, questionNames);
 
     const limitExceededQuestionNames: string[] = [];
     const limitReachedQuestionNames: string[] = [];
@@ -227,57 +304,21 @@ class SurveyAnswersService implements OnModuleInit {
     await Promise.all(
       questionNames.map(async (questionName, index) => {
         const backendLimiter = backendLimiters[index];
-        if (!backendLimiter) {
-          return;
-        }
+        if (!backendLimiter) return;
 
         const newChoices = choicesMap[questionName];
-        if (!newChoices || newChoices.length === 0) {
-          return;
-        }
+        if (!newChoices || newChoices.length === 0) return;
 
-        const showOtherItemChoice = backendLimiter.choices.find((choice) => choice.name === SHOW_OTHER_ITEM);
-        const otherItemLimit = showOtherItemChoice?.limit ?? CHOICES_DEFAULT_LIMIT;
-
-        const existingTitles = new Set(backendLimiter.choices.map((choice) => choice.title));
-
-        await Promise.all(
-          newChoices.map(async (newChoice) => {
-            if (existingTitles.has(newChoice.title)) {
-              if (otherItemLimit === 0) {
-                return;
-              }
-              const commentCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
-                surveyId,
-                `${questionName}${SURVEYJS_COMMENT_SUFFIX}`,
-                newChoice.title,
-              );
-              const answerCount = await this.countTotalChoiceSelectionsInSurveyAnswers(
-                surveyId,
-                questionName,
-                newChoice.title,
-              );
-              const totalCount = commentCount + answerCount;
-              if (totalCount >= otherItemLimit) {
-                limitExceededQuestionNames.push(questionName);
-              } else if (totalCount + 1 === otherItemLimit) {
-                limitReachedQuestionNames.push(questionName);
-              }
-            } else {
-              creationOperations.push({
-                questionName,
-                choiceLimit: otherItemLimit,
-                fn: () =>
-                  this.surveysBackendLimiterModel
-                    .updateOne(
-                      { surveyId: objectId, questionName, 'choices.title': { $ne: newChoice.title } },
-                      { $push: { choices: { ...newChoice, limit: otherItemLimit, isCustomUserEntry: true } } },
-                    )
-                    .exec(),
-              });
-            }
-          }),
+        const { limitExceeded, limitReached } = await this.checkLimitExceeded(
+          backendLimiter,
+          newChoices,
+          surveyId,
+          questionName,
         );
+        if (limitExceeded) limitExceededQuestionNames.push(questionName);
+        if (limitReached) limitReachedQuestionNames.push(questionName);
+
+        creationOperations.push(...this.createNewChoiceOperations(objectId, backendLimiter, newChoices, questionName));
       }),
     );
 
@@ -298,9 +339,7 @@ class SurveyAnswersService implements OnModuleInit {
       questionNamesWeNotifyOtherUsersFor.push(...questionNamesForNewSelectableChoices);
     }
 
-    questionNamesWeNotifyOtherUsersFor.forEach((questionName) => {
-      this.sseService.informAllUsers({ surveyId, questionName }, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
-    });
+    this.notifyUsers(surveyId, questionNamesWeNotifyOtherUsersFor);
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
