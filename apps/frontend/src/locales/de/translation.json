@@ -1216,12 +1216,18 @@
     "ubuntu": "Ubuntu",
     "clients": "Clients verfügbar",
     "client": "Client verfügbar",
+    "noClientsFound": "Keine Clients gefunden",
     "errors": {
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
       "SessionNotFound": "Session nicht gefunden.",
-      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
+      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
+      "QuickconnectFailed": "Verbindung konnte nicht hergestellt werden. Bitte überprüfe die Anmeldedaten."
+    },
+    "rdpDialog": {
+      "title": "RDP-Verbindung",
+      "host": "Host"
     }
   },
   "wlan": {
@@ -2639,5 +2645,13 @@
     },
     "sharePath": "Pfad",
     "pathPreview": "Pfad-Vorschau"
+  },
+  "ssh": {
+    "terminal": "Terminal"
+  },
+  "ssh-terminal": {
+    "topic": "SSH Terminal",
+    "credentials": "SSH Anmeldedaten",
+    "connect": "Verbinden"
   }
 }

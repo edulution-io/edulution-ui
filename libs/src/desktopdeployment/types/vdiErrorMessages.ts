@@ -23,6 +23,7 @@ enum VdiErrorMessages {
   LmnVdiApiNotResponding = 'desktopdeployment.errors.LmnVdiApiNotResponding',
   SessionNotFound = 'desktopdeployment.errors.SessionNotFound',
   AppNotProperlyConfigured = 'desktopdeployment.errors.AppNotProperlyConfigured',
+  QuickconnectFailed = 'desktopdeployment.errors.QuickconnectFailed',
 }
 
 export default VdiErrorMessages;

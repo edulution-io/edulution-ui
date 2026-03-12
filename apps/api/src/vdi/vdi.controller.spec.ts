@@ -18,17 +18,16 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import { LmnVdiRequest } from '@libs/desktopdeployment/types';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import VdiController from './vdi.controller';
 import VdiService from './vdi.service';
 
 const mockVdiServices = {
-  authenticateVdi: jest.fn(),
-  getConnection: jest.fn(),
-  createOrUpdateSession: jest.fn(),
   requestVdi: jest.fn(),
   getVirtualMachines: jest.fn(),
+  createSSHSession: jest.fn(),
+  createRDPSession: jest.fn(),
 };
 
 describe('VdiController', () => {
@@ -54,39 +53,6 @@ describe('VdiController', () => {
     expect(vdiController).toBeDefined();
   });
 
-  describe('authVdi', () => {
-    it('should call vdiService.authenticateVdi', async () => {
-      await vdiController.authVdi();
-      expect(vdiService.authenticateVdi).toHaveBeenCalled();
-    });
-  });
-
-  describe('getConnection', () => {
-    it('should call vdiService.getConnection with correct parameters', async () => {
-      const guacamoleDto: GuacamoleDto = {
-        dataSource: 'mysql',
-        authToken: 'ABC123',
-        hostname: '10.0.0.1',
-      };
-      const username = 'testuser';
-      await vdiController.getConnection(guacamoleDto, username);
-      expect(vdiService.getConnection).toHaveBeenCalledWith(guacamoleDto, username);
-    });
-  });
-
-  describe('createOrUpdateSession', () => {
-    it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
-      const guacamoleDto: GuacamoleDto = {
-        dataSource: 'mysql',
-        authToken: 'ABC123',
-        hostname: '10.0.0.1',
-      };
-      const username = 'testuser';
-      await vdiController.createOrUpdateSession(guacamoleDto, username);
-      expect(vdiService.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username);
-    });
-  });
-
   describe('requestVdi', () => {
     it('should call vdiService.requestVdi with correct parameters', async () => {
       const lmnVdiRequest: LmnVdiRequest = {
@@ -102,6 +68,23 @@ describe('VdiController', () => {
     it('should call vdiService.getVirtualMachines', async () => {
       await vdiController.getVirtualMachines();
       expect(vdiService.getVirtualMachines).toHaveBeenCalled();
+    });
+  });
+
+  describe('createSSHSession', () => {
+    it('should call vdiService.createSSHSession with correct parameters', async () => {
+      const sshSessionDto = { username: 'testuser', password: 'testpass' };
+      await vdiController.createSSHSession(sshSessionDto);
+      expect(vdiService.createSSHSession).toHaveBeenCalledWith(sshSessionDto);
+    });
+  });
+
+  describe('createRDPSession', () => {
+    it('should call vdiService.createRDPSession with correct parameters', async () => {
+      const body = { hostname: '10.0.0.1' };
+      const username = 'testuser';
+      await vdiController.createRDPSession(body, username);
+      expect(vdiService.createRDPSession).toHaveBeenCalledWith(username, body.hostname);
     });
   });
 });

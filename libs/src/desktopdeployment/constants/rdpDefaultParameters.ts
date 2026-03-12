@@ -17,11 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as VirtualMachines } from './virtual-machines';
-export { default as LmnVdiResponse } from './vdi-connection-request';
-export { default as CloneVms } from './clone-vms';
-export { default as VdiErrorMessages } from './vdiErrorMessages';
-export * from './ssh-connection';
-export { default as LmnVdiRequest } from './lmn-vdi-request';
-export { default as GuacamoleDto } from './guacamole.dto';
-export { default as DesktopDeploymentStore } from './desktop-deployment-store';
+const RDP_DEFAULT_PARAMETERS: Record<string, string> = {
+  port: '3389',
+  security: 'nla',
+  'ignore-cert': 'true',
+  'resize-method': 'display-update',
+  'enable-wallpaper': 'true',
+};
+
+export default RDP_DEFAULT_PARAMETERS;

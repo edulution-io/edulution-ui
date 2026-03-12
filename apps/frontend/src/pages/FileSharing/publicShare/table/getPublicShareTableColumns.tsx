@@ -36,6 +36,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 import { LanguageIcon } from '@/assets/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import getBrowserTimezone from '@libs/common/utils/Date/getBrowserTimezone';
 
 const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDto>[] => [
   {
@@ -104,7 +105,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { expires } = row.original;
       const validUntil = new Date(expires)?.toLocaleString('de-DE', {
-        timeZone: 'Europe/Berlin',
+        timeZone: getBrowserTimezone(),
         dateStyle: 'short',
         timeStyle: 'short',
       });

@@ -18,17 +18,24 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import axios from 'axios';
-import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import { LmnVdiRequest } from '@libs/desktopdeployment/types';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import VdiService from './vdi.service';
 
 const vdiServicesMock = {
-  authenticateVdi: jest.fn().mockReturnValue({ dataSource: 'mysql', authToken: 'ABC123' }),
-  getConnection: jest.fn(),
-  createOrUpdateSession: jest.fn(),
+  authenticateVdi: jest.fn().mockReturnValue({ dataSource: 'quickconnect', authToken: 'ABC123' }),
   requestVdi: jest.fn(),
   getVirtualMachines: jest.fn(),
+  createSSHSession: jest.fn().mockReturnValue({
+    authToken: 'ABC123',
+    dataSource: 'quickconnect',
+    connectionUri: '1',
+  }),
+  createRDPSession: jest.fn().mockReturnValue({
+    authToken: 'ABC123',
+    dataSource: 'quickconnect',
+    connectionUri: '2',
+  }),
 };
 
 describe('VdiService', () => {
@@ -45,45 +52,7 @@ describe('VdiService', () => {
   it('should authenticate VDI successfully', async () => {
     const result = await service.authenticateVdi();
     expect(service.authenticateVdi).toHaveBeenCalledWith();
-    expect(result).toEqual({ dataSource: 'mysql', authToken: 'ABC123' });
-  });
-
-  it('should return a successful response with the correct headers', async () => {
-    const mockData = {
-      dataSource: 'mysql',
-      authToken: 'ABC123',
-    };
-
-    axios.post = jest.fn().mockResolvedValue(mockData);
-    const response = await axios.post(`http://localhost:8081/guacamole/api`);
-
-    expect(response).toHaveProperty('authToken');
-  });
-
-  describe('getConnection', () => {
-    it('should call getConnection with correct parameters', async () => {
-      const guacamoleDto: GuacamoleDto = {
-        dataSource: 'mysql',
-        authToken: 'ABC123',
-        hostname: '10.0.0.1',
-      };
-      const username = 'testuser';
-      await service.getConnection(guacamoleDto, username);
-      expect(service.getConnection).toHaveBeenCalledWith(guacamoleDto, username);
-    });
-  });
-
-  describe('createOrUpdateSession', () => {
-    it('should call vdiService.createOrUpdateSession with correct parameters', async () => {
-      const guacamoleDto: GuacamoleDto = {
-        dataSource: 'mysql',
-        authToken: 'ABC123',
-        hostname: '10.0.0.1',
-      };
-      const username = 'testuser';
-      await service.createOrUpdateSession(guacamoleDto, username);
-      expect(service.createOrUpdateSession).toHaveBeenCalledWith(guacamoleDto, username);
-    });
+    expect(result).toEqual({ dataSource: 'quickconnect', authToken: 'ABC123' });
   });
 
   describe('requestVdi', () => {
@@ -101,6 +70,33 @@ describe('VdiService', () => {
     it('should call vdiService.getVirtualMachines', async () => {
       await service.getVirtualMachines();
       expect(service.getVirtualMachines).toHaveBeenCalled();
+    });
+  });
+
+  describe('createSSHSession', () => {
+    it('should create SSH session via QuickConnect', async () => {
+      const sshSessionDto = { username: 'testuser', password: 'testpass' };
+      const result = await service.createSSHSession(sshSessionDto);
+      expect(service.createSSHSession).toHaveBeenCalledWith(sshSessionDto);
+      expect(result).toEqual({
+        authToken: 'ABC123',
+        dataSource: 'quickconnect',
+        connectionUri: '1',
+      });
+    });
+  });
+
+  describe('createRDPSession', () => {
+    it('should create RDP session via QuickConnect', async () => {
+      const username = 'testuser';
+      const hostname = '10.0.0.1';
+      const result = await service.createRDPSession(username, hostname);
+      expect(service.createRDPSession).toHaveBeenCalledWith(username, hostname);
+      expect(result).toEqual({
+        authToken: 'ABC123',
+        dataSource: 'quickconnect',
+        connectionUri: '2',
+      });
     });
   });
 

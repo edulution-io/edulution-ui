@@ -1034,12 +1034,18 @@
     "ubuntu": "Ubuntu",
     "clients": "Clients disponibles",
     "client": "Client disponible",
+    "noClientsFound": "Aucun client trouvé",
     "errors": {
       "GuacamoleNotResponding": "Service RDP non disponible.",
       "GuacamoleUserNotFound": "Le nom d'utilisateur ou le mot de passe n'a pas pu être trouvé.",
       "LmnVdiApiNotResponding": "Le service VDI Linuxmuster ne répond pas.",
       "SessionNotFound": "Session introuvable.",
-      "AppNotProperlyConfigured": "Guacamole n'est pas correctement configuré, veuillez contacter l'administrateur système."
+      "AppNotProperlyConfigured": "Guacamole n'est pas correctement configuré, veuillez contacter l'administrateur système.",
+      "QuickconnectFailed": "La connexion n'a pas pu être établie. Veuillez vérifier vos identifiants."
+    },
+    "rdpDialog": {
+      "title": "Connexion RDP",
+      "host": "Hôte"
     }
   },
   "wlan": {
@@ -2378,5 +2384,13 @@
     },
     "sharePath": "Chemin de partage",
     "pathPreview": "Aperçu du chemin"
+  },
+  "ssh": {
+    "terminal": "Terminal"
+  },
+  "ssh-terminal": {
+    "topic": "Terminal SSH",
+    "credentials": "Identifiants SSH",
+    "connect": "Connecter"
   }
 }

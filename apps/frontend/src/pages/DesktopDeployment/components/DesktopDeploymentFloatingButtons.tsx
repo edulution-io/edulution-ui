@@ -17,24 +17,43 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import ConnectButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/connectButton';
 import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import RdpConnectionDialog from './RdpConnectionDialog';
 
 type FloatingButtonsProps = {
-  handleConnect: () => void;
+  handleConnect: (host: string) => void;
   handleReload: () => void;
 };
 
 const DesktopDeploymentFloatingButtons: React.FC<FloatingButtonsProps> = ({ handleConnect, handleReload }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { isSuperAdmin } = useLdapGroups();
+
+  const buttons = [ReloadButton(handleReload)];
+  if (isSuperAdmin) {
+    buttons.unshift(ConnectButton(() => setIsDialogOpen(true)));
+  }
+
   const config: FloatingButtonsBarConfig = {
-    buttons: [ConnectButton(handleConnect), ReloadButton(handleReload)],
+    buttons,
     keyPrefix: 'desktop-deployment-page-floating-button_',
   };
 
-  return <FloatingButtonsBar config={config} />;
+  return (
+    <>
+      <FloatingButtonsBar config={config} />
+      <RdpConnectionDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConnect={handleConnect}
+      />
+    </>
+  );
 };
 
 export default DesktopDeploymentFloatingButtons;

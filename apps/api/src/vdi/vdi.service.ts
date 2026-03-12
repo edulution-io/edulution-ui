@@ -17,22 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import {
-  Attributes,
-  GuacamoleConnections,
   GuacamoleDto,
   LmnVdiRequest,
   LmnVdiResponse,
-  Parameters,
-  RDPConnection,
+  SSHSessionDto,
   VdiErrorMessages,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
+import RDP_DEFAULT_PARAMETERS from '@libs/desktopdeployment/constants/rdpDefaultParameters';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import APPS from '@libs/appconfig/constants/apps';
+import { GUACAMOLE_AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -40,15 +41,16 @@ import AppConfigService from '../appconfig/appconfig.service';
 const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, EDULUTION_GUACAMOLE_ADMIN_PASSWORD, EDULUTION_GUACAMOLE_ADMIN_USER } =
   process.env;
 
+const GUACAMOLE_AUTH_CACHE_KEY = 'guacamole:auth';
+
 @Injectable()
 class VdiService implements OnModuleInit {
   private lmnVdiApi: AxiosInstance;
 
   private guacamoleApi: AxiosInstance;
 
-  private vdiId = '';
-
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private usersService: UsersService,
     private readonly appConfigService: AppConfigService,
   ) {
@@ -91,30 +93,16 @@ class VdiService implements OnModuleInit {
     }
   }
 
-  static createRDPConnection(
-    username: string,
-    customParams: Partial<Parameters> = {},
-    customAttributes: Partial<Attributes> = {},
-  ): RDPConnection {
-    const rdpConnection = new RDPConnection();
-    rdpConnection.name = `${username}`;
-    rdpConnection.parameters = { ...rdpConnection.parameters, ...customParams };
-    rdpConnection.attributes = { ...rdpConnection.attributes, ...customAttributes };
-    return rdpConnection;
-  }
-
-  static getConnectionIdentifier(connections: GuacamoleConnections, username: string): string | null {
-    const connectionValues = Object.values(connections);
-    const connection = connectionValues.find((itm) => itm.name === username);
-
-    if (connection) {
-      return connection.identifier;
+  async authenticateVdi(forceRefresh = false): Promise<{ authToken: string; dataSource: string }> {
+    if (!forceRefresh) {
+      const cachedAuth = await this.cacheManager.get<{ authToken: string; dataSource: string }>(
+        GUACAMOLE_AUTH_CACHE_KEY,
+      );
+      if (cachedAuth) {
+        return cachedAuth;
+      }
     }
 
-    return null;
-  }
-
-  async authenticateVdi() {
     try {
       const response = await this.guacamoleApi.post<GuacamoleDto>(
         '/tokens',
@@ -125,70 +113,11 @@ class VdiService implements OnModuleInit {
       );
       const { authToken, dataSource } = response.data;
 
-      return { authToken, dataSource };
+      const authData = { authToken, dataSource };
+      await this.cacheManager.set(GUACAMOLE_AUTH_CACHE_KEY, authData, GUACAMOLE_AUTH_CACHE_TTL_MS);
+      return authData;
     } catch (e) {
-      throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
-    }
-  }
-
-  async getConnection(guacamoleDto: GuacamoleDto, username: string) {
-    try {
-      const { dataSource, authToken } = guacamoleDto;
-      const response = await this.guacamoleApi.get<GuacamoleConnections>(
-        `/session/data/${dataSource}/connections?token=${authToken}`,
-      );
-      const identifier = VdiService.getConnectionIdentifier(response.data, username);
-      if (identifier) this.vdiId = identifier;
-      return identifier;
-    } catch (e) {
-      throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
-    }
-  }
-
-  async createOrUpdateSession(guacamoleDto: GuacamoleDto, username: string) {
-    const identifier = await this.getConnection(guacamoleDto, username);
-    const password = await this.usersService.getPassword(username);
-    if (identifier != null) {
-      return this.updateSession(guacamoleDto, username, password);
-    }
-    return this.createSession(guacamoleDto, username, password);
-  }
-
-  async createSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
-    const { dataSource, authToken, hostname } = guacamoleDto;
-    try {
-      const rdpConnection = VdiService.createRDPConnection(username, {
-        hostname,
-        username,
-        password,
-      });
-
-      const response = await this.guacamoleApi.post<GuacamoleDto>(
-        `/session/data/${dataSource}/connections?token=${authToken}`,
-        rdpConnection,
-      );
-      return response.data;
-    } catch (e) {
-      throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
-    }
-  }
-
-  async updateSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
-    try {
-      const { dataSource, authToken, hostname } = guacamoleDto;
-      const rdpConnection = VdiService.createRDPConnection(username, {
-        hostname,
-        username,
-        password,
-      });
-
-      await this.guacamoleApi.put<GuacamoleDto>(
-        `/session/data/${dataSource}/connections/${this.vdiId}?token=${authToken}`,
-        rdpConnection,
-      );
-
-      return guacamoleDto;
-    } catch (e) {
+      await this.cacheManager.del(GUACAMOLE_AUTH_CACHE_KEY);
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
@@ -209,6 +138,66 @@ class VdiService implements OnModuleInit {
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);
     }
+  }
+
+  async createSSHSession(
+    sshSessionDto: SSHSessionDto,
+  ): Promise<{ authToken: string; dataSource: string; connectionUri: string }> {
+    const { authToken } = await this.authenticateVdi();
+    const { username, password } = sshSessionDto;
+
+    let uri = 'ssh://';
+    if (username) {
+      uri += encodeURIComponent(username);
+      if (password) {
+        uri += `:${encodeURIComponent(password)}`;
+      }
+      uri += '@';
+    }
+    uri += 'host.docker.internal:22/';
+
+    const connectionId = await this.createQuickconnect(authToken, uri);
+
+    return { authToken, dataSource: 'quickconnect', connectionUri: connectionId };
+  }
+
+  private async createQuickconnect(authToken: string, uri: string): Promise<string> {
+    try {
+      const response = await this.guacamoleApi.post<{ identifier: string }>(
+        `/session/ext/quickconnect/create?token=${encodeURIComponent(authToken)}`,
+        `uri=${encodeURIComponent(uri)}`,
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        },
+      );
+      return response.data.identifier;
+    } catch (e) {
+      throw new CustomHttpException(VdiErrorMessages.QuickconnectFailed, HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  private static buildRdpUri(hostname: string, username: string, password: string): string {
+    const { port, ...otherParams } = RDP_DEFAULT_PARAMETERS;
+
+    const queryParams = Object.entries(otherParams)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    return `rdp://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostname}:${port}/?${queryParams}`;
+  }
+
+  async createRDPSession(
+    username: string,
+    hostname: string,
+  ): Promise<{ authToken: string; dataSource: string; connectionUri: string }> {
+    const { authToken } = await this.authenticateVdi();
+    const password = await this.usersService.getPassword(username);
+
+    const uri = VdiService.buildRdpUri(hostname, username, password);
+
+    const connectionId = await this.createQuickconnect(authToken, uri);
+
+    return { authToken, dataSource: 'quickconnect', connectionUri: connectionId };
   }
 }
 

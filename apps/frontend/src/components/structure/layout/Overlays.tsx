@@ -22,6 +22,8 @@ import FileSharingPreviewFrame from '@/pages/FileSharing/FilePreview/FileSharing
 import CommunityLicenseDialog from '@/pages/UserSettings/Info/CommunityLicenseDialog';
 import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
 import VDIFrame from '@/pages/DesktopDeployment/VDIFrame';
+import SSHTerminalFrame from '@/pages/Settings/AppConfig/DockerIntegration/SSHTerminal/SSHTerminalFrame';
+import SSHCredentialsDialog from '@/pages/Settings/AppConfig/DockerIntegration/SSHTerminal/SSHCredentialsDialog';
 import SetupMfaDialog from '@/pages/UserSettings/Security/components/SetupMfaDialog';
 import NativeFrameManager from '@/components/structure/framing/Native/NativeFrameManager';
 import EmbeddedFrameManager from '@/components/structure/framing/EmbeddedFrameManager';
@@ -32,6 +34,8 @@ const Overlays = () => (
     <FileSharingPreviewFrame />
     <BBBFrame />
     <VDIFrame />
+    <SSHTerminalFrame />
+    <SSHCredentialsDialog />
     <EmbeddedFrameManager />
     <NativeFrameManager />
     <CommunityLicenseDialog />
