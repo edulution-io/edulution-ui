@@ -92,14 +92,14 @@ const useFileEditorContentStore = create<FileEditorContentStore>((set, get) => (
 
   saveFile: async (webdavShare, contentType = RequestResponseContentType.TEXT_PLAIN) => {
     const { currentlyEditingFile } = useFileEditorStore.getState();
-    const { eduApiToken } = useUserStore.getState();
     const { editedContent } = get();
 
     if (!currentlyEditingFile || editedContent === null) return;
 
     set({ isSaving: true });
     try {
-      const uploadClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, eduApiToken);
+      const getAccessToken = () => useUserStore.getState().eduApiToken;
+      const uploadClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, getAccessToken);
       const uploadUrl = `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`;
 
       const { filePath } = currentlyEditingFile;

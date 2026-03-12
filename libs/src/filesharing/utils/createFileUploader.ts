@@ -25,6 +25,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import createProgressHandler from '@libs/filesharing/utils/createProgressHandler';
 import uploadOctetStream from '@libs/filesharing/utils/uploadOctetStream';
 import FileProgress from '@libs/filesharing/types/fileProgress';
+import isAuthOrStorageError from '@libs/common/utils/isAuthOrStorageError';
 
 export interface CreateFileUploaderDependencies {
   httpClient: AxiosInstance;
@@ -71,6 +72,9 @@ const createFileUploader = (createFileUploaderDependencies: CreateFileUploaderDe
       return { name: fileName, success: true };
     } catch (error) {
       progress.markError();
+      if (isAuthOrStorageError(error)) {
+        throw error;
+      }
       return {
         name: fileName,
         success: false,

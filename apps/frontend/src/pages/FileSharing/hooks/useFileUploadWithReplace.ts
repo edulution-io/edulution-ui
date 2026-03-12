@@ -24,7 +24,6 @@ import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
-import useUserStore from '@/store/UserStore/useUserStore';
 import useReplaceFilesDialogStore from '@/pages/FileSharing/Dialog/useReplaceFilesDialogStore';
 import getRandomUUID from '@/utils/getRandomUUID';
 import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
@@ -35,7 +34,6 @@ const useFileUploadWithReplace = () => {
   const { uploadFiles, updateFilesToUpload } = useHandleUploadFileStore();
   const { files, fetchFiles } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
-  const { eduApiToken } = useUserStore();
   const { openDialog } = useReplaceFilesDialogStore();
   const { t } = useTranslation();
 
@@ -54,7 +52,7 @@ const useFileUploadWithReplace = () => {
           }),
         );
 
-        const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
+        const results = await uploadFiles(currentPath, webdavShare);
 
         if (results && results.length > 0) {
           await fetchFiles(webdavShare, currentPath);
@@ -64,7 +62,7 @@ const useFileUploadWithReplace = () => {
         toast.error(t('filesharingUpload.errors.uploadError'));
       }
     },
-    [updateFilesToUpload, uploadFiles, eduApiToken, fetchFiles, fetchShares, t],
+    [updateFilesToUpload, uploadFiles, fetchFiles, fetchShares, t],
   );
 
   const handleFileUploadWithDuplicateCheck = useCallback(

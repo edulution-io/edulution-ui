@@ -17,31 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios, { AxiosInstance } from 'axios';
-
-type QueryParams = Record<string, string | number | boolean | undefined>;
-
-const createUploadClient = (
-  baseURL: string,
-  params: QueryParams,
-  getToken: () => string | undefined,
-): AxiosInstance => {
-  const instance = axios.create({
-    baseURL,
-    withCredentials: true,
-    timeout: 0,
-    params,
-  });
-
-  instance.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-      config.headers.set('Authorization', `Bearer ${token}`);
-    }
-    return config;
-  });
-
-  return instance;
-};
-
-export default createUploadClient;
+const MAX_FILES_PER_FOLDER = 100;
+export default MAX_FILES_PER_FOLDER;

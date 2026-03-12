@@ -35,6 +35,7 @@ import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useClassListsStore from '@/pages/ClassManagement/ClassListsPage/useClassListsStore';
 import useCollaboraStore from '@/pages/FileSharing/FilePreview/Collabora/useCollaboraStore';
 import useReplaceFilesDialogStore from '@/pages/FileSharing/Dialog/useReplaceFilesDialogStore';
@@ -133,6 +134,7 @@ const cleanAllStores = async () => {
   useFileTableStore.getState().reset();
   useFilesystemStore.getState().reset();
   useFrameStore.getState().reset();
+  useHandleUploadFileStore.getState().reset();
   useGlobalSettingsApiStore.getState().reset();
   useHandleUploadFileStore.getState().reset();
   useLauncherStore.getState().reset();

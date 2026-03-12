@@ -25,15 +25,15 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/useUserStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 
 const UploadFileDialog = () => {
   const { webdavShare } = useParams();
   const { currentPath } = useFileSharingStore();
   const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, updateFilesToUpload } =
     useHandleUploadFileStore();
+  const { isSubmitButtonDisabled } = useFileSharingDialogStore();
 
-  const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
   const [remountKey, setRemountKey] = useState(0);
 
@@ -45,7 +45,7 @@ const UploadFileDialog = () => {
 
   const handleSubmit = async () => {
     closeUploadDialog();
-    await uploadFiles(currentPath, eduApiToken, webdavShare);
+    await uploadFiles(currentPath, webdavShare);
     setRemountKey((k) => k + 1);
   };
 
@@ -61,7 +61,7 @@ const UploadFileDialog = () => {
           handleSubmit={handleSubmit}
           submitButtonType="submit"
           submitButtonText="filesharingUpload.upload"
-          disableSubmit={isUploading}
+          disableSubmit={isUploading || isSubmitButtonDisabled}
         />
       }
     />
