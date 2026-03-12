@@ -337,7 +337,7 @@ describe('MenuBarItem', () => {
       expect(screen.getByText('Grandchild')).toBeInTheDocument();
     });
 
-    it('does not render grandchildren when child is not expanded', () => {
+    it('hides grandchildren via CSS when child is not expanded', () => {
       const grandchild: MenuItem = { id: 'grandchild', label: 'Grandchild', icon: '', action: vi.fn() };
       const child: MenuItem = { id: 'child', label: 'Child', icon: '', action: vi.fn(), children: [grandchild] };
       const props = {
@@ -350,7 +350,9 @@ describe('MenuBarItem', () => {
       render(<MenuBarItem {...props} />);
 
       expect(screen.getByText('Child')).toBeInTheDocument();
-      expect(screen.getByText('Grandchild')).toBeInTheDocument();
+      const grandchildRegion = screen.getByRole('region', { name: 'Child sections' });
+      expect(grandchildRegion.className).toContain('grid-rows-[0fr]');
+      expect(grandchildRegion.className).toContain('opacity-0');
     });
   });
 });
