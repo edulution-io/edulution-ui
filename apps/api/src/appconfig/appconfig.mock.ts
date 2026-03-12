@@ -58,6 +58,7 @@ export const mockAppConfig: AppConfigDto = {
     [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
   },
   position: 1,
+  usesPushNotifications: false,
 };
 
 const makeMockQuery = <T>(result: T) => ({

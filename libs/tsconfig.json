@@ -5,9 +5,9 @@
     "moduleResolution": "Bundler",
     "declaration": true,
     "composite": true,
-    "types": ["node"],
+    "jsx": "react-jsx",
+    "types": ["node", "vitest/globals"],
     "noPropertyAccessFromIndexSignature": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

@@ -365,7 +365,11 @@ $RECYCLE.BIN/
 
 .nx/**
 
+.planning/
+
 .playwright-mcp
+
+test-results/
 
 # Certificates
 *.crt
@@ -374,7 +378,6 @@ $RECYCLE.BIN/
 
 
 #swagger
-/swagger-spec.json
 
 # data folder
 /data/*

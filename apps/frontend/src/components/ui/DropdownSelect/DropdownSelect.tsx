@@ -20,9 +20,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@edulution-io/ui-kit';
+import { cn, INPUT_BASE_CLASSES, VARIANT_COLORS } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
 
 const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-background`;
 

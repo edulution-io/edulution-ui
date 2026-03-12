@@ -29,17 +29,23 @@ interface SubMenuStore {
   setActiveSection: (id: string | null) => void;
   requestOpenSection: (id: string) => void;
   clearOpenRequest: () => void;
+  reset: () => void;
 }
 
+const initialState = {
+  sections: [] as Section[],
+  parentId: null as string | null,
+  activeSection: null as string | null,
+  sectionToOpen: null as string | null,
+};
+
 const useSubMenuStore = create<SubMenuStore>((set) => ({
-  sections: [],
-  parentId: null,
-  activeSection: null,
-  sectionToOpen: null,
+  ...initialState,
   setSections: (sections, parentId) => set({ sections, parentId: parentId ?? null }),
   setActiveSection: (id) => set({ activeSection: id }),
   requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
   clearOpenRequest: () => set({ sectionToOpen: null }),
+  reset: () => set(initialState),
 }));
 
 export default useSubMenuStore;
