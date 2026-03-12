@@ -18,13 +18,7 @@
  */
 
 import { create } from 'zustand';
-
-const OPEN_FILE_CHOICE = {
-  EDITOR: 'editor',
-  DOWNLOAD: 'download',
-} as const;
-
-type OpenFileChoice = (typeof OPEN_FILE_CHOICE)[keyof typeof OPEN_FILE_CHOICE];
+import type { OpenFileChoice } from '@libs/filesharing/constants/openFileChoice';
 
 interface OpenFileChoiceDialogStore {
   isOpen: boolean;
@@ -56,6 +50,4 @@ const useOpenFileChoiceDialogStore = create<OpenFileChoiceDialogStore>((set) => 
   reset: () => set(initialState),
 }));
 
-export { OPEN_FILE_CHOICE };
-export type { OpenFileChoice };
 export default useOpenFileChoiceDialogStore;
