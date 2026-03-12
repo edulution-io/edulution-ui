@@ -20,6 +20,9 @@
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 
-const DEEP_LINK_SOURCE_TYPES: NotificationSourceType[] = [NOTIFICATION_SOURCE_TYPE.BULLETIN];
+const DEEP_LINK_SOURCE_TYPES: NotificationSourceType[] = [
+  NOTIFICATION_SOURCE_TYPE.BULLETIN,
+  NOTIFICATION_SOURCE_TYPE.CHAT,
+];
 
 export default DEEP_LINK_SOURCE_TYPES;

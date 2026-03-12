@@ -34,6 +34,7 @@ export { default as SurveysViewAnsweredIcon } from '@/assets/icons/edulution/edu
 export { default as SurveysViewOpenIcon } from '@/assets/icons/edulution/edu_Umfragen-offen.svg';
 export { default as SurveysViewOwnIcon } from '@/assets/icons/edulution/edu_Umfragen-eigene.svg';
 export { default as AiChatIcon } from '@/assets/icons/edulution/edu_KI-Chat.svg';
+export { default as ChatIcon } from '@/assets/icons/edulution/edu_Chat.svg';
 export { default as LinuxmusterIcon } from '@/assets/icons/edulution/edu_Linuxmuster.svg';
 export { default as InfoBoardIcon } from '@/assets/icons/edulution/edu_Infoboard.svg';
 export { default as SecurityIcon } from '@/assets/icons/edulution/edu_Sicherheit.svg';

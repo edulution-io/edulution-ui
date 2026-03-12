@@ -30,7 +30,6 @@ import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
-import SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixSchoolClassGroupTypes';
 
 const UserProjectOrSchoolClassSearch = () => {
   const { t } = useTranslation();
@@ -53,7 +52,7 @@ const UserProjectOrSchoolClassSearch = () => {
       r.cn !== user?.cn &&
       (
         [
-          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS,
+          SOPHOMORIX_GROUP_TYPES.SCHOOL_CLASS,
           SOPHOMORIX_GROUP_TYPES.STUDENT,
           SOPHOMORIX_GROUP_TYPES.PROJECT,
         ] as string[]
@@ -70,7 +69,7 @@ const UserProjectOrSchoolClassSearch = () => {
     const { type, value } = newlySelected[0];
 
     switch (type) {
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS: {
+      case SOPHOMORIX_GROUP_TYPES.SCHOOL_CLASS: {
         const schoolClass = await fetchSchoolClass(value, true);
         if (schoolClass) {
           setMember(getUniqueValues([...member, ...schoolClass.members]));

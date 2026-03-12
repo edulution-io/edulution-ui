@@ -161,9 +161,7 @@ describe('PublicConferenceJoinForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     Object.assign(mockUser, { username: 'testuser' });
-    Object.keys(mockStoredPasswordsByMeetingIds).forEach(
-      (key) => delete mockStoredPasswordsByMeetingIds[key],
-    );
+    Object.keys(mockStoredPasswordsByMeetingIds).forEach((key) => delete mockStoredPasswordsByMeetingIds[key]);
   });
 
   it('shows join again button when running, permitted, and user exists', () => {

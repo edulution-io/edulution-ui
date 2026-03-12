@@ -20,6 +20,7 @@
 import {
   AiChatIcon,
   AppStoreIcon,
+  ChatIcon,
   ClassManagementIcon,
   ConferencesIcon,
   ContactIcon,
@@ -59,6 +60,7 @@ import {
 const defaultIconList = [
   AiChatIcon,
   AppStoreIcon,
+  ChatIcon,
   ClassManagementIcon,
   ConferencesIcon,
   ContactIcon,

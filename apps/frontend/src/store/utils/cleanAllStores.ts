@@ -91,6 +91,8 @@ import useNotificationStore from '@/store/useNotificationStore';
 import useSchoolStore from '@/store/useSchoolStore';
 import useSentryStore from '@/store/useSentryStore';
 import useSessionFlagsStore from '@/store/useSessionFlagsStore';
+import LAST_CHAT_GROUP_STORAGE_KEY from '@libs/chat/constants/lastChatGroupStorageKey';
+import useChatStore from '@/pages/Chat/useChatStore';
 import useSseStore from '@/store/useSseStore';
 import useSubMenuStore from '@/store/useSubMenuStore';
 import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
@@ -110,6 +112,7 @@ const cleanAllStores = async () => {
   useBulletinBoardStore.getState().reset();
   useBulletinCategoryTableStore.getState().reset();
   useClassListsStore.getState().reset();
+  useChatStore.getState().reset();
   useClassManagementStore.getState().reset();
   useCollaboraStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
@@ -179,6 +182,7 @@ const cleanAllStores = async () => {
   useWebhookClientsStore.getState().reset();
   useWhiteboardEditorStore.getState().reset();
   useWireguardConfigTableStore.getState().reset();
+  localStorage.removeItem(LAST_CHAT_GROUP_STORAGE_KEY);
   localStorage.removeItem('i18nextLng');
   localStorage.removeItem('user-management-storage');
   localStorage.removeItem('device-management-storage');

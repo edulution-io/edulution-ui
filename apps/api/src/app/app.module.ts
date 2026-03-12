@@ -71,6 +71,7 @@ import ParentChildPairingModule from '../parent-child-pairing/parent-child-pairi
 import WireguardModule from '../wireguard/wireguard.module';
 import WebhookModule from '../webhook/webhook.module';
 import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
+import ChatModule from '../chat/chat.module';
 
 @Module({
   imports: [
@@ -148,6 +149,7 @@ import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
     WireguardModule,
     WebhookModule,
     WebhookClientsModule,
+    ChatModule,
   ],
   providers: [
     {
