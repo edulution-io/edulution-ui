@@ -23,8 +23,8 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Button, cn } from '@edulution-io/ui-kit';
 import { useTranslation } from 'react-i18next';
 import MenuItem from '@libs/menubar/menuItem';
+import MENUBAR_LAYOUT from '@libs/menubar/constants/menuBarLayout';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
-import useSubMenuStore from '@/store/useSubMenuStore';
 import MenuBarRenderIcon from './MenuBarRenderIcon';
 
 interface MenuBarItemProps {
@@ -34,9 +34,13 @@ interface MenuBarItemProps {
   shouldCollapse: boolean;
   activeColorClass: string;
   activeSection: string | null;
+  selectedItemId: string | null;
+  expandedItems: Set<string>;
   pathParts: string[];
-  onToggleExpand: () => void;
+  onSelectItem: (itemId: string | null) => void;
+  onToggleExpand: (itemId: string) => void;
   onCloseMobileMenu: () => void;
+  depth?: number;
 }
 
 const MenuBarItem: React.FC<MenuBarItemProps> = ({
@@ -46,28 +50,34 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
   shouldCollapse,
   activeColorClass,
   activeSection,
+  selectedItemId,
+  expandedItems,
   pathParts,
+  onSelectItem,
   onToggleExpand,
   onCloseMobileMenu,
+  depth = 0,
 }) => {
   const { t } = useTranslation();
-  const parentId = useSubMenuStore((state) => state.parentId);
   const hasChildren = item.children && item.children.length > 0;
+  const shouldRenderIcon = depth < 2;
+  const paddingLeft = MENUBAR_LAYOUT.BASE_PADDING_LEFT + depth * MENUBAR_LAYOUT.DEPTH_PADDING_STEP;
 
   const handleItemClick = useCallback(() => {
+    onSelectItem(item.id);
     onCloseMobileMenu();
     item.action();
     if (hasChildren && !isExpanded) {
-      onToggleExpand();
+      onToggleExpand(item.id);
     }
-  }, [item, hasChildren, isExpanded, onCloseMobileMenu, onToggleExpand]);
+  }, [item, hasChildren, isExpanded, onCloseMobileMenu, onSelectItem, onToggleExpand]);
 
   const handleExpandClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      onToggleExpand();
+      onToggleExpand(item.id);
     },
-    [onToggleExpand],
+    [onToggleExpand, item.id],
   );
 
   const handleKeyDown = useCallback(
@@ -91,21 +101,32 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
       aria-expanded={hasChildren ? isExpanded : undefined}
       aria-controls={hasChildren ? childrenId : undefined}
       aria-label={item.label}
+      style={{ paddingLeft: `${paddingLeft}px` }}
       className={cn(
-        'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
+        'flex w-full min-w-0 cursor-pointer items-center gap-3 pr-3 transition-colors hover:bg-muted-background',
+        depth === 0 ? 'py-1' : 'py-2',
         isActive ? activeColorClass : '',
         shouldCollapse && 'justify-center',
       )}
     >
-      <MenuBarRenderIcon
-        icon={item.icon}
-        alt={item.label}
-        className="h-12 w-12 object-contain"
-        applyIconClassName={!isActive}
-      />
+      {shouldRenderIcon && (
+        <MenuBarRenderIcon
+          icon={item.icon}
+          alt={item.label}
+          className="h-12 w-12 object-contain"
+          applyIconClassName={!isActive}
+        />
+      )}
       {!shouldCollapse && (
         <>
-          <span className={cn('flex-1 text-left', isActive ? 'text-white' : '')}>{item.label}</span>
+          <span
+            className={cn(
+              'min-w-0 flex-1 whitespace-nowrap text-left',
+              isActive && (depth === 0 ? 'text-white' : 'font-bold'),
+            )}
+          >
+            {item.label}
+          </span>
           {hasChildren && (
             <Button
               type="button"
@@ -117,7 +138,7 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
               <FontAwesomeIcon
                 icon={faChevronDown}
                 className={cn(
-                  'h-4 w-4 shrink-0 text-white transition-transform duration-200',
+                  'h-4 w-4 shrink-0 text-background transition-transform duration-200',
                   isExpanded && 'rotate-180',
                 )}
               />
@@ -133,36 +154,35 @@ const MenuBarItem: React.FC<MenuBarItemProps> = ({
       id={childrenId}
       role="region"
       aria-label={`${item.label} sections`}
+      {...(!isExpanded && { inert: '' })}
       className={cn(
         'grid transition-all duration-200 ease-in-out',
         isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
       )}
     >
       <div className="overflow-hidden">
-        <div className="ml-2">
-          {item.children?.map((child) => {
-            const isChildActive = activeSection === child.id || (!!parentId && pathParts.includes(child.id));
-            return (
-              <Button
-                key={child.id}
-                type="button"
-                variant="btn-ghost"
-                onClick={() => {
-                  onCloseMobileMenu();
-                  child.action();
-                }}
-                className={cn(
-                  'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
-                  'transition-all duration-150',
-                  'hover:pl-5',
-                  isChildActive && 'bg-accent font-bold',
-                )}
-              >
-                <span className="truncate">{child.label}</span>
-              </Button>
-            );
-          })}
-        </div>
+        {item.children?.map((child) => {
+          const isChildActive =
+            selectedItemId === child.id || activeSection === child.id || pathParts.includes(child.id);
+          return (
+            <MenuBarItem
+              key={child.id}
+              item={child}
+              isActive={isChildActive}
+              isExpanded={expandedItems.has(child.id)}
+              shouldCollapse={false}
+              activeColorClass="bg-accent"
+              activeSection={activeSection}
+              selectedItemId={selectedItemId}
+              expandedItems={expandedItems}
+              pathParts={pathParts}
+              onSelectItem={onSelectItem}
+              onToggleExpand={onToggleExpand}
+              onCloseMobileMenu={onCloseMobileMenu}
+              depth={depth + 1}
+            />
+          );
+        })}
       </div>
     </div>
   );

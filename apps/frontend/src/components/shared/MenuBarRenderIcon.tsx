@@ -39,6 +39,10 @@ const MenuBarRenderIcon: React.FC<MenuBarRenderIconProps> = ({ icon, alt, classN
   }
 
   if (typeof icon === 'string') {
+    if (!icon.trim()) {
+      return null;
+    }
+
     return (
       <IconWrapper
         iconSrc={icon}

@@ -20,6 +20,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import findAncestorIds from '@libs/menubar/findAncestorIds';
+import findMenuItemById from '@libs/menubar/findMenuItemById';
 
 const getActiveColorClass = (color: string) => color.split(':')[1] ?? color;
 
@@ -27,37 +29,47 @@ const useMenuBarSelection = (menuBarEntries: MenuBarEntry) => {
   const { pathname } = useLocation();
 
   const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const activeTargetId = useMemo(
+    () =>
+      [...pathParts.slice(1)]
+        .reverse()
+        .find((pathPart) => findAncestorIds(menuBarEntries.menuItems, pathPart).length > 0) ?? null,
+    [pathParts, menuBarEntries.menuItems],
+  );
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(activeTargetId);
+
+  useEffect(() => {
+    setSelectedItemId(activeTargetId);
+  }, [activeTargetId]);
+
+  const activeItemId = selectedItemId ?? activeTargetId;
 
   const isSelected = useMemo(() => {
-    if (!pathParts[1]) {
+    if (!activeItemId) {
       return menuBarEntries.menuItems[0]?.id ?? '';
     }
 
-    const isTopLevel = menuBarEntries.menuItems.some((item) => item.id === pathParts[1]);
-    if (isTopLevel) {
-      return pathParts[1];
-    }
-
-    const parentItem = menuBarEntries.menuItems.find((item) =>
-      item.children?.some((child) => child.id === pathParts[1]),
-    );
-    if (parentItem) {
-      return parentItem.id;
-    }
+    const topLevelId = findAncestorIds(menuBarEntries.menuItems, activeItemId)[0];
+    if (topLevelId) return topLevelId;
 
     return menuBarEntries.menuItems[0]?.id ?? '';
-  }, [pathParts, menuBarEntries.menuItems]);
+  }, [activeItemId, menuBarEntries.menuItems]);
 
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (isSelected) {
-      setExpandedItems((prev) => {
-        if (prev.has(isSelected)) return prev;
-        return new Set(prev).add(isSelected);
-      });
-    }
-  }, [isSelected]);
+    if (!activeItemId) return;
+    const ancestors = findAncestorIds(menuBarEntries.menuItems, activeItemId);
+    if (ancestors.length === 0) return;
+
+    setExpandedItems((prev) => {
+      const missing = ancestors.filter((id) => !prev.has(id));
+      if (missing.length === 0) return prev;
+      const next = new Set(prev);
+      missing.forEach((id) => next.add(id));
+      return next;
+    });
+  }, [activeItemId, menuBarEntries.menuItems]);
 
   const toggleExpanded = useCallback((itemId: string) => {
     setExpandedItems((prev) => {
@@ -71,14 +83,20 @@ const useMenuBarSelection = (menuBarEntries: MenuBarEntry) => {
     });
   }, []);
 
-  const activeItem = useMemo(
-    () => menuBarEntries.menuItems.find((item) => item.id === isSelected),
-    [isSelected, menuBarEntries.menuItems],
-  );
+  const activeItem = useMemo(() => {
+    if (activeItemId) {
+      const menuItem = findMenuItemById(menuBarEntries.menuItems, activeItemId);
+      if (menuItem) return menuItem;
+    }
+
+    return findMenuItemById(menuBarEntries.menuItems, isSelected);
+  }, [activeItemId, isSelected, menuBarEntries.menuItems]);
 
   return {
     pathParts,
     isSelected,
+    selectedItemId,
+    setSelectedItemId,
     expandedItems,
     toggleExpanded,
     getActiveColorClass,

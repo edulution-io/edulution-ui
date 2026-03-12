@@ -29,7 +29,7 @@ vi.mock('./MenuBarItem', () => ({
     >
       <button
         data-testid={`toggle-${item.id}`}
-        onClick={onToggleExpand}
+        onClick={() => onToggleExpand(item.id)}
       >
         {item.label}
       </button>
