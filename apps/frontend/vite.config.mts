@@ -140,9 +140,6 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes('survey-')) {
-              return 'surveyjs';
-            }
             if (id.includes('@sentry/react')) {
               return 'sentry';
             }

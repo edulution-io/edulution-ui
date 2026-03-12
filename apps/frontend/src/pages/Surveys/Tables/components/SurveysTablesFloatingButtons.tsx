@@ -23,10 +23,11 @@ import { useTranslation } from 'react-i18next';
 import { faSquareArrowUpRight, faFileArrowDown, faTableCells } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import { EDIT_SURVEY_PAGE, PARTICIPATE_SURVEY_PAGE } from '@libs/survey/constants/surveys-endpoint';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -59,7 +60,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     answeredSurveys,
     openSurveys,
     createdSurveys,
-  } = useSurveyTablesPageStore();
+  } = useSurveysTablesPageStore();
   const { user } = useUserStore();
   const {
     setIsOpenPublicResultsTableDialog,
@@ -80,10 +81,6 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     void hasAnswersSelectedSurvey(survey?.id);
   }, [selectedRows]);
 
-  if (!selectedSurveysCount) {
-    return null;
-  }
-
   const handleDeleteSurvey = () => {
     if (Object.keys(selectedRows).length > 0) {
       void setIsDeleteSurveysDialogOpen(true);
@@ -92,12 +89,15 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   };
 
   const isOnlyOneSurveySelected = selectedSurveysCount === 1;
-
   const shouldShowResults = isOnlyOneSurveySelected && canShowResults && hasAnswers;
   const hasCurrentUserAnsweredSurvey = selectedSurvey?.participatedAttendees.some((a) => a.username === user?.username);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
+      CreateButton(() => {
+        navigate(`/${EDIT_SURVEY_PAGE}`);
+      }),
+
       EditButton(() => {
         navigate(`/${EDIT_SURVEY_PAGE}/${selectedSurvey?.id}`);
       }, isOnlyOneSurveySelected && canEdit),

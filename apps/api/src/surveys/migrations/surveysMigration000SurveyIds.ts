@@ -32,7 +32,7 @@ interface OLDSurveyDocumentWithVirtuals extends SurveyDocument {
 
 const name = '000-transform-survey-document-ids';
 
-const migration000SurveyIds: Migration<SurveyDocument> = {
+const surveysMigration000SurveyIds: Migration<SurveyDocument> = {
   name,
   version: 1,
   execute: async (model) => {
@@ -103,4 +103,4 @@ const migration000SurveyIds: Migration<SurveyDocument> = {
   },
 };
 
-export default migration000SurveyIds;
+export default surveysMigration000SurveyIds;

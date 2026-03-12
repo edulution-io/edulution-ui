@@ -17,34 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { SurveyCreator } from 'survey-creator-react';
-import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
-import TemplateItem from '@/pages/Surveys/Editor/dialog/TemplateItem';
-import { AccordionSH } from '@/components/ui/AccordionSH';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserDto from '@libs/user/types/user.dto';
 
-interface TemplateListProps {
-  creator: SurveyCreator;
-  templates: SurveyTemplateDto[];
-}
+const getCreatorFromUserDto = (user: UserDto | null): AttendeeDto => ({
+  firstName: user?.firstName || '',
+  lastName: user?.lastName || '',
+  username: user?.username || '',
+  value: user?.username || '',
+  label: user ? `${user.firstName} ${user.lastName}` : '',
+});
 
-const TemplateList = (props: TemplateListProps) => {
-  const { creator, templates } = props;
-
-  return (
-    <AccordionSH
-      type="multiple"
-      className="px-4"
-    >
-      {templates.map((template: SurveyTemplateDto) => (
-        <TemplateItem
-          key={template.name}
-          creator={creator}
-          template={template}
-        />
-      ))}
-    </AccordionSH>
-  );
-};
-
-export default TemplateList;
+export default getCreatorFromUserDto;

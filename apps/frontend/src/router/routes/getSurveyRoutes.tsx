@@ -20,12 +20,8 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
-import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
-import CreatedSurveysPage from '@/pages/Surveys/Tables/CreatedSurveysPage';
-import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
-import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
+import SurveyApp from '@/pages/Surveys/SurveyApp';
+import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 
 const getSurveyRoutes = () => [
   <Route
@@ -43,27 +39,31 @@ const getSurveyRoutes = () => [
     />
     <Route
       path={SurveysPageView.OPEN}
-      element={<OpenSurveysPage />}
+      element={<SurveyApp surveysPageView={SurveysPageView.OPEN} />}
     />
     <Route
       path={SurveysPageView.ANSWERED}
-      element={<AnsweredSurveysPage />}
+      element={<SurveyApp surveysPageView={SurveysPageView.ANSWERED} />}
     />
     <Route
       path={SurveysPageView.CREATED}
-      element={<CreatedSurveysPage />}
+      element={<SurveyApp surveysPageView={SurveysPageView.CREATED} />}
     />
     <Route
       path={SurveysPageView.CREATOR}
-      element={<SurveyEditorPage />}
+      element={<SurveyApp surveysPageView={SurveysPageView.CREATOR} />}
+    />
+    <Route
+      path={SurveysPageView.EDITOR}
+      element={<SurveyApp surveysPageView={SurveysPageView.EDITOR} />}
     />
     <Route
       path={`${SurveysPageView.EDITOR}/:surveyId`}
-      element={<SurveyEditorPage />}
+      element={<SurveyApp surveysPageView={SurveysPageView.EDITOR} />}
     />
     <Route
       path={`${SurveysPageView.PARTICIPATION}/:surveyId`}
-      element={<SurveyParticipationPage isPublic={false} />}
+      element={<SurveyApp surveysPageView={SurveysPageView.PARTICIPATION} />}
     />
   </Route>,
 ];

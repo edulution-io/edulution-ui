@@ -36,6 +36,8 @@ class SurveyFormula {
   logoWidth?: string;
 
   logoPosition?: 'left' | 'right';
+
+  calculatedValues?: { name: string; value?: string; expression?: string; includeIntoResult?: boolean }[];
 }
 
 export default SurveyFormula;

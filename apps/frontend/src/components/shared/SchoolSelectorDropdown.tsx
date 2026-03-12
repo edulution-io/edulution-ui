@@ -20,7 +20,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownSelect } from '@/components';
-import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
+import type DropdownOption from '@libs/ui/types/dropdownOption';
 import useSchoolStore from '@/store/useSchoolStore';
 
 const SchoolSelectorDropdown: React.FC = () => {
@@ -34,7 +34,7 @@ const SchoolSelectorDropdown: React.FC = () => {
     void getSchools();
   }, []);
 
-  const schoolOptions: DropdownOptions[] = schools
+  const schoolOptions: DropdownOption[] = schools
     .map((item) => ({
       id: item.ou,
       name: item.displayName || item.ou,

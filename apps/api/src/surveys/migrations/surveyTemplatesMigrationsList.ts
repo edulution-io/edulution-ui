@@ -21,11 +21,13 @@ import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.s
 import { Migration } from 'apps/api/src/migration/migration.type';
 import surveyTemplatesMigration001LoadDefaultTemplates from './surveyTemplatesMigration001LoadDefaultTemplates';
 import surveyTemplatesMigration000MigrateTemplateFilesToDB from './surveyTemplatesMigration000MigrateTemplateFilesToDB';
+import surveyTemplatesMigration002RenameAccessibleByRoles from './surveyTemplatesMigration002RenameAccessibleByRoles';
 
 // Add new migrations here
 const surveyTemplatesMigrationsList: Migration<SurveysTemplateDocument>[] = [
   surveyTemplatesMigration000MigrateTemplateFilesToDB,
   surveyTemplatesMigration001LoadDefaultTemplates,
+  surveyTemplatesMigration002RenameAccessibleByRoles,
 ];
 
 export default surveyTemplatesMigrationsList;

@@ -20,7 +20,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { SurveysViewAnsweredIcon } from '@/assets/icons';
 
@@ -31,9 +31,10 @@ const AnsweredSurveysPage = () => {
     answeredSurveys,
     isFetchingAnsweredSurveys,
     updateAnsweredSurveys,
+    isCurrentUserTheSurveyOwner,
     canParticipate,
     hasAnswers,
-  } = useSurveyTablesPageStore();
+  } = useSurveysTablesPageStore();
 
   const { t } = useTranslation();
 
@@ -58,6 +59,8 @@ const AnsweredSurveysPage = () => {
         icon={SurveysViewAnsweredIcon}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
+        canEdit={isCurrentUserTheSurveyOwner}
+        canDelete={isCurrentUserTheSurveyOwner}
         canShowResults={hasAnswers}
         canParticipate={canParticipate}
         canShowSubmittedAnswers={hasAnswers}

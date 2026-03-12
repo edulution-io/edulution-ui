@@ -24,7 +24,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import useDockerContainerEvents from '@/hooks/useDockerContainerEvents';
@@ -53,7 +53,7 @@ const useNotifications = () => {
   const { conferences, getConferences, setConferences } = useConferenceStore();
   const conferencesRef = useRef(conferences);
   const isSurveysAppActivated = useIsAppActive(APPS.SURVEYS);
-  const { updateOpenSurveys } = useSurveyTablesPageStore();
+  const { updateOpenSurveys } = useSurveysTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);

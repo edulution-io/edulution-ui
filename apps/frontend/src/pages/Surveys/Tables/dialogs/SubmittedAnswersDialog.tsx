@@ -17,19 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 
+const SubmittedAnswersDialogBody = lazy(() => import('./SubmittedAnswersDialogBody'));
+
 const SubmittedAnswersDialog = () => {
-  const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
+  const { selectedSurvey: selectedSurveyFromPage } = useSurveysTablesPageStore();
   const {
     selectSurvey,
     selectedSurvey,
@@ -58,15 +59,21 @@ const SubmittedAnswersDialog = () => {
     }
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
     if (!selectedSurvey?.formula) {
-      return <h3 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h3>;
+      return (
+        <div className="relative mt-4 w-full text-center">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">{t('survey.notFound')}</div>
+        </div>
+      );
     }
     return (
-      <ScrollArea>
-        <SubmittedAnswersDialogBody
-          formula={selectedSurvey?.formula}
-          answer={submittedAnswer}
-        />
-      </ScrollArea>
+      <Suspense fallback={<CircleLoader />}>
+        <ScrollArea>
+          <SubmittedAnswersDialogBody
+            formula={selectedSurvey?.formula}
+            answer={submittedAnswer}
+          />
+        </ScrollArea>
+      </Suspense>
     );
   };
 
@@ -87,7 +94,7 @@ const SubmittedAnswersDialog = () => {
         handleOpenChange={handleClose}
         title={t('surveys.submittedAnswersDialog.title')}
         body={getDialogBody()}
-        desktopContentClassName="max-w-[75%]"
+        desktopContentClassName="min-w-[50%]"
         footer={getFooter()}
       />
     </>

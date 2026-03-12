@@ -27,11 +27,10 @@ import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
 import TEditorLocale from '@libs/survey/types/editor/TEditorLocale';
-import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
-import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/custom.survey.css';
-import '@/pages/Surveys/theme/custom.creator.css';
+import '@/pages/Surveys/theme/default2.min.css';
+import '@/pages/Surveys/theme/creator.css';
+import '@/pages/Surveys/theme/participation.css';
 
 const createSurveyCreatorObject = (language = 'en') => {
   surveyLocalization.supportedLocales = ['en', 'de', 'fr'];
@@ -49,6 +48,7 @@ const createSurveyCreatorObject = (language = 'en') => {
   );
   locale.ed.pagePlaceHolder = t('survey.editor.customTranslations.pagePlaceHolder');
   locale.ed.panelPlaceHolder = t('survey.editor.customTranslations.panelPlaceHolder');
+  locale.pe.pageTitlePlaceholder = t('survey.editor.customTranslations.pageTitlePlaceHolder');
   locale.tabs.preview = t('survey.editor.customTranslations.previewTabTitle');
 
   const creatorOptions = {
@@ -85,7 +85,6 @@ const createSurveyCreatorObject = (language = 'en') => {
 
   const creator = new SurveyCreator(creatorOptions);
 
-  creator.theme = surveyTheme;
   creator.locale = language;
 
   creator.showToolbox = false;

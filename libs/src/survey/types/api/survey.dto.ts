@@ -41,6 +41,7 @@ interface SurveyDto {
   isPublic?: boolean;
   canSubmitMultipleAnswers?: boolean;
   canUpdateFormerAnswer?: boolean;
+  shouldSaveAsTemplate?: boolean;
 }
 
 export default SurveyDto;

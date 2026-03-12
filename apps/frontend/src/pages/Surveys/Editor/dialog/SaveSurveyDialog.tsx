@@ -19,20 +19,26 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useFormContext } from 'react-hook-form';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface SaveSurveyDialogProps {
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
   submitSurvey: () => void;
   isSubmitting: boolean;
+  handleSaveTemplate: () => void;
   trigger?: React.ReactNode;
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { trigger, submitSurvey, isSubmitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
+  const form = useFormContext<SurveyDto>();
+
+  const { trigger, submitSurvey, isSubmitting, handleSaveTemplate, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } =
+    props;
 
   const { t } = useTranslation();
 
@@ -44,14 +50,18 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        submitSurvey();
+        if (form.watch('shouldSaveAsTemplate')) {
+          handleSaveTemplate();
+        } else {
+          submitSurvey();
+        }
       }}
     >
       <DialogFooterButtons
         handleClose={handleClose}
         handleSubmit={() => {}}
         disableSubmit={isSubmitting}
-        submitButtonText="common.save"
+        submitButtonText={form.watch('shouldSaveAsTemplate') ? 'survey.editor.template.save.submit' : 'common.save'}
         submitButtonType="submit"
       />
     </form>

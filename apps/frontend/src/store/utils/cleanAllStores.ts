@@ -70,13 +70,13 @@ import useWireguardConfigTableStore from '@/pages/Settings/AppConfig/wireguard/u
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useWebhookClientsStore from '@/pages/Settings/Webhooks/useWebhookClientsStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 import useParentChildPairingStore from '@/pages/UserSettings/ParentChildPairing/useParentChildPairingStore';
 import useUserSettingsPageStore from '@/pages/UserSettings/Security/useUserSettingsPageStore';
@@ -163,10 +163,10 @@ const cleanAllStores = async () => {
   useSseStore.getState().reset();
   useSubMenuStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
-  useSurveyTablesPageStore.getState().reset();
+  useSurveysTablesPageStore.getState().reset();
   useTableViewSettingsStore.getState().reset();
   useTLDRawHistoryStore.getState().reset();
-  useTemplateMenuStore.getState().reset();
+  useSurveyTemplateStore.getState().reset();
   useThemeStore.getState().reset();
   useUserManagementStore.getState().reset();
   useUserPreferencesStore.getState().reset();

@@ -37,17 +37,20 @@ export class SurveysTemplate {
   @Prop({ default: true, required: true })
   isActive: boolean;
 
-  @Prop({ default: false, required: true })
+  @Prop({ default: false, required: true, immutable: true })
   isDefaultTemplate: boolean;
 
   @Prop({ default: 1, required: true, unique: false })
   schemaVersion: number;
 
   @Prop({ default: [] })
-  accessibleByRoles: MultipleSelectorGroup[] | Group[];
+  accessGroups: MultipleSelectorGroup[] | Group[];
 
   @Prop({ default: ['linuxmuster'] })
   deploymentTargets: string[];
+
+  @Prop({ default: Date.now, required: false })
+  createdAt?: Date;
 }
 
 const SurveysTemplateSchema = SchemaFactory.createForClass(SurveysTemplate);

@@ -847,7 +847,6 @@
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
       "inputFieldTitle": "Champ de saisie",
-      "new": "Nouveau (vide)",
       "fileUploadSuccess": "Le fichier a été enregistré avec succès.",
       "fileUploadError": "Erreur lors du téléchargement du fichier, veuillez réessayer plus tard.",
       "fileDeletionSuccess": "Le fichier a été supprimé avec succès.",
@@ -862,14 +861,30 @@
         "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
         "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
         "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
+        "pageTitlePlaceHolder": "Entrez le titre de la page",
         "previewTabTitle": "Aperçu"
       },
-      "templates": "Modèles",
-      "templateMenu": {
-        "fetch": "Choisissez l'un des modèles disponibles.",
-        "submit": "Enregistrez le sondage en tant que modèle.",
-        "title": "Modèles d'enregistrement / charge",
-        "emptyMessage": "Il n'y a pas encore de modèles",
+      "isLoadingSurvey": "Le sondage est en cours de chargement...",
+      "template": {
+        "title": "Modèle",
+        "label": "Enregistrer le modèle",
+        "noTemplates": "Aucun modèle disponible",
+        "noSearchResults": "Aucun modèle trouvé",
+        "searchPlaceholder": "Tapez pour filtrer les modèles par nom ...",
+        "preview": "Aperçu du modèle",
+        "save": {
+          "title": "Enregistrer le modèle",
+          "submit": "Enregistrer le modèle de sondage",
+          "name": {
+            "label": "Nom du modèle",
+            "description": "Si ce champ est laissé vide, le titre du sondage sera utilisé.",
+            "placeholder": "Titre du sondage"
+          },
+          "accessGroups": {
+            "label": "Groupes d'accès",
+            "description": "Sélectionnez les groupes qui peuvent accéder à ce modèle. Si aucun groupe n'est sélectionné, le modèle est accessible à tous les utilisateurs."
+          }
+        },
         "upload": {
           "success": "Modèle enregistré avec succès",
           "error": "Échec de l'enregistrement du modèle"
@@ -921,6 +936,7 @@
       "updateOrCreateError": "L'enquête ne pouvait ni être mise à jour ni créée.",
       "deleteError": "Les enquêtes n'ont pas pu être supprimées.",
       "imageDeletionFailed": "Pas toutes les images des enquêtes n'ont pu être supprimées.",
+      "noTemplateNameError": "Le nom du modèle est requis.",
       "noAnswerError": "Aucune réponse n'a encore été donnée.",
       "noFormulaError": "Le formulaire du sondage ne peut pas être lue.",
       "noBackendLimitersError": "Afin de pouvoir utiliser cette fonction, les valeurs limites doivent être définies dans l'éditeur.",
@@ -930,7 +946,8 @@
       "participationErrorAlreadyParticipated": "Vous avez déjà participé.",
       "participationErrorSurveyExpired": "Le sondage a expiré.",
       "idTypeError": "ID de sondage non valide.",
-      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse."
+      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse.",
+      "duplicateNameError": "Ajustez le titre du modèle. Un document de modèle avec ce nom existe déjà."
     }
   },
   "survey-answer": {
@@ -972,7 +989,7 @@
         "description": "Ici, vous trouverez les sondages auxquels vous avez déjà participés."
       },
       "editor": {
-        "menu": "Créer un nouveau"
+        "menu": "Éditeur"
       }
     },
     "actions": {
@@ -985,6 +1002,7 @@
     },
     "saveDialog": {
       "title": "Enregistrer et affecter les utilisateurs",
+      "surveySettings": "Paramètres du sondage",
       "settingsFlags": "Paramètres",
       "isAnonymous": "Le sondage doit-elle être anonyme?",
       "isPublic": "Le sondage doit-elle être publique?",
@@ -1619,6 +1637,7 @@
     "never": "Jamais",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
+      "dbInvalidId": "Invalid database ID",
       "dbAccessFailed": "L'accès à la base de données a échoué",
       "directoryNotCreated": "La création du répertoire a échoué",
       "fileNotCreated": "Échec de la création du fichier",

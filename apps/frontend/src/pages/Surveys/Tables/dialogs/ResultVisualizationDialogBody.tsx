@@ -21,12 +21,12 @@ import React, { useEffect } from 'react';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultVisualizationDialogBody = () => {
-  const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
+  const { selectedSurvey: selectedSurveyFromPage } = useSurveysTablesPageStore();
   const {
     isLoading,
     selectedSurvey,

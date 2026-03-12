@@ -28,8 +28,7 @@ import {
 import { SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysViewOwnIcon } from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import { faAdd } from '@fortawesome/free-solid-svg-icons';
+import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 
 const useSurveysPageMenu = (): MenuBarEntry => {
   const navigate = useNavigate();
@@ -62,7 +61,7 @@ const useSurveysPageMenu = (): MenuBarEntry => {
         {
           id: SurveysPageView.CREATOR,
           label: 'surveys.view.editor.menu',
-          icon: faAdd,
+          icon: SurveysMenuIcon,
           action: () => navigate(CREATOR_SURVEYS_PAGE),
         },
       ],

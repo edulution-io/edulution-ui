@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import defaultAdministrationGroupNames from '@libs/groups/types/default-administration-group-names';
 import TEMPLATE_IDS from './templateIds';
 
 const limitedEventParticipation = {
@@ -106,7 +107,7 @@ const limitedEventParticipation = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
-  accessibleByRoles: [],
+  accessGroups: [...defaultAdministrationGroupNames],
   deploymentTargets: ['linuxmuster'],
 };
 

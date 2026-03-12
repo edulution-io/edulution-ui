@@ -76,9 +76,7 @@ vi.mock('@/utils/getRandomUUID', () => ({
   default: () => 'test-uuid-123',
 }));
 vi.mock('./components/TotpInput', () => ({
-  default: ({ title }: { title: string }) => (
-    <div data-testid="totp-input">{title}</div>
-  ),
+  default: ({ title }: { title: string }) => <div data-testid="totp-input">{title}</div>,
 }));
 
 import React from 'react';

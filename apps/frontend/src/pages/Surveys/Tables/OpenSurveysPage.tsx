@@ -20,7 +20,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { SurveysViewOpenIcon } from '@/assets/icons';
 
@@ -33,7 +33,8 @@ const OpenSurveysPage = () => {
     isFetchingOpenSurveys,
     hasAnswers,
     canParticipate,
-  } = useSurveyTablesPageStore();
+    isCurrentUserTheSurveyOwner,
+  } = useSurveysTablesPageStore();
 
   const { t } = useTranslation();
 
@@ -58,6 +59,8 @@ const OpenSurveysPage = () => {
         icon={SurveysViewOpenIcon}
         surveys={openSurveys || []}
         isLoading={isFetchingOpenSurveys}
+        canEdit={isCurrentUserTheSurveyOwner}
+        canDelete={isCurrentUserTheSurveyOwner}
         canShowResults={hasAnswers}
         canParticipate={canParticipate}
       />

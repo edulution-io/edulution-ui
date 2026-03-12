@@ -20,12 +20,12 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
 import PageTitle from '@/components/PageTitle';
 import PublicShareDownloadPage from '@/pages/FileSharing/publicShare/publicPage/PublicShareDownloadPage';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import SurveyApp from '@/pages/Surveys/SurveyApp';
 import getPublicEmbeddedRoutes from './getPublicEmbeddedRoutes';
 
 const getPublicRoutes = () => [
@@ -46,7 +46,7 @@ const getPublicRoutes = () => [
     element={
       <>
         <PageTitle translationId="survey.publicSurvey" />
-        <SurveyParticipationPage isPublic />
+        <SurveyApp isPublicParticipation />
       </>
     }
   />,

@@ -61,6 +61,43 @@ const getSurveyEditorFormSchema = () =>
           ),
         }),
       ),
+      elements: z.array(
+        z.object({
+          type: z.string(),
+          name: z.string(),
+          description: z.string().optional(),
+          isRequired: z.boolean().optional(),
+          choices: z
+            .union([
+              z.array(z.string()),
+              z.array(
+                z.object({
+                  value: z.string().optional(),
+                  imageLink: z.string().optional(),
+                  title: z.string().optional(),
+                  name: z.string().optional(),
+                }),
+              ),
+            ])
+            .optional(),
+          choicesByUrl: z
+            .object({
+              url: z.string(),
+            })
+            .optional(),
+          showOtherItem: z.boolean().optional(),
+        }),
+      ),
+      calculatedValues: z
+        .array(
+          z.object({
+            name: z.string(),
+            value: z.string().optional(),
+            expression: z.string().optional(),
+            includeIntoResult: z.boolean().optional(),
+          }),
+        )
+        .optional(),
     }),
     backendLimiters: z
       .array(
@@ -122,6 +159,7 @@ const getSurveyEditorFormSchema = () =>
     isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
     canUpdateFormerAnswer: z.boolean().optional(),
+    shouldSaveAsTemplate: z.boolean().optional(),
   });
 
 export default getSurveyEditorFormSchema;
