@@ -466,7 +466,7 @@
     },
     "openFileChoice": "How would you like to open the file?",
     "openInEditor": "Open in Editor",
-    "openOnDevice": "Download",
+    "openOnDevice": "Open on device",
     "fileDownloaded": "The file is being downloaded.",
     "singleDownload": {
       "promptInfo": "Your file download has started.",

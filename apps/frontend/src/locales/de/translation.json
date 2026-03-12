@@ -465,7 +465,7 @@
     },
     "openFileChoice": "Wie möchtest du die Datei öffnen?",
     "openInEditor": "Im Editor öffnen",
-    "openOnDevice": "Herunterladen",
+    "openOnDevice": "Auf meinem Gerät anzeigen",
     "fileDownloaded": "Die Datei wird heruntergeladen.",
     "singleDownload": {
       "promptInfo": "Dein Dateidownload wurde gestartet.",

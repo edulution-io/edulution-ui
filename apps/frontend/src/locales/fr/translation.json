@@ -453,7 +453,7 @@
     },
     "openFileChoice": "Comment souhaitez-vous ouvrir le fichier ?",
     "openInEditor": "Ouvrir dans l'éditeur",
-    "openOnDevice": "Télécharger",
+    "openOnDevice": "Afficher sur mon appareil",
     "fileDownloaded": "Le fichier est en cours de téléchargement.",
     "singleDownload": {
       "promptInfo": "Le téléchargement de votre fichier a commencé.",
