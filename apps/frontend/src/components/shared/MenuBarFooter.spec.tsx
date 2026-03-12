@@ -27,14 +27,7 @@ vi.mock('@libs/appconfig/constants/apps', () => ({
 }));
 
 vi.mock('@/pages/FileSharing/FileSharingMenuBarFooter', () => ({
-  default: ({ isCollapsed }: any) => (
-    <div
-      data-testid="file-sharing-footer"
-      data-collapsed={isCollapsed}
-    >
-      FileSharingFooter
-    </div>
-  ),
+  default: () => <div data-testid="file-sharing-footer">FileSharingFooter</div>,
 }));
 
 import React from 'react';
@@ -47,37 +40,15 @@ describe('MenuBarFooter', () => {
   });
 
   it('renders the footer component for a registered app', () => {
-    render(
-      <MenuBarFooter
-        appName="filesharing"
-        isCollapsed={false}
-      />,
-    );
+    render(<MenuBarFooter appName="filesharing" />);
 
     expect(screen.getByTestId('file-sharing-footer')).toBeInTheDocument();
     expect(screen.getByText('FileSharingFooter')).toBeInTheDocument();
   });
 
   it('returns null for an unregistered app', () => {
-    const { container } = render(
-      <MenuBarFooter
-        appName="dashboard"
-        isCollapsed={false}
-      />,
-    );
+    const { container } = render(<MenuBarFooter appName="dashboard" />);
 
     expect(container.innerHTML).toBe('');
-  });
-
-  it('passes isCollapsed prop to the footer component', () => {
-    render(
-      <MenuBarFooter
-        appName="filesharing"
-        isCollapsed
-      />,
-    );
-
-    const footer = screen.getByTestId('file-sharing-footer');
-    expect(footer).toHaveAttribute('data-collapsed', 'true');
   });
 });

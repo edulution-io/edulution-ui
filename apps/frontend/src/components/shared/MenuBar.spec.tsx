@@ -85,7 +85,6 @@ describe('MenuBar', () => {
     vi.clearAllMocks();
     useMenuBarStore.setState({
       isMobileMenuBarOpen: false,
-      isCollapsed: false,
     });
     usePlatformStore.setState({ isEdulutionApp: false });
     vi.mocked(useMedia).mockReturnValue({ isMobileView: false, isTabletView: false });
@@ -99,36 +98,14 @@ describe('MenuBar', () => {
     expect(screen.getByText('Users')).toBeInTheDocument();
   });
 
-  it('applies collapsed width when isCollapsed is true on desktop', () => {
-    useMenuBarStore.setState({ isCollapsed: true });
-
-    const { container } = renderWithProviders(<MenuBar />, { route: '/filesharing/item-1' });
-
-    const collapsedDiv = container.querySelector('.w-16');
-    expect(collapsedDiv).toBeInTheDocument();
-  });
-
-  it('applies expanded width when isCollapsed is false on desktop', () => {
-    useMenuBarStore.setState({ isCollapsed: false });
-
+  it('applies expanded width on desktop', () => {
     const { container } = renderWithProviders(<MenuBar />, { route: '/filesharing/item-1' });
 
     const expandedDiv = container.querySelector('.w-64');
     expect(expandedDiv).toBeInTheDocument();
   });
 
-  it('hides labels when collapsed on desktop', () => {
-    useMenuBarStore.setState({ isCollapsed: true });
-
-    renderWithProviders(<MenuBar />, { route: '/filesharing/item-1' });
-
-    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
-    expect(screen.queryByText('Users')).not.toBeInTheDocument();
-  });
-
-  it('shows labels when expanded on desktop', () => {
-    useMenuBarStore.setState({ isCollapsed: false });
-
+  it('shows labels on desktop', () => {
     renderWithProviders(<MenuBar />, { route: '/filesharing/item-1' });
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
