@@ -131,10 +131,6 @@ const MenuBar: React.FC = () => {
           >
             {menuBarContent}
           </div>
-          {/* <MenuBarCollapseButton */}
-          {/*  isCollapsed={isCollapsed} */}
-          {/*  onToggle={toggleCollapsed} */}
-          {/* /> */}
         </aside>
       ) : (
         <div
