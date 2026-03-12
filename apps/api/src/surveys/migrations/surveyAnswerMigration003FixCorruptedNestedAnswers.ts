@@ -68,7 +68,13 @@ const isCharObject = (value: unknown): boolean => {
 };
 
 const isCorruptedCharArray = (value: unknown): boolean =>
-  Array.isArray(value) && value.length > 0 && (value as unknown[]).every(isCharObject);
+  Array.isArray(value) && (value as unknown[]).every(isCharObject);
+
+const isEmptyObject = (value: unknown): boolean =>
+  typeof value === 'object' &&
+  value !== null &&
+  !Array.isArray(value) &&
+  Object.keys(value as Record<string, unknown>).length === 0;
 
 const reconstructString = (charObj: Record<string, string>): string =>
   Object.entries(charObj)
@@ -90,15 +96,33 @@ const fixAnswerRecursive = (
   Object.entries(answer).forEach(([questionId, value]) => {
     const question = questionsMap.get(questionId);
 
-    if (isCorruptedCharArray(value)) {
+    if (isEmptyObject(value)) {
+      if (question?.type === SurveyQuestionOtherTypes.MULTIPLETEXT) {
+        const items = (question?.items ?? []) as Array<{ name: string }>;
+        const reconstructed: Record<string, string> = {};
+        items.forEach((item) => {
+          reconstructed[item.name] = '';
+        });
+        result[questionId] = reconstructed;
+      } else if (question?.type === SurveyQuestionMatrixTypes.MATRIX) {
+        const rows = (question.rows ?? []) as Array<string | { name?: string; value?: string }>;
+        const reconstructed: Record<string, string> = {};
+        rows.forEach((row, i) => {
+          reconstructed[getRowName(row, i)] = '';
+        });
+        result[questionId] = reconstructed;
+      } else {
+        result[questionId] = value;
+      }
+    } else if (isCorruptedCharArray(value)) {
       const strings = (value as Array<Record<string, string>>).map(reconstructString);
 
       if (question?.type === SurveyQuestionOtherTypes.MULTIPLETEXT) {
         const items = (question?.items ?? []) as Array<{ name: string }>;
-        if (items.length === strings.length) {
+        if (items.length >= strings.length) {
           const reconstructed: Record<string, string> = {};
           items.forEach((item, i) => {
-            reconstructed[item.name] = strings[i];
+            reconstructed[item.name] = i < strings.length ? strings[i] : '';
           });
           result[questionId] = reconstructed;
         } else {
@@ -106,10 +130,10 @@ const fixAnswerRecursive = (
         }
       } else if (question?.type === SurveyQuestionMatrixTypes.MATRIX) {
         const rows = (question.rows ?? []) as Array<string | { name?: string; value?: string }>;
-        if (rows.length === strings.length) {
+        if (rows.length >= strings.length) {
           const reconstructed: Record<string, string> = {};
           rows.forEach((row, i) => {
-            reconstructed[getRowName(row, i)] = strings[i];
+            reconstructed[getRowName(row, i)] = i < strings.length ? strings[i] : '';
           });
           result[questionId] = reconstructed;
         } else {
