@@ -25,7 +25,6 @@ interface MenuBarItemListProps {
   menuItems: MenuItem[];
   isSelected: string;
   expandedItems: Set<string>;
-  shouldCollapse: boolean;
   activeColorClass: string;
   activeSection: string | null;
   pathParts: string[];
@@ -37,7 +36,6 @@ const MenuBarItemList: React.FC<MenuBarItemListProps> = ({
   menuItems,
   isSelected,
   expandedItems,
-  shouldCollapse,
   activeColorClass,
   activeSection,
   pathParts,
@@ -51,7 +49,6 @@ const MenuBarItemList: React.FC<MenuBarItemListProps> = ({
         item={item}
         isActive={isSelected === item.id}
         isExpanded={expandedItems.has(item.id)}
-        shouldCollapse={shouldCollapse}
         activeColorClass={activeColorClass}
         activeSection={activeSection}
         pathParts={pathParts}
