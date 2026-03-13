@@ -831,6 +831,15 @@
         "tags": ["filesharing"]
       }
     },
+    "/edu-api/filesharing/collabora-token": {
+      "post": {
+        "operationId": "FilesharingController_getCollaboraToken",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["filesharing"]
+      }
+    },
     "/edu-api/filesharing/duplicate": {
       "post": {
         "operationId": "FilesharingController_duplicateFile",
@@ -941,6 +950,31 @@
         "tags": ["filesharing"]
       }
     },
+    "/edu-api/wopi/files/{fileId}": {
+      "get": {
+        "operationId": "WopiController_checkFileInfo",
+        "parameters": [
+          { "name": "fileId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Wopi"]
+      }
+    },
+    "/edu-api/wopi/files/{fileId}/contents": {
+      "get": {
+        "operationId": "WopiController_getFile",
+        "parameters": [{ "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Wopi"]
+      },
+      "post": {
+        "operationId": "WopiController_putFile",
+        "parameters": [{ "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "tags": ["Wopi"]
+      }
+    },
     "/edu-api/lmn-api/auth": {
       "get": {
         "operationId": "LmnApiController_getLmnApiToken",
@@ -955,6 +989,15 @@
         "operationId": "LmnApiController_printPasswords",
         "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
         "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/students-list/{schoolclass}/{format}": {
+      "get": {
+        "operationId": "LmnApiController_getStudentsList",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
@@ -999,6 +1042,13 @@
     "/edu-api/lmn-api/school-classes": {
       "get": {
         "operationId": "LmnApiController_getUserSchoolClasses",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      },
+      "patch": {
+        "operationId": "LmnApiController_updateSchoolClass",
         "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
         "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
@@ -1228,6 +1278,88 @@
         "operationId": "LmnApiController_getLmnVersion",
         "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
         "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/roles/{role}": {
+      "get": {
+        "operationId": "LmnApiController_getUsersByRole",
+        "parameters": [
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "role", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "managementList", "required": true, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/listmanagement/sophomorix-check": {
+      "get": {
+        "operationId": "LmnApiController_runSophomorixCheck",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/listmanagement/sophomorix-apply": {
+      "post": {
+        "operationId": "LmnApiController_runSophomorixApply",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/devices/list/{school}": {
+      "get": {
+        "operationId": "LmnApiController_getDevices",
+        "parameters": [
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      },
+      "post": {
+        "operationId": "LmnApiController_saveDevices",
+        "parameters": [
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/devices/list/{school}/import-devices": {
+      "get": {
+        "operationId": "LmnApiController_getImportDevices",
+        "parameters": [
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/listmanagement/{school}/{managementList}": {
+      "get": {
+        "operationId": "LmnApiController_getManagementList",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      },
+      "post": {
+        "operationId": "LmnApiController_saveManagementList",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
         "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
@@ -1571,7 +1703,7 @@
         "tags": ["surveys"]
       },
       "get": {
-        "operationId": "SurveysController_getTemplates",
+        "operationId": "SurveysController_getTemplate",
         "parameters": [],
         "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
@@ -1599,7 +1731,12 @@
     "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}/{filename}": {
       "get": {
         "operationId": "SurveysController_serveFileFromAnswer",
-        "parameters": [],
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
         "tags": ["surveys"]
@@ -1617,7 +1754,11 @@
     "/edu-api/surveys/files/{surveyId}/{questionId}/{filename}": {
       "get": {
         "operationId": "SurveysController_serveFile",
-        "parameters": [],
+        "parameters": [
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
         "tags": ["surveys"]
@@ -1626,7 +1767,7 @@
     "/edu-api/surveys/files/{filename}": {
       "get": {
         "operationId": "SurveysController_serveTempFile",
-        "parameters": [],
+        "parameters": [{ "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }],
         "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
         "tags": ["surveys"]
@@ -1635,7 +1776,11 @@
     "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}": {
       "post": {
         "operationId": "SurveysController_answeringFileUpload",
-        "parameters": [],
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "201": { "description": "" } },
         "security": [{ "bearer": [] }],
         "tags": ["surveys"]
@@ -1644,7 +1789,12 @@
     "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}/{fileName}": {
       "delete": {
         "operationId": "SurveysController_deleteTempQuestionAnswerFile",
-        "parameters": [],
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "fileName", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
         "tags": ["surveys"]
@@ -1659,7 +1809,7 @@
         "tags": ["surveys"]
       }
     },
-    "/edu-api/surveys/templates/{id}": {
+    "/edu-api/surveys/templates/{name}": {
       "delete": {
         "operationId": "SurveysController_deleteTemplate",
         "parameters": [],
@@ -1668,7 +1818,7 @@
         "tags": ["surveys"]
       }
     },
-    "/edu-api/surveys/templates/{id}/{isActive}": {
+    "/edu-api/surveys/templates/{name}/{isActive}": {
       "patch": {
         "operationId": "SurveysController_setIsTemplateActive",
         "parameters": [],
@@ -1704,7 +1854,11 @@
     "/edu-api/public-surveys/files/{surveyId}/{questionId}/{filename}": {
       "get": {
         "operationId": "PublicSurveysController_serveFile",
-        "parameters": [],
+        "parameters": [
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       }
@@ -1712,7 +1866,11 @@
     "/edu-api/public-surveys/answers/files/{userName}/{surveyId}/{questionId}": {
       "post": {
         "operationId": "PublicSurveysController_answeringFileUpload",
-        "parameters": [],
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "201": { "description": "" } },
         "tags": ["public-surveys"]
       }
@@ -1720,13 +1878,23 @@
     "/edu-api/public-surveys/answers/files/{userName}/{surveyId}/{questionId}/{fileName}": {
       "delete": {
         "operationId": "PublicSurveysController_deleteTempAnswerFile",
-        "parameters": [],
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "fileName", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       },
       "get": {
         "operationId": "PublicSurveysController_serveFileFromAnswer",
-        "parameters": [],
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "fileName", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       }
@@ -1912,6 +2080,27 @@
         "tags": ["notifications"]
       }
     },
+    "/edu-api/notifications/sent": {
+      "get": {
+        "operationId": "NotificationsController_getSent",
+        "parameters": [
+          { "name": "limit", "required": false, "in": "query", "schema": { "example": 20, "type": "number" } },
+          { "name": "offset", "required": false, "in": "query", "schema": { "example": 0, "type": "number" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/notifications/sent/{id}/recipients": {
+      "get": {
+        "operationId": "NotificationsController_getSentNotificationRecipients",
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["notifications"]
+      }
+    },
     "/edu-api/notifications/{id}": {
       "patch": {
         "operationId": "NotificationsController_markAsRead",
@@ -1922,6 +2111,15 @@
       },
       "delete": {
         "operationId": "NotificationsController_deleteNotification",
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/notifications/sent/{id}": {
+      "delete": {
+        "operationId": "NotificationsController_deleteSentNotification",
         "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
         "responses": { "200": { "description": "" } },
         "security": [{ "bearer": [] }],
@@ -2012,6 +2210,61 @@
         },
         "security": [{ "bearer": [] }],
         "tags": ["tldraw-sync"]
+      }
+    },
+    "/edu-api/parent-child-pairing/code": {
+      "get": {
+        "operationId": "ParentChildPairingController_getCode",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      },
+      "put": {
+        "operationId": "ParentChildPairingController_refreshCode",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing": {
+      "post": {
+        "operationId": "ParentChildPairingController_createParentChildPairing",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing/relationships": {
+      "get": {
+        "operationId": "ParentChildPairingController_getEnrichedRelationships",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing/all": {
+      "get": {
+        "operationId": "ParentChildPairingController_getAllParentChildPairings",
+        "parameters": [{ "name": "school", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing/{id}/status": {
+      "patch": {
+        "operationId": "ParentChildPairingController_updateParentChildPairingStatus",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
       }
     },
     "/edu-api/wireguard/user/peer": {
@@ -2162,35 +2415,40 @@
         "tags": ["Wireguard"]
       }
     },
-    "/edu-api/wopi/files/{fileId}": {
-      "get": {
-        "operationId": "WopiController_checkFileInfo",
+    "/edu-api/webhook": {
+      "post": {
+        "operationId": "WebhookController_handleWebhook",
         "parameters": [
-          { "name": "fileId", "required": true, "in": "path", "schema": { "type": "string" } },
-          { "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }
+          { "name": "x-webhook-event-id", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "user-agent", "required": true, "in": "header", "schema": { "type": "string" } }
         ],
-        "responses": { "200": { "description": "Returns WOPI file info" } },
-        "tags": ["wopi"]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Webhook"]
       }
     },
-    "/edu-api/wopi/files/{fileId}/contents": {
+    "/edu-api/webhook-clients": {
       "get": {
-        "operationId": "WopiController_getFile",
-        "parameters": [
-          { "name": "fileId", "required": true, "in": "path", "schema": { "type": "string" } },
-          { "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Returns file contents as octet-stream" } },
-        "tags": ["wopi"]
+        "operationId": "WebhookClientsController_getAll",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["webhook-clients"]
       },
       "post": {
-        "operationId": "WopiController_putFile",
-        "parameters": [
-          { "name": "fileId", "required": true, "in": "path", "schema": { "type": "string" } },
-          { "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "File saved successfully" } },
-        "tags": ["wopi"]
+        "operationId": "WebhookClientsController_create",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["webhook-clients"]
+      }
+    },
+    "/edu-api/webhook-clients/{id}": {
+      "delete": {
+        "operationId": "WebhookClientsController_delete",
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["webhook-clients"]
       }
     }
   },
