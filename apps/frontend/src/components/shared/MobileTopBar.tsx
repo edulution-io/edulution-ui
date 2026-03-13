@@ -17,9 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faBell, faClose, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBars,
+  faBell,
+  faClose,
+  faEllipsis,
+  faGear,
+  faIdCard,
+  faQrcode,
+  faRotateRight,
+  faServer,
+  faUserPen,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
@@ -28,6 +40,10 @@ import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/Notifi
 import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 import { MOBILE_TOP_BAR_HEIGHT_PX, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
 import { MobileLogoIcon } from '@/assets/icons';
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/Sheet';
+import NATIVE_APP_ROUTES from '@libs/common/constants/nativeAppRoutes';
+import type NativeAppRoute from '@libs/common/types/nativeAppRoute';
+import postNativeAppMessage from '@libs/common/utils/postNativeAppMessage';
 
 interface MobileTopBarProps {
   showLeftButton?: boolean;
@@ -44,6 +60,22 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
 
   const handleNotificationClick = () => {
     setIsSheetOpen(true);
+  };
+
+  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+
+  const moreActions = useMemo(
+    () => [
+      { icon: faGear, label: 'Einstellungen', route: NATIVE_APP_ROUTES.SETTINGS },
+      { icon: faUserPen, label: 'Profil bearbeiten', route: NATIVE_APP_ROUTES.EDIT_PROFILE },
+      { icon: faIdCard, label: 'Ausweis', route: NATIVE_APP_ROUTES.STUDENT_ID },
+    ],
+    [],
+  );
+
+  const handleNativeNavigation = (route: NativeAppRoute) => {
+    postNativeAppMessage(route);
+    setIsQuickActionsOpen(false);
   };
 
   if (!showLeftButton && !showRightButton) {
@@ -74,16 +106,58 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
         )}
 
         {!isAnyMenuOpen && isEdulutionApp && (
-          <button
-            type="button"
-            onClick={refreshPage}
-            className="absolute left-1/2 flex -translate-x-1/2 items-center justify-center"
-          >
-            <FontAwesomeIcon
-              icon={faRotateRight}
-              className="h-5 w-5 text-muted hover:text-muted-foreground"
-            />
-          </button>
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-6">
+            <button
+              type="button"
+              onClick={() => handleNativeNavigation(NATIVE_APP_ROUTES.ACCOUNT_SWITCHER)}
+              className="flex items-center justify-center"
+            >
+              <FontAwesomeIcon
+                icon={faUsers}
+                className="h-5 w-5 text-background hover:text-muted-foreground"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleNativeNavigation(NATIVE_APP_ROUTES.QR_SCANNER)}
+              className="flex items-center justify-center"
+            >
+              <FontAwesomeIcon
+                icon={faQrcode}
+                className="h-5 w-5 text-background hover:text-muted-foreground"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleNativeNavigation(NATIVE_APP_ROUTES.FILESERVER)}
+              className="flex items-center justify-center"
+            >
+              <FontAwesomeIcon
+                icon={faServer}
+                className="h-5 w-5 text-background hover:text-muted-foreground"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsQuickActionsOpen(true)}
+              className="flex items-center justify-center"
+            >
+              <FontAwesomeIcon
+                icon={faEllipsis}
+                className="h-5 w-5 text-background hover:text-muted-foreground"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={refreshPage}
+              className="flex items-center justify-center"
+            >
+              <FontAwesomeIcon
+                icon={faRotateRight}
+                className="h-5 w-5 text-background hover:text-muted-foreground"
+              />
+            </button>
+          </div>
         )}
 
         {!isAnyMenuOpen ? (
@@ -148,6 +222,35 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
           />
         </button>
       )}
+
+      <Sheet
+        open={isQuickActionsOpen}
+        onOpenChange={setIsQuickActionsOpen}
+      >
+        <SheetContent
+          side="bottom"
+          className="rounded-t-2xl pb-8"
+        >
+          <SheetTitle className="sr-only">Schnellaktionen</SheetTitle>
+          <SheetDescription>Schnellaktionen</SheetDescription>
+          <div className="grid grid-cols-3 gap-6 pt-4">
+            {moreActions.map((action) => (
+              <button
+                key={action.route}
+                type="button"
+                onClick={() => handleNativeNavigation(action.route)}
+                className="flex flex-col items-center gap-2 rounded-lg p-3 hover:bg-muted"
+              >
+                <FontAwesomeIcon
+                  icon={action.icon}
+                  className="h-6 w-6 text-background"
+                />
+                <span className="text-xs text-background">{action.label}</span>
+              </button>
+            ))}
+          </div>
+        </SheetContent>
+      </Sheet>
     </>
   );
 };
