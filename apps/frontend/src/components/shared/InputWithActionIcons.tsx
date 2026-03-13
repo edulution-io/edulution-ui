@@ -21,9 +21,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { type VariantProps } from 'class-variance-authority';
-import { cn } from '@edulution-io/ui-kit';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
-import Input from '@/components/shared/Input';
+import { cn, Input, inputVariants } from '@edulution-io/ui-kit';
 
 type ActionIcon = { icon: IconDefinition; onClick: () => void; className?: string };
 

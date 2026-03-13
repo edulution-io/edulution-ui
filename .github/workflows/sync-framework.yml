@@ -1,0 +1,92 @@
+name: Sync Artifacts to Framework Repo
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'swagger-spec.json'
+  workflow_dispatch:
+
+jobs:
+  sync-swagger:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Create GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.VERSION_BUMPER_APPID }}
+          private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
+          owner: ${{ github.repository_owner }}
+          repositories: edulution-ai-framework
+
+      - name: Checkout edulution-ui
+        uses: actions/checkout@v5
+
+      - name: Checkout framework repo
+        uses: actions/checkout@v5
+        with:
+          repository: edulution-io/edulution-ai-framework
+          token: ${{ steps.app-token.outputs.token }}
+          path: target
+          ref: master
+
+      - name: Sync swagger-spec.json
+        id: sync
+        run: |
+          mkdir -p target/artifacts
+
+          if [ ! -s swagger-spec.json ]; then
+            echo "swagger-spec.json is empty or missing, skipping sync"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          cp swagger-spec.json target/artifacts/swagger-spec.json
+
+          cd target
+          if [ -z "$(git status --porcelain -- artifacts/swagger-spec.json)" ]; then
+            echo "No changes detected in swagger-spec.json"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected in swagger-spec.json"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate diff summary
+        if: steps.sync.outputs.changed == 'true'
+        id: summary
+        run: |
+          cd target
+          STAT=$(git diff --stat -- artifacts/swagger-spec.json)
+
+          OLD_ENDPOINTS=$(git show HEAD:artifacts/swagger-spec.json 2>/dev/null | jq -r '.paths | keys[]' 2>/dev/null | sort || echo "")
+          NEW_ENDPOINTS=$(jq -r '.paths | keys[]' artifacts/swagger-spec.json 2>/dev/null | sort || echo "")
+
+          ADDED=$(diff <(echo "$OLD_ENDPOINTS") <(echo "$NEW_ENDPOINTS") | grep -c '^>' || true)
+          REMOVED=$(diff <(echo "$OLD_ENDPOINTS") <(echo "$NEW_ENDPOINTS") | grep -c '^<' || true)
+
+          {
+            echo "msg<<EOF"
+            echo "sync: update swagger-spec.json from edulution-ui"
+            echo ""
+            echo "Source: ${{ github.repository }}@${{ github.sha }}"
+            echo ""
+            echo "$STAT"
+            echo ""
+            echo "Endpoints: +${ADDED} -${REMOVED}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          cd target
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add artifacts/swagger-spec.json
+          git commit -m "${{ steps.summary.outputs.msg }}"
+          git pull --rebase origin master
+          git push origin master

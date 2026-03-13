@@ -20,4 +20,10 @@
 export { Button, buttonVariants } from './components/Button';
 export type { ButtonProps, ButtonVariant } from './components/Button';
 
+export { Input, inputVariants } from './components/Input';
+export { INPUT_BASE_CLASSES, VARIANT_COLORS } from './constants/inputClassNames';
+export type { InputProps, InputVariant } from './components/Input';
+
+export { inputOTPSlotVariants, inputOTPCaretVariants } from './constants/inputOtpVariants';
+
 export { default as cn } from './utils/cn';

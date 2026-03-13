@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 import Label from '@/components/ui/Label';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 
 interface SurveysLogoSettingsProps {
   surveyCreator: SurveyCreatorModel;

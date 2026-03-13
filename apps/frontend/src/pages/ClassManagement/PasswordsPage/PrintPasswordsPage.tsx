@@ -24,7 +24,7 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';

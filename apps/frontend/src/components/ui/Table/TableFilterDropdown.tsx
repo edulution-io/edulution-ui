@@ -19,11 +19,10 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, cn } from '@edulution-io/ui-kit';
+import { Button, cn, inputVariants } from '@edulution-io/ui-kit';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
 import type FilterOption from '@libs/ui/types/filterOption';

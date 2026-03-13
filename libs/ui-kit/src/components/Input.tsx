@@ -17,14 +17,31 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
-import { type VariantProps } from 'class-variance-authority';
-import { cn } from '@edulution-io/ui-kit';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import * as React from 'react';
+import { useState } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '../constants/inputClassNames';
+import cn from '../utils/cn';
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
+const inputVariants = cva(INPUT_BASE_CLASSES, {
+  variants: {
+    variant: {
+      default: `${VARIANT_COLORS.default} placeholder:text-p`,
+      dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
+      login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
+      lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});
+
+export type InputVariant = NonNullable<VariantProps<typeof inputVariants>['variant']>;
+
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof inputVariants> & {
     shouldTrim?: boolean;
     icon?: React.ReactNode;
@@ -37,29 +54,35 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const needsWrapper = isPassword || icon;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!onChange) {
+        return;
+      }
+
       const { value } = event.target;
 
-      if (onChange) {
-        if (type === 'text' || isPassword) {
-          const newValue = shouldTrim ? value.trim() : value;
-          onChange({
-            ...event,
-            target: {
-              ...event.target,
-              value: newValue,
-            },
-          });
-        } else if (type === 'number') {
-          const newValue = Number(value);
-          onChange({
-            ...event,
-            target: {
-              ...event.target,
-              value: newValue as unknown as string,
-            },
-          });
-        }
+      if (type === 'number') {
+        onChange({
+          ...event,
+          target: {
+            ...event.target,
+            value: Number(value) as unknown as string,
+          },
+        });
+        return;
       }
+
+      if (shouldTrim && (type === 'text' || isPassword)) {
+        onChange({
+          ...event,
+          target: {
+            ...event.target,
+            value: value.trim(),
+          },
+        });
+        return;
+      }
+
+      onChange(event);
     };
 
     const inputElement = (
@@ -101,4 +124,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 Input.displayName = 'Input';
 
-export default Input;
+export { Input, inputVariants };

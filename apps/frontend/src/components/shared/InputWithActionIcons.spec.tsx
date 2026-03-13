@@ -30,14 +30,8 @@ vi.mock('@fortawesome/react-fontawesome', () => ({
 
 vi.mock('@edulution-io/ui-kit', () => ({
   cn: (...args: any[]) => args.filter(Boolean).join(' '),
-}));
-
-vi.mock('@libs/ui/constants/commonClassNames', () => ({
   inputVariants: () => 'input-base',
-}));
-
-vi.mock('@/components/shared/Input', () => ({
-  default: React.forwardRef<HTMLInputElement, any>(({ variant, shouldTrim, icon, ...props }, ref) => (
+  Input: React.forwardRef<HTMLInputElement, any>(({ variant, shouldTrim, icon, ...props }, ref) => (
     <input
       ref={ref}
       data-testid="inner-input"

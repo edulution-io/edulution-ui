@@ -25,7 +25,7 @@ import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useLanguage from '@/hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
 import useSidebarItems from '@/hooks/useSidebarItems';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
