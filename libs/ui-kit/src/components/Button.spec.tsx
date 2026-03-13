@@ -28,11 +28,6 @@ describe('Button', () => {
     expect(screen.getByRole('button')).toHaveTextContent('Click me');
   });
 
-  it('renders as a button element by default', () => {
-    render(<Button>Test</Button>);
-    expect(screen.getByRole('button').tagName).toBe('BUTTON');
-  });
-
   it('forwards ref to the button element', () => {
     const ref = createRef<HTMLButtonElement>();
     render(<Button ref={ref}>Ref test</Button>);
@@ -106,6 +101,11 @@ describe('Button', () => {
     expect(button.className).toContain('bg-transparent');
     expect(button.className).toContain('h-10');
     expect(button.className).toContain('px-8');
+  });
+
+  it('renders as a button element by default', () => {
+    render(<Button>Test</Button>);
+    expect(screen.getByRole('button').tagName).toBe('BUTTON');
   });
 
   it('merges custom className with variant classes', () => {

@@ -32,7 +32,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import WebdavShareSelectDropdown from './WebdavShareSelectDropdown';
 import useFileSharingStore from '../../useFileSharingStore';
 import useVariableSharePathname from '../../hooks/useVariableSharePathname';

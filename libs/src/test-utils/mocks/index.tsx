@@ -17,20 +17,4 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
-import { type AppConfigOptionsType } from './appConfigOptionsType';
-import type TApps from './appsType';
-import type AppDisplayLocationType from './appDisplayLocationType';
-
-type AppConfigOption = {
-  id: TApps;
-  icon: string;
-  color?: string;
-  options?: AppConfigOptionsType[];
-  isNativeApp: boolean;
-  usesPushNotifications?: boolean;
-  extendedOptions?: AppConfigExtendedOptionsBySections;
-  defaultDisplayLocations?: AppDisplayLocationType[];
-};
-
-export default AppConfigOption;
+export * from './uiKitMock';

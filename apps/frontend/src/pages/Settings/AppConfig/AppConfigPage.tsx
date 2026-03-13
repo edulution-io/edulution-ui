@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Input from '@/components/shared/Input';
+import { Input } from '@edulution-io/ui-kit';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
