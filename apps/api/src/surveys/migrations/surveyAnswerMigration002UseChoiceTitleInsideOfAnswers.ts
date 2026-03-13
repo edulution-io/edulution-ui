@@ -81,26 +81,45 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
     let ops: AnyBulkWriteOperation[] = [];
     // eslint-disable-next-line no-restricted-syntax
     for await (const doc of cursor) {
-      // eslint-disable-next-line no-continue
-      if (!doc.surveyId) continue;
+      let skipAnswerUpdate = false;
+      if (!doc.surveyId) {
+        // eslint-disable-next-line no-underscore-dangle
+        Logger.warn(`Survey answer with id ${String(doc._id)} is missing the SurveyId.`, name);
+        skipAnswerUpdate = true;
+      }
 
-      const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
-      // eslint-disable-next-line no-continue
-      if (!backendLimiters || backendLimiters.length === 0) continue;
+      const { backendLimiters } = (doc.surveyId as unknown as SurveyDto) ?? {};
+      const foundNoBackendLimiters = !backendLimiters || backendLimiters.length === 0;
+      if (!skipAnswerUpdate && foundNoBackendLimiters) {
+        skipAnswerUpdate = true;
+      }
 
       const answer = doc.answer as AnswerRecord;
-      // eslint-disable-next-line no-continue
-      if (!answer || Object.keys(answer).length === 0) continue;
+      const foundNoAnswer = !answer || Object.keys(answer).length === 0;
+      if (!skipAnswerUpdate && foundNoAnswer) {
+        // eslint-disable-next-line no-underscore-dangle
+        Logger.warn(`Survey answer with id ${String(doc._id)} is missing the answer object.`, name);
+        skipAnswerUpdate = true;
+      }
 
-      const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters);
-
-      ops.push({
-        updateOne: {
-          // eslint-disable-next-line no-underscore-dangle
-          filter: { _id: doc._id },
-          update: { $set: { answer: updatedAnswer, schemaVersion: newSchemaVersion } },
-        },
-      });
+      if (skipAnswerUpdate) {
+        ops.push({
+          updateOne: {
+            // eslint-disable-next-line no-underscore-dangle
+            filter: { _id: doc._id },
+            update: { $set: { schemaVersion: newSchemaVersion } },
+          },
+        });
+      } else {
+        const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters!);
+        ops.push({
+          updateOne: {
+            // eslint-disable-next-line no-underscore-dangle
+            filter: { _id: doc._id },
+            update: { $set: { answer: updatedAnswer, schemaVersion: newSchemaVersion } },
+          },
+        });
+      }
 
       if (ops.length >= 500) {
         await model.bulkWrite(ops, { ordered: false });
