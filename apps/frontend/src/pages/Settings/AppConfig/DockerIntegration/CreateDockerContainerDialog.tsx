@@ -34,7 +34,6 @@ import extractEnvPlaceholders from '@libs/docker/utils/extractEnvPlaceholders';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
@@ -55,6 +54,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     isLoading,
     tableContentData,
     dockerContainerConfig,
+    currentContainerName,
     dockerComposeFiles,
     createAndRunContainer,
     fetchTableContent,
@@ -116,16 +116,16 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     if (createContainerConfig && dockerContainerConfig) {
       const formValues = form.getValues();
       const updatedConfig = updateContainerConfig(createContainerConfig, formValues);
-      const containerName = DOCKER_APPLICATION_LIST[settingLocation] || '';
 
       await createAndRunContainer({
         applicationName: settingLocation,
+        containerName: currentContainerName,
         containers: updatedConfig,
-        originalComposeConfig: dockerComposeFiles[containerName] || '',
+        originalComposeConfig: dockerComposeFiles[currentContainerName] || '',
       });
       await fetchTableContent(settingLocation);
 
-      await getTraefikConfig(settingLocation, containerName);
+      await getTraefikConfig(settingLocation, currentContainerName);
     }
   };
 

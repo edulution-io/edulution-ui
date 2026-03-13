@@ -21,7 +21,7 @@ import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@
 import Docker from 'dockerode';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { ensureDirSync, existsSync, readFileSync, writeFileSync } from 'fs-extra';
+import { ensureDirSync, existsSync, moveSync, readFileSync, writeFileSync } from 'fs-extra';
 import { join } from 'path';
 import { parse } from 'yaml';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -42,9 +42,12 @@ import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
 import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import FILESHARING_DOCKER_CONTAINERS from '@libs/docker/constants/filesharingDockerContainers';
 import MOODLE_GENERATE_SECRETS from '@libs/docker/constants/moodleGenerateSecrets';
 import DOCKER_COMPOSE_ENV_VAR_PATTERN from '@libs/docker/constants/dockerComposeEnvVarPattern';
 import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { ACTIVE_DOCUMENT_EDITOR, ActiveDocumentEditorType } from '@libs/filesharing/constants/activeDocumentEditor';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -64,7 +67,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     private readonly appConfigService: AppConfigService,
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
+    await this.migrateDockerComposeFiles();
     this.listenToDockerEvents();
   }
 
@@ -218,8 +222,12 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private static readSavedEnvValues(applicationName: string, keys: string[]): Record<string, string> {
-    const filePath = join(APPS_FILES_PATH, applicationName, 'docker-compose.yml');
+  private static readSavedEnvValues(
+    applicationName: string,
+    containerName: string,
+    keys: string[],
+  ): Record<string, string> {
+    const filePath = join(APPS_FILES_PATH, applicationName, containerName, 'docker-compose.yml');
     if (!existsSync(filePath)) return {};
 
     try {
@@ -256,15 +264,50 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  private async migrateDockerComposeFiles(): Promise<void> {
+    const applicationNames = Object.keys(DOCKER_APPLICATION_LIST);
+
+    await Promise.all(
+      applicationNames.map(async (applicationName) => {
+        const oldFilePath = join(APPS_FILES_PATH, applicationName, 'docker-compose.yml');
+        if (!existsSync(oldFilePath)) return;
+
+        const containerName = await this.resolveContainerName(applicationName);
+        const newDir = join(APPS_FILES_PATH, applicationName, containerName);
+        const newFilePath = join(newDir, 'docker-compose.yml');
+
+        if (existsSync(newFilePath)) return;
+
+        ensureDirSync(newDir);
+        moveSync(oldFilePath, newFilePath);
+        Logger.log(`Migrated docker-compose.yml: ${oldFilePath} -> ${newFilePath}`, DockerService.name);
+      }),
+    );
+  }
+
+  private async resolveContainerName(applicationName: string): Promise<string> {
+    if (applicationName === APPS.FILE_SHARING) {
+      const fileSharingConfig = await this.appConfigService.getAppConfigByName(APPS.FILE_SHARING);
+      const activeEditor =
+        (fileSharingConfig?.extendedOptions?.[ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR] as ActiveDocumentEditorType) ??
+        ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE;
+      return FILESHARING_DOCKER_CONTAINERS[activeEditor];
+    }
+    return DOCKER_APPLICATION_LIST[applicationName as keyof typeof DOCKER_APPLICATION_LIST] ?? applicationName;
+  }
+
   async replaceEnvVariables(
     createContainersDto: Docker.ContainerCreateOptions[],
     applicationName: string,
+    containerName: string,
   ): Promise<Docker.ContainerCreateOptions[]> {
     const appConfigValues: Record<string, string> = {};
 
     switch (applicationName) {
       case APPS.LEARNING_MANAGEMENT: {
-        const savedValues = DockerService.readSavedEnvValues(applicationName, [...MOODLE_GENERATE_SECRETS]);
+        const savedValues = DockerService.readSavedEnvValues(applicationName, containerName, [
+          ...MOODLE_GENERATE_SECRETS,
+        ]);
         MOODLE_GENERATE_SECRETS.forEach((key) => {
           appConfigValues[key] = savedValues[key] || generateSecureToken();
         });
@@ -324,6 +367,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   private static saveDockerCompose(
     applicationName: string,
+    containerName: string,
     containers: Docker.ContainerCreateOptions[],
     originalComposeConfig: string,
   ): void {
@@ -332,7 +376,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     const finalComposeConfig = injectEnvIntoCompose(originalComposeConfig, mergedEnvs);
 
     try {
-      const fileDir = join(APPS_FILES_PATH, applicationName);
+      const fileDir = join(APPS_FILES_PATH, applicationName, containerName);
       ensureDirSync(fileDir);
 
       const filePath = join(fileDir, 'docker-compose.yml');
@@ -346,9 +390,9 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   }
 
   async createContainer(createContainerDto: CreateContainerDto) {
-    const { applicationName, containers, originalComposeConfig } = createContainerDto;
+    const { applicationName, containerName, containers, originalComposeConfig } = createContainerDto;
 
-    const newContainers = await this.replaceEnvVariables(containers, applicationName);
+    const newContainers = await this.replaceEnvVariables(containers, applicationName, containerName);
 
     try {
       await Promise.all(
@@ -373,7 +417,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       }, Promise.resolve());
 
       if (applicationName && newContainers && originalComposeConfig) {
-        DockerService.saveDockerCompose(applicationName, newContainers, originalComposeConfig);
+        DockerService.saveDockerCompose(applicationName, containerName, newContainers, originalComposeConfig);
       }
 
       this.sseService.sendEventToUsers(

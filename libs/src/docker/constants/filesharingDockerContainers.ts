@@ -19,9 +19,9 @@
 
 import { ACTIVE_DOCUMENT_EDITOR, ActiveDocumentEditorType } from '@libs/filesharing/constants/activeDocumentEditor';
 
-const FILESHARING_DOCKER_CONTAINERS: Record<ActiveDocumentEditorType, string> = {
+const FILESHARING_DOCKER_CONTAINERS = {
   [ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE]: 'edulution-onlyoffice',
   [ACTIVE_DOCUMENT_EDITOR.COLLABORA]: 'edulution-collabora',
-} as const;
+} as const satisfies Record<ActiveDocumentEditorType, string>;
 
 export default FILESHARING_DOCKER_CONTAINERS;

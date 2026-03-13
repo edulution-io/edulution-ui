@@ -25,14 +25,13 @@ import {
 
 type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
 
-const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
+const DOCKER_APPLICATION_LIST = {
   mail: 'edulution-mail',
   classmanagement: 'edulution-veyon',
   desktopdeployment: 'edulution-guacamole',
-  filesharing: 'edulution-onlyoffice',
   [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
   wireguard: 'edulution-wireguard',
   learningmanagement: 'edulution-moodle',
-} as const;
+} as const satisfies Partial<DockerApplicationList>;
 
 export default DOCKER_APPLICATION_LIST;

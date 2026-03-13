@@ -197,12 +197,12 @@ describe('useThemeStore', () => {
   });
 
   describe('reset', () => {
-    it('resets theme to system', () => {
+    it('does not reset theme because it is a persisted user preference', () => {
       useThemeStore.setState({ theme: THEME.dark });
 
       useThemeStore.getState().reset();
 
-      expect(useThemeStore.getState().theme).toBe(THEME.system);
+      expect(useThemeStore.getState().theme).toBe(THEME.dark);
     });
   });
 });
