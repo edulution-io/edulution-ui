@@ -213,7 +213,7 @@ const UserCardButtonBar = ({
               />
 
               {isVeyonButtonEnabled && (
-                <div className="absolute -right-[5px] top-1/2 hidden -translate-y-1/2 items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 py-1 text-background group-hover:flex">
+                <div className="absolute -right-[5px] top-1/2 hidden -translate-y-1/2 items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 py-1 text-foreground group-hover:flex">
                   {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
                 </div>
               )}

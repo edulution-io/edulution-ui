@@ -64,7 +64,7 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
   if (useMaskTechnique) {
     return (
       <div
-        className={cn(applyLegacyFilter ? 'text-background dark:text-white' : 'text-white', className)}
+        className={cn(applyLegacyFilter ? 'text-foreground dark:text-white' : 'text-white', className)}
         style={{
           width,
           height,

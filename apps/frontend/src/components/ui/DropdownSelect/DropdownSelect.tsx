@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { cn, INPUT_BASE_CLASSES, VARIANT_COLORS } from '@edulution-io/ui-kit';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 
-const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-background`;
+const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-foreground`;
 
 export type DropdownOptions = {
   id: string;
@@ -45,7 +45,7 @@ interface DropdownProps {
 }
 
 const MENU_MAX_HEIGHT = 125;
-const MENU_MARGIN = 8;
+const MENU_MARGIN = 2;
 
 const DropdownSelect = ({
   options,
@@ -237,7 +237,7 @@ const DropdownSelect = ({
           <div
             ref={menuRef}
             className={cn(
-              'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
+              'pointer-events-auto fixed z-[1000] box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
               variantClasses[variant],
               menuClassName,
             )}

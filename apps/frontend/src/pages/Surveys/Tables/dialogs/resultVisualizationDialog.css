@@ -4,7 +4,7 @@
 
 .sa-visualizer,
 .sa-visualizer__content {
-  color: var(--foreground);
+  color: var(--background);
 }
 
 /* Fix tables background color: Remove the white backgrounds */

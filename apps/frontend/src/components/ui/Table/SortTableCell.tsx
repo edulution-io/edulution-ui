@@ -40,7 +40,7 @@ const SortTableCell = ({ moveUp, moveDown, position, lastPosition }: SortTableCe
         type="button"
         onClick={moveUp}
         disabled={isDisabledUp}
-        className={`ml-4 ${isDisabledUp ? 'text-foreground' : 'text-muted-foreground'}`}
+        className={`ml-4 ${isDisabledUp ? 'text-background' : 'text-muted-foreground'}`}
       >
         <FontAwesomeIcon icon={faArrowUp} />
       </button>
@@ -48,7 +48,7 @@ const SortTableCell = ({ moveUp, moveDown, position, lastPosition }: SortTableCe
         type="button"
         onClick={moveDown}
         disabled={isDisabledDown}
-        className={`${isDisabledDown ? 'text-foreground' : 'text-muted-foreground'} ml-4`}
+        className={`${isDisabledDown ? 'text-background' : 'text-muted-foreground'} ml-4`}
       >
         <FontAwesomeIcon icon={faArrowDown} />
       </button>

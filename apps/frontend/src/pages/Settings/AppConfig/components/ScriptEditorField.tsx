@@ -91,7 +91,7 @@ const ScriptEditorField = <T extends FieldValues>({
                     field.onChange(e.target.value);
                     validateScript(e.target.value);
                   }}
-                  className="overflow-y-auto bg-white text-background transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none dark:border-none dark:bg-accent"
+                  className="overflow-y-auto transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none"
                   style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
                   placeholder={t('settings.appconfig.sections.scripts.placeholder')}
                 />

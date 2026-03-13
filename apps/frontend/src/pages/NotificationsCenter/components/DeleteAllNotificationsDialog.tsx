@@ -70,7 +70,7 @@ const DeleteAllNotificationsDialog = ({ deleteType, notificationCount }: DeleteA
   };
 
   const getDialogBody = () => (
-    <div className="text-background">
+    <div className="text-foreground">
       <p>{getMessage()}</p>
       <p className="mt-3 text-sm text-muted-foreground">{t('notificationscenter.actionCannotBeUndone')}</p>
     </div>

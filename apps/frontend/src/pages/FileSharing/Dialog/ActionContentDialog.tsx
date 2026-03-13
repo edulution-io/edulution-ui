@@ -236,7 +236,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       }
       footer={
         error ? (
-          <div className="rounded-xl bg-ciLightRed py-3 text-center text-background">{error.message}</div>
+          <div className="rounded-xl bg-ciLightRed py-3 text-center text-foreground">{error.message}</div>
         ) : (
           <form onSubmit={handleFormSubmit}>
             <DialogFooterButtons

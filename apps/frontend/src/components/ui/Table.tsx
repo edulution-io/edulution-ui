@@ -82,7 +82,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
   ({ className, variant = 'default', ...props }, ref) => (
     <tr
       ref={ref}
-      className={cn('truncate py-0 text-foreground transition-colors', TABLE_ROW_VARIANTS[variant], className)}
+      className={cn('truncate py-0 text-background transition-colors', TABLE_ROW_VARIANTS[variant], className)}
       {...props}
     />
   ),
@@ -95,7 +95,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
       ref={ref}
       className={cn(
         'sticky top-0 z-10 w-full backdrop-blur-md',
-        'mr-4 h-8 px-2 text-left align-middle font-medium text-background [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'mr-4 h-8 px-2 text-left align-middle font-medium text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
@@ -112,7 +112,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
     <td
       ref={ref}
       className={cn(
-        'mr-4 h-8 truncate px-2 text-left align-middle font-medium text-background [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'mr-4 h-8 truncate px-2 text-left align-middle font-medium text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         'py-0 hover:bg-white/10',
         className,
       )}
@@ -126,7 +126,7 @@ const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttribu
   ({ className, ...props }, ref) => (
     <caption
       ref={ref}
-      className={cn('mt-4 text-sm text-background', className)}
+      className={cn('mt-4 text-sm text-foreground', className)}
       {...props}
     />
   ),

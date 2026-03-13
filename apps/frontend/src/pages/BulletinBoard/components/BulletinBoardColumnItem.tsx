@@ -223,7 +223,7 @@ const BulletinBoardColumnItem = ({
                 'rotate-90': !isCollapsed,
               })}
             />
-            <span className="break-words text-lg font-bold leading-tight text-background">{bulletin.title}</span>
+            <span className="break-words text-lg font-bold leading-tight text-foreground">{bulletin.title}</span>
           </button>
         </h3>
 
@@ -235,7 +235,7 @@ const BulletinBoardColumnItem = ({
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="quill-content overflow-hidden break-normal text-background"
+              className="quill-content overflow-hidden break-normal text-foreground"
             >
               <BulletinContent
                 html={bulletin.content}

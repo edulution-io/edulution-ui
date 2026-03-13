@@ -28,7 +28,7 @@ interface LicenseFieldProps {
 const LicenseField: React.FC<LicenseFieldProps> = ({ label, value, valueClassName }) => (
   <div>
     <p className="text-sm font-medium text-muted-foreground">{label}</p>
-    <p className={`text-base ${valueClassName || 'text-background'}`}>{value}</p>
+    <p className={`text-base ${valueClassName || 'text-foreground'}`}>{value}</p>
   </div>
 );
 

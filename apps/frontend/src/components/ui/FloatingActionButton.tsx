@@ -81,7 +81,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
     <div className="group relative mt-1 flex flex-col items-center justify-center">
       {renderContent()}
       <span className={cn(FLOATING_BUTTON_CLASS_NAME, 'group-hover:invisible')}>{text}</span>
-      <span className="invisible absolute bottom-[-1px] left-1/2 z-10 w-max -translate-x-1/2 whitespace-nowrap rounded-sm bg-foreground px-1.5 py-px text-center text-background group-hover:visible">
+      <span className="invisible absolute bottom-[-1px] left-1/2 z-10 w-max -translate-x-1/2 whitespace-nowrap rounded-sm bg-background px-1.5 py-px text-center text-foreground group-hover:visible">
         {text}
       </span>
     </div>

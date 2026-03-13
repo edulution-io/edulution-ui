@@ -82,7 +82,7 @@ const SaveSurveyDialogBody = () => {
         translationId="survey.expirationDate"
         variant="dialog"
       />
-      <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
+      <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>
       {checkboxOptions.map(({ name, label, shouldDisable }) => (
         <Checkbox
           key={name}
@@ -91,7 +91,7 @@ const SaveSurveyDialogBody = () => {
           onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
           disabled={shouldDisable}
           aria-label={t(`survey.${name}`)}
-          className="text-background"
+          className="text-foreground"
         />
       ))}
     </>

@@ -82,11 +82,11 @@ const MARKDOWN_STYLES: Record<MarkdownStyleKey, MarkdownStyleEntry> = {
     print: { marginBottom: '4pt' },
   },
   codeInline: {
-    tailwind: 'bg-background/20 rounded px-1.5 py-0.5 font-mono text-sm',
+    tailwind: 'bg-foreground/20 rounded px-1.5 py-0.5 font-mono text-sm',
     print: { fontFamily: "'Courier New', Courier, monospace", fontSize: '10pt', padding: '2pt 4pt' },
   },
   codeBlock: {
-    tailwind: 'bg-background/20 block overflow-x-auto rounded-lg p-4 font-mono text-sm',
+    tailwind: 'bg-foreground/20 block overflow-x-auto rounded-lg p-4 font-mono text-sm',
     print: {
       fontFamily: "'Courier New', Courier, monospace",
       fontSize: '10pt',
@@ -96,7 +96,7 @@ const MARKDOWN_STYLES: Record<MarkdownStyleKey, MarkdownStyleEntry> = {
     },
   },
   pre: {
-    tailwind: 'bg-background/20 mb-4 overflow-x-auto rounded-lg p-4',
+    tailwind: 'bg-foreground/20 mb-4 overflow-x-auto rounded-lg p-4',
     print: {
       padding: '12pt',
       pageBreakInside: 'avoid',
@@ -116,19 +116,19 @@ const MARKDOWN_STYLES: Record<MarkdownStyleKey, MarkdownStyleEntry> = {
     print: { width: '100%', borderCollapse: 'collapse', marginBottom: '12pt', pageBreakInside: 'avoid' },
   },
   thead: {
-    tailwind: 'bg-background/10',
+    tailwind: 'bg-foreground/10',
     print: { backgroundColor: '#f0f0f0' },
   },
   tr: {
-    tailwind: 'border-background/20 border-b',
+    tailwind: 'border-foreground/20 border-b',
     print: {},
   },
   th: {
-    tailwind: 'border-background/30 border px-4 py-2 text-left font-semibold',
+    tailwind: 'border-foreground/30 border px-4 py-2 text-left font-semibold',
     print: { border: '1px solid #000', padding: '6pt 8pt', textAlign: 'left', fontWeight: 'bold' },
   },
   td: {
-    tailwind: 'border-background/30 border px-4 py-2',
+    tailwind: 'border-foreground/30 border px-4 py-2',
     print: { border: '1px solid #000', padding: '6pt 8pt', textAlign: 'left' },
   },
   a: {
@@ -140,7 +140,7 @@ const MARKDOWN_STYLES: Record<MarkdownStyleKey, MarkdownStyleEntry> = {
     print: { margin: '12pt 0', paddingLeft: '12pt', borderLeft: '3pt solid #666', fontStyle: 'italic' },
   },
   hr: {
-    tailwind: 'border-background/30 my-6',
+    tailwind: 'border-foreground/30 my-6',
     print: { border: 'none', borderTop: '1px solid #000', margin: '18pt 0' },
   },
   strong: {

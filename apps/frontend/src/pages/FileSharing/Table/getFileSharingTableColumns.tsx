@@ -184,7 +184,7 @@ const getFileSharingTableColumns = (
             {isShared && (
               <IconWithCount
                 icon={faCloud}
-                className="text-background"
+                className="text-foreground"
                 count={matchCount}
                 onClick={(e) => {
                   e.stopPropagation();

@@ -79,7 +79,7 @@ const NotificationRecipientsDialog = ({
                 recipient.readAt ? 'bg-green-500/10' : 'bg-muted-foreground/10',
               )}
             >
-              <span className="text-sm text-background">{recipient.username}</span>
+              <span className="text-sm text-foreground">{recipient.username}</span>
               {recipient.readAt && (
                 <FontAwesomeIcon
                   icon={faCheck}

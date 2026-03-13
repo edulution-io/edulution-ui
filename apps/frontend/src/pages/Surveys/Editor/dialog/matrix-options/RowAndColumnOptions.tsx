@@ -129,7 +129,7 @@ const RowAndColumnOptions = () => {
 
   return (
     <>
-      <p className="text-m font-bold text-background">{t('survey.editor.questionSettings.rowsAndColumns')}</p>
+      <p className="text-m font-bold text-foreground">{t('survey.editor.questionSettings.rowsAndColumns')}</p>
       <p className="text-sm text-muted-foreground">{t('survey.editor.questionSettings.rows')}</p>
       <div className="inline-flex items-center gap-2">
         <Input
@@ -138,7 +138,7 @@ const RowAndColumnOptions = () => {
           value={question.rows.length || 1}
           onChange={(e) => handleRowCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
-          className="ml-2 max-w-[75px] flex-1 text-background"
+          className="ml-2 max-w-[75px] flex-1 text-foreground"
         />
         <Button
           onClick={() => addRow()}
@@ -171,7 +171,7 @@ const RowAndColumnOptions = () => {
           value={question.columns.length || 1}
           onChange={(e) => handleColumnCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
-          className="ml-2 max-w-[75px] flex-1 text-background"
+          className="ml-2 max-w-[75px] flex-1 text-foreground"
         />
         <Button
           onClick={() => addColumn()}

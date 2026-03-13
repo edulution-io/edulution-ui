@@ -76,7 +76,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
 
   return (
     <Breadcrumb style={style}>
-      {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
+      {showTitle && <p className="mr-2 text-foreground">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (
           <BreadcrumbItem
@@ -113,7 +113,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <span className="text-background">{clearSegments[clearSegments.length - 1]}</span>
+              <span className="text-foreground">{clearSegments[clearSegments.length - 1]}</span>
             </BreadcrumbItem>
           </>
         ) : (
@@ -124,7 +124,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                 <BreadcrumbSeparator />
                 <BreadcrumbItem className="cursor-pointer">
                   {isLast ? (
-                    <span className="text-background">{segment}</span>
+                    <span className="text-foreground">{segment}</span>
                   ) : (
                     <BreadcrumbLink onClick={() => handleSegmentClick(index + hiddenParts.length)}>
                       {segment}

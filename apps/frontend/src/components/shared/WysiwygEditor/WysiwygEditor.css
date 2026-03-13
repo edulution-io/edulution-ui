@@ -1,9 +1,9 @@
 .quill-container {
   position: relative;
-  background: #ffffff;
-  border: 1px solid var(--secondary);
-  border-radius: 0.75rem;
-  color: var(--background);
+  background: white;
+  border: 1px solid var(--accent-light);
+  border-radius: var(--radius);
+  color: var(--foreground);
 }
 
 .dark .quill-container {
@@ -17,20 +17,16 @@
 }
 
 .quill-container .ql-toolbar.ql-snow {
-  border-bottom: 1px solid var(--secondary) !important;
+  border-bottom: 1px solid var(--accent-light) !important;
 }
 .quill-container .ql-toolbar {
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
-  border-color: hsl(var(--input));
-  background: hsl(var(--background));
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
 }
 
 .quill-container .ql-container {
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-  border-color: hsl(var(--input));
-  background: hsl(var(--background));
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
 }
 
 .quill-container .ql-tooltip {
@@ -40,7 +36,7 @@
   transform: translateX(-50%) !important;
   max-width: 80%;
   background: var(--accent) !important;
-  color: var(--background) !important;
+  color: var(--foreground) !important;
   padding: 8px 12px !important;
   border-radius: 4px !important;
   box-shadow: none !important;
@@ -49,7 +45,7 @@
 
 .ql-snow .ql-tooltip input {
   background: var(--accent) !important;
-  color: var(--background) !important;
+  color: var(--foreground) !important;
   padding: 6px 8px !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 4px !important;
@@ -60,7 +56,7 @@
 
 .ql-snow .ql-picker-label {
   background: var(--accent) !important;
-  color: var(--background) !important;
+  color: var(--foreground) !important;
   border: 1px solid #555 !important;
 }
 .ql-snow .ql-picker.ql-expanded .ql-picker-options {
@@ -73,16 +69,16 @@
 .ql-snow .ql-picker-item:hover,
 .ql-snow .ql-picker .ql-selected {
   background: var(--accent) !important;
-  color: var(--background) !important;
+  color: var(--foreground) !important;
 }
 
 .quill-container .ql-snow .ql-stroke {
-  stroke: var(--background) !important;
+  stroke: var(--foreground) !important;
 }
 
 .quill-container .ql-snow .ql-fill,
 .quill-container .ql-snow .ql-stroke.ql-fill {
-  fill: var(--background) !important;
+  fill: var(--foreground) !important;
 }
 
 .ql-editor li[data-list] > span.ql-ui {

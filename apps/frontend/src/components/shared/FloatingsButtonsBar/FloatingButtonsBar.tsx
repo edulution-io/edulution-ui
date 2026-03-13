@@ -163,7 +163,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
       ref={containerRef}
       className={cn(
         'pointer-events-auto flex min-w-0 flex-grow-0 justify-start transition-all duration-200 ease-in-out',
-        footerColors ? textColorClass : 'text-background',
+        footerColors ? textColorClass : 'text-foreground',
       )}
     >
       {displayedButtons.map((buttonConfig) => renderButton(buttonConfig, `${keyPrefix}${buttonConfig.text}`))}

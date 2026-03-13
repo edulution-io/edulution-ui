@@ -36,15 +36,15 @@ const PublicShareMetaDetails: React.FC<PublicShareMetaDetailsProps> = ({ filenam
     <>
       <header className="flex items-start gap-3">
         <p>{t('filesharing.publicFileSharing.nameOfContent')} </p>
-        <p className="truncate text-background">{filename}</p>
+        <p className="truncate text-foreground">{filename}</p>
       </header>
 
-      <div className="mt-4 flex items-center gap-2 text-background">
+      <div className="mt-4 flex items-center gap-2 text-foreground">
         <p>{t('filesharing.publicFileSharing.sharedBy')}: </p>
         <p className="truncate">{`${creator?.firstName} ${creator?.lastName}`}</p>
       </div>
 
-      <ul className="text-background/80 mt-6 space-y-1 text-sm">
+      <ul className="text-foreground/80 mt-6 space-y-1 text-sm">
         <li className="flex items-center gap-2">
           <FontAwesomeIcon
             icon={faCalendar}

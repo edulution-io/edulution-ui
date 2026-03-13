@@ -50,7 +50,7 @@ const WebdavInfoDialogBody: React.FC<WebdavInfoDialogBodyProps> = ({ baseUrl, us
   };
 
   return (
-    <div className="flex flex-col gap-4 text-background">
+    <div className="flex flex-col gap-4 text-foreground">
       <p className="text-muted-foreground">{t('filesharing.webdavInfo.description')}</p>
 
       <div>

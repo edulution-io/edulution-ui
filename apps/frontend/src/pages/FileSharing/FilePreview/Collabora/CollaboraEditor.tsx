@@ -68,7 +68,7 @@ const CollaboraEditor = ({
   return (
     <div className={cn('relative h-full w-full', { 'h-dvh': isOpenedInNewTab })}>
       {isLoading && (
-        <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
+        <div className="bg-foreground/80 absolute inset-0 z-10 flex items-center justify-center">
           <CircleLoader />
         </div>
       )}

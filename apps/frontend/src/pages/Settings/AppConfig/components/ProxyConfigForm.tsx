@@ -181,7 +181,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
               disabled={!expertModeEnabled}
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold text-background">{t('form.stripPrefix')}</p>
+                  <p className="font-bold text-foreground">{t('form.stripPrefix')}</p>
                   <FormControl>
                     <Switch
                       {...field}
@@ -204,7 +204,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
           name={`${item.name}.proxyConfig`}
           render={({ field }) => (
             <FormItem>
-              <p className="font-bold text-background">{t(`settings.appconfig.sections.proxyConfig.title`)}</p>
+              <p className="font-bold text-foreground">{t(`settings.appconfig.sections.proxyConfig.title`)}</p>
               <FormControl>
                 <YamlEditor
                   value={field.value}

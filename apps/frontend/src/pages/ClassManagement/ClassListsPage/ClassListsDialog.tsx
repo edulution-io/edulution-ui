@@ -54,7 +54,7 @@ const ClassListsDialog: React.FC<ClassListsDialogProps> = ({ selectedClasses, ti
     }
 
     return (
-      <div className="text-background">
+      <div className="text-foreground">
         <p>{t(`classmanagement.${title}StudentsListDescription`)}:</p>
         <p className="ml-2 mt-2">{selectedClasses.map((m) => m.displayName || m.cn).join(', ')}</p>
       </div>

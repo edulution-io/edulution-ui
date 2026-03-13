@@ -97,7 +97,7 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
                   >
                     <FontAwesomeIcon
                       icon={faEllipsis}
-                      className="h-[18px] w-[18px] text-xl text-background"
+                      className="h-[18px] w-[18px] text-xl text-foreground"
                     />
                   </Button>
                 </div>

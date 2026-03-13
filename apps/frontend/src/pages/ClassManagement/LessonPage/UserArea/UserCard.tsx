@@ -159,7 +159,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
         <div
           className={cn(
             !isSelectable && 'cursor-not-allowed',
-            'ml-2 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-foreground scrollbar-thin',
+            'ml-2 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-background scrollbar-thin',
           )}
           onClick={(e) => {
             e.stopPropagation();

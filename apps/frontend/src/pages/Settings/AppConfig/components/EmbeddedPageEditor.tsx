@@ -84,7 +84,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
                 value={field.value}
                 onChange={field.onChange}
                 className={cn(
-                  'overflow-y-auto bg-white text-background transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none dark:border-none dark:bg-accent',
+                  'overflow-y-auto bg-white text-foreground transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none dark:border-none dark:bg-accent',
                   isSandboxMode ? 'h-8 min-h-0 overflow-hidden opacity-0' : 'max-h-80 opacity-100',
                 )}
                 style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}

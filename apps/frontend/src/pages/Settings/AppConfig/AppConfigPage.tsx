@@ -225,7 +225,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                         placeholder={t('search.type-to-search')}
                       />
                     </FormControl>
-                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                    <p className="text-foreground">{t(`permission.selectGroupsDescription`)}</p>
                     <FormMessage className="text-p" />
                   </FormItem>
                 )}

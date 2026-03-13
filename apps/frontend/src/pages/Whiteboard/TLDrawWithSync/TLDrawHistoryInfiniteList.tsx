@@ -76,7 +76,7 @@ const TLDrawHistoryInfiniteList: React.FC = () => {
     <div className="flex h-full flex-col">
       <div
         ref={scrollContainerRef}
-        className="divide-y divide-slate-500 overflow-y-auto text-background"
+        className="divide-y divide-slate-500 overflow-y-auto text-foreground"
         style={{ height }}
       >
         <ul>

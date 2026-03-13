@@ -22,7 +22,7 @@ import { VARIANT_COLORS } from './inputClassNames';
 
 const VARIANT_CARET = {
   default: 'bg-secondary',
-  dialog: 'bg-background',
+  dialog: 'bg-foreground',
   login: 'bg-black',
 } as const;
 

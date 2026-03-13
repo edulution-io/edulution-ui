@@ -79,7 +79,7 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
     }
 
     return (
-      <div className="text-background">
+      <div className="text-foreground">
         <p>{t(`classmanagement.${title}Description`)}:</p>
         <p className="ml-2 mt-2">{selectedClasses.map((m) => m.displayName || m.cn).join(', ')}</p>
         {title === FILE_EXPORT_FORMAT.PDF ? (

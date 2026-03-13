@@ -106,10 +106,10 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
             checked={areAllChecked}
             aria-label={t('select')}
           />
-          <p className="ml-2 text-background">{t('selectAll')}</p>
+          <p className="ml-2 text-foreground">{t('selectAll')}</p>
         </div>
 
-        <h2 className="mb-2 flex flex-grow justify-center text-center text-lg text-background md:text-xl">
+        <h2 className="mb-2 flex flex-grow justify-center text-center text-lg text-foreground md:text-xl">
           {members.length} {t('classmanagement.usersInThisSession')}{' '}
           {selectedMemberCount ? `(${selectedMemberCount} ${t('common.selected')})` : null}
         </h2>

@@ -34,22 +34,22 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
   const otherItemsChoiceWithBackendLimit = currentChoices.find((choice) => choice.name === SHOW_OTHER_ITEM);
 
   return (
-    <div className="ml-2 flex-1 items-center text-background">
+    <div className="ml-2 flex-1 items-center text-foreground">
       <div className="ml-2 inline-flex">
         <Switch
           checked={showOtherItem}
           onCheckedChange={toggleShowOtherItem}
-          className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-background': useBackendLimits })}
+          className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-foreground': useBackendLimits })}
         />
-        <p className="ml-2 text-sm font-bold text-background">{t('survey.editor.questionSettings.useOtherItem')}</p>
+        <p className="ml-2 text-sm font-bold text-foreground">{t('survey.editor.questionSettings.useOtherItem')}</p>
       </div>
       {showOtherItem ? (
         <>
-          <p className="ml-4 mt-2 text-sm text-background">
+          <p className="ml-4 mt-2 text-sm text-foreground">
             {t('survey.editor.questionSettings.addBackendLimiterForOtherItem')}
           </p>
           <div className="ml-4 inline-flex items-center">
-            <Label className="text-m flex-0 font-bold text-background">
+            <Label className="text-m flex-0 font-bold text-foreground">
               {t('survey.editor.questionSettings.limit')}:
             </Label>
             <Input
@@ -63,7 +63,7 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
                   : addChoice(SHOW_OTHER_ITEM, SHOW_OTHER_ITEM, Math.max(Number(e.target.value), 0))
               }
               variant="dialog"
-              className="ml-2 mt-2 max-w-[80px] flex-1 text-background"
+              className="ml-2 mt-2 max-w-[80px] flex-1 text-foreground"
             />
           </div>
         </>

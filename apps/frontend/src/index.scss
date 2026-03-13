@@ -3,7 +3,7 @@
 
 @layer base {
   html {
-    @apply font-sans text-background;
+    @apply font-sans text-foreground;
   }
 
   html,
@@ -115,12 +115,12 @@ iframe {
 }
 
 .bg-glass {
-  background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  background-color: color-mix(in srgb, var(--background) 50%, transparent);
   box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.15);
 }
 
 .dark .bg-glass {
-  background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  background-color: color-mix(in srgb, var(--background) 50%, transparent);
   box-shadow: 0 0 8px 0px rgba(255, 255, 255, 0.15);
 }
 

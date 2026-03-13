@@ -45,7 +45,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
           value={row.original.title}
           onChange={(e) => setChoiceTitle(row.original.name, e.target.value)}
           variant="dialog"
-          className="flex-1 p-2 text-background"
+          className="flex-1 p-2 text-foreground"
         />
       );
     },
@@ -67,7 +67,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
           value={row.original.limit}
           onChange={(e) => setChoiceLimit(row.original.name, Number(e.target.value))}
           variant="dialog"
-          className="p-2 text-background"
+          className="p-2 text-foreground"
         />
       );
     },
