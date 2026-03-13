@@ -48,7 +48,7 @@ import { cn } from '@edulution-io/ui-kit';
 import TEXT_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/textPreviewElementId';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useOpenFileChoiceDialogStore from '@/pages/FileSharing/Dialog/useOpenFileChoiceDialogStore';
-import { OPEN_FILE_CHOICE } from '@libs/filesharing/constants/openFileChoice';
+import OPEN_FILE_CHOICE from '@libs/filesharing/constants/openFileChoice';
 
 interface FileRendererProps {
   editMode: boolean;

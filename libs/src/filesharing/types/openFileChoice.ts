@@ -17,17 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import type DropdownMenuItemType from '../dropdownMenuItemType';
+import OPEN_FILE_CHOICE from '@libs/filesharing/constants/openFileChoice';
 
-interface FloatingButtonConfig {
-  icon: IconDefinition;
-  text: string;
-  onClick?: () => void;
-  isVisible?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-  variant?: 'button' | 'dropdown';
-  dropdownItems?: DropdownMenuItemType[];
-}
+type OpenFileChoice = (typeof OPEN_FILE_CHOICE)[keyof typeof OPEN_FILE_CHOICE];
 
-export default FloatingButtonConfig;
+export default OpenFileChoice;

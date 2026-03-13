@@ -22,7 +22,4 @@ const OPEN_FILE_CHOICE = {
   DOWNLOAD: 'download',
 } as const;
 
-type OpenFileChoice = (typeof OPEN_FILE_CHOICE)[keyof typeof OPEN_FILE_CHOICE];
-
-export { OPEN_FILE_CHOICE };
-export type { OpenFileChoice };
+export default OPEN_FILE_CHOICE;

@@ -24,7 +24,7 @@ import { faFileLines } from '@fortawesome/free-solid-svg-icons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useOpenFileChoiceDialogStore from '@/pages/FileSharing/Dialog/useOpenFileChoiceDialogStore';
-import { OPEN_FILE_CHOICE } from '@libs/filesharing/constants/openFileChoice';
+import OPEN_FILE_CHOICE from '@libs/filesharing/constants/openFileChoice';
 
 import triggerBrowserDownload from '@libs/common/utils/triggerBrowserDownload';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';

@@ -1910,6 +1910,7 @@
     "reload": "Reload",
     "stop": "Stop",
     "logout": "Logout",
+    "switchAccount": "Switch account",
     "selected": "selected",
     "save": "Save",
     "successful": "Successful",

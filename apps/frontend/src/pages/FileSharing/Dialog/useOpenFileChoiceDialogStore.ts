@@ -18,7 +18,7 @@
  */
 
 import { create } from 'zustand';
-import type { OpenFileChoice } from '@libs/filesharing/constants/openFileChoice';
+import type OpenFileChoice from '@libs/filesharing/types/openFileChoice';
 
 interface OpenFileChoiceDialogStore {
   isOpen: boolean;

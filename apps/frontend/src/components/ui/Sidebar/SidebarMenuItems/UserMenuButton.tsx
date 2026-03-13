@@ -77,7 +77,7 @@ const UserMenuButton: React.FC = () => {
             { label: t('usersettings.sidebar'), onClick: handleUserSettingsClick },
             { label: 'logoutSeparator', isSeparator: true },
             {
-              label: t('common.logout'),
+              label: isEdulutionApp ? t('common.switchAccount') : t('common.logout'),
               onClick: () => {
                 void handleLogout();
               },
