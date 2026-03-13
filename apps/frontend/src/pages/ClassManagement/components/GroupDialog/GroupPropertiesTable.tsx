@@ -159,7 +159,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
   };
 
   return (
-    <div className="flex flex-col text-base text-background">
+    <div className="flex flex-col text-base text-foreground">
       <table className="w-full table-fixed">
         <tbody>
           <tr>
@@ -174,7 +174,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
                 <td className="w-1/2 border p-2">
                   {getComponent(groupProperty)}
                   {formState.errors[groupProperty.name] && (
-                    <FormMessage className="text-[0.8rem] font-medium text-background">
+                    <FormMessage className="text-[0.8rem] font-medium text-foreground">
                       {formState.errors[groupProperty.name]?.message?.toString()}
                     </FormMessage>
                   )}

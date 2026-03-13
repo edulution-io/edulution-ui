@@ -89,7 +89,7 @@ const BulletinBoardPageColumn = ({
       />
       <div
         className={cn(
-          'flex flex-col gap-4 overflow-y-auto pt-1 text-background scrollbar-thin',
+          'flex flex-col gap-4 overflow-y-auto pt-1 text-foreground scrollbar-thin',
           isSingleRow && 'mb-2 pb-20',
           (isAutoLayout || isMultiRow) && 'mb-1 flex-1 pb-4',
         )}

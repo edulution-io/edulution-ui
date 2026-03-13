@@ -79,7 +79,7 @@ const DialogContent = React.forwardRef<
           { 'bg-glass  backdrop-blur-lg': variant === 'primary' },
           { 'color-white': variant === 'secondary' },
           { 'bg-ciGray': variant === 'secondary' },
-          { 'w-40 bg-foreground': variant === 'loadingSpinner' },
+          { 'w-40 bg-background': variant === 'loadingSpinner' },
           className,
         )}
         {...props}

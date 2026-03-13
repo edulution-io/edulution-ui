@@ -52,7 +52,7 @@ const MenuBarRenderIcon: React.FC<MenuBarRenderIconProps> = ({ icon, alt, classN
   return (
     <FontAwesomeIcon
       icon={icon as IconDefinition}
-      className={cn(className, 'scale-75', applyIconClassName ? 'text-background dark:text-white' : 'text-white')}
+      className={cn(className, 'scale-75', applyIconClassName ? 'text-foreground dark:text-white' : 'text-white')}
     />
   );
 };

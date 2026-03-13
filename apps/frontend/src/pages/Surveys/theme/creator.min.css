@@ -4719,7 +4719,7 @@ svc-question .sv-action-bar,
   max-width: 50%;
 }
 .sd-logo__image {
-  color: var(--background);
+  color: var(--foreground);
 }
 .svc-logo-image .sd-logo__image {
   max-width: 100%;

@@ -116,7 +116,7 @@ const EnrolPage: React.FC = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
       </div>
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
-        <p className="mt-2 min-w-full text-background">{t('classmanagement.enrolPageDescription')}</p>
+        <p className="mt-2 min-w-full text-foreground">{t('classmanagement.enrolPageDescription')}</p>
         <div className="mt-4 min-w-full">
           <SectionAccordion defaultOpenAll>
             {groupRows.map((row) => (

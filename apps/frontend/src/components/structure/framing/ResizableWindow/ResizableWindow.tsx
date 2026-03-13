@@ -242,7 +242,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         >
           <div
             style={{ marginTop: MAXIMIZED_BAR_HEIGHT }}
-            className="h-14 w-14 rounded-full bg-foreground p-2 opacity-0 group-hover:opacity-100"
+            className="h-14 w-14 rounded-full bg-background p-2 opacity-0 group-hover:opacity-100"
           >
             <FontAwesomeIcon icon={faMaximize} />
           </div>

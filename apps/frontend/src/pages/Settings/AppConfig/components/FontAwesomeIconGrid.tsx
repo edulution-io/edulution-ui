@@ -110,7 +110,7 @@ const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon,
       >
         {iconUrl ? (
           <div
-            className="h-7 w-7 text-background"
+            className="h-7 w-7 text-foreground"
             style={{
               WebkitMaskImage: `url(${iconUrl})`,
               maskImage: `url(${iconUrl})`,

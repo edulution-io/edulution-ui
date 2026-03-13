@@ -58,7 +58,7 @@ const Checkbox = React.forwardRef<
       {label && (
         <span
           className={cn('select-none', {
-            'cursor-pointer text-background': !disabled,
+            'cursor-pointer text-foreground': !disabled,
             'cursor-disabled text-muted-foreground': disabled,
           })}
         >

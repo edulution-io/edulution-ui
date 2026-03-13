@@ -45,11 +45,11 @@ const variantClasses = {
 
 const optionVariantClasses = {
   default: {
-    base: 'text-background hover:bg-muted',
+    base: 'text-foreground hover:bg-muted',
     disabled: 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-accent',
   },
   dialog: {
-    base: 'text-background hover:bg-muted-light',
+    base: 'text-foreground hover:bg-muted-light',
     disabled: 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-muted',
   },
 } as const;
@@ -506,7 +506,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             <PopoverPrimitive.Content
               ref={popoverContentRef}
               align="start"
-              sideOffset={4}
+              sideOffset={2}
               onOpenAutoFocus={(e) => e.preventDefault()}
               onInteractOutside={handlePopoverInteraction}
               onPointerDownOutside={handlePopoverInteraction}

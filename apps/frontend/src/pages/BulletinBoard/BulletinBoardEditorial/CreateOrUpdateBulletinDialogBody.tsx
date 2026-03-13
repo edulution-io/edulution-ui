@@ -89,7 +89,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           />
           <div>
             {formState.errors.category && (
-              <FormMessage className="text-[0.8rem] font-medium text-background">
+              <FormMessage className="text-[0.8rem] font-medium text-foreground">
                 {formState.errors.category.message?.toString()}
               </FormMessage>
             )}
@@ -157,20 +157,20 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
                 name="customPushBody"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-bold text-background">{t('bulletinboard.customPushBody')}</FormLabel>
+                    <FormLabel className="font-bold text-foreground">{t('bulletinboard.customPushBody')}</FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
                         value={String(field.value ?? '')}
                         maxLength={CUSTOM_PUSH_BODY_MAX_LENGTH}
-                        className="min-h-20 bg-white text-background dark:border-none dark:bg-accent"
+                        className="min-h-20"
                         placeholder={t('bulletinboard.customPushBodyPlaceholder', {
                           category: watchedCategory?.name || '...',
                         })}
                       />
                     </FormControl>
                     <div className="flex justify-between">
-                      <FormMessage className="text-[0.8rem] font-medium text-background" />
+                      <FormMessage className="text-[0.8rem] font-medium text-foreground" />
                       <span className="text-xs text-muted-foreground">
                         {String(field.value ?? '').length}/{CUSTOM_PUSH_BODY_MAX_LENGTH}
                       </span>
@@ -200,7 +200,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
               />
               <div>
                 {formState.errors.content && (
-                  <FormMessage className="text-[0.8rem] font-medium text-background">
+                  <FormMessage className="text-[0.8rem] font-medium text-foreground">
                     {formState.errors.content.message?.toString()}
                   </FormMessage>
                 )}

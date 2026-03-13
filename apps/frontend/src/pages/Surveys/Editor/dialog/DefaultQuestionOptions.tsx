@@ -38,7 +38,7 @@ const DefaultQuestionOptions = () => {
         variant="dialog"
         value={questionTitle}
         onChange={(e) => setQuestionTitle(e.target.value)}
-        className={cn({ 'text-muted-foreground': !questionTitle }, { 'text-background': questionTitle })}
+        className={cn({ 'text-muted-foreground': !questionTitle }, { 'text-foreground': questionTitle })}
       />
       <Label>{t('survey.editor.questionSettings.questionDescription')}</Label>
       <Input
@@ -47,7 +47,7 @@ const DefaultQuestionOptions = () => {
         variant="dialog"
         value={questionDescription}
         onChange={(e) => setQuestionDescription(e.target.value)}
-        className={cn({ 'text-muted-foreground': !questionDescription }, { 'text-background': questionDescription })}
+        className={cn({ 'text-muted-foreground': !questionDescription }, { 'text-foreground': questionDescription })}
       />
     </div>
   );

@@ -55,7 +55,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
   return (
     <>
       <div
-        className="relative flex items-center justify-between border-b-[1px] border-muted bg-foreground px-4"
+        className="relative flex items-center justify-between border-b-[1px] border-muted bg-background px-4"
         style={{ height: MOBILE_TOP_BAR_HEIGHT_PX }}
       >
         {!isAnyMenuOpen && showLeftButton ? (
@@ -91,7 +91,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             <button
               type="button"
               onClick={handleNotificationClick}
-              className="relative flex items-center justify-center text-background"
+              className="relative flex items-center justify-center text-foreground"
             >
               <FontAwesomeIcon
                 icon={faBell}

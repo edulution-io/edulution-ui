@@ -104,7 +104,7 @@ const ClassListsPage: React.FC = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
       </div>
 
-      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto text-background scrollbar-thin">
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto text-foreground scrollbar-thin">
         <p className="mt-2 min-w-full">{t('classmanagement.classListsPageDescription')}</p>
         {groupRows.map((row) => (
           <div

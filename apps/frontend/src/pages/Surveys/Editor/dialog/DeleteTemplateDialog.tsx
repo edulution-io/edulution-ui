@@ -68,7 +68,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
     if (isSubmitting) return <CircleLoader className="mx-auto mt-5" />;
 
     return (
-      <div className="text-background">
+      <div className="text-foreground">
         {error ? (
           <>
             {t('survey.editor.templateMenu.deletion.error')}: {error.message}

@@ -155,7 +155,7 @@ const DrawioViewer = ({ xmlContent, editMode = false, isFullscreen = false, webd
   return (
     <div className={cn('relative h-full w-full', { 'h-dvh': isFullscreen })}>
       {(isLoading || isSaving) && (
-        <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
+        <div className="bg-foreground/80 absolute inset-0 z-10 flex items-center justify-center">
           <CircleLoader />
         </div>
       )}

@@ -169,9 +169,9 @@ const NotificationItem = ({ notification, isSentView = false, onShowRecipients }
                 className="h-2 w-2 flex-shrink-0 text-primary"
               />
             )}
-            <h3 className="truncate text-base font-semibold text-background">{notification.title}</h3>
+            <h3 className="truncate text-base font-semibold text-foreground">{notification.title}</h3>
           </div>
-          <p className="text-background/80 mt-0.5 line-clamp-2 text-sm">{notification.pushNotification}</p>
+          <p className="text-foreground/80 mt-0.5 line-clamp-2 text-sm">{notification.pushNotification}</p>
           <div className="mt-2 text-xs text-muted-foreground">{elapsedTime}</div>
         </div>
 
@@ -224,7 +224,7 @@ const NotificationItem = ({ notification, isSentView = false, onShowRecipients }
 
       {isExpanded && notification.content && (
         <div className="border-muted-foreground/20 mt-3 border-t pt-3">
-          <p className="text-background/90 whitespace-pre-wrap text-sm">{notification.content}</p>
+          <p className="text-foreground/90 whitespace-pre-wrap text-sm">{notification.content}</p>
         </div>
       )}
     </Card>

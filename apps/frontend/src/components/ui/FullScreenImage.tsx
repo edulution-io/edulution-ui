@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 const FullScreenImage = ({ imageSrc }: { imageSrc: string }) => {
   const { t } = useTranslation();
   return (
-    <div className="flex h-full w-full items-center justify-center bg-foreground">
+    <div className="flex h-full w-full items-center justify-center bg-background">
       <img
         src={imageSrc}
         alt={t('preview.image')}

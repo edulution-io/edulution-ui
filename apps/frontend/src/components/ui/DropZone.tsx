@@ -45,7 +45,7 @@ const DropZone: React.FC<DropZoneProps> = ({
   minHeight = 'min-h-32',
   getFilesFromEvent,
   activeClassName = 'bg-accent-light',
-  inactiveClassName = 'bg-foreground dark:bg-accent',
+  inactiveClassName = 'bg-background dark:bg-accent',
 }) => {
   const { t } = useTranslation();
 

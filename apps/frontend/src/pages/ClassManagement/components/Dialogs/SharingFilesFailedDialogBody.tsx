@@ -57,7 +57,7 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
         <li>{t('classmanagement.failDialog.reasonDuplicate')}</li>
       </ul>
 
-      <p className="text-sm text-background">
+      <p className="text-sm text-foreground">
         {affectedUsers.length > 1
           ? t('classmanagement.failDialog.affectedPersons')
           : t('classmanagement.failDialog.affectedPerson')}

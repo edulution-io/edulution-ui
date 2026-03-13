@@ -69,7 +69,7 @@ const ReplaceFilesDialog = () => {
   const hasFiles = duplicateFilesOnly.length > 0;
 
   const getDialogBody = () => (
-    <div className="text-background">
+    <div className="text-foreground">
       {hasFiles && (
         <>
           <p>{t('filesharingUpload.overwriteWarningDescription', { count: duplicateFilesOnly.length })}</p>

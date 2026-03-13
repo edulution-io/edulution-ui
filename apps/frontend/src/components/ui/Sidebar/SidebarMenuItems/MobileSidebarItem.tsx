@@ -43,7 +43,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
 
   const navLinkClassName = isEdulutionApp ? '' : 'lg:block lg:px-2';
   const titleClassName = isEdulutionApp ? '' : 'lg:hidden';
-  const textClassName = isSelected ? 'text-white' : 'text-background';
+  const textClassName = isSelected ? 'text-white' : 'text-foreground';
 
   return (
     <div

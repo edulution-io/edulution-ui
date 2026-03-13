@@ -90,7 +90,7 @@ const ChoicesByUrl = () => {
         <Switch
           checked={!!useBackendLimits}
           onCheckedChange={() => toggleUseBackendLimits(form.watch('isPublic') || false)}
-          className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-background': useBackendLimits })}
+          className={cn({ 'text-muted-foreground': !useBackendLimits }, { 'text-foreground': useBackendLimits })}
         />
         <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'enabled' : 'disabled'}`)}</p>
       </div>

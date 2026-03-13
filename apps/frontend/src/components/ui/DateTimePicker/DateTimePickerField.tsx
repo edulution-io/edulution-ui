@@ -189,8 +189,8 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
 
               <PopoverContent
                 className={cn('w-auto rounded-xl p-0', {
-                  'bg-background text-foreground': variant === 'default',
-                  'border-ring bg-white text-background dark:bg-accent dark:text-secondary': variant === 'dialog',
+                  'bg-foreground text-background': variant === 'default',
+                  'border-ring bg-white text-foreground dark:bg-accent dark:text-secondary': variant === 'dialog',
                 })}
               >
                 <div className="sm:flex">

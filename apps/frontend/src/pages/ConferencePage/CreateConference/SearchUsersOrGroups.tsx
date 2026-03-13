@@ -51,7 +51,7 @@ const SearchUsersOrGroups = ({
 
   return (
     <div className="flex w-full flex-col">
-      <p className="text-m font-bold text-background">{t('conferences.attendees')}</p>
+      <p className="text-m font-bold text-foreground">{t('conferences.attendees')}</p>
       <AsyncMultiSelect<AttendeeDto>
         value={users}
         disabled={disabled}
@@ -77,7 +77,7 @@ const SearchUsersOrGroups = ({
       ) : null}
       {hideGroupSearch ? null : (
         <>
-          <p className="text-m font-bold text-background">{t('common.groups')}</p>
+          <p className="text-m font-bold text-foreground">{t('common.groups')}</p>
           <AsyncMultiSelect<MultipleSelectorGroup>
             value={groups}
             disabled={disabled}

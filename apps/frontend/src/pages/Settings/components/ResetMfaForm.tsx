@@ -72,7 +72,7 @@ const ResetMfaForm: React.FC = () => {
           name="selectedUsers"
           render={() => (
             <FormItem>
-              <p className="font-bold text-background">{t('settings.userAdministration.selectUsersTitle')}</p>
+              <p className="font-bold text-foreground">{t('settings.userAdministration.selectUsersTitle')}</p>
               <FormControl>
                 <AsyncMultiSelect
                   value={getValues('selectedUsers')}
@@ -81,7 +81,7 @@ const ResetMfaForm: React.FC = () => {
                   placeholder={t('search.type-to-search')}
                 />
               </FormControl>
-              <p className="text-background">{t('settings.userAdministration.selectUsersDescription')}</p>
+              <p className="text-foreground">{t('settings.userAdministration.selectUsersDescription')}</p>
               <FormMessage className="text-p" />
             </FormItem>
           )}

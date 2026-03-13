@@ -29,7 +29,7 @@ const DeleteContentDialogBody: React.FC = () => {
   const items = selectedItems.map((i) => ({ name: i.filename, id: i.etag }));
 
   return (
-    <div className="text-background">
+    <div className="text-foreground">
       <p>{t('deleteDialog.actionCannotBeUndone')}</p>
       <ItemList items={items} />
     </div>

@@ -104,7 +104,7 @@ const surveyTheme: ITheme = {
     '--sjs-primary-backcolor-dark': 'var(--accent)',
     '--sjs-primary-backcolor-light': 'var(--accent-light)',
     '--sjs-primary-forecolor': 'var(--accent-foreground)',
-    '--sjs-primary-forecolor-light': 'var(--background)',
+    '--sjs-primary-forecolor-light': 'var(--foreground)',
     '--sjs-special-red': 'var(--destructive)',
     '--sjs-special-red-light': 'transparent',
     '--sjs-header-backcolor': 'transparent',

@@ -57,7 +57,7 @@ const AddMfaForm: React.FC = () => {
   return (
     <div className="flex flex-col">
       <div className="my-4 flex justify-start">
-        <div className="text-background">
+        <div className="text-foreground">
           {t('usersettings.config.mfaInfo')}{' '}
           <span className="font-bold">{t(`usersettings.config.${checked ? 'enabled' : 'disabled'}`)}</span>.
         </div>

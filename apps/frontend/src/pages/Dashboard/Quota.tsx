@@ -40,7 +40,7 @@ const Quota: React.FC<QuotaProps> = ({ user, quotaData } = {}) => {
 
   return (
     <>
-      <p className="text-background">{displayUser?.school}</p>
+      <p className="text-foreground">{displayUser?.school}</p>
       <div className="relative my-1 h-1 w-full bg-gray-300">
         <div
           className={`absolute left-0 top-0 h-1 ${progressBarColor}`}
@@ -48,7 +48,7 @@ const Quota: React.FC<QuotaProps> = ({ user, quotaData } = {}) => {
         />
       </div>
       <div color="white">
-        <p className="text-background">
+        <p className="text-foreground">
           {t('dashboard.quota.gbUsed', {
             used: quotaUsedInGb,
             total: quotaHardLimitInGb,
@@ -56,10 +56,10 @@ const Quota: React.FC<QuotaProps> = ({ user, quotaData } = {}) => {
         </p>
       </div>
       <div color="background">
-        <p className="font-bold text-background">
+        <p className="font-bold text-foreground">
           {t('dashboard.quota.globalQuota')}: {quotaHardLimitInGb} GB
         </p>
-        <p className="font-bold text-background">
+        <p className="font-bold text-foreground">
           {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}
         </p>
       </div>
