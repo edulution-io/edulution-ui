@@ -17,26 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Type } from 'class-transformer';
-import { IsArray, IsIn, IsString, ValidateNested } from 'class-validator';
-import { type ContainerCreateOptions } from 'dockerode';
-import type DockerContainerName from '@libs/docker/types/dockerContainerName';
-import { DOCKER_CONTAINER_NAMES } from '@libs/docker/types/dockerContainerName';
+const normalizeFilePath = (filePath: string): string => (filePath.startsWith('/') ? filePath : `/${filePath}`);
 
-class CreateContainerDto {
-  @IsString()
-  applicationName: string;
-
-  @IsIn(DOCKER_CONTAINER_NAMES)
-  containerName: DockerContainerName;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Object)
-  containers: ContainerCreateOptions[];
-
-  @IsString()
-  originalComposeConfig: string;
-}
-
-export default CreateContainerDto;
+export default normalizeFilePath;

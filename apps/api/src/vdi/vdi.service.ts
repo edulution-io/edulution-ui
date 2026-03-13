@@ -20,6 +20,7 @@
 import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import {
   Attributes,
   GuacamoleConnections,
@@ -120,7 +121,7 @@ class VdiService implements OnModuleInit {
         '/tokens',
         { username: EDULUTION_GUACAMOLE_ADMIN_USER, password: EDULUTION_GUACAMOLE_ADMIN_PASSWORD },
         {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
         },
       );
       const { authToken, dataSource } = response.data;

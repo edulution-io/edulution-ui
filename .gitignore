@@ -376,9 +376,6 @@ test-results/
 *.key
 *.pem
 
-
-#swagger
-
 # data folder
 /data/*
 !/data/public/

@@ -86,7 +86,7 @@ const useThemeStore = create<ThemeStore>(
         });
       },
 
-      reset: () => set({ theme: THEME.system }),
+      reset: () => {},
     }),
     {
       name: 'theme',

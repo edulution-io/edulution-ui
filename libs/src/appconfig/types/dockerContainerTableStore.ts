@@ -24,6 +24,7 @@ import type AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
+import type DockerContainerName from '@libs/docker/types/dockerContainerName';
 import type TApps from './appsType';
 
 export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo> {
@@ -33,6 +34,7 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   isLoading: boolean;
   error: string | null;
   dockerContainerConfig: DockerCompose | null;
+  currentContainerName: DockerContainerName;
   traefikConfig: YAMLMap | null;
   dockerComposeFiles: Record<string, string>;
   getContainers: (applicationNames?: string[]) => Promise<ContainerInfo[]>;

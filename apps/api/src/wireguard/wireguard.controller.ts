@@ -20,6 +20,7 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import type { BatchPeersRequest, PeerRequest, SiteRequest } from '@libs/wireguard/types/wireguard';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoint';
 import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMessages';
 import WireguardService from './wireguard.service';
@@ -54,7 +55,7 @@ class WireguardController {
   @Get('user/peer/qr')
   async getUserPeerQR(@GetCurrentUsername() username: string, @Res() res: Response) {
     const buffer = await this.wireguardService.getPeerQR(username);
-    res.set('Content-Type', 'image/png');
+    res.set(HTTP_HEADERS.ContentType, 'image/png');
     res.send(buffer);
   }
 
@@ -102,7 +103,7 @@ class WireguardController {
   @UseGuards(AdminGuard)
   async getPeerQR(@Param('peer') peer: string, @Res() res: Response) {
     const buffer = await this.wireguardService.getPeerQR(peer);
-    res.set('Content-Type', 'image/png');
+    res.set(HTTP_HEADERS.ContentType, 'image/png');
     res.send(buffer);
   }
 

@@ -13,25 +13,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "ok"
-                    },
+                    "status": { "type": "string", "example": "ok" },
                     "info": {
                       "type": "object",
-                      "example": {
-                        "database": {
-                          "status": "up"
-                        }
-                      },
+                      "example": { "database": { "status": "up" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
@@ -42,30 +31,18 @@
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
                     },
                     "details": {
                       "type": "object",
-                      "example": {
-                        "database": {
-                          "status": "up"
-                        }
-                      },
+                      "example": { "database": { "status": "up" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       }
                     }
@@ -81,45 +58,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "error"
-                    },
+                    "status": { "type": "string", "example": "error" },
                     "info": {
                       "type": "object",
-                      "example": {
-                        "database": {
-                          "status": "up"
-                        }
-                      },
+                      "example": { "database": { "status": "up" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
                     },
                     "error": {
                       "type": "object",
-                      "example": {
-                        "redis": {
-                          "status": "down",
-                          "message": "Could not connect"
-                        }
-                      },
+                      "example": { "redis": { "status": "down", "message": "Could not connect" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
@@ -127,22 +84,13 @@
                     "details": {
                       "type": "object",
                       "example": {
-                        "database": {
-                          "status": "up"
-                        },
-                        "redis": {
-                          "status": "down",
-                          "message": "Could not connect"
-                        }
+                        "database": { "status": "up" },
+                        "redis": { "status": "down", "message": "Could not connect" }
                       },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       }
                     }
@@ -167,25 +115,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "ok"
-                    },
+                    "status": { "type": "string", "example": "ok" },
                     "info": {
                       "type": "object",
-                      "example": {
-                        "database": {
-                          "status": "up"
-                        }
-                      },
+                      "example": { "database": { "status": "up" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
@@ -196,30 +133,18 @@
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
                     },
                     "details": {
                       "type": "object",
-                      "example": {
-                        "database": {
-                          "status": "up"
-                        }
-                      },
+                      "example": { "database": { "status": "up" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       }
                     }
@@ -235,45 +160,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "error"
-                    },
+                    "status": { "type": "string", "example": "error" },
                     "info": {
                       "type": "object",
-                      "example": {
-                        "database": {
-                          "status": "up"
-                        }
-                      },
+                      "example": { "database": { "status": "up" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
                     },
                     "error": {
                       "type": "object",
-                      "example": {
-                        "redis": {
-                          "status": "down",
-                          "message": "Could not connect"
-                        }
-                      },
+                      "example": { "redis": { "status": "down", "message": "Could not connect" } },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       },
                       "nullable": true
@@ -281,22 +186,13 @@
                     "details": {
                       "type": "object",
                       "example": {
-                        "database": {
-                          "status": "up"
-                        },
-                        "redis": {
-                          "status": "down",
-                          "message": "Could not connect"
-                        }
+                        "database": { "status": "up" },
+                        "redis": { "status": "down", "message": "Could not connect" }
                       },
                       "additionalProperties": {
                         "type": "object",
                         "required": ["status"],
-                        "properties": {
-                          "status": {
-                            "type": "string"
-                          }
-                        },
+                        "properties": { "status": { "type": "string" } },
                         "additionalProperties": true
                       }
                     }
@@ -313,11 +209,7 @@
       "get": {
         "operationId": "HealthController_getStats",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Health"]
       }
     },
@@ -325,11 +217,7 @@
       "get": {
         "operationId": "MetricsController_getMetrics",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Metrics"]
       }
     },
@@ -337,21 +225,13 @@
       "get": {
         "operationId": "DockerController_getContainers",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Docker"]
       },
       "post": {
         "operationId": "DockerController_createContainer",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "responses": { "201": { "description": "" } },
         "tags": ["Docker"]
       }
     },
@@ -359,51 +239,21 @@
       "put": {
         "operationId": "DockerController_executeContainerCommand",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Docker"]
       }
     },
     "/edu-api/docker/containers/{id}": {
       "delete": {
         "operationId": "DockerController_deleteContainer",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Docker"]
       },
       "patch": {
         "operationId": "DockerController_updateContainer",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Docker"]
       }
     },
@@ -411,11 +261,7 @@
       "patch": {
         "operationId": "DockerController_updateEduManagerAgentContainer",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Docker"]
       }
     },
@@ -423,11 +269,7 @@
       "get": {
         "operationId": "AuthController_authconfig",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["auth"]
       }
     },
@@ -435,11 +277,7 @@
       "post": {
         "operationId": "AuthController_authenticate",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "responses": { "201": { "description": "" } },
         "tags": ["auth"]
       }
     },
@@ -447,11 +285,7 @@
       "get": {
         "operationId": "AuthController_getQrCode",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["auth"]
       }
     },
@@ -459,21 +293,13 @@
       "post": {
         "operationId": "AuthController_setupTotp",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "responses": { "201": { "description": "" } },
         "tags": ["auth"]
       },
       "put": {
         "operationId": "AuthController_disableTotp",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["auth"]
       }
     },
@@ -481,42 +307,21 @@
       "get": {
         "operationId": "AuthController_getTotpInfo",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["auth"]
       },
       "put": {
         "operationId": "AuthController_disableTotpForUser",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["auth"]
       }
     },
     "/edu-api/auth/edu-app": {
       "post": {
         "operationId": "AuthController_loginViaApp",
-        "parameters": [
-          {
-            "name": "sessionId",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "sessionId", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
         "tags": ["auth"]
       }
     },
@@ -524,105 +329,38 @@
       "post": {
         "operationId": "AppConfigController_createConfig",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       },
       "get": {
         "operationId": "AppConfigController_getAppConfigs",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       }
     },
     "/edu-api/appconfig/{name}": {
       "put": {
         "operationId": "AppConfigController_updateConfig",
-        "parameters": [
-          {
-            "name": "name",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "name", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       },
       "patch": {
         "operationId": "AppConfigController_patchConfig",
-        "parameters": [
-          {
-            "name": "name",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "name", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       },
       "delete": {
         "operationId": "AppConfigController_deleteConfig",
-        "parameters": [
-          {
-            "name": "name",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "name", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       }
     },
@@ -630,68 +368,26 @@
       "get": {
         "operationId": "AppConfigController_getPublicAppConfigs",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       }
     },
     "/edu-api/appconfig/public/{name}": {
       "get": {
         "operationId": "AppConfigController_getPublicAppConfigByName",
-        "parameters": [
-          {
-            "name": "name",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "name", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       }
     },
     "/edu-api/appconfig/proxyconfig": {
       "get": {
         "operationId": "AppConfigController_getConfigFile",
-        "parameters": [
-          {
-            "name": "filePath",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "filePath", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["appconfig"]
       }
     },
@@ -699,31 +395,15 @@
       "get": {
         "operationId": "GlobalSettingsController_getGlobalSettings",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["global-settings"]
       },
       "put": {
         "operationId": "GlobalSettingsController_setGlobalSettings",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["global-settings"]
       }
     },
@@ -731,16 +411,8 @@
       "get": {
         "operationId": "GlobalSettingsController_getGlobalAdminSettings",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["global-settings"]
       }
     },
@@ -748,16 +420,8 @@
       "get": {
         "operationId": "GlobalSettingsController_getPublicTheme",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["global-settings"]
       }
     },
@@ -765,16 +429,8 @@
       "get": {
         "operationId": "GlobalSettingsController_getSentryConfig",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["global-settings"]
       }
     },
@@ -784,210 +440,71 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserDto" } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       }
     },
     "/edu-api/users/{username}": {
       "get": {
         "operationId": "UsersController_findOne",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       },
       "patch": {
         "operationId": "UsersController_update",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserDto" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       },
       "delete": {
         "operationId": "UsersController_remove",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       }
     },
     "/edu-api/users/{username}/key": {
       "get": {
         "operationId": "UsersController_findOneKey",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       }
     },
     "/edu-api/users/search/{searchString}": {
       "get": {
         "operationId": "UsersController_search",
-        "parameters": [
-          {
-            "name": "searchString",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "searchString", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       }
     },
     "/edu-api/users/{username}/accounts": {
       "post": {
         "operationId": "UsersController_addUserAccount",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       },
       "get": {
         "operationId": "UsersController_getUserAccounts",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       }
     },
@@ -995,171 +512,58 @@
       "patch": {
         "operationId": "UsersController_updateUserAccount",
         "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "accountId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "username", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "accountId", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserAccountDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserAccountDto" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       },
       "delete": {
         "operationId": "UsersController_deleteUserAccount",
         "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "accountId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "username", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "accountId", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       }
     },
     "/edu-api/users/{username}/devices": {
       "patch": {
         "operationId": "UsersController_registerDevice",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDeviceDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserDeviceDto" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       },
       "delete": {
         "operationId": "UsersController_unregisterDevice",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDeviceDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserDeviceDto" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["users"]
       }
     },
     "/edu-api/groups": {
       "get": {
         "operationId": "GroupsController_searchGroups",
-        "parameters": [
-          {
-            "name": "groupName",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "groupName", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["groups"]
       }
     },
@@ -1167,42 +571,17 @@
       "get": {
         "operationId": "GroupsController_fetchCurrentUser",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["groups"]
       }
     },
     "/edu-api/user-preferences": {
       "get": {
         "operationId": "UserPreferencesController_getPreferences",
-        "parameters": [
-          {
-            "name": "fields",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "fields", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["UserPreferences"]
       }
     },
@@ -1210,16 +589,8 @@
       "patch": {
         "operationId": "UserPreferencesController_updateBulletinCollapsed",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["UserPreferences"]
       }
     },
@@ -1227,16 +598,8 @@
       "patch": {
         "operationId": "UserPreferencesController_updateBulletinBoardGridRows",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["UserPreferences"]
       }
     },
@@ -1244,16 +607,8 @@
       "post": {
         "operationId": "FileSystemController_uploadFileToApp",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
@@ -1261,94 +616,35 @@
       "get": {
         "operationId": "FileSystemController_getFiles",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
     "/edu-api/files/file/{appName}/{filename}": {
       "get": {
         "operationId": "FileSystemController_serveFile",
-        "parameters": [
-          {
-            "name": "appName",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "appName", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
     "/edu-api/files/public/info/{appName}": {
       "get": {
         "operationId": "FileSystemController_getPublicFilesInfo",
-        "parameters": [
-          {
-            "name": "appName",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "appName", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
     "/edu-api/files/public/file/{appName}/{filename}": {
       "get": {
         "operationId": "FileSystemController_servePublicFile",
-        "parameters": [
-          {
-            "name": "appName",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "appName", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
@@ -1356,57 +652,18 @@
       "get": {
         "operationId": "FileSystemController_servePublicAssetWithFallback",
         "parameters": [
-          {
-            "name": "appName",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "filename",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "appName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       },
       "delete": {
         "operationId": "FileSystemController_deletePublicFile",
-        "parameters": [
-          {
-            "name": "appName",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "appName", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
@@ -1414,33 +671,11 @@
       "delete": {
         "operationId": "FileSystemController_deleteFile",
         "parameters": [
-          {
-            "name": "appName",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "filename",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "appName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
@@ -1448,16 +683,8 @@
       "post": {
         "operationId": "FileSystemController_upload",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["files"]
       }
     },
@@ -1465,16 +692,8 @@
       "get": {
         "operationId": "WebdavSharesController_findAllShares",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["webdav-shares"]
       },
       "post": {
@@ -1482,84 +701,30 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WebdavShareDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WebdavShareDto" } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["webdav-shares"]
       }
     },
     "/edu-api/webdav-shares/{webdavShareId}": {
       "put": {
         "operationId": "WebdavSharesController_updateWebdavShare",
-        "parameters": [
-          {
-            "name": "webdavShareId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "webdavShareId", "required": true, "in": "path", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WebdavShareDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WebdavShareDto" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["webdav-shares"]
       },
       "delete": {
         "operationId": "WebdavSharesController_deleteWebdavShare",
-        "parameters": [
-          {
-            "name": "webdavShareId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "webdavShareId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["webdav-shares"]
       }
     },
@@ -1567,134 +732,40 @@
       "get": {
         "operationId": "FilesharingController_getFilesAtPath",
         "parameters": [
-          {
-            "name": "type",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "path",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "type", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "path", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       },
       "post": {
         "operationId": "FilesharingController_createFileOrFolder",
         "parameters": [
-          {
-            "name": "path",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "path", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       },
       "delete": {
         "operationId": "FilesharingController_deleteFile",
-        "parameters": [
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       },
       "patch": {
         "operationId": "FilesharingController_moveOrRenameResource",
-        "parameters": [
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "type": "array", "items": { "type": "string" } } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -1702,49 +773,13 @@
       "post": {
         "operationId": "FilesharingController_uploadFileViaWebDav",
         "parameters": [
-          {
-            "name": "path",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "contentLength",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "path", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "name", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "contentLength", "required": true, "in": "query", "schema": { "type": "number" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -1752,33 +787,11 @@
       "get": {
         "operationId": "FilesharingController_webDavFileStream",
         "parameters": [
-          {
-            "name": "filePath",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "filePath", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -1786,41 +799,12 @@
       "get": {
         "operationId": "FilesharingController_getThumbnail",
         "parameters": [
-          {
-            "name": "filePath",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "etag",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "filePath", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "etag", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -1828,41 +812,12 @@
       "get": {
         "operationId": "FilesharingController_getDownloadLink",
         "parameters": [
-          {
-            "name": "filePath",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "fileName",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "filePath", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "fileName", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -1870,101 +825,44 @@
       "post": {
         "operationId": "FilesharingController_getOnlyofficeToken",
         "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "string" } } } },
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/filesharing/collabora-token": {
+      "post": {
+        "operationId": "FilesharingController_getCollaboraToken",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
     "/edu-api/filesharing/duplicate": {
       "post": {
         "operationId": "FilesharingController_duplicateFile",
-        "parameters": [
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DuplicateFileRequestDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DuplicateFileRequestDto" } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
     "/edu-api/filesharing/copy": {
       "post": {
         "operationId": "FilesharingController_copyFile",
-        "parameters": [
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "type": "array", "items": { "type": "string" } } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -1972,33 +870,11 @@
       "post": {
         "operationId": "FilesharingController_collectFiles",
         "parameters": [
-          {
-            "name": "userRole",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "userRole", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -2008,39 +884,17 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrEditPublicShareDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateOrEditPublicShareDto" } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       },
       "get": {
         "operationId": "FilesharingController_listPublicShares",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       },
       "delete": {
@@ -2048,42 +902,17 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "type": "array", "items": { "type": "string" } } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       },
       "patch": {
         "operationId": "FilesharingController_editPublicShare",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -2091,67 +920,21 @@
       "post": {
         "operationId": "FilesharingController_handleCallback",
         "parameters": [
-          {
-            "name": "path",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "filename",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "path", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
     "/edu-api/filesharing/public-share/{publicShareId}": {
       "get": {
         "operationId": "FilesharingController_getPublicShareInfo",
-        "parameters": [
-          {
-            "name": "publicShareId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "publicShareId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
       }
     },
@@ -2159,152 +942,88 @@
       "post": {
         "operationId": "FilesharingController_downloadSharedContent",
         "parameters": [
-          {
-            "name": "publicShareId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "share",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "publicShareId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "share", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["filesharing"]
+      }
+    },
+    "/edu-api/wopi/files/{fileId}": {
+      "get": {
+        "operationId": "WopiController_checkFileInfo",
+        "parameters": [
+          { "name": "fileId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Wopi"]
+      }
+    },
+    "/edu-api/wopi/files/{fileId}/contents": {
+      "get": {
+        "operationId": "WopiController_getFile",
+        "parameters": [{ "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Wopi"]
+      },
+      "post": {
+        "operationId": "WopiController_putFile",
+        "parameters": [{ "name": "access_token", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "tags": ["Wopi"]
       }
     },
     "/edu-api/lmn-api/auth": {
       "get": {
         "operationId": "LmnApiController_getLmnApiToken",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/passwords": {
       "post": {
         "operationId": "LmnApiController_printPasswords",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/students-list/{schoolclass}/{format}": {
+      "get": {
+        "operationId": "LmnApiController_getStudentsList",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/exam-mode/{state}": {
       "put": {
         "operationId": "LmnApiController_startExamMode",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/management-groups": {
       "post": {
         "operationId": "LmnApiController_addManagementGroup",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "delete": {
         "operationId": "LmnApiController_removeManagementGroup",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
@@ -2312,161 +1031,61 @@
       "get": {
         "operationId": "LmnApiController_getSchoolClass",
         "parameters": [
-          {
-            "name": "allMembers",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "allMembers", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/school-classes": {
       "get": {
         "operationId": "LmnApiController_getUserSchoolClasses",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      },
+      "patch": {
+        "operationId": "LmnApiController_updateSchoolClass",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/school-classes/{schoolClass}/{action}": {
       "put": {
         "operationId": "LmnApiController_toggleSchoolClassJoined",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/room": {
       "get": {
         "operationId": "LmnApiController_getCurrentUserRoom",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/sessions/{sessionId}": {
       "get": {
         "operationId": "LmnApiController_getUserSession",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "delete": {
         "operationId": "LmnApiController_removeUserSession",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
@@ -2474,131 +1093,41 @@
       "get": {
         "operationId": "LmnApiController_getUserSessions",
         "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "withMemberDetails",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          }
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "withMemberDetails", "required": true, "in": "query", "schema": { "type": "boolean" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "post": {
         "operationId": "LmnApiController_addUserSession",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "patch": {
         "operationId": "LmnApiController_updateUserSession",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/user": {
       "get": {
         "operationId": "LmnApiController_getCurrentUser",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "patch": {
         "operationId": "LmnApiController_updateCurrentUserDetails",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
@@ -2606,85 +1135,29 @@
       "get": {
         "operationId": "LmnApiController_getUser",
         "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "checkFirstPassword",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          }
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "checkFirstPassword", "required": true, "in": "query", "schema": { "type": "boolean" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/users": {
       "post": {
         "operationId": "LmnApiController_getUsers",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/user/{username}/quotas": {
       "get": {
         "operationId": "LmnApiController_getUsersQuota",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
@@ -2692,363 +1165,202 @@
       "get": {
         "operationId": "LmnApiController_searchUsersOrGroups",
         "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "searchQuery",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "searchQuery", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/projects": {
       "post": {
         "operationId": "LmnApiController_createProject",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "patch": {
         "operationId": "LmnApiController_updateProject",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "get": {
         "operationId": "LmnApiController_getUserProjects",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/projects/{projectName}": {
       "delete": {
         "operationId": "LmnApiController_deleteProject",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "get": {
         "operationId": "LmnApiController_getProject",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/projects/{project}/{action}": {
       "put": {
         "operationId": "LmnApiController_toggleProjectJoined",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/printers/{project}/{action}": {
       "put": {
         "operationId": "LmnApiController_togglePrinterJoined",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/printers": {
       "get": {
         "operationId": "LmnApiController_getPrinters",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/password": {
       "put": {
         "operationId": "LmnApiController_changePassword",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       },
       "post": {
         "operationId": "LmnApiController_setPassword",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/first-password": {
       "put": {
         "operationId": "LmnApiController_setFirstPassword",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/schools": {
       "get": {
         "operationId": "LmnApiController_getSchools",
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
     "/edu-api/lmn-api/server/lmnversion": {
       "get": {
         "operationId": "LmnApiController_getLmnVersion",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/roles/{role}": {
+      "get": {
+        "operationId": "LmnApiController_getUsersByRole",
         "parameters": [
-          {
-            "name": "x-api-key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "role", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "managementList", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/listmanagement/sophomorix-check": {
+      "get": {
+        "operationId": "LmnApiController_runSophomorixCheck",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/listmanagement/sophomorix-apply": {
+      "post": {
+        "operationId": "LmnApiController_runSophomorixApply",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/devices/list/{school}": {
+      "get": {
+        "operationId": "LmnApiController_getDevices",
+        "parameters": [
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      },
+      "post": {
+        "operationId": "LmnApiController_saveDevices",
+        "parameters": [
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/devices/list/{school}/import-devices": {
+      "get": {
+        "operationId": "LmnApiController_getImportDevices",
+        "parameters": [
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "school", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      }
+    },
+    "/edu-api/lmn-api/listmanagement/{school}/{managementList}": {
+      "get": {
+        "operationId": "LmnApiController_getManagementList",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["lmn-api"]
+      },
+      "post": {
+        "operationId": "LmnApiController_saveManagementList",
+        "parameters": [{ "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["lmn-api"]
       }
     },
@@ -3058,39 +1370,17 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateConferenceDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateConferenceDto" } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       },
       "get": {
         "operationId": "ConferencesController_findAll",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       },
       "patch": {
@@ -3098,39 +1388,17 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Conference"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Conference" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       },
       "put": {
         "operationId": "ConferencesController_toggleIsRunning",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       },
       "delete": {
@@ -3138,27 +1406,10 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "type": "array", "items": { "type": "string" } } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       }
     },
@@ -3166,59 +1417,20 @@
       "get": {
         "operationId": "ConferencesController_join",
         "parameters": [
-          {
-            "name": "meetingID",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "password",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "meetingID", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "password", "required": true, "in": "query", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       }
     },
     "/edu-api/conferences/public/{meetingID}": {
       "get": {
         "operationId": "ConferencesController_getPublicConference",
-        "parameters": [
-          {
-            "name": "meetingID",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "meetingID", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       }
     },
@@ -3226,16 +1438,8 @@
       "post": {
         "operationId": "ConferencesController_joinPublicConference",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["conferences"]
       }
     },
@@ -3243,16 +1447,8 @@
       "get": {
         "operationId": "MailsController_getMails",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       }
     },
@@ -3260,57 +1456,24 @@
       "get": {
         "operationId": "MailsController_getExternalMailProviderConfig",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       },
       "post": {
         "operationId": "MailsController_postExternalMailProviderConfig",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       }
     },
     "/edu-api/mails/provider-config/{mailProviderId}": {
       "delete": {
         "operationId": "MailsController_deleteExternalMailProviderConfig",
-        "parameters": [
-          {
-            "name": "mailProviderId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "mailProviderId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       }
     },
@@ -3318,31 +1481,15 @@
       "get": {
         "operationId": "MailsController_getSyncJob",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       },
       "post": {
         "operationId": "MailsController_postSyncJob",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       },
       "delete": {
@@ -3350,27 +1497,10 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "type": "array", "items": { "type": "string" } } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       }
     },
@@ -3378,16 +1508,8 @@
       "get": {
         "operationId": "MailsController_checkSogoThemeVersion",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       }
     },
@@ -3395,16 +1517,8 @@
       "post": {
         "operationId": "MailsController_updateSogoThemeManually",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       }
     },
@@ -3412,16 +1526,8 @@
       "get": {
         "operationId": "MailsController_getConnectionStats",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["mails"]
       }
     },
@@ -3429,31 +1535,15 @@
       "get": {
         "operationId": "VdiController_authVdi",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["vdi"]
       },
       "post": {
         "operationId": "VdiController_requestVdi",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["vdi"]
       }
     },
@@ -3461,16 +1551,8 @@
       "post": {
         "operationId": "VdiController_getConnection",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["vdi"]
       }
     },
@@ -3478,16 +1560,8 @@
       "post": {
         "operationId": "VdiController_createOrUpdateSession",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["vdi"]
       }
     },
@@ -3495,68 +1569,26 @@
       "get": {
         "operationId": "VdiController_getVirtualMachines",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["vdi"]
       }
     },
     "/edu-api/veyon/{ip}": {
       "post": {
         "operationId": "VeyonController_authentication",
-        "parameters": [
-          {
-            "name": "ip",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "ip", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["veyon"]
       }
     },
     "/edu-api/veyon/framebuffer/{connectionUid}": {
       "get": {
         "operationId": "VeyonController_streamFrameBuffer",
-        "parameters": [
-          {
-            "name": "connectionUid",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "connectionUid", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["veyon"]
       }
     },
@@ -3564,42 +1596,17 @@
       "put": {
         "operationId": "VeyonController_setFeature",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["veyon"]
       }
     },
     "/edu-api/veyon/feature/{connectionUid}": {
       "get": {
         "operationId": "VeyonController_getFeatures",
-        "parameters": [
-          {
-            "name": "connectionUid",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "connectionUid", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["veyon"]
       }
     },
@@ -3607,31 +1614,15 @@
       "get": {
         "operationId": "LicenseController_getLicense",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["license"]
       },
       "post": {
         "operationId": "LicenseController_signLicense",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["license"]
       }
     },
@@ -3639,16 +1630,8 @@
       "get": {
         "operationId": "SurveysController_findOne",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3656,16 +1639,8 @@
       "get": {
         "operationId": "SurveysController_canParticipate",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3673,16 +1648,8 @@
       "get": {
         "operationId": "SurveysController_hasAnswers",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3690,16 +1657,8 @@
       "get": {
         "operationId": "SurveysController_getSurveyResult",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3707,46 +1666,22 @@
       "get": {
         "operationId": "SurveysController_findByStatus",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       },
       "post": {
         "operationId": "SurveysController_updateOrCreateSurvey",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       },
       "delete": {
         "operationId": "SurveysController_deleteSurveys",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3754,16 +1689,8 @@
       "post": {
         "operationId": "SurveysController_fileUpload",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3771,31 +1698,15 @@
       "post": {
         "operationId": "SurveysController_createTemplate",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       },
       "get": {
-        "operationId": "SurveysController_getTemplates",
+        "operationId": "SurveysController_getTemplate",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3803,16 +1714,8 @@
       "get": {
         "operationId": "SurveysController_getSubmittedSurveyAnswerCurrentUser",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3820,33 +1723,22 @@
       "get": {
         "operationId": "SurveysController_getSubmittedSurveyAnswers",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
     "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}/{filename}": {
       "get": {
         "operationId": "SurveysController_serveFileFromAnswer",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3854,144 +1746,84 @@
       "post": {
         "operationId": "SurveysController_answerSurvey",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
     "/edu-api/surveys/files/{surveyId}/{questionId}/{filename}": {
       "get": {
         "operationId": "SurveysController_serveFile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
+        "parameters": [
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
     "/edu-api/surveys/files/{filename}": {
       "get": {
         "operationId": "SurveysController_serveTempFile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
     "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}": {
       "post": {
         "operationId": "SurveysController_answeringFileUpload",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
     "/edu-api/surveys/answers/files/{userName}/{surveyId}/{questionId}/{fileName}": {
       "delete": {
         "operationId": "SurveysController_deleteTempQuestionAnswerFile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "fileName", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
     "/edu-api/surveys/choices/{surveyId}/{questionId}": {
       "get": {
         "operationId": "SurveysController_getChoices",
-        "parameters": [
-          {
-            "name": "original",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "original", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
-    "/edu-api/surveys/templates/{id}": {
+    "/edu-api/surveys/templates/{name}": {
       "delete": {
         "operationId": "SurveysController_deleteTemplate",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
-    "/edu-api/surveys/templates/{id}/{isActive}": {
+    "/edu-api/surveys/templates/{name}/{isActive}": {
       "patch": {
         "operationId": "SurveysController_setIsTemplateActive",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["surveys"]
       }
     },
@@ -3999,11 +1831,7 @@
       "get": {
         "operationId": "PublicSurveysController_find",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       }
     },
@@ -4011,11 +1839,7 @@
       "post": {
         "operationId": "PublicSurveysController_answerSurvey",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "responses": { "201": { "description": "" } },
         "tags": ["public-surveys"]
       }
     },
@@ -4023,57 +1847,55 @@
       "get": {
         "operationId": "PublicSurveysController_hasPublicUserAnswered",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       }
     },
     "/edu-api/public-surveys/files/{surveyId}/{questionId}/{filename}": {
       "get": {
         "operationId": "PublicSurveysController_serveFile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       }
     },
     "/edu-api/public-surveys/answers/files/{userName}/{surveyId}/{questionId}": {
       "post": {
         "operationId": "PublicSurveysController_answeringFileUpload",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "201": { "description": "" } },
         "tags": ["public-surveys"]
       }
     },
     "/edu-api/public-surveys/answers/files/{userName}/{surveyId}/{questionId}/{fileName}": {
       "delete": {
         "operationId": "PublicSurveysController_deleteTempAnswerFile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "fileName", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       },
       "get": {
         "operationId": "PublicSurveysController_serveFileFromAnswer",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [
+          { "name": "userName", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "surveyId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "questionId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "fileName", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       }
     },
@@ -4081,11 +1903,7 @@
       "get": {
         "operationId": "PublicSurveysController_getChoices",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["public-surveys"]
       }
     },
@@ -4093,16 +1911,8 @@
       "get": {
         "operationId": "BulletinCategoryController_findAll",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletin-category"]
       },
       "post": {
@@ -4110,110 +1920,39 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBulletinCategoryDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateBulletinCategoryDto" } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletin-category"]
       }
     },
     "/edu-api/bulletin-category/{name}": {
       "get": {
         "operationId": "BulletinCategoryController_checkName",
-        "parameters": [
-          {
-            "name": "name",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "name", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletin-category"]
       }
     },
     "/edu-api/bulletin-category/{id}": {
       "patch": {
         "operationId": "BulletinCategoryController_update",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBulletinCategoryDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateBulletinCategoryDto" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletin-category"]
       },
       "delete": {
         "operationId": "BulletinCategoryController_remove",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletin-category"]
       }
     },
@@ -4221,16 +1960,8 @@
       "post": {
         "operationId": "BulletinCategoryController_setPosition",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletin-category"]
       }
     },
@@ -4238,16 +1969,8 @@
       "get": {
         "operationId": "BulletinBoardController_getBulletinsByCategory",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       },
       "post": {
@@ -4255,24 +1978,10 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBulletinDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateBulletinDto" } } }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       },
       "delete": {
@@ -4280,27 +1989,10 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "type": "array", "items": { "type": "string" } } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       }
     },
@@ -4308,104 +2000,39 @@
       "get": {
         "operationId": "BulletinBoardController_findAllBulletins",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       }
     },
     "/edu-api/bulletinboard/{id}": {
       "patch": {
         "operationId": "BulletinBoardController_updateBulletin",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBulletinDto"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateBulletinDto" } } }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       }
     },
     "/edu-api/bulletinboard/{categoryId}": {
       "delete": {
         "operationId": "BulletinBoardController_removeAllBulletinsByCategory",
-        "parameters": [
-          {
-            "name": "categoryId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "categoryId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       }
     },
     "/edu-api/bulletinboard/attachments/{filename}": {
       "get": {
         "operationId": "BulletinBoardController_serveBulletinAttachment",
-        "parameters": [
-          {
-            "name": "filename",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       }
     },
@@ -4413,16 +2040,8 @@
       "post": {
         "operationId": "BulletinBoardController_uploadBulletinAttachment",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["bulletinboard"]
       }
     },
@@ -4430,65 +2049,25 @@
       "get": {
         "operationId": "NotificationsController_getInbox",
         "parameters": [
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 20,
-              "type": "number"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 0,
-              "type": "number"
-            }
-          }
+          { "name": "limit", "required": false, "in": "query", "schema": { "example": 20, "type": "number" } },
+          { "name": "offset", "required": false, "in": "query", "schema": { "example": 0, "type": "number" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["notifications"]
       },
       "patch": {
         "operationId": "NotificationsController_markAllAsRead",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["notifications"]
       },
       "delete": {
         "operationId": "NotificationsController_deleteAllNotifications",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["notifications"]
       }
     },
@@ -4496,66 +2075,54 @@
       "get": {
         "operationId": "NotificationsController_getUnreadCount",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/notifications/sent": {
+      "get": {
+        "operationId": "NotificationsController_getSent",
+        "parameters": [
+          { "name": "limit", "required": false, "in": "query", "schema": { "example": 20, "type": "number" } },
+          { "name": "offset", "required": false, "in": "query", "schema": { "example": 0, "type": "number" } }
         ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/notifications/sent/{id}/recipients": {
+      "get": {
+        "operationId": "NotificationsController_getSentNotificationRecipients",
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["notifications"]
       }
     },
     "/edu-api/notifications/{id}": {
       "patch": {
         "operationId": "NotificationsController_markAsRead",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["notifications"]
       },
       "delete": {
         "operationId": "NotificationsController_deleteNotification",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["notifications"]
+      }
+    },
+    "/edu-api/notifications/sent/{id}": {
+      "delete": {
+        "operationId": "NotificationsController_deleteSentNotification",
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["notifications"]
       }
     },
@@ -4563,11 +2130,7 @@
       "get": {
         "operationId": "MobileAppController_getAppUserData",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["mobile-app"]
       }
     },
@@ -4575,11 +2138,7 @@
       "get": {
         "operationId": "MobileAppController_getTotpInfo",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["mobile-app"]
       }
     },
@@ -4587,68 +2146,26 @@
       "get": {
         "operationId": "SseController_getSseConnection",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["sse"]
       }
     },
     "/edu-api/sse/conferences/public": {
       "get": {
         "operationId": "SseController_publicConferenceSse",
-        "parameters": [
-          {
-            "name": "meetingID",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "meetingID", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["sse"]
       }
     },
     "/edu-api/sse/auth": {
       "get": {
         "operationId": "SseController_publicLoginSse",
-        "parameters": [
-          {
-            "name": "sessionId",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "sessionId", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["sse"]
       }
     },
@@ -4656,16 +2173,8 @@
       "post": {
         "operationId": "TLDrawSyncController_uploadFileToApp",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["tldraw-sync"]
       }
     },
@@ -4673,40 +2182,15 @@
       "get": {
         "operationId": "TLDrawSyncController_serveFiles",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["tldraw-sync"]
       },
       "delete": {
         "operationId": "TLDrawSyncController_deleteFile",
-        "parameters": [
-          {
-            "name": "filename",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "parameters": [{ "name": "filename", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
         "tags": ["tldraw-sync"]
       }
     },
@@ -4714,62 +2198,80 @@
       "get": {
         "operationId": "TLDrawSyncController_getHistory",
         "parameters": [
-          {
-            "name": "roomId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 20,
-              "type": "number"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          }
+          { "name": "roomId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "limit", "required": false, "in": "query", "schema": { "example": 20, "type": "number" } },
+          { "name": "page", "required": false, "in": "query", "schema": { "example": 1, "type": "number" } }
         ],
         "responses": {
           "200": {
             "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HistoryPageDto"
-                }
-              }
-            }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HistoryPageDto" } } }
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "security": [{ "bearer": [] }],
         "tags": ["tldraw-sync"]
+      }
+    },
+    "/edu-api/parent-child-pairing/code": {
+      "get": {
+        "operationId": "ParentChildPairingController_getCode",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      },
+      "put": {
+        "operationId": "ParentChildPairingController_refreshCode",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing": {
+      "post": {
+        "operationId": "ParentChildPairingController_createParentChildPairing",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing/relationships": {
+      "get": {
+        "operationId": "ParentChildPairingController_getEnrichedRelationships",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing/all": {
+      "get": {
+        "operationId": "ParentChildPairingController_getAllParentChildPairings",
+        "parameters": [{ "name": "school", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
+      }
+    },
+    "/edu-api/parent-child-pairing/{id}/status": {
+      "patch": {
+        "operationId": "ParentChildPairingController_updateParentChildPairingStatus",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "x-api-key", "required": true, "in": "header", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["parent-child-pairing"]
       }
     },
     "/edu-api/wireguard/user/peer": {
       "get": {
         "operationId": "WireguardController_getUserPeer",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4777,11 +2279,7 @@
       "get": {
         "operationId": "WireguardController_getUserPeerConfig",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4789,11 +2287,7 @@
       "get": {
         "operationId": "WireguardController_getUserPeerQR",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4801,11 +2295,7 @@
       "get": {
         "operationId": "WireguardController_getUserPeerQRBase64",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4813,11 +2303,7 @@
       "get": {
         "operationId": "WireguardController_getUserPeerStatus",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4825,21 +2311,13 @@
       "get": {
         "operationId": "WireguardController_getPeers",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       },
       "post": {
         "operationId": "WireguardController_createPeer",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "responses": { "201": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4847,116 +2325,47 @@
       "post": {
         "operationId": "WireguardController_createPeersBatch",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "responses": { "201": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
     "/edu-api/wireguard/peers/{peer}": {
       "delete": {
         "operationId": "WireguardController_deletePeer",
-        "parameters": [
-          {
-            "name": "peer",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "peer", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
     "/edu-api/wireguard/peers/{peer}/config": {
       "get": {
         "operationId": "WireguardController_getPeerConfig",
-        "parameters": [
-          {
-            "name": "peer",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "peer", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
     "/edu-api/wireguard/peers/{peer}/qr": {
       "get": {
         "operationId": "WireguardController_getPeerQR",
-        "parameters": [
-          {
-            "name": "peer",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "peer", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
     "/edu-api/wireguard/peers/{peer}/qr/b64": {
       "get": {
         "operationId": "WireguardController_getPeerQRBase64",
-        "parameters": [
-          {
-            "name": "peer",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "peer", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
     "/edu-api/wireguard/peers/{peer}/status": {
       "get": {
         "operationId": "WireguardController_getPeerStatus",
-        "parameters": [
-          {
-            "name": "peer",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "peer", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4964,11 +2373,7 @@
       "get": {
         "operationId": "WireguardController_getAllPeersStatus",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4976,11 +2381,7 @@
       "get": {
         "operationId": "WireguardController_restartWireGuard",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
@@ -4988,132 +2389,87 @@
       "get": {
         "operationId": "WireguardController_getSites",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       },
       "post": {
         "operationId": "WireguardController_createSite",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "responses": { "201": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
     "/edu-api/wireguard/sites/{site}": {
       "delete": {
         "operationId": "WireguardController_deleteSite",
-        "parameters": [
-          {
-            "name": "site",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "site", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
       }
     },
     "/edu-api/wireguard/sites/{site}/config": {
       "get": {
         "operationId": "WireguardController_getSiteConfig",
-        "parameters": [
-          {
-            "name": "site",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "parameters": [{ "name": "site", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
         "tags": ["Wireguard"]
+      }
+    },
+    "/edu-api/webhook": {
+      "post": {
+        "operationId": "WebhookController_handleWebhook",
+        "parameters": [
+          { "name": "x-webhook-event-id", "required": true, "in": "header", "schema": { "type": "string" } },
+          { "name": "user-agent", "required": true, "in": "header", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Webhook"]
+      }
+    },
+    "/edu-api/webhook-clients": {
+      "get": {
+        "operationId": "WebhookClientsController_getAll",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["webhook-clients"]
+      },
+      "post": {
+        "operationId": "WebhookClientsController_create",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["webhook-clients"]
+      }
+    },
+    "/edu-api/webhook-clients/{id}": {
+      "delete": {
+        "operationId": "WebhookClientsController_delete",
+        "parameters": [{ "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "tags": ["webhook-clients"]
       }
     }
   },
-  "info": {
-    "title": "edulution-api",
-    "description": "Test API for edulution-io",
-    "version": "1.0",
-    "contact": {}
-  },
+  "info": { "title": "edulution-api", "description": "Test API for edulution-io", "version": "1.0", "contact": {} },
   "tags": [],
   "servers": [],
   "components": {
-    "securitySchemes": {
-      "bearer": {
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "type": "http"
-      }
-    },
+    "securitySchemes": { "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" } },
     "schemas": {
-      "UserDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "UpdateUserDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "UserAccountDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "UserDeviceDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "WebdavShareDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "DuplicateFileRequestDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "CreateOrEditPublicShareDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "CreateConferenceDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "Conference": {
-        "type": "object",
-        "properties": {}
-      },
-      "CreateBulletinCategoryDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "CreateBulletinDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "HistoryPageDto": {
-        "type": "object",
-        "properties": {}
-      }
+      "UserDto": { "type": "object", "properties": {} },
+      "UpdateUserDto": { "type": "object", "properties": {} },
+      "UserAccountDto": { "type": "object", "properties": {} },
+      "UserDeviceDto": { "type": "object", "properties": {} },
+      "WebdavShareDto": { "type": "object", "properties": {} },
+      "DuplicateFileRequestDto": { "type": "object", "properties": {} },
+      "CreateOrEditPublicShareDto": { "type": "object", "properties": {} },
+      "CreateConferenceDto": { "type": "object", "properties": {} },
+      "Conference": { "type": "object", "properties": {} },
+      "CreateBulletinCategoryDto": { "type": "object", "properties": {} },
+      "CreateBulletinDto": { "type": "object", "properties": {} },
+      "HistoryPageDto": { "type": "object", "properties": {} }
     }
   }
 }

@@ -17,26 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Type } from 'class-transformer';
-import { IsArray, IsIn, IsString, ValidateNested } from 'class-validator';
-import { type ContainerCreateOptions } from 'dockerode';
-import type DockerContainerName from '@libs/docker/types/dockerContainerName';
-import { DOCKER_CONTAINER_NAMES } from '@libs/docker/types/dockerContainerName';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import FILESHARING_DOCKER_CONTAINERS from '@libs/docker/constants/filesharingDockerContainers';
 
-class CreateContainerDto {
-  @IsString()
-  applicationName: string;
+const DOCKER_CONTAINER_NAMES = [
+  ...Object.values(DOCKER_APPLICATION_LIST),
+  ...Object.values(FILESHARING_DOCKER_CONTAINERS),
+] as const;
 
-  @IsIn(DOCKER_CONTAINER_NAMES)
-  containerName: DockerContainerName;
+type DockerContainerName = (typeof DOCKER_CONTAINER_NAMES)[number];
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Object)
-  containers: ContainerCreateOptions[];
-
-  @IsString()
-  originalComposeConfig: string;
-}
-
-export default CreateContainerDto;
+export { DOCKER_CONTAINER_NAMES };
+export default DockerContainerName;

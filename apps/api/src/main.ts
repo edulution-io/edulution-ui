@@ -23,6 +23,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
+import { execSync } from 'child_process';
 import helmet from 'helmet';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
@@ -88,7 +89,9 @@ async function bootstrap() {
       .build();
 
     const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-    writeFileSync('./swagger-spec.json', JSON.stringify(swaggerDocument));
+    const swaggerPath = './swagger-spec.json';
+    writeFileSync(swaggerPath, JSON.stringify(swaggerDocument));
+    execSync(`npx prettier --write ${swaggerPath}`);
     SwaggerModule.setup('/docs', app, swaggerDocument);
   }
 

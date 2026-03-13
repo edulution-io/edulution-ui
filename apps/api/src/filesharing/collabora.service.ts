@@ -29,6 +29,7 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { WOPI_TOKEN_EXPIRY, WOPI_TOKEN_TTL_MS } from '@libs/filesharing/constants/wopi';
 import { HTTP_HEADERS, HttpMethodsWebDav, WebdavRequestDepth } from '@libs/common/types/http-methods';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import normalizeFilePath from '@libs/filesharing/utils/normalizeFilePath';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
@@ -70,10 +71,14 @@ class CollaboraService {
       throw new BadRequestException(PathValidationErrorMessages.PathTraversal);
     }
 
+    const baseDomain = process.env.EDULUTION_BASE_DOMAIN || 'localhost';
+    const origin = baseDomain === 'localhost' ? 'http://localhost' : `https://${baseDomain}`;
+
     const payload: WopiTokenPayload = {
       username,
       filePath,
       share,
+      origin,
       jti: randomUUID(),
     };
 
@@ -92,7 +97,7 @@ class CollaboraService {
     try {
       const client = await this.webdavService.getClient(username, share);
       const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-      const pathWithoutWebdav = getPathWithoutWebdav(filePath, webdavShare.pathname);
+      const pathWithoutWebdav = getPathWithoutWebdav(normalizeFilePath(filePath), webdavShare.pathname);
       const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
       const files = (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(

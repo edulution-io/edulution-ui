@@ -28,10 +28,17 @@ import { type RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
 import DOCKER_COMMAND_TRANSLATION_KEYS from '@libs/docker/constants/dockerCommandTranslationKeys';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import FILESHARING_DOCKER_CONTAINERS from '@libs/docker/constants/filesharingDockerContainers';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
 import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
 import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
+import type DockerContainerName from '@libs/docker/types/dockerContainerName';
 import type TApps from '@libs/appconfig/types/appsType';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { ACTIVE_DOCUMENT_EDITOR, ActiveDocumentEditorType } from '@libs/filesharing/constants/activeDocumentEditor';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
@@ -43,6 +50,7 @@ const initialValues = {
   error: null,
   selectedRows: {},
   dockerContainerConfig: null,
+  currentContainerName: '' as DockerContainerName,
   traefikConfig: null,
   dockerComposeFiles: {},
 };
@@ -58,9 +66,25 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
 
   fetchTableContent: async (applicationName) => {
     if (applicationName) {
-      if (Object.keys(DOCKER_APPLICATION_LIST).includes(applicationName)) {
+      const isFilesharing = applicationName === APPS.FILE_SHARING;
+      if (Object.keys(DOCKER_APPLICATION_LIST).includes(applicationName) || isFilesharing) {
         set({ isLoading: true, error: null });
-        const containerName = DOCKER_APPLICATION_LIST[applicationName] || '';
+        let containerName: DockerContainerName;
+
+        if (isFilesharing) {
+          const { appConfigs } = useAppConfigsStore.getState();
+          const activeEditor =
+            (getExtendedOptionsValue(
+              appConfigs,
+              APPS.FILE_SHARING,
+              ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR,
+            ) as ActiveDocumentEditorType) ?? ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE;
+          containerName = FILESHARING_DOCKER_CONTAINERS[activeEditor];
+        } else {
+          containerName = DOCKER_APPLICATION_LIST[applicationName as keyof typeof DOCKER_APPLICATION_LIST] ?? '';
+        }
+
+        set({ currentContainerName: containerName });
         const dockerContainerConfig = await get().getDockerContainerConfig(applicationName, containerName);
         const applicationNames = Object.keys(dockerContainerConfig.services);
         const containers = await get().getContainers(applicationNames);
@@ -103,11 +127,12 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     }
   },
 
-  createAndRunContainer: async ({ applicationName, containers, originalComposeConfig }) => {
+  createAndRunContainer: async ({ applicationName, containerName, containers, originalComposeConfig }) => {
     set({ isLoading: true, error: null });
     try {
       await eduApi.post(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}`, {
         applicationName,
+        containerName,
         containers,
         originalComposeConfig,
       });

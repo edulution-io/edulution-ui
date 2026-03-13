@@ -20,7 +20,7 @@
 import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import type { IConfig } from '@onlyoffice/document-editor-react';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
@@ -89,7 +89,7 @@ const useFileEditorStore = create<FileEditorStore>(
             JSON.stringify(config),
             {
               headers: {
-                'Content-Type': RequestResponseContentType.APPLICATION_JSON,
+                [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
               },
             },
           );

@@ -54,6 +54,15 @@ const CRITICAL_ENDPOINTS = {
   health: { path: '/edu-api/health', methods: ['get'] },
 };
 
+const INTEGRATION_ENDPOINTS = {
+  filesharingCallback: { path: '/edu-api/filesharing/callback', methods: ['post'] },
+  filesharingCollaboraToken: { path: '/edu-api/filesharing/collabora-token', methods: ['post'] },
+  filesharingOnlyOffice: { path: '/edu-api/filesharing/only-office', methods: ['post'] },
+  filesharingThumbnail: { path: '/edu-api/filesharing/thumbnail', methods: ['get'] },
+  wopiCheckFileInfo: { path: '/edu-api/wopi/files/{fileId}', methods: ['get'] },
+  wopiFileContents: { path: '/edu-api/wopi/files/{fileId}/contents', methods: ['get', 'post'] },
+};
+
 (SPEC_EXISTS ? describe : describe.skip)('OpenAPI Contract Validation', () => {
   let spec: SwaggerSpec;
 
@@ -98,6 +107,31 @@ const CRITICAL_ENDPOINTS = {
     }
   });
 
+  describe('Integration endpoints exist (non-blocking)', () => {
+    for (const [name, endpoint] of Object.entries(INTEGRATION_ENDPOINTS)) {
+      it(`${name}: ${endpoint.path} has expected methods`, () => {
+        const pathSpec = spec.paths[endpoint.path];
+        if (!pathSpec) {
+          console.warn(`Integration endpoint missing from spec: ${endpoint.path}`);
+          return;
+        }
+
+        const missingMethods: string[] = [];
+        for (const method of endpoint.methods) {
+          if (!pathSpec[method] || !pathSpec[method].operationId) {
+            missingMethods.push(method);
+          }
+        }
+
+        if (missingMethods.length > 0) {
+          console.warn(`${endpoint.path} missing methods: ${missingMethods.join(', ')}`);
+        }
+
+        expect(pathSpec).toBeDefined();
+      });
+    }
+  });
+
   describe('Endpoint response definitions', () => {
     it('all endpoints have at least one response defined', () => {
       const missingResponses: string[] = [];
@@ -130,6 +164,7 @@ const CRITICAL_ENDPOINTS = {
       const criticalParamPaths = [
         '/edu-api/filesharing/public-share/{publicShareId}',
         '/edu-api/filesharing/public-share/download/{publicShareId}',
+        '/edu-api/wopi/files/{fileId}',
       ];
       const missingParams: string[] = [];
 
@@ -186,7 +221,7 @@ const CRITICAL_ENDPOINTS = {
   describe('Endpoint coverage', () => {
     it('has endpoints for all major API modules', () => {
       const allPaths = Object.keys(spec.paths);
-      const modules = ['auth', 'surveys', 'filesharing', 'health', 'users', 'groups', 'conferences', 'mails'];
+      const modules = ['auth', 'surveys', 'filesharing', 'health', 'users', 'groups', 'conferences', 'mails', 'wopi'];
 
       for (const mod of modules) {
         const hasModule = allPaths.some((path) => path.includes(`/edu-api/${mod}`));

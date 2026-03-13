@@ -33,6 +33,7 @@ import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
 import slugify from '@libs/common/utils/slugify';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import type TApps from '@libs/appconfig/types/appsType';
+import APPS from '@libs/appconfig/constants/apps';
 import useDockerApplicationStore from '../DockerIntegration/useDockerApplicationStore';
 
 type ProxyConfigFormProps = {
@@ -43,12 +44,12 @@ type ProxyConfigFormProps = {
 const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   const { t } = useTranslation();
   const [expertModeEnabled, setExpertModeEnabled] = useState(false);
-  const { traefikConfig, getTraefikConfig } = useDockerApplicationStore();
+  const { traefikConfig, currentContainerName, getTraefikConfig } = useDockerApplicationStore();
   const [isTraefikConfigPredefined, setIsTraefikConfigPredefined] = useState(false);
 
   const isYamlConfigured = form.watch(`${item.name}.proxyConfig`) !== '';
   const defaultYaml = useMemo(() => getDefaultYaml(item.name), [item.name]);
-  const isKnownApp = Object.keys(DOCKER_APPLICATION_LIST).includes(item.name);
+  const isKnownApp = Object.keys(DOCKER_APPLICATION_LIST).includes(item.name) || item.name === APPS.FILE_SHARING;
   const isProxyActuallyConfigured = item.options.proxyConfig !== '';
 
   const proxyPath = slugify(form.getValues(`${item.name}.proxyPath`) || '');
@@ -64,12 +65,10 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   }, [traefikConfig, item.name]);
 
   useEffect(() => {
-    if (isKnownApp) {
-      const containerName = DOCKER_APPLICATION_LIST[item.name as TApps] || '';
-
-      void getTraefikConfig(item.name as TApps, containerName);
+    if (isKnownApp && currentContainerName) {
+      void getTraefikConfig(item.name as TApps, currentContainerName);
     }
-  }, [item.name]);
+  }, [item.name, currentContainerName]);
 
   const updateYaml = () => {
     try {

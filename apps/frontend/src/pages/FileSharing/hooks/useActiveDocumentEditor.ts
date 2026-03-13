@@ -42,8 +42,9 @@ const useActiveDocumentEditor = () => {
     getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ACTIVE_DOCUMENT_EDITOR) ??
     ACTIVE_DOCUMENT_EDITOR.ONLY_OFFICE;
 
-  const isOnlyOfficeActive = isDocumentServerConfigured && activeEditor !== ACTIVE_DOCUMENT_EDITOR.COLLABORA;
-  const isCollaboraActive = isCollaboraServerConfigured && activeEditor === ACTIVE_DOCUMENT_EDITOR.COLLABORA;
+  const prefersCollabora = activeEditor === ACTIVE_DOCUMENT_EDITOR.COLLABORA;
+  const isCollaboraActive = isCollaboraServerConfigured && (prefersCollabora || !isDocumentServerConfigured);
+  const isOnlyOfficeActive = isDocumentServerConfigured && !isCollaboraActive;
 
   return {
     isOnlyOfficeActive,

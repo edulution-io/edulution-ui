@@ -21,6 +21,7 @@ interface WopiTokenPayload {
   username: string;
   filePath: string;
   share: string;
+  origin: string;
   jti: string;
 }
 
